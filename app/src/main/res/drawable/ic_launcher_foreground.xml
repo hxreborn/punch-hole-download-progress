@@ -4,40 +4,27 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Back Ring (Top Half of Ellipse) -->
-    <!-- Rotated -30 degrees to create the tilt -->
-    <!-- Drawn FIRST so it appears behind the planet -->
-    <group android:pivotX="54" android:pivotY="54" android:rotation="-30">
+    <!-- Progress Ring (cyan arc around the icon) -->
+    <path
+        android:pathData="M54,22 A32,32 0 1,1 53.99,22"
+        android:strokeWidth="3"
+        android:strokeColor="#00BCD4"
+        android:strokeLineCap="round" />
+
+    <!-- Download Arrow - downward pointing arrow -->
+    <group android:translateX="30" android:translateY="30">
+        <!-- Arrow body (vertical line) -->
         <path
-            android:pathData="M 26,54 A 28,11 0 0,1 82,54"
-            android:strokeWidth="4"
-            android:strokeColor="#00E5FF"
-            android:strokeLineCap="butt" />
-    </group>
-
-    <!-- Planet Body Shadow (Subtle depth border) -->
-    <path
-        android:fillColor="#00838F"
-        android:pathData="M54,54m-16.5,0a16.5,16.5 0,1 1,33 0a16.5,16.5 0,1 1,-33 0" />
-
-    <!-- Planet Body (Main Cyan Sphere) -->
-    <path
-        android:fillColor="#00BCD4"
-        android:pathData="M54,54m-16,0a16,16 0,1 1,32 0a16,16 0,1 1,-32 0" />
-
-    <!-- Planet Highlight (Simple circular reflection) -->
-    <path
-        android:fillColor="#80FFFFFF"
-        android:pathData="M59,45a5,5 0,1,0 0-10 5,5 0 0,0 0,10z" />
-
-    <!-- Front Ring (Bottom Half of Ellipse) -->
-    <!-- Drawn LAST so it appears in front of the planet -->
-    <group android:pivotX="54" android:pivotY="54" android:rotation="-30">
+            android:fillColor="#00BCD4"
+            android:pathData="M22,8 L22,32 L26,32 L26,8 Z" />
+        <!-- Arrow head (triangle pointing down) -->
         <path
-            android:pathData="M 82,54 A 28,11 0 0,1 26,54"
-            android:strokeWidth="4"
-            android:strokeColor="#00E5FF"
-            android:strokeLineCap="butt" />
+            android:fillColor="#00BCD4"
+            android:pathData="M24,28 L14,28 L24,42 L34,28 Z" />
+        <!-- Base line -->
+        <path
+            android:fillColor="#00BCD4"
+            android:pathData="M12,44 L36,44 L36,48 L12,48 Z" />
     </group>
 
 </vector>

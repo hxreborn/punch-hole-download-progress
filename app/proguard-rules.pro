@@ -1,5 +1,5 @@
 # Keep LSPosed module entry point
--keep class eu.hxreborn.phpm.PunchHoleMonitorModule { *; }
+-keep class eu.hxreborn.phdp.PunchHoleDownloadProgressModule { *; }
 
 # Keep all hooker classes and their methods
 -keep @io.github.libxposed.api.annotations.XposedHooker class * { *; }
@@ -24,10 +24,10 @@
 }
 
 # Keep PrefsManager for remote preferences
--keep class eu.hxreborn.phpm.prefs.PrefsManager { *; }
+-keep class eu.hxreborn.phdp.prefs.PrefsManager { *; }
 
 # Keep Xposed detection method
--keep class eu.hxreborn.phpm.ui.MainActivity {
+-keep class eu.hxreborn.phdp.ui.MainActivity {
     public static boolean isXposedEnabled();
 }
 

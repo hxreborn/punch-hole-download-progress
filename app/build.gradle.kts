@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "eu.hxreborn.phpm"
+    namespace = "eu.hxreborn.phdp"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "eu.hxreborn.phpm"
+        applicationId = "eu.hxreborn.phdp"
         minSdk = 31
         targetSdk = 36
         versionCode = 103
@@ -42,7 +42,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
-            isShrinkResources = false
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
