@@ -1,6 +1,6 @@
 # Punch-Hole Progress Monitor
 
-LSPosed module that displays download progress as an animated ring around the camera cutout. Hooks into SystemUI notifications to track downloads from browsers and the system download manager.
+Xposed module that displays download progress as an animated ring around the camera cutout. Hooks into SystemUI notifications to monitor downloads from browsers and the system download manager.
 
 ![Android CI](https://github.com/user/orbit/actions/workflows/android.yml/badge.svg)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.1.21-7F52FF?style=flat&logo=kotlin&logoColor=white)
@@ -12,13 +12,15 @@ LSPosed module that displays download progress as an animated ring around the ca
 
 ## Features
 
-- Progress ring follows cutout shape (punch-hole, pill, or custom paths)
-- Tracks downloads from Chrome, Firefox, Brave, Samsung Browser, and 30+ other browsers
-- Configurable colors, stroke width, opacity, and animation styles
-- Multiple completion effects: shine sweep, pop, pulse, segmented cascade
-- Optional haptic feedback on download completion
+- Ring overlay drawn around the camera cutout using Android's cutout path API
+- Reads standard `android.progress` notification extras (Download Manager, browsers, file managers)
+- Supports 30+ apps including Chrome, Firefox, Brave, Opera, Samsung Browser
+- Multiple concurrent downloads: displays the highest progress percentage
+- Completion effects: snap, hold/fade, pop, pulse, shine sweep, segmented cascade
+- Customization: stroke width, ring gap, opacity, color, fill direction
+- Optional percentage and filename text display
 - Power saver integration (dim or disable during battery saver)
-- Percentage text display with configurable position
+- Optional haptic feedback on completion
 
 ## Requirements
 
