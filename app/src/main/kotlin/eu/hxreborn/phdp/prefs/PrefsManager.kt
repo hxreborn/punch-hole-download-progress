@@ -1,7 +1,7 @@
 package eu.hxreborn.phdp.prefs
 
 import android.content.SharedPreferences
-import eu.hxreborn.phdp.PunchHoleDownloadProgressModule.Companion.log
+import eu.hxreborn.phdp.PunchHoleProgressModule.Companion.log
 
 object PrefsManager {
     const val PREFS_GROUP = "phdp_settings"

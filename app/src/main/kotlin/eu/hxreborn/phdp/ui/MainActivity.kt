@@ -17,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.content.edit
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
-import eu.hxreborn.phdp.PunchHoleDownloadProgressApp
+import eu.hxreborn.phdp.PunchHoleProgressApp
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.ui.state.rememberPrefsState
@@ -49,13 +49,13 @@ class MainActivity :
 
         prefs = getSharedPreferences(PrefsManager.PREFS_GROUP, Context.MODE_PRIVATE)
 
-        PunchHoleDownloadProgressApp.addServiceListener(this)
+        PunchHoleProgressApp.addServiceListener(this)
 
         setContent {
             AppTheme {
                 val prefsState by rememberPrefsState(prefs)
 
-                PunchHoleDownloadProgressContent(
+                PunchHoleProgressContent(
                     prefsState = prefsState,
                     onSavePrefs = ::saveToPrefs,
                     onMenuAction = { action ->
@@ -207,7 +207,7 @@ class MainActivity :
     // Lifecycle cleanup
     override fun onDestroy() {
         super.onDestroy()
-        PunchHoleDownloadProgressApp.removeServiceListener(this)
+        PunchHoleProgressApp.removeServiceListener(this)
     }
 
     // Xposed service callbacks

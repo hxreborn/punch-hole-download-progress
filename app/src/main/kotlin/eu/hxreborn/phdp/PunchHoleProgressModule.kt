@@ -9,9 +9,9 @@ import io.github.libxposed.api.XposedModule
 import io.github.libxposed.api.XposedModuleInterface.ModuleLoadedParam
 import io.github.libxposed.api.XposedModuleInterface.PackageLoadedParam
 
-internal lateinit var module: PunchHoleDownloadProgressModule
+internal lateinit var module: PunchHoleProgressModule
 
-class PunchHoleDownloadProgressModule(
+class PunchHoleProgressModule(
     base: XposedInterface,
     param: ModuleLoadedParam,
 ) : XposedModule(base, param) {

@@ -18,7 +18,7 @@ import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.view.animation.OvershootInterpolator
-import eu.hxreborn.phdp.PunchHoleDownloadProgressModule.Companion.log
+import eu.hxreborn.phdp.PunchHoleProgressModule.Companion.log
 import eu.hxreborn.phdp.hook.SystemUIHook
 import eu.hxreborn.phdp.prefs.PrefsManager
 import kotlin.math.pow

@@ -29,7 +29,7 @@ sealed class MenuAction {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PunchHoleDownloadProgressContent(
+fun PunchHoleProgressContent(
     prefsState: PrefsState,
     onSavePrefs: (key: String, value: Any) -> Unit,
     onMenuAction: (MenuAction) -> Unit,

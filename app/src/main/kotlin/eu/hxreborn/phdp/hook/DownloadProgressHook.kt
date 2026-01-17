@@ -2,7 +2,7 @@ package eu.hxreborn.phdp.hook
 
 import android.app.Notification
 import eu.hxreborn.phdp.BuildConfig
-import eu.hxreborn.phdp.PunchHoleDownloadProgressModule.Companion.log
+import eu.hxreborn.phdp.PunchHoleProgressModule.Companion.log
 import eu.hxreborn.phdp.util.accessibleField
 import io.github.libxposed.api.XposedInterface
 import io.github.libxposed.api.XposedInterface.AfterHookCallback

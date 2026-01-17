@@ -7,7 +7,7 @@ import android.content.IntentFilter
 import android.os.PowerManager
 import android.os.VibrationEffect
 import android.os.Vibrator
-import eu.hxreborn.phdp.PunchHoleDownloadProgressModule.Companion.log
+import eu.hxreborn.phdp.PunchHoleProgressModule.Companion.log
 import eu.hxreborn.phdp.module
 import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.util.accessibleField
