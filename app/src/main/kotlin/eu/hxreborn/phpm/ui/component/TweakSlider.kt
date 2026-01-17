@@ -6,11 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -24,11 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import eu.hxreborn.phpm.R
+import eu.hxreborn.phpm.ui.theme.Tokens
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -48,11 +44,9 @@ fun TweakSlider(
     enabled: Boolean = true,
     description: String = "",
 ) {
-    // Local state for smooth dragging without pref writes on every tick
     var localValue by remember { mutableFloatStateOf(value) }
     var isDragging by remember { mutableStateOf(false) }
 
-    // Sync from external value when not dragging
     if (!isDragging && abs(localValue - value) > 0.001f) {
         localValue = value
     }
@@ -64,15 +58,16 @@ fun TweakSlider(
     var lastHapticTime by remember { mutableStateOf(0L) }
 
     val snappedOnChange: (Float) -> Unit = { newValue ->
-        val snapped = if (stepSize > 0) {
-            (newValue / stepSize).roundToInt() * stepSize
-        } else {
-            newValue
-        }
+        val snapped =
+            if (stepSize > 0) {
+                (newValue / stepSize).roundToInt() * stepSize
+            } else {
+                newValue
+            }
 
         if (hapticInterval > 0 && abs(snapped - lastHapticValue) >= hapticInterval) {
             val now = SystemClock.uptimeMillis()
-            if (now - lastHapticTime >= 50L) {
+            if (now - lastHapticTime >= Tokens.HAPTIC_THROTTLE_MS) {
                 view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
                 lastHapticTime = now
             }
@@ -87,80 +82,82 @@ fun TweakSlider(
         onValueChange(localValue)
     }
 
-    ElevatedCard(
+    Column(
         modifier =
-            modifier
-                .padding(horizontal = 16.dp, vertical = 4.dp)
-                .fillMaxWidth(),
-        colors =
-            CardDefaults.elevatedCardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            modifier.padding(
+                horizontal = Tokens.ListItemHorizontalPadding,
+                vertical = Tokens.ListItemVerticalPadding,
             ),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 0.dp),
     ) {
-        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = title,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.alpha(if (enabled) 1f else 0.5f),
-                    )
-                    if (description.isNotEmpty()) {
-                        Text(
-                            text = description,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.alpha(if (enabled) 0.85f else 0.4f),
-                        )
-                    }
-                }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = if (isDefault) {
+                    text = title,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color =
+                        if (enabled) {
+                            MaterialTheme.colorScheme.onSurface
+                        } else {
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = Tokens.DISABLED_ALPHA)
+                        },
+                )
+                if (description.isNotEmpty()) {
+                    Text(
+                        text = description,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color =
+                            if (enabled) {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = Tokens.DISABLED_ALPHA)
+                            },
+                    )
+                }
+            }
+            Text(
+                text =
+                    if (isDefault) {
                         "${valueLabel(displayValue)} ${stringResource(R.string.default_suffix)}"
                     } else {
                         valueLabel(displayValue)
                     },
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(top = 4.dp),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(top = Tokens.SpacingXs),
+        ) {
+            Slider(
+                value = displayValue,
+                onValueChange = {
+                    isDragging = true
+                    snappedOnChange(it)
+                },
+                onValueChangeFinished = onDragFinished,
+                valueRange = valueRange,
+                steps = steps,
+                enabled = enabled,
+                modifier = Modifier.weight(1f),
+            )
+            IconButton(
+                onClick = onReset,
+                enabled = enabled && !isDefault,
             ) {
-                Slider(
-                    value = displayValue,
-                    onValueChange = {
-                        isDragging = true
-                        snappedOnChange(it)
-                    },
-                    onValueChangeFinished = onDragFinished,
-                    valueRange = valueRange,
-                    steps = steps,
-                    enabled = enabled,
-                    modifier = Modifier.weight(1f),
+                Icon(
+                    imageVector = Icons.Default.Refresh,
+                    contentDescription = stringResource(R.string.reset),
+                    tint =
+                        if (isDefault) {
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = Tokens.DISABLED_ALPHA)
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
                 )
-                IconButton(
-                    onClick = onReset,
-                    enabled = enabled && !isDefault,
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Refresh,
-                        contentDescription = stringResource(R.string.reset),
-                        tint =
-                            if (isDefault) {
-                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
-                            } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant
-                            },
-                    )
-                }
             }
         }
     }

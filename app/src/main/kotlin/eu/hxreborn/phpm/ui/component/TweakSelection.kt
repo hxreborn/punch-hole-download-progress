@@ -9,9 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
@@ -23,13 +20,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import eu.hxreborn.phpm.ui.theme.Tokens
 
 @Composable
 fun TweakSelection(
@@ -64,52 +60,52 @@ fun TweakSelection(
         )
     }
 
-    ElevatedCard(
+    Row(
         modifier =
             modifier
-                .padding(horizontal = 16.dp, vertical = 4.dp)
-                .fillMaxWidth(),
-        colors =
-            CardDefaults.elevatedCardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            ),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 0.dp),
+                .fillMaxWidth()
+                .clickable(enabled = enabled) { showDialog = true }
+                .padding(
+                    horizontal = Tokens.ListItemHorizontalPadding,
+                    vertical = Tokens.ListItemVerticalPadding,
+                ),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .clickable(enabled = enabled) { showDialog = true }
-                    .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.alpha(if (enabled) 1f else 0.5f),
-                )
-                if (description.isNotEmpty()) {
-                    Text(
-                        text = description,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier =
-                            Modifier
-                                .padding(top = 2.dp)
-                                .alpha(if (enabled) 0.85f else 0.4f),
-                    )
-                }
-            }
+        Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = currentEntry,
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.alpha(if (enabled) 1f else 0.5f),
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                color =
+                    if (enabled) {
+                        MaterialTheme.colorScheme.onSurface
+                    } else {
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = Tokens.DISABLED_ALPHA)
+                    },
             )
+            if (description.isNotEmpty()) {
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color =
+                        if (enabled) {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = Tokens.DISABLED_ALPHA)
+                        },
+                    modifier = Modifier.padding(top = Tokens.SpacingXs),
+                )
+            }
         }
+        Text(
+            text = currentEntry,
+            style = MaterialTheme.typography.labelLarge,
+            color =
+                if (enabled) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.primary.copy(alpha = Tokens.DISABLED_ALPHA)
+                },
+        )
     }
 }
 
@@ -127,31 +123,32 @@ private fun SelectionDialog(
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Surface(
-            shape = RoundedCornerShape(28.dp),
+            shape = Tokens.DialogShape,
             color = MaterialTheme.colorScheme.surface,
-            tonalElevation = 6.dp,
+            tonalElevation = Tokens.DialogElevation,
         ) {
-            Column(modifier = Modifier.padding(vertical = 24.dp)) {
+            Column(modifier = Modifier.padding(vertical = Tokens.DialogPadding)) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.headlineSmall,
                     color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(horizontal = 24.dp),
+                    modifier = Modifier.padding(horizontal = Tokens.DialogPadding),
                 )
 
                 if (longPressHint != null) {
                     Text(
                         text = longPressHint,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = Tokens.MEDIUM_EMPHASIS_ALPHA),
                         modifier =
-                            Modifier
-                                .padding(horizontal = 24.dp, vertical = 4.dp)
-                                .alpha(0.8f),
+                            Modifier.padding(
+                                horizontal = Tokens.DialogPadding,
+                                vertical = Tokens.SpacingXs,
+                            ),
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Tokens.DialogTitleSpacing))
 
                 entries.forEachIndexed { index, entry ->
                     val value = values.getOrElse(index) { entry }
@@ -176,7 +173,10 @@ private fun SelectionDialog(
                                 .semantics {
                                     role = Role.RadioButton
                                     selected = isSelected
-                                }.padding(horizontal = 24.dp, vertical = 12.dp),
+                                }.padding(
+                                    horizontal = Tokens.DialogPadding,
+                                    vertical = Tokens.ListItemVerticalPadding,
+                                ),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         RadioButton(
@@ -187,7 +187,7 @@ private fun SelectionDialog(
                             text = entry,
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(start = 16.dp),
+                            modifier = Modifier.padding(start = Tokens.ListItemLeadingSpacing),
                         )
                     }
                 }

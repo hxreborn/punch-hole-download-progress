@@ -7,7 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import eu.hxreborn.phpm.ui.theme.Tokens
 
 @Composable
 fun TweakButton(
@@ -21,8 +21,10 @@ fun TweakButton(
         enabled = enabled,
         modifier =
             modifier
-                .padding(horizontal = 16.dp, vertical = 4.dp)
-                .fillMaxWidth(),
+                .padding(
+                    horizontal = Tokens.ListItemHorizontalPadding,
+                    vertical = Tokens.ListItemVerticalPadding,
+                ).fillMaxWidth(),
     ) {
         Text(
             text = title,

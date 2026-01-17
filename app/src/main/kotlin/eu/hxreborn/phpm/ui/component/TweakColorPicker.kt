@@ -16,11 +16,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -34,13 +31,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import eu.hxreborn.phpm.R
+import eu.hxreborn.phpm.ui.theme.Tokens
 
 private val presetColors =
     listOf(
@@ -80,58 +76,54 @@ fun TweakColorPicker(
         )
     }
 
-    ElevatedCard(
+    Row(
         modifier =
             modifier
-                .padding(horizontal = 16.dp, vertical = 4.dp)
-                .fillMaxWidth(),
-        colors =
-            CardDefaults.elevatedCardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            ),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 0.dp),
+                .fillMaxWidth()
+                .clickable(enabled = enabled) { showDialog = true }
+                .padding(
+                    horizontal = Tokens.ListItemHorizontalPadding,
+                    vertical = Tokens.ListItemVerticalPadding,
+                ),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                color =
+                    if (enabled) {
+                        MaterialTheme.colorScheme.onSurface
+                    } else {
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = Tokens.DISABLED_ALPHA)
+                    },
+            )
+            if (description.isNotEmpty()) {
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color =
+                        if (enabled) {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = Tokens.DISABLED_ALPHA)
+                        },
+                    modifier = Modifier.padding(top = Tokens.SpacingXs),
+                )
+            }
+        }
+        Box(
             modifier =
                 Modifier
-                    .fillMaxWidth()
-                    .clickable(enabled = enabled) { showDialog = true }
-                    .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.alpha(if (enabled) 1f else 0.5f),
-                )
-                if (description.isNotEmpty()) {
-                    Text(
-                        text = description,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier =
-                            Modifier
-                                .padding(top = 2.dp)
-                                .alpha(if (enabled) 0.85f else 0.4f),
-                    )
-                }
-            }
-            Box(
-                modifier =
-                    Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .background(Color(currentColor))
-                        .border(
-                            width = 2.dp,
-                            color = MaterialTheme.colorScheme.outline,
-                            shape = CircleShape,
-                        ),
-            )
-        }
+                    .size(Tokens.ColorPreviewSize)
+                    .clip(CircleShape)
+                    .background(Color(currentColor))
+                    .border(
+                        width = Tokens.ColorBorderWidth,
+                        color = MaterialTheme.colorScheme.outline,
+                        shape = CircleShape,
+                    ),
+        )
     }
 }
 
@@ -145,12 +137,12 @@ private fun ColorPickerDialog(
 
     Dialog(onDismissRequest = onDismiss) {
         Surface(
-            shape = RoundedCornerShape(28.dp),
+            shape = Tokens.DialogShape,
             color = MaterialTheme.colorScheme.surface,
-            tonalElevation = 6.dp,
+            tonalElevation = Tokens.DialogElevation,
         ) {
             Column(
-                modifier = Modifier.padding(24.dp),
+                modifier = Modifier.padding(Tokens.DialogPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
@@ -159,13 +151,13 @@ private fun ColorPickerDialog(
                     color = MaterialTheme.colorScheme.onSurface,
                 )
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(Tokens.DialogTitleSpacing))
 
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(4),
+                    columns = GridCells.Fixed(Tokens.COLOR_GRID_COLUMNS),
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(Tokens.ColorGridSpacing),
+                    verticalArrangement = Arrangement.spacedBy(Tokens.ColorGridSpacing),
                 ) {
                     items(presetColors) { color ->
                         ColorSwatch(
@@ -176,7 +168,7 @@ private fun ColorPickerDialog(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(Tokens.DialogTitleSpacing))
 
                 Text(
                     text = stringResource(R.string.selected),
@@ -184,22 +176,22 @@ private fun ColorPickerDialog(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(Tokens.SpacingSm))
 
                 Box(
                     modifier =
                         Modifier
-                            .size(56.dp)
+                            .size(Tokens.ColorPreviewSizeLarge)
                             .clip(CircleShape)
                             .background(Color(selectedColor))
                             .border(
-                                width = 2.dp,
+                                width = Tokens.ColorBorderWidth,
                                 color = MaterialTheme.colorScheme.outline,
                                 shape = CircleShape,
                             ),
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(Tokens.DialogActionsSpacing))
 
                 Row {
                     TextButton(onClick = onDismiss) {
@@ -224,11 +216,11 @@ private fun ColorSwatch(
     Box(
         modifier =
             Modifier
-                .size(48.dp)
+                .size(Tokens.ColorSwatchSize)
                 .clip(CircleShape)
                 .background(Color(color))
                 .border(
-                    width = if (selected) 3.dp else 1.dp,
+                    width = if (selected) Tokens.ColorBorderWidthSelected else Tokens.ColorBorderWidth,
                     color =
                         if (selected) {
                             MaterialTheme.colorScheme.primary
@@ -249,7 +241,7 @@ private fun ColorSwatch(
                     } else {
                         Color.White
                     },
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(Tokens.ColorCheckIconSize),
             )
         }
     }

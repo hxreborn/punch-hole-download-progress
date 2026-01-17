@@ -5,7 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import eu.hxreborn.phpm.ui.theme.Tokens
 
 @Composable
 fun SectionHeader(
@@ -16,6 +16,11 @@ fun SectionHeader(
         text = title,
         style = MaterialTheme.typography.titleSmall,
         color = MaterialTheme.colorScheme.primary,
-        modifier = modifier.padding(start = 24.dp, top = 16.dp, bottom = 8.dp),
+        modifier =
+            modifier.padding(
+                start = Tokens.SectionHeaderStartPadding,
+                top = Tokens.SpacingLg,
+                bottom = Tokens.SpacingSm,
+            ),
     )
 }

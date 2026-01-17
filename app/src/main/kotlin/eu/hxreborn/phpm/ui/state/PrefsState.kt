@@ -63,32 +63,42 @@ private fun updatePrefsStateForKey(
 ): PrefsState {
     if (key == null) return readPrefsState(prefs)
     return when (key) {
-        PrefsManager.KEY_ENABLED ->
+        PrefsManager.KEY_ENABLED -> {
             current.copy(enabled = prefs.getBoolean(PrefsManager.KEY_ENABLED, PrefsManager.DEFAULT_ENABLED))
-        PrefsManager.KEY_COLOR ->
+        }
+
+        PrefsManager.KEY_COLOR -> {
             current.copy(color = prefs.getInt(PrefsManager.KEY_COLOR, PrefsManager.DEFAULT_COLOR))
-        PrefsManager.KEY_STROKE_WIDTH ->
+        }
+
+        PrefsManager.KEY_STROKE_WIDTH -> {
             current.copy(
                 strokeWidth =
                     prefs
                         .getFloat(PrefsManager.KEY_STROKE_WIDTH, PrefsManager.DEFAULT_STROKE_WIDTH)
                         .coerceIn(PrefsManager.MIN_STROKE_WIDTH, PrefsManager.MAX_STROKE_WIDTH),
             )
-        PrefsManager.KEY_RING_GAP ->
+        }
+
+        PrefsManager.KEY_RING_GAP -> {
             current.copy(
                 ringGap =
                     prefs
                         .getFloat(PrefsManager.KEY_RING_GAP, PrefsManager.DEFAULT_RING_GAP)
                         .coerceIn(PrefsManager.MIN_RING_GAP, PrefsManager.MAX_RING_GAP),
             )
-        PrefsManager.KEY_OPACITY ->
+        }
+
+        PrefsManager.KEY_OPACITY -> {
             current.copy(
                 opacity =
                     prefs
                         .getInt(PrefsManager.KEY_OPACITY, PrefsManager.DEFAULT_OPACITY)
                         .coerceIn(PrefsManager.MIN_OPACITY, PrefsManager.MAX_OPACITY),
             )
-        PrefsManager.KEY_HOOKS_FEEDBACK ->
+        }
+
+        PrefsManager.KEY_HOOKS_FEEDBACK -> {
             current.copy(
                 hooksFeedback =
                     prefs.getBoolean(
@@ -96,9 +106,13 @@ private fun updatePrefsStateForKey(
                         PrefsManager.DEFAULT_HOOKS_FEEDBACK,
                     ),
             )
-        PrefsManager.KEY_CLOCKWISE ->
+        }
+
+        PrefsManager.KEY_CLOCKWISE -> {
             current.copy(clockwise = prefs.getBoolean(PrefsManager.KEY_CLOCKWISE, true))
-        PrefsManager.KEY_PROGRESS_EASING ->
+        }
+
+        PrefsManager.KEY_PROGRESS_EASING -> {
             current.copy(
                 progressEasing =
                     prefs.getString(
@@ -106,9 +120,13 @@ private fun updatePrefsStateForKey(
                         PrefsManager.DEFAULT_PROGRESS_EASING,
                     ) ?: PrefsManager.DEFAULT_PROGRESS_EASING,
             )
-        PrefsManager.KEY_ERROR_COLOR ->
+        }
+
+        PrefsManager.KEY_ERROR_COLOR -> {
             current.copy(errorColor = prefs.getInt(PrefsManager.KEY_ERROR_COLOR, PrefsManager.DEFAULT_ERROR_COLOR))
-        PrefsManager.KEY_POWER_SAVER_MODE ->
+        }
+
+        PrefsManager.KEY_POWER_SAVER_MODE -> {
             current.copy(
                 powerSaverMode =
                     prefs.getString(
@@ -116,7 +134,9 @@ private fun updatePrefsStateForKey(
                         PrefsManager.DEFAULT_POWER_SAVER_MODE,
                     ) ?: PrefsManager.DEFAULT_POWER_SAVER_MODE,
             )
-        PrefsManager.KEY_IDLE_RING_ENABLED ->
+        }
+
+        PrefsManager.KEY_IDLE_RING_ENABLED -> {
             current.copy(
                 idleRingEnabled =
                     prefs.getBoolean(
@@ -124,14 +144,18 @@ private fun updatePrefsStateForKey(
                         PrefsManager.DEFAULT_IDLE_RING_ENABLED,
                     ),
             )
-        PrefsManager.KEY_IDLE_RING_OPACITY ->
+        }
+
+        PrefsManager.KEY_IDLE_RING_OPACITY -> {
             current.copy(
                 idleRingOpacity =
                     prefs
                         .getInt(PrefsManager.KEY_IDLE_RING_OPACITY, PrefsManager.DEFAULT_IDLE_RING_OPACITY)
                         .coerceIn(0, 100),
             )
-        PrefsManager.KEY_SHOW_DOWNLOAD_COUNT ->
+        }
+
+        PrefsManager.KEY_SHOW_DOWNLOAD_COUNT -> {
             current.copy(
                 showDownloadCount =
                     prefs.getBoolean(
@@ -139,7 +163,9 @@ private fun updatePrefsStateForKey(
                         PrefsManager.DEFAULT_SHOW_DOWNLOAD_COUNT,
                     ),
             )
-        PrefsManager.KEY_FINISH_STYLE ->
+        }
+
+        PrefsManager.KEY_FINISH_STYLE -> {
             current.copy(
                 finishStyle =
                     prefs.getString(
@@ -147,21 +173,27 @@ private fun updatePrefsStateForKey(
                         PrefsManager.DEFAULT_FINISH_STYLE,
                     ) ?: PrefsManager.DEFAULT_FINISH_STYLE,
             )
-        PrefsManager.KEY_FINISH_HOLD_MS ->
+        }
+
+        PrefsManager.KEY_FINISH_HOLD_MS -> {
             current.copy(
                 finishHoldMs =
                     prefs
                         .getInt(PrefsManager.KEY_FINISH_HOLD_MS, PrefsManager.DEFAULT_FINISH_HOLD_MS)
                         .coerceIn(PrefsManager.MIN_FINISH_HOLD_MS, PrefsManager.MAX_FINISH_HOLD_MS),
             )
-        PrefsManager.KEY_FINISH_EXIT_MS ->
+        }
+
+        PrefsManager.KEY_FINISH_EXIT_MS -> {
             current.copy(
                 finishExitMs =
                     prefs
                         .getInt(PrefsManager.KEY_FINISH_EXIT_MS, PrefsManager.DEFAULT_FINISH_EXIT_MS)
                         .coerceIn(PrefsManager.MIN_FINISH_EXIT_MS, PrefsManager.MAX_FINISH_EXIT_MS),
             )
-        PrefsManager.KEY_FINISH_INTENSITY ->
+        }
+
+        PrefsManager.KEY_FINISH_INTENSITY -> {
             current.copy(
                 finishIntensity =
                     prefs.getString(
@@ -169,7 +201,9 @@ private fun updatePrefsStateForKey(
                         PrefsManager.DEFAULT_FINISH_INTENSITY,
                     ) ?: PrefsManager.DEFAULT_FINISH_INTENSITY,
             )
-        PrefsManager.KEY_FINISH_USE_FLASH_COLOR ->
+        }
+
+        PrefsManager.KEY_FINISH_USE_FLASH_COLOR -> {
             current.copy(
                 finishUseFlashColor =
                     prefs.getBoolean(
@@ -177,7 +211,9 @@ private fun updatePrefsStateForKey(
                         PrefsManager.DEFAULT_FINISH_USE_FLASH_COLOR,
                     ),
             )
-        PrefsManager.KEY_FINISH_FLASH_COLOR ->
+        }
+
+        PrefsManager.KEY_FINISH_FLASH_COLOR -> {
             current.copy(
                 finishFlashColor =
                     prefs.getInt(
@@ -185,7 +221,9 @@ private fun updatePrefsStateForKey(
                         PrefsManager.DEFAULT_FINISH_FLASH_COLOR,
                     ),
             )
-        PrefsManager.KEY_MIN_VISIBILITY_ENABLED ->
+        }
+
+        PrefsManager.KEY_MIN_VISIBILITY_ENABLED -> {
             current.copy(
                 minVisibilityEnabled =
                     prefs.getBoolean(
@@ -193,14 +231,18 @@ private fun updatePrefsStateForKey(
                         PrefsManager.DEFAULT_MIN_VISIBILITY_ENABLED,
                     ),
             )
-        PrefsManager.KEY_MIN_VISIBILITY_MS ->
+        }
+
+        PrefsManager.KEY_MIN_VISIBILITY_MS -> {
             current.copy(
                 minVisibilityMs =
                     prefs
                         .getInt(PrefsManager.KEY_MIN_VISIBILITY_MS, PrefsManager.DEFAULT_MIN_VISIBILITY_MS)
                         .coerceIn(PrefsManager.MIN_MIN_VISIBILITY_MS, PrefsManager.MAX_MIN_VISIBILITY_MS),
             )
-        PrefsManager.KEY_COMPLETION_PULSE_ENABLED ->
+        }
+
+        PrefsManager.KEY_COMPLETION_PULSE_ENABLED -> {
             current.copy(
                 completionPulseEnabled =
                     prefs.getBoolean(
@@ -208,7 +250,9 @@ private fun updatePrefsStateForKey(
                         PrefsManager.DEFAULT_COMPLETION_PULSE_ENABLED,
                     ),
             )
-        PrefsManager.KEY_PERCENT_TEXT_ENABLED ->
+        }
+
+        PrefsManager.KEY_PERCENT_TEXT_ENABLED -> {
             current.copy(
                 percentTextEnabled =
                     prefs.getBoolean(
@@ -216,7 +260,9 @@ private fun updatePrefsStateForKey(
                         PrefsManager.DEFAULT_PERCENT_TEXT_ENABLED,
                     ),
             )
-        PrefsManager.KEY_PERCENT_TEXT_POSITION ->
+        }
+
+        PrefsManager.KEY_PERCENT_TEXT_POSITION -> {
             current.copy(
                 percentTextPosition =
                     prefs.getString(
@@ -224,7 +270,11 @@ private fun updatePrefsStateForKey(
                         PrefsManager.DEFAULT_PERCENT_TEXT_POSITION,
                     ) ?: PrefsManager.DEFAULT_PERCENT_TEXT_POSITION,
             )
-        else -> readPrefsState(prefs)
+        }
+
+        else -> {
+            readPrefsState(prefs)
+        }
     }
 }
 

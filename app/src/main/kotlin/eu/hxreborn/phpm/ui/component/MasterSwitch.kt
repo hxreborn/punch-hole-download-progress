@@ -19,7 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.dp
+import eu.hxreborn.phpm.ui.theme.Tokens
 
 @Composable
 fun MasterSwitch(
@@ -38,7 +38,7 @@ fun MasterSwitch(
             } else {
                 MaterialTheme.colorScheme.surfaceContainerHighest
             },
-        animationSpec = tween(200),
+        animationSpec = tween(Tokens.ANIMATION_DURATION_MS),
         label = "masterSwitchBackground",
     )
 
@@ -52,21 +52,26 @@ fun MasterSwitch(
     ElevatedCard(
         modifier =
             modifier
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .fillMaxWidth(),
+                .padding(
+                    horizontal = Tokens.ScreenHorizontalPadding,
+                    vertical = Tokens.GroupMarginVertical,
+                ).fillMaxWidth(),
         colors =
             CardDefaults.elevatedCardColors(
                 containerColor = backgroundColor,
             ),
-        shape = RoundedCornerShape(24.dp),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 0.dp),
+        shape = RoundedCornerShape(Tokens.GroupCornerRadius),
+        elevation = CardDefaults.elevatedCardElevation(),
     ) {
         Row(
             modifier =
                 Modifier
                     .fillMaxWidth()
                     .clickable { onCheckedChange(!checked) }
-                    .padding(horizontal = 20.dp, vertical = 16.dp),
+                    .padding(
+                        horizontal = Tokens.SpacingXl,
+                        vertical = Tokens.ListItemHorizontalPadding,
+                    ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             icon?.let {
@@ -74,7 +79,7 @@ fun MasterSwitch(
                     imageVector = it,
                     contentDescription = null,
                     tint = contentColor,
-                    modifier = Modifier.padding(end = 16.dp),
+                    modifier = Modifier.padding(end = Tokens.ListItemLeadingSpacing),
                 )
             }
             Column(modifier = Modifier.weight(1f)) {
@@ -85,8 +90,8 @@ fun MasterSwitch(
                 )
                 Text(
                     text = if (checked) summaryOn else summaryOff,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = contentColor.copy(alpha = 0.85f),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = contentColor.copy(alpha = Tokens.MEDIUM_EMPHASIS_ALPHA),
                 )
             }
             Switch(

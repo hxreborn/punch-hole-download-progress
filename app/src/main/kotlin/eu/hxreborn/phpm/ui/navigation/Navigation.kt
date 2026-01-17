@@ -32,6 +32,7 @@ import eu.hxreborn.phpm.ui.screen.DesignScreen
 import eu.hxreborn.phpm.ui.screen.MotionScreen
 import eu.hxreborn.phpm.ui.screen.SystemScreen
 import eu.hxreborn.phpm.ui.state.PrefsState
+import eu.hxreborn.phpm.ui.theme.Tokens
 
 sealed class Screen(
     val route: String,
@@ -87,10 +88,10 @@ fun MainNavHost(
         navController = navController,
         startDestination = Screen.Design.route,
         modifier = modifier,
-        enterTransition = { fadeIn(tween(200)) },
-        exitTransition = { fadeOut(tween(200)) },
-        popEnterTransition = { fadeIn(tween(200)) },
-        popExitTransition = { fadeOut(tween(200)) },
+        enterTransition = { fadeIn(tween(Tokens.ANIMATION_DURATION_MS)) },
+        exitTransition = { fadeOut(tween(Tokens.ANIMATION_DURATION_MS)) },
+        popEnterTransition = { fadeIn(tween(Tokens.ANIMATION_DURATION_MS)) },
+        popExitTransition = { fadeOut(tween(Tokens.ANIMATION_DURATION_MS)) },
     ) {
         composable(Screen.Design.route) {
             DesignScreen(
@@ -127,7 +128,6 @@ fun BottomNav(
 ) {
     val context = LocalContext.current
 
-    // Get system animation scale (0 = animations disabled)
     val animDuration =
         remember {
             val scale =
@@ -138,7 +138,7 @@ fun BottomNav(
                         1f,
                     )
                 }.getOrDefault(1f)
-            (200 * scale).toInt().coerceAtLeast(0)
+            (Tokens.ANIMATION_DURATION_MS * scale).toInt().coerceAtLeast(0)
         }
 
     NavigationBar(modifier = modifier) {
