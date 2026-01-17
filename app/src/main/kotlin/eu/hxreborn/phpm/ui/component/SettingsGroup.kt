@@ -10,12 +10,29 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import eu.hxreborn.phpm.ui.theme.Tokens
 
-// ColorBlendr style: rows with position-based corners to appear connected
-private val cornerLarge = 24.dp
-private val cornerSmall = 4.dp
+private enum class RowPosition { SINGLE, FIRST, MIDDLE, LAST }
+
+private fun RowPosition.shape(): Shape {
+    val large = 24.dp
+    val small = 4.dp
+    return when (this) {
+        RowPosition.SINGLE -> RoundedCornerShape(large)
+        RowPosition.FIRST -> RoundedCornerShape(large, large, small, small)
+        RowPosition.MIDDLE -> RoundedCornerShape(small)
+        RowPosition.LAST -> RoundedCornerShape(small, small, large, large)
+    }
+}
+
+private fun positionOf(index: Int, count: Int) = when {
+    count == 1 -> RowPosition.SINGLE
+    index == 0 -> RowPosition.FIRST
+    index == count - 1 -> RowPosition.LAST
+    else -> RowPosition.MIDDLE
+}
 
 @Composable
 fun SettingsGroup(
@@ -23,29 +40,18 @@ fun SettingsGroup(
     enabled: Boolean = true,
     content: @Composable SettingsGroupScope.() -> Unit,
 ) {
-    val scope = SettingsGroupScopeImpl()
-    scope.content()
-    val count = scope.items.size
+    val scope = SettingsGroupScopeImpl().apply { content() }
 
     Column(
-        modifier =
-            modifier
-                .padding(
-                    horizontal = Tokens.ScreenHorizontalPadding,
-                    vertical = Tokens.GroupSpacing,
-                ).alpha(if (enabled) 1f else Tokens.DISABLED_ALPHA),
+        modifier = modifier
+            .padding(horizontal = Tokens.ScreenHorizontalPadding, vertical = Tokens.GroupSpacing)
+            .alpha(if (enabled) 1f else Tokens.DISABLED_ALPHA),
         verticalArrangement = Arrangement.spacedBy(Tokens.RowGap),
     ) {
         scope.items.forEachIndexed { index, item ->
-            val shape = when {
-                count == 1 -> RoundedCornerShape(cornerLarge)
-                index == 0 -> RoundedCornerShape(cornerLarge, cornerLarge, cornerSmall, cornerSmall)
-                index == count - 1 -> RoundedCornerShape(cornerSmall, cornerSmall, cornerLarge, cornerLarge)
-                else -> RoundedCornerShape(cornerSmall)
-            }
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                shape = shape,
+                shape = positionOf(index, scope.items.size).shape(),
                 color = MaterialTheme.colorScheme.surfaceContainer,
             ) {
                 item()
@@ -60,8 +66,5 @@ interface SettingsGroupScope {
 
 private class SettingsGroupScopeImpl : SettingsGroupScope {
     val items = mutableListOf<@Composable () -> Unit>()
-
-    override fun item(content: @Composable () -> Unit) {
-        items.add(content)
-    }
+    override fun item(content: @Composable () -> Unit) { items.add(content) }
 }
