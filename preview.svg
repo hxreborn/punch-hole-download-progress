@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="108" height="108" viewBox="0 0 108 108">
+    
+    <!-- Background (Dark Space) from background.xml for context -->
+    <rect width="108" height="108" fill="#1A1A2E" />
+
+    <!-- Back Ring (Top Half) -->
+    <g transform="rotate(-30 54 54)">
+        <path d="M 26,54 A 28,11 0 0,1 82,54" fill="none" stroke="#00E5FF" stroke-width="4" stroke-linecap="butt" />
+    </g>
+
+    <!-- Planet Body Shadow -->
+    <path d="M54,54m-16.5,0a16.5,16.5 0,1 1,33 0a16.5,16.5 0,1 1,-33 0" fill="#00838F" />
+
+    <!-- Planet Body -->
+    <path d="M54,54m-16,0a16,16 0,1 1,32 0a16,16 0,1 1,-32 0" fill="#00BCD4" />
+
+    <!-- Planet Highlight -->
+    <path d="M59,45a5,5 0,1,0 0-10 5,5 0 0,0 0,10z" fill="#ffffff" fill-opacity="0.5" />
+
+    <!-- Front Ring (Bottom Half) -->
+    <g transform="rotate(-30 54 54)">
+        <path d="M 82,54 A 28,11 0 0,1 26,54" fill="none" stroke="#00E5FF" stroke-width="4" stroke-linecap="butt" />
+    </g>
+
+    <!-- Safe Zone Indicator (Red Circle outline, remove in production) -->
+    <!-- <circle cx="54" cy="54" r="33" fill="none" stroke="red" stroke-width="1" opacity="0.5" /> -->
+
+</svg>

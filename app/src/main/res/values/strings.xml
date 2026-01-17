@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Punch-hole Monitor</string>
+    <string name="app_desc">Activity indicator ring around camera cutout</string>
+
+    <!-- Restart SystemUI -->
+    <string name="restart_systemui">Restart SystemUI</string>
+    <string name="restart_systemui_confirm">This will restart SystemUI to apply changes. Continue?</string>
+    <string name="restart">Restart</string>
+    <string name="restarting">Restarting…</string>
+    <string name="restart_success">SystemUI restarted</string>
+    <string name="restart_failed_detail">Failed to restart SystemUI: %1$s</string>
+
+    <!-- Value Formats -->
+    <string name="default_suffix">(Default)</string>
+    <string name="selected">Selected</string>
+    <string name="more_options">More options</string>
+
+    <!-- Tab Titles -->
+    <string name="tab_design">Design</string>
+    <string name="tab_motion">Motion</string>
+    <string name="tab_system">System</string>
+
+    <!-- Group Headers -->
+    <string name="group_colors">Colors</string>
+    <string name="group_geometry">Geometry</string>
+    <string name="group_animation">Animation</string>
+    <string name="group_timing">Timing</string>
+    <string name="group_feedback">Feedback</string>
+    <string name="group_visibility">Visibility</string>
+    <string name="group_power">Power</string>
+    <string name="group_diagnostics">Diagnostics</string>
+
+    <!-- Design Tab - Colors -->
+    <string name="active_progress">Progress Color</string>
+    <string name="active_progress_desc">Color applied to ring during active downloads</string>
+    <string name="on_completion">Success Color</string>
+    <string name="on_completion_desc">Color applied when download completes</string>
+
+    <!-- Design Tab - Geometry -->
+    <string name="ring_thickness">Stroke Width</string>
+    <string name="ring_thickness_desc">Physical thickness of overlay ring in dp</string>
+    <string name="camera_gap">Cutout Padding</string>
+    <string name="camera_gap_desc">Radial distance from display cutout edge</string>
+    <string name="opacity">Opacity</string>
+    <string name="opacity_desc">Visibility level of overlay ring</string>
+
+    <!-- Design Tab - Percentage Text -->
+    <string name="group_percent_text">Percentage Text</string>
+    <string name="percent_text">Show Percentage</string>
+    <string name="percent_text_desc">Display numeric percent near ring</string>
+    <string name="percent_text_position">Text Position</string>
+    <string name="percent_text_position_desc">Placement relative to ring</string>
+    <string name="position_left">Left</string>
+    <string name="position_right">Right</string>
+
+    <!-- Motion Tab - Animation -->
+    <string name="completion_style">Completion Effect</string>
+    <string name="completion_style_desc">Visual style triggered when download completes</string>
+    <string name="long_press_preview_hint">Long-press to preview</string>
+
+    <!-- Motion Tab - Timing -->
+    <string name="completion_hold">Completion Timeout</string>
+    <string name="completion_hold_desc">Duration ring persists after download completes</string>
+    <string name="exit_duration">Fade Duration</string>
+    <string name="exit_duration_desc">Time interval for dismissal animation</string>
+
+    <!-- Motion Tab - Feedback -->
+    <string name="finish_vibration">Haptic Feedback</string>
+    <string name="finish_vibration_desc">System vibration triggered on completion event</string>
+    <string name="completion_pulse">Completion Pulse</string>
+    <string name="completion_pulse_desc">Brief opacity flash on success</string>
+
+    <!-- Motion Tab - Fast Downloads -->
+    <string name="group_fast_downloads">Fast Downloads</string>
+    <string name="min_visibility">Minimum Visibility</string>
+    <string name="min_visibility_desc">Ensure ring shows for fast downloads</string>
+    <string name="min_visibility_duration">Display Duration</string>
+    <string name="min_visibility_duration_desc">Minimum time ring is visible</string>
+
+    <!-- System Tab - Visibility -->
+    <string name="display_item_count">Show Queue Count</string>
+    <string name="display_item_count_desc">Display number of concurrent active tasks</string>
+    <string name="fill_direction">Invert Rotation</string>
+    <string name="fill_direction_desc">Toggle counter-clockwise progression</string>
+    <string name="clockwise">Clockwise</string>
+    <string name="counter_clockwise">Counter-clockwise</string>
+
+    <!-- System Tab - Power -->
+    <string name="battery_saver_mode">Battery Saver</string>
+    <string name="battery_saver_mode_desc">Suspend service during low power states</string>
+
+    <!-- System Tab - Diagnostics -->
+    <string name="test_success">Debug Completion</string>
+    <string name="test_success_desc">Trigger mock completion event for calibration</string>
+    <string name="test_failure">Test Failure</string>
+    <string name="test_failure_desc">Simulate a failed download</string>
+
+    <!-- Master Switch -->
+    <string name="master_enabled">Enable Service</string>
+    <string name="master_enabled_desc">Master switch for download monitor overlay</string>
+    <string name="master_enabled_on">Monitoring downloads</string>
+    <string name="master_enabled_off">Service disabled</string>
+
+    <!-- Color Picker -->
+    <string name="pick_color">Pick Color</string>
+
+    <!-- Reset -->
+    <string name="reset_defaults">Reset to Defaults</string>
+    <string name="reset_confirm">Reset all settings to defaults?</string>
+    <string name="reset_done">Settings reset</string>
+    <string name="reset">Reset</string>
+    <string name="undo">Undo</string>
+
+    <!-- Dialog Arrays - Completion Style -->
+    <string-array name="finish_style_entries">
+        <item>Snap</item>
+        <item>Hold + Fade</item>
+        <item>Pop</item>
+        <item>Pulse</item>
+        <item>Shine Sweep</item>
+        <item>Segmented</item>
+    </string-array>
+    <string-array name="finish_style_values">
+        <item>snap</item>
+        <item>hold_fade</item>
+        <item>pop</item>
+        <item>pulse</item>
+        <item>shine_sweep</item>
+        <item>segmented</item>
+    </string-array>
+
+    <!-- Dialog Arrays - Power Saver -->
+    <string-array name="power_saver_entries">
+        <item>Normal</item>
+        <item>Dim Ring</item>
+        <item>Disable Animations</item>
+    </string-array>
+    <string-array name="power_saver_values">
+        <item>normal</item>
+        <item>dim</item>
+        <item>disable</item>
+    </string-array>
+</resources>
