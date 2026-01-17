@@ -41,7 +41,6 @@ fun SystemScreen(
         item(key = "system_master_header") {
             SectionHeader(title = stringResource(R.string.master_enabled))
         }
-        // TODO: Replace with a prominent toggle design that doesn't break overscroll
         item(key = "system_master_group") {
             SettingsGroup {
                 item {
