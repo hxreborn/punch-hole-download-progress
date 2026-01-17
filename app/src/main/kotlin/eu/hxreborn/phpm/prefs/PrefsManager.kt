@@ -28,6 +28,8 @@ object PrefsManager {
     const val KEY_COMPLETION_PULSE_ENABLED = "completion_pulse_enabled"
     const val KEY_PERCENT_TEXT_ENABLED = "percent_text_enabled"
     const val KEY_PERCENT_TEXT_POSITION = "percent_text_position"
+    const val KEY_FILENAME_TEXT_ENABLED = "filename_text_enabled"
+    const val KEY_FILENAME_TEXT_POSITION = "filename_text_position"
     const val KEY_FINISH_STYLE = "finish_style"
     const val KEY_FINISH_HOLD_MS = "finish_hold_ms"
     const val KEY_FINISH_EXIT_MS = "finish_exit_ms"
@@ -58,6 +60,8 @@ object PrefsManager {
     const val DEFAULT_COMPLETION_PULSE_ENABLED = true
     const val DEFAULT_PERCENT_TEXT_ENABLED = false
     const val DEFAULT_PERCENT_TEXT_POSITION = "right"
+    const val DEFAULT_FILENAME_TEXT_ENABLED = false
+    const val DEFAULT_FILENAME_TEXT_POSITION = "top_right"
     const val DEFAULT_FINISH_STYLE = "shine_sweep"
     const val DEFAULT_FINISH_HOLD_MS = 100
     const val DEFAULT_FINISH_EXIT_MS = 400
@@ -183,6 +187,14 @@ object PrefsManager {
     var percentTextPosition = DEFAULT_PERCENT_TEXT_POSITION
         private set
 
+    @Volatile
+    var filenameTextEnabled = DEFAULT_FILENAME_TEXT_ENABLED
+        private set
+
+    @Volatile
+    var filenameTextPosition = DEFAULT_FILENAME_TEXT_POSITION
+        private set
+
     // Callbacks
     var onPrefsChanged: (() -> Unit)? = null
     var onAppVisibilityChanged: ((Boolean) -> Unit)? = null
@@ -294,6 +306,11 @@ object PrefsManager {
                 percentTextPosition =
                     prefs.getString(KEY_PERCENT_TEXT_POSITION, DEFAULT_PERCENT_TEXT_POSITION)
                         ?: DEFAULT_PERCENT_TEXT_POSITION
+                filenameTextEnabled =
+                    prefs.getBoolean(KEY_FILENAME_TEXT_ENABLED, DEFAULT_FILENAME_TEXT_ENABLED)
+                filenameTextPosition =
+                    prefs.getString(KEY_FILENAME_TEXT_POSITION, DEFAULT_FILENAME_TEXT_POSITION)
+                        ?: DEFAULT_FILENAME_TEXT_POSITION
             }
         }.onFailure { log("refreshCache() failed", it) }
     }

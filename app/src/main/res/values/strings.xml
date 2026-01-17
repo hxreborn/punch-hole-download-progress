@@ -53,6 +53,15 @@
     <string name="percent_text_position_desc">Placement relative to ring</string>
     <string name="position_left">Left</string>
     <string name="position_right">Right</string>
+    <string name="position_top_left">Top Left</string>
+    <string name="position_top_right">Top Right</string>
+
+    <!-- Design Tab - Filename Text -->
+    <string name="group_filename_text">Filename Text</string>
+    <string name="filename_text">Show Filename</string>
+    <string name="filename_text_desc">Display current download filename near ring</string>
+    <string name="filename_text_position">Filename Position</string>
+    <string name="filename_text_position_desc">Placement relative to ring</string>
 
     <!-- Motion Tab - Animation -->
     <string name="completion_style">Completion Effect</string>

@@ -107,6 +107,9 @@ object SystemUIHook {
         DownloadProgressHook.onActiveCountChanged = { count ->
             indicatorView?.let { it.post { it.activeDownloadCount = count } }
         }
+        DownloadProgressHook.onFilenameChanged = { filename ->
+            indicatorView?.let { it.post { it.currentFilename = filename } }
+        }
 
         PrefsManager.onAppVisibilityChanged = { visible ->
             indicatorView?.let { it.post { it.appVisible = visible } }
@@ -189,6 +192,7 @@ object SystemUIHook {
         DownloadProgressHook.onDownloadComplete = null
         DownloadProgressHook.onDownloadCancelled = null
         DownloadProgressHook.onActiveCountChanged = null
+        DownloadProgressHook.onFilenameChanged = null
 
         PrefsManager.onAppVisibilityChanged = null
         PrefsManager.onTestProgressChanged = null

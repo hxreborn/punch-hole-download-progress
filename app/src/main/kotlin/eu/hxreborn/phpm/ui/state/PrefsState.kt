@@ -33,6 +33,8 @@ data class PrefsState(
     val completionPulseEnabled: Boolean = PrefsManager.DEFAULT_COMPLETION_PULSE_ENABLED,
     val percentTextEnabled: Boolean = PrefsManager.DEFAULT_PERCENT_TEXT_ENABLED,
     val percentTextPosition: String = PrefsManager.DEFAULT_PERCENT_TEXT_POSITION,
+    val filenameTextEnabled: Boolean = PrefsManager.DEFAULT_FILENAME_TEXT_ENABLED,
+    val filenameTextPosition: String = PrefsManager.DEFAULT_FILENAME_TEXT_POSITION,
 )
 
 @Composable
@@ -272,6 +274,26 @@ private fun updatePrefsStateForKey(
             )
         }
 
+        PrefsManager.KEY_FILENAME_TEXT_ENABLED -> {
+            current.copy(
+                filenameTextEnabled =
+                    prefs.getBoolean(
+                        PrefsManager.KEY_FILENAME_TEXT_ENABLED,
+                        PrefsManager.DEFAULT_FILENAME_TEXT_ENABLED,
+                    ),
+            )
+        }
+
+        PrefsManager.KEY_FILENAME_TEXT_POSITION -> {
+            current.copy(
+                filenameTextPosition =
+                    prefs.getString(
+                        PrefsManager.KEY_FILENAME_TEXT_POSITION,
+                        PrefsManager.DEFAULT_FILENAME_TEXT_POSITION,
+                    ) ?: PrefsManager.DEFAULT_FILENAME_TEXT_POSITION,
+            )
+        }
+
         else -> {
             readPrefsState(prefs)
         }
@@ -376,4 +398,15 @@ private fun readPrefsState(prefs: SharedPreferences): PrefsState =
                 PrefsManager.DEFAULT_PERCENT_TEXT_POSITION,
             )
                 ?: PrefsManager.DEFAULT_PERCENT_TEXT_POSITION,
+        filenameTextEnabled =
+            prefs.getBoolean(
+                PrefsManager.KEY_FILENAME_TEXT_ENABLED,
+                PrefsManager.DEFAULT_FILENAME_TEXT_ENABLED,
+            ),
+        filenameTextPosition =
+            prefs.getString(
+                PrefsManager.KEY_FILENAME_TEXT_POSITION,
+                PrefsManager.DEFAULT_FILENAME_TEXT_POSITION,
+            )
+                ?: PrefsManager.DEFAULT_FILENAME_TEXT_POSITION,
     )

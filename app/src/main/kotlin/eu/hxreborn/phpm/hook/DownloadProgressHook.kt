@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap
 object DownloadProgressHook {
     private const val EXTRA_PROGRESS = "android.progress"
     private const val EXTRA_PROGRESS_MAX = "android.progressMax"
+    private const val EXTRA_TITLE = "android.title"
 
     // Debug logging - logs everything in debug builds, nothing in release
     private inline fun debug(msg: () -> String) {
@@ -21,7 +22,9 @@ object DownloadProgressHook {
 
     // Cached reflection methods for efficiency
     @Volatile private var getPackageNameMethod: java.lang.reflect.Method? = null
+
     @Volatile private var getNotificationMethod: java.lang.reflect.Method? = null
+
     @Volatile private var getIdMethod: java.lang.reflect.Method? = null
 
     // Browser/downloader packages using standard android.progress/android.progressMax extras
@@ -72,10 +75,14 @@ object DownloadProgressHook {
     // Active downloads: id -> progress (0-100)
     private val activeDownloads = ConcurrentHashMap<String, Int>()
 
+    // Active downloads: id -> filename (for display)
+    private val activeFilenames = ConcurrentHashMap<String, String>()
+
     var onProgressChanged: ((Int) -> Unit)? = null
     var onDownloadComplete: (() -> Unit)? = null
     var onDownloadCancelled: (() -> Unit)? = null
     var onActiveCountChanged: ((Int) -> Unit)? = null
+    var onFilenameChanged: ((String?) -> Unit)? = null
 
     fun processNotification(sbn: Any) {
         val pkg = getPackageName(sbn) ?: return
@@ -89,7 +96,8 @@ object DownloadProgressHook {
 
         val progress = extras.getInt(EXTRA_PROGRESS, -1)
         val max = extras.getInt(EXTRA_PROGRESS_MAX, -1)
-        debug { "Progress: $progress/$max" }
+        val title = extras.getCharSequence(EXTRA_TITLE)?.toString()
+        debug { "Progress: $progress/$max, title: $title" }
 
         if (progress >= 0 && max > 0) {
             val percent = (progress * 100 / max).coerceIn(0, 100)
@@ -98,6 +106,7 @@ object DownloadProgressHook {
 
             if (oldPercent != percent) {
                 activeDownloads[id] = percent
+                title?.let { activeFilenames[id] = it }
                 log("Download $pkg: $percent%")
                 updateProgress()
                 if (wasNew) onActiveCountChanged?.invoke(activeDownloads.size)
@@ -105,17 +114,21 @@ object DownloadProgressHook {
 
             if (percent == 100) {
                 activeDownloads.remove(id)
+                activeFilenames.remove(id)
                 onActiveCountChanged?.invoke(activeDownloads.size)
                 onDownloadComplete?.invoke()
+                updateFilename()
             }
         } else {
             val wasTracking = activeDownloads.remove(id)
+            activeFilenames.remove(id)
             if (wasTracking != null) {
                 log("Download $pkg: complete")
                 onActiveCountChanged?.invoke(activeDownloads.size)
                 onProgressChanged?.invoke(100)
                 onDownloadComplete?.invoke()
                 updateProgress()
+                updateFilename()
             }
         }
     }
@@ -124,27 +137,41 @@ object DownloadProgressHook {
         val maxProgress = activeDownloads.values.maxOrNull() ?: 0
         debug { "Progress: $maxProgress% (${activeDownloads.size} active)" }
         onProgressChanged?.invoke(maxProgress)
+        updateFilename()
     }
 
-    private fun getPackageName(sbn: Any): String? = runCatching {
-        val method = getPackageNameMethod
-            ?: sbn.javaClass.getMethod("getPackageName").also { getPackageNameMethod = it }
-        method.invoke(sbn) as? String
-    }.getOrNull()
+    // Find filename of download with highest progress (leading download)
+    private fun updateFilename() {
+        val leadingId = activeDownloads.maxByOrNull { it.value }?.key
+        val filename = leadingId?.let { activeFilenames[it] }
+        onFilenameChanged?.invoke(filename)
+    }
 
-    private fun getNotification(sbn: Any): Notification? = runCatching {
-        val method = getNotificationMethod
-            ?: sbn.javaClass.getMethod("getNotification").also { getNotificationMethod = it }
-        method.invoke(sbn) as? Notification
-    }.getOrNull()
+    private fun getPackageName(sbn: Any): String? =
+        runCatching {
+            val method =
+                getPackageNameMethod
+                    ?: sbn.javaClass.getMethod("getPackageName").also { getPackageNameMethod = it }
+            method.invoke(sbn) as? String
+        }.getOrNull()
+
+    private fun getNotification(sbn: Any): Notification? =
+        runCatching {
+            val method =
+                getNotificationMethod
+                    ?: sbn.javaClass.getMethod("getNotification").also { getNotificationMethod = it }
+            method.invoke(sbn) as? Notification
+        }.getOrNull()
 
     private fun getNotificationId(sbn: Any): String? {
         val pkg = getPackageName(sbn) ?: return null
-        val id = runCatching {
-            val method = getIdMethod
-                ?: sbn.javaClass.getMethod("getId").also { getIdMethod = it }
-            method.invoke(sbn) as? Int
-        }.getOrNull() ?: return null
+        val id =
+            runCatching {
+                val method =
+                    getIdMethod
+                        ?: sbn.javaClass.getMethod("getId").also { getIdMethod = it }
+                method.invoke(sbn) as? Int
+            }.getOrNull() ?: return null
         return "$pkg:$id"
     }
 
@@ -153,6 +180,7 @@ object DownloadProgressHook {
         debug { "Notification removed: $id" }
 
         val wasTracking = activeDownloads.remove(id)
+        activeFilenames.remove(id)
         if (wasTracking != null) {
             onActiveCountChanged?.invoke(activeDownloads.size)
             if (wasTracking < 100) {
@@ -185,8 +213,11 @@ class NotificationAddHooker : XposedInterface.Hooker {
                     DownloadProgressHook.processNotification(arg)
                 } else if (arg.javaClass.name.contains("NotificationEntry")) {
                     runCatching {
-                        val sbn = arg.javaClass.getDeclaredField("mSbn")
-                            .apply { isAccessible = true }.get(arg)
+                        val sbn =
+                            arg.javaClass
+                                .getDeclaredField("mSbn")
+                                .apply { isAccessible = true }
+                                .get(arg)
                         if (sbn != null) DownloadProgressHook.processNotification(sbn)
                     }
                 }

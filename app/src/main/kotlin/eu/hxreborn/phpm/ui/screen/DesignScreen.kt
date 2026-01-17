@@ -159,5 +159,43 @@ fun DesignScreen(
                 }
             }
         }
+
+        item(key = "design_filename_header") {
+            SectionHeader(title = stringResource(R.string.group_filename_text))
+        }
+
+        item(key = "design_filename_group") {
+            SettingsGroup {
+                item {
+                    TweakSwitch(
+                        title = stringResource(R.string.filename_text),
+                        description = stringResource(R.string.filename_text_desc),
+                        checked = prefsState.filenameTextEnabled,
+                        onCheckedChange = { checked ->
+                            onSavePrefs(PrefsManager.KEY_FILENAME_TEXT_ENABLED, checked)
+                        },
+                    )
+                }
+                item {
+                    TweakSelection(
+                        title = stringResource(R.string.filename_text_position),
+                        description = stringResource(R.string.filename_text_position_desc),
+                        currentValue = prefsState.filenameTextPosition,
+                        entries =
+                            listOf(
+                                stringResource(R.string.position_left),
+                                stringResource(R.string.position_right),
+                                stringResource(R.string.position_top_left),
+                                stringResource(R.string.position_top_right),
+                            ),
+                        values = listOf("left", "right", "top_left", "top_right"),
+                        onValueSelected = { value ->
+                            onSavePrefs(PrefsManager.KEY_FILENAME_TEXT_POSITION, value)
+                        },
+                        enabled = prefsState.filenameTextEnabled,
+                    )
+                }
+            }
+        }
     }
 }

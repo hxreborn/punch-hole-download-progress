@@ -10,6 +10,8 @@ import android.graphics.Path
 import android.graphics.PixelFormat
 import android.graphics.RectF
 import android.graphics.Typeface
+import android.text.TextPaint
+import android.text.TextUtils
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -71,6 +73,16 @@ class IndicatorView(
     // Multi-download count
     @Volatile
     var activeDownloadCount: Int = 0
+        set(value) {
+            if (field != value) {
+                field = value
+                post { invalidate() }
+            }
+        }
+
+    // Current filename (from leading download)
+    @Volatile
+    var currentFilename: String? = null
         set(value) {
             if (field != value) {
                 field = value
@@ -185,6 +197,22 @@ class IndicatorView(
                     resources.displayMetrics,
                 )
         }
+
+    private val filenamePaint =
+        TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+            textAlign = Paint.Align.LEFT
+            typeface = Typeface.DEFAULT
+            textSize =
+                android.util.TypedValue.applyDimension(
+                    android.util.TypedValue.COMPLEX_UNIT_SP,
+                    7f,
+                    resources.displayMetrics,
+                )
+        }
+
+    // Max width for filename text (calculated from screen width)
+    private val maxFilenameWidth: Float
+        get() = resources.displayMetrics.widthPixels * 0.25f
 
     init {
         log("IndicatorView: constructor called")
@@ -874,6 +902,11 @@ class IndicatorView(
             if (PrefsManager.percentTextEnabled && effectiveProgress in 1..99) {
                 drawPercentText(canvas, effectiveProgress)
             }
+
+            // Draw filename text if enabled and during active progress (1-99%)
+            if (PrefsManager.filenameTextEnabled && effectiveProgress in 1..99 && currentFilename != null) {
+                drawFilenameText(canvas)
+            }
         }
 
         canvas.restore()
@@ -965,6 +998,55 @@ class IndicatorView(
         val offsetY = arcBounds.centerY() + percentPaint.textSize / 3
 
         canvas.drawText(text, offsetX, offsetY, percentPaint)
+    }
+
+    private fun drawFilenameText(canvas: Canvas) {
+        val filename = currentFilename ?: return
+
+        filenamePaint.color = PrefsManager.color
+        filenamePaint.alpha = (PrefsManager.opacity * 255 / 100)
+
+        // Truncate filename with ellipsis if too long
+        val truncated =
+            TextUtils
+                .ellipsize(
+                    filename,
+                    filenamePaint,
+                    maxFilenameWidth,
+                    TextUtils.TruncateAt.MIDDLE,
+                ).toString()
+
+        val padding = 8f * density
+
+        // Calculate position based on preference
+        val (offsetX, offsetY) =
+            when (PrefsManager.filenameTextPosition) {
+                "left" -> {
+                    // Left of ring, vertically centered
+                    filenamePaint.textAlign = Paint.Align.RIGHT
+                    Pair(arcBounds.left - padding, arcBounds.centerY() + filenamePaint.textSize / 3)
+                }
+
+                "right" -> {
+                    // Right of ring, vertically centered
+                    filenamePaint.textAlign = Paint.Align.LEFT
+                    Pair(arcBounds.right + padding, arcBounds.centerY() + filenamePaint.textSize / 3)
+                }
+
+                "top_left" -> {
+                    // Above and left of ring
+                    filenamePaint.textAlign = Paint.Align.RIGHT
+                    Pair(arcBounds.left - padding, arcBounds.top - padding)
+                }
+
+                else -> {
+                    // "top_right" - Above and right of ring
+                    filenamePaint.textAlign = Paint.Align.LEFT
+                    Pair(arcBounds.right + padding, arcBounds.top - padding)
+                }
+            }
+
+        canvas.drawText(truncated, offsetX, offsetY, filenamePaint)
     }
 
     private fun blendColors(
