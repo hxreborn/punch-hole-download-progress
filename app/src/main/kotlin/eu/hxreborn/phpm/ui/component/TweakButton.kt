@@ -22,8 +22,8 @@ fun TweakButton(
         modifier =
             modifier
                 .padding(
-                    horizontal = Tokens.ListItemHorizontalPadding,
-                    vertical = Tokens.ListItemVerticalPadding,
+                    horizontal = Tokens.SettingsRowHorizontalPadding,
+                    vertical = Tokens.SettingsRowVerticalPadding,
                 ).fillMaxWidth(),
     ) {
         Text(

@@ -1,10 +1,10 @@
 package eu.hxreborn.phpm.ui.component
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -12,6 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import eu.hxreborn.phpm.ui.theme.Tokens
+
+// ColorBlendr style: rows with position-based corners to appear connected
+private val cornerLarge = 24.dp
+private val cornerSmall = 4.dp
 
 @Composable
 fun SettingsGroup(
@@ -21,28 +25,30 @@ fun SettingsGroup(
 ) {
     val scope = SettingsGroupScopeImpl()
     scope.content()
+    val count = scope.items.size
 
-    Surface(
+    Column(
         modifier =
             modifier
                 .padding(
                     horizontal = Tokens.ScreenHorizontalPadding,
-                    vertical = Tokens.GroupMarginVertical,
-                ).fillMaxWidth()
-                .alpha(if (enabled) 1f else Tokens.DISABLED_ALPHA),
-        shape = RoundedCornerShape(Tokens.GroupCornerRadius),
-        color = MaterialTheme.colorScheme.surfaceContainer,
+                    vertical = Tokens.GroupSpacing,
+                ).alpha(if (enabled) 1f else Tokens.DISABLED_ALPHA),
+        verticalArrangement = Arrangement.spacedBy(Tokens.RowGap),
     ) {
-        Column {
-            scope.items.forEachIndexed { index, item ->
+        scope.items.forEachIndexed { index, item ->
+            val shape = when {
+                count == 1 -> RoundedCornerShape(cornerLarge)
+                index == 0 -> RoundedCornerShape(cornerLarge, cornerLarge, cornerSmall, cornerSmall)
+                index == count - 1 -> RoundedCornerShape(cornerSmall, cornerSmall, cornerLarge, cornerLarge)
+                else -> RoundedCornerShape(cornerSmall)
+            }
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = shape,
+                color = MaterialTheme.colorScheme.surfaceContainer,
+            ) {
                 item()
-                if (index < scope.items.lastIndex) {
-                    HorizontalDivider(
-                        modifier = Modifier.padding(horizontal = Tokens.ListItemHorizontalPadding),
-                        thickness = 0.5.dp,
-                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                    )
-                }
             }
         }
     }

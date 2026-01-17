@@ -85,7 +85,7 @@ fun TweakSlider(
     Column(
         modifier =
             modifier.padding(
-                horizontal = Tokens.ListItemHorizontalPadding,
+                horizontal = Tokens.SettingsRowHorizontalPadding,
                 vertical = Tokens.SettingsRowVerticalPadding,
             ),
     ) {

@@ -54,13 +54,13 @@ fun MasterSwitch(
             modifier
                 .padding(
                     horizontal = Tokens.ScreenHorizontalPadding,
-                    vertical = Tokens.GroupMarginVertical,
+                    vertical = Tokens.GroupSpacing,
                 ).fillMaxWidth(),
         colors =
             CardDefaults.elevatedCardColors(
                 containerColor = backgroundColor,
             ),
-        shape = RoundedCornerShape(Tokens.GroupCornerRadius),
+        shape = RoundedCornerShape(Tokens.RowCornerRadius),
         elevation = CardDefaults.elevatedCardElevation(),
     ) {
         Row(

@@ -70,13 +70,15 @@ object Tokens {
     // M3 list item leading-to-headline spacing = 16dp
     val ListItemLeadingSpacing: Dp = 16.dp
 
-    // App-Specific: Settings Group
-    // Grouped settings container (Android Settings style)
-    val GroupCornerRadius: Dp = 16.dp
-    val GroupMarginVertical: Dp = 6.dp
+    // App-Specific: Settings Layout (ColorBlendr style)
+    // Each row is its own surface with small gap between
+    val GroupSpacing: Dp = 6.dp // vertical margin around groups
+    val RowGap: Dp = 2.dp // gap between individual row surfaces
+    val RowCornerRadius: Dp = 24.dp // corner radius for each row
 
-    // Settings row padding (tighter than default list item)
-    val SettingsRowVerticalPadding: Dp = 8.dp
+    // Settings row padding (matches ColorBlendr: 22dp h, 16dp v)
+    val SettingsRowHorizontalPadding: Dp = 22.dp
+    val SettingsRowVerticalPadding: Dp = 16.dp
 
     // App-Specific: Section Header
     // Indented from screen edge to align with group content
