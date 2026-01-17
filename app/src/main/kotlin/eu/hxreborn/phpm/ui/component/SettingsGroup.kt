@@ -10,6 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.unit.dp
 import eu.hxreborn.phpm.ui.theme.Tokens
 
 @Composable
@@ -38,7 +39,8 @@ fun SettingsGroup(
                 if (index < scope.items.lastIndex) {
                     HorizontalDivider(
                         modifier = Modifier.padding(horizontal = Tokens.ListItemHorizontalPadding),
-                        color = MaterialTheme.colorScheme.outlineVariant,
+                        thickness = 0.5.dp,
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
                     )
                 }
             }

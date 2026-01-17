@@ -83,7 +83,7 @@ fun TweakColorPicker(
                 .clickable(enabled = enabled) { showDialog = true }
                 .padding(
                     horizontal = Tokens.ListItemHorizontalPadding,
-                    vertical = Tokens.ListItemVerticalPadding,
+                    vertical = Tokens.SettingsRowVerticalPadding,
                 ),
         verticalAlignment = Alignment.CenterVertically,
     ) {

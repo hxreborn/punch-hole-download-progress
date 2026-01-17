@@ -72,8 +72,11 @@ object Tokens {
 
     // App-Specific: Settings Group
     // Grouped settings container (Android Settings style)
-    val GroupCornerRadius: Dp = 28.dp
-    val GroupMarginVertical: Dp = 8.dp
+    val GroupCornerRadius: Dp = 16.dp
+    val GroupMarginVertical: Dp = 6.dp
+
+    // Settings row padding (tighter than default list item)
+    val SettingsRowVerticalPadding: Dp = 8.dp
 
     // App-Specific: Section Header
     // Indented from screen edge to align with group content

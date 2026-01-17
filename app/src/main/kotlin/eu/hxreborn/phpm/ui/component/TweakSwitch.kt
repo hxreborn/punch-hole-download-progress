@@ -36,7 +36,7 @@ fun TweakSwitch(
                     .clickable(enabled = enabled) { onCheckedChange(!checked) }
                     .padding(
                         horizontal = Tokens.ListItemHorizontalPadding,
-                        vertical = Tokens.ListItemVerticalPadding,
+                        vertical = Tokens.SettingsRowVerticalPadding,
                     ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
