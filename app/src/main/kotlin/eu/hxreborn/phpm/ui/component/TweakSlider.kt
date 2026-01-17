@@ -118,12 +118,7 @@ fun TweakSlider(
                 }
             }
             Text(
-                text =
-                    if (isDefault) {
-                        "${valueLabel(displayValue)} ${stringResource(R.string.default_suffix)}"
-                    } else {
-                        valueLabel(displayValue)
-                    },
+                text = valueLabel(displayValue),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
             )

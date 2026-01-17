@@ -12,7 +12,6 @@
     <string name="restart_failed_detail">Failed to restart SystemUI: %1$s</string>
 
     <!-- Value Formats -->
-    <string name="default_suffix">(Default)</string>
     <string name="selected">Selected</string>
     <string name="more_options">More options</string>
 

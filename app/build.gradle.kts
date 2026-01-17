@@ -13,7 +13,7 @@ android {
         applicationId = "eu.hxreborn.phpm"
         minSdk = 31
         targetSdk = 36
-        versionCode = 100
+        versionCode = 103
         versionName = "1.0.0"
     }
 

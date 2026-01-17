@@ -3,15 +3,12 @@ package eu.hxreborn.phpm.ui.screen
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Power
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import eu.hxreborn.phpm.R
 import eu.hxreborn.phpm.prefs.PrefsManager
-import eu.hxreborn.phpm.ui.component.MasterSwitch
 import eu.hxreborn.phpm.ui.component.SectionHeader
 import eu.hxreborn.phpm.ui.component.SettingsGroup
 import eu.hxreborn.phpm.ui.component.TweakButton
@@ -41,17 +38,22 @@ fun SystemScreen(
                 bottom = contentPadding.calculateBottomPadding() + Tokens.SpacingLg,
             ),
     ) {
-        item(key = "system_master_switch") {
-            MasterSwitch(
-                title = stringResource(R.string.master_enabled),
-                summaryOn = stringResource(R.string.master_enabled_on),
-                summaryOff = stringResource(R.string.master_enabled_off),
-                checked = prefsState.enabled,
-                onCheckedChange = { checked ->
-                    onSavePrefs(PrefsManager.KEY_ENABLED, checked)
-                },
-                icon = Icons.Default.Power,
-            )
+        item(key = "system_master_header") {
+            SectionHeader(title = stringResource(R.string.master_enabled))
+        }
+        item(key = "system_master_group") {
+            SettingsGroup {
+                item {
+                    TweakSwitch(
+                        title = stringResource(R.string.master_enabled),
+                        description = if (prefsState.enabled) stringResource(R.string.master_enabled_on) else stringResource(R.string.master_enabled_off),
+                        checked = prefsState.enabled,
+                        onCheckedChange = { checked ->
+                            onSavePrefs(PrefsManager.KEY_ENABLED, checked)
+                        },
+                    )
+                }
+            }
         }
 
         item(key = "system_visibility_header") {

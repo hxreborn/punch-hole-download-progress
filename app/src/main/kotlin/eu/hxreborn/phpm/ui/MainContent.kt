@@ -41,7 +41,6 @@ fun PunchHoleMonitorAppContent(
     val navController = rememberNavController()
     val navBackStackEntry = navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry.value?.destination?.route
-    // Overscroll jelly triggers at content bottom or when header fully expanded.
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
