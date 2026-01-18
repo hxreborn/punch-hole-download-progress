@@ -66,13 +66,16 @@ jobs:
             app/build/outputs/apk/release/*.apk
             app/build/outputs/apk/debug/*.apk
 
+      - name: Generate changelog
+        id: changelog
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: .github/cliff.toml
+          args: --latest --strip header
+
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
           prerelease: true
-          generate_release_notes: true
-          body: |
-            **Version:** ${{ steps.version.outputs.name }}
-            **Code:** ${{ steps.version.outputs.code }}
-          files: |
-            app/build/outputs/apk/release/*.apk
+          body: ${{ steps.changelog.outputs.content }}
+          files: app/build/outputs/apk/release/*.apk
