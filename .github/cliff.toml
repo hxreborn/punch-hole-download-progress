@@ -1,48 +1,56 @@
-# git-cliff configuration
+# git-cliff ~ configuration file
 # https://git-cliff.org/docs/configuration
 
+[remote.github]
+owner = "hxreborn"
+repo = "punch-hole-download-progress"
+
 [changelog]
+header = ""
 body = """
-## What's Changed
-{% for group, commits in commits | group_by(attribute="group") %}
-### {{ group | striptags | trim | upper_first }}
-{% for commit in commits %}
-{%- if commit.remote.pr_title -%}
-  {%- set commit_message = commit.remote.pr_title -%}
-{%- else -%}
-  {%- set commit_message = commit.message -%}
-{%- endif -%}
-* {{ commit_message | split(pat="\n") | first | trim }}\
-  {% if commit.remote.username %} by @{{ commit.remote.username }}{%- endif %}\
-  {% if commit.remote.pr_number %} in [#{{ commit.remote.pr_number }}]({{ self::remote_url() }}/pull/{{ commit.remote.pr_number }}){%- else %} ([{{ commit.id | truncate(length=7, end="") }}]({{ self::remote_url() }}/commit/{{ commit.id }})){%- endif %}
-{% endfor %}
-{% endfor -%}
-
-{% if version %}
-{% if previous.version %}
-**Full Changelog**: {{ self::remote_url() }}/compare/{{ previous.version }}...{{ version }}
-{% endif %}
-{% endif %}
-
 {%- macro remote_url() -%}
 https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}
 {%- endmacro -%}
+## What's New
+{%- for group, commits in commits | group_by(attribute="group") %}
+
+### {{ group | upper_first }}
+{%- for commit in commits %}
+- {{ commit.message | split(pat="\n") | first | upper_first | trim }}{% if commit.remote.pr_number %} in [#{{ commit.remote.pr_number }}]({{ self::remote_url() }}/pull/{{ commit.remote.pr_number }}){% else %} ([{{ commit.id | truncate(length=7, end="") }}]({{ self::remote_url() }}/commit/{{ commit.id }})){% endif %} by [@hxreborn]({{ self::remote_url() }})
+{%- endfor %}
+{%- endfor %}
 """
+footer = ""
+# remove the leading and trailing whitespace from the templates
 trim = true
 
 [git]
+# parse the commits based on https://www.conventionalcommits.org
 conventional_commits = true
+# filter out the commits that are not conventional
 filter_unconventional = false
-commit_parsers = [
-  { message = "^feat", group = "Features" },
-  { message = "^fix", group = "Bug Fixes" },
-  { message = "^doc", group = "Documentation" },
-  { message = "^perf", group = "Performance" },
-  { message = "^refactor", group = "Refactoring" },
-  { message = "^style", group = "Styling" },
-  { message = "^test", group = "Testing" },
-  { message = "^chore", skip = true },
-  { message = "^revert", group = "Reverts" },
+# regex for preprocessing the commit messages
+commit_preprocessors = [
+    # remove issue numbers from commits
+    { pattern = '\((\w+\s)?#([0-9]+)\)', replace = "" },
 ]
+# regex for parsing and grouping commits
+commit_parsers = [
+    { message = "^feat", group = "Added" },
+    { message = "^fix", group = "Fixed" },
+    { message = "^doc", group = "Documentation" },
+    { message = "^perf", group = "Performance" },
+    { message = "^refactor", group = "Changed" },
+    { message = "^style", group = "Changed" },
+    { message = "^test", group = "Testing" },
+    { message = "^build", group = "Build" },
+    { message = "^chore", skip = true },
+    { message = "^ci", skip = true },
+    { message = "^revert", group = "Reverted" },
+]
+# filter out the commits that are not matched by commit parsers
 filter_commits = false
-sort_commits = "oldest"
+# sort the tags topologically
+topo_order = false
+# sort the commits inside sections by oldest/newest order
+sort_commits = "newest"
