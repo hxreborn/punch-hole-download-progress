@@ -8,6 +8,7 @@ import io.github.libxposed.api.XposedInterface
 import io.github.libxposed.api.XposedInterface.AfterHookCallback
 import io.github.libxposed.api.annotations.AfterInvocation
 import io.github.libxposed.api.annotations.XposedHooker
+import java.lang.reflect.Method
 import java.util.concurrent.ConcurrentHashMap
 
 object DownloadProgressHook {
@@ -21,11 +22,11 @@ object DownloadProgressHook {
     }
 
     // Cached reflection methods for efficiency
-    @Volatile private var getPackageNameMethod: java.lang.reflect.Method? = null
+    @Volatile private var getPackageNameMethod: Method? = null
 
-    @Volatile private var getNotificationMethod: java.lang.reflect.Method? = null
+    @Volatile private var getNotificationMethod: Method? = null
 
-    @Volatile private var getIdMethod: java.lang.reflect.Method? = null
+    @Volatile private var getIdMethod: Method? = null
 
     // Browser/downloader packages using standard android.progress/android.progressMax extras
     private val SUPPORTED_PACKAGES =
