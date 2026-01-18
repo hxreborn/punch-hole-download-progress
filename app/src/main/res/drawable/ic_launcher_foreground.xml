@@ -1,30 +1,17 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-
-    <!-- Progress ring arc (partial circle to suggest download progress) -->
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <group android:scaleX="0.5377778"
+      android:scaleY="0.5377778"
+      android:translateX="221.86667"
+      android:translateY="221.86667">
     <path
-        android:pathData="M54,20 A34,34 0 1,1 28,68"
-        android:strokeWidth="4"
-        android:strokeColor="#00BCD4"
-        android:strokeLineCap="round" />
-
-    <!-- Material download icon centered at 54,54 -->
-    <!-- Arrow shaft -->
+        android:pathData="M0,0h960v960h-960z"
+        android:fillColor="#0F1218"/>
     <path
-        android:fillColor="#00BCD4"
-        android:pathData="M51,38 L51,62 L57,62 L57,38 Z" />
-
-    <!-- Arrow head (chevron pointing down) -->
-    <path
-        android:fillColor="#00BCD4"
-        android:pathData="M54,72 L42,58 L46,54 L54,63 L62,54 L66,58 Z" />
-
-    <!-- Base tray -->
-    <path
-        android:fillColor="#00BCD4"
-        android:pathData="M38,74 L38,78 L70,78 L70,74 L64,74 L64,74 L38,74 Z" />
-
+        android:pathData="M436.24,884.22q-77.44,-7.05 -143.63,-41.4 -66.2,-34.36 -114.53,-89.32 -48.34,-54.96 -75.82,-125.39 -27.48,-70.44 -27.48,-148.87 0,-157.63 103.42,-273.54 103.41,-115.92 259.04,-131.92v68.37q-127.04,19 -210.69,114.4 -83.64,95.41 -83.64,222.69 0,127.04 83.14,222.33 83.15,95.28 210.19,114.52v68.13ZM480.24,681.91L278.33,480.24l44.91,-44.91L448.8,560.89v-282.8h62.63v282.8l125.81,-125.56 44.91,44.91 -201.91,201.67ZM524.24,884.22v-68.13q45.52,-6 87.66,-23.38 42.14,-17.38 77.9,-46.14l49.98,49.97q-46.71,36.44 -101.41,59.8 -54.7,23.36 -114.13,27.88ZM690.8,212.43q-37.76,-26.76 -79.4,-45.02 -41.64,-18.26 -87.16,-25.26v-68.37q59.43,6.76 113.75,29.62 54.31,22.86 101.79,59.06l-48.98,49.97ZM796.78,734.54 L747.8,686.57q28.53,-36.77 45.29,-78.91 16.76,-42.14 23,-87.66h69.13q-6.76,59.43 -29,114.13 -22.24,54.7 -59.44,100.41ZM815.85,438q-6.24,-45.52 -22.88,-88.16 -16.64,-42.64 -45.17,-78.41l52.74,-46.97q36.2,46.71 57.44,100.91 21.24,54.2 27.24,112.63h-69.37Z"
+        android:fillColor="#D3E3FD"/>
+  </group>
 </vector>
