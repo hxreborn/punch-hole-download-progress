@@ -40,14 +40,17 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "eu.hxreborn.phdp"
+        applicationId = namespace
         minSdk = 31
         targetSdk = 36
         versionCode = project.findProperty("version.code")?.toString()?.toInt()
             ?: (versionMajor * 10000 + gitCommitCount)
         versionName = project.findProperty("version.name")?.toString()
             ?: gitDescribe
-        resourceConfigurations += "en"
+    }
+
+    androidResources {
+        localeFilters += "en"
     }
 
     signingConfigs {
