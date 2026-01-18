@@ -48,3 +48,9 @@ tasks.register<Exec>("buildLibxposedService") {
         "--no-daemon",
     )
 }
+
+tasks.register("buildLibxposed") {
+    group = "libxposed"
+    description = "Builds both libxposed/api and libxposed/service"
+    dependsOn("buildLibxposedApi", "buildLibxposedService")
+}

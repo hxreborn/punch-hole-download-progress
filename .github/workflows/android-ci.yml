@@ -36,8 +36,12 @@ jobs:
           java-version: 21
           cache: gradle
 
-      - name: Publish libxposed to mavenLocal
-        run: ./gradlew buildLibxposedApi
+      - name: Build libxposed to mavenLocal
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: ./gradlew buildLibxposed
 
       - name: Lint check
         run: ./gradlew ktlintCheck
