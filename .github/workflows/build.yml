@@ -1,0 +1,71 @@
+name: Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Decode keystore
+        run: echo "${{ secrets.RELEASE_KEYSTORE }}" | base64 -d > ${{ github.workspace }}/release.keystore
+
+      - name: Calculate version
+        id: version
+        run: |
+          VERSION_NAME=${GITHUB_REF#refs/tags/v}
+          MAJOR=${VERSION_NAME%%.*}
+          COMMITS=$(git rev-list --count HEAD)
+          VERSION_CODE=$((MAJOR * 10000 + COMMITS))
+          echo "name=$VERSION_NAME" >> $GITHUB_OUTPUT
+          echo "code=$VERSION_CODE" >> $GITHUB_OUTPUT
+
+      - name: Build APKs
+        run: |
+          ./gradlew assembleDebug assembleRelease \
+            -Pversion.name=${{ steps.version.outputs.name }} \
+            -Pversion.code=${{ steps.version.outputs.code }}
+        env:
+          RELEASE_STORE_FILE: ${{ github.workspace }}/release.keystore
+          RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: phdp-v${{ steps.version.outputs.name }}
+          path: |
+            app/build/outputs/apk/release/*.apk
+            app/build/outputs/apk/debug/*.apk
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          prerelease: true
+          generate_release_notes: true
+          body: |
+            **Version:** ${{ steps.version.outputs.name }}
+            **Code:** ${{ steps.version.outputs.code }}
+          files: |
+            app/build/outputs/apk/release/*.apk

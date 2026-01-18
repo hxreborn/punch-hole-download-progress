@@ -2,7 +2,7 @@
 
 Xposed module that displays download progress as an animated ring around the camera cutout. Hooks into SystemUI notifications to monitor downloads from browsers and the system download manager.
 
-![Android CI](https://github.com/user/orbit/actions/workflows/android.yml/badge.svg)
+![Android CI](https://github.com/hxreborn/punch-hole-download-progress/actions/workflows/android-ci.yml/badge.svg)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.1.21-7F52FF?style=flat&logo=kotlin&logoColor=white)
 ![Android](https://img.shields.io/badge/API-31%2B-3DDC84?logo=android&logoColor=white)
 
@@ -38,8 +38,8 @@ Xposed module that displays download progress as an animated ring around the cam
 ## Build
 
 ```bash
-git clone --recurse-submodules https://github.com/user/orbit.git
-cd orbit
+git clone --recurse-submodules https://github.com/hxreborn/punch-hole-download-progress.git
+cd punch-hole-download-progress
 ./gradlew buildLibxposedApi
 ./gradlew assembleRelease
 ```

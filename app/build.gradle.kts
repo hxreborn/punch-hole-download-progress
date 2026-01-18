@@ -1,8 +1,44 @@
+import java.io.ByteArrayOutputStream
+
 plugins {
     alias(libs.plugins.agp.app)
     alias(libs.plugins.kotlin)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ktlint)
+}
+
+val gitCommitCount: Int by lazy {
+    ByteArrayOutputStream()
+        .also { stdout ->
+            exec {
+                commandLine("git", "rev-list", "--count", "HEAD")
+                standardOutput = stdout
+            }
+        }.toString()
+        .trim()
+        .toIntOrNull() ?: 0
+}
+
+val gitDescribe: String by lazy {
+    ByteArrayOutputStream()
+        .also { stdout ->
+            exec {
+                commandLine("git", "describe", "--tags", "--always")
+                standardOutput = stdout
+            }
+        }.toString()
+        .trim()
+        .removePrefix("v")
+}
+
+val semverRegex = Regex("""^\d+\.\d+\.\d+.*""")
+
+val gitVersionName: String by lazy {
+    if (semverRegex.matches(gitDescribe)) gitDescribe else "0.0.0-dev"
+}
+
+val versionMajor: Int by lazy {
+    gitVersionName.substringBefore(".").toIntOrNull() ?: 0
 }
 
 android {
@@ -13,8 +49,10 @@ android {
         applicationId = "eu.hxreborn.phdp"
         minSdk = 31
         targetSdk = 36
-        versionCode = 103
-        versionName = "1.0.0"
+        versionCode = project.findProperty("version.code")?.toString()?.toInt()
+            ?: (versionMajor * 10000 + gitCommitCount)
+        versionName = project.findProperty("version.name")?.toString()
+            ?: gitVersionName
         resourceConfigurations += "en"
     }
 
@@ -84,6 +122,14 @@ android {
         checkReleaseBuilds = false
         disable.addAll(listOf("PrivateApi", "DiscouragedPrivateApi"))
         ignoreTestSources = true
+    }
+}
+
+android.applicationVariants.all {
+    outputs.forEach { output ->
+        if (output is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
+            output.outputFileName = "phdp-v$versionName-$name.apk"
+        }
     }
 }
 
