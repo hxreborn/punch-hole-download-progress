@@ -1,44 +1,53 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION=${1:-}
+VERSION_INPUT=${1:-}
 
-if [[ -z "$VERSION" ]]; then
-  echo "Usage: ./scripts/release.sh <version>"
-  echo "Example: ./scripts/release.sh 1.0.0-alpha5"
-  exit 1
+if [[ -z "$VERSION_INPUT" ]]; then
+	echo "Usage: ./scripts/release.sh <version>"
+	echo "Example: ./scripts/release.sh 1.0.0-alpha5"
+	echo "Example: ./scripts/release.sh v1.0.0-alpha5"
+	exit 1
+fi
+
+if [[ "$VERSION_INPUT" == vv* ]]; then
+	echo "Error: invalid version '$VERSION_INPUT'"
+	echo "Example: ./scripts/release.sh v1.2.3"
+	exit 1
+fi
+
+VERSION="${VERSION_INPUT#v}"
+
+SEMVER_RE='^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$'
+if [[ ! "$VERSION" =~ $SEMVER_RE ]]; then
+	echo "Error: invalid version '$VERSION_INPUT'"
+	echo "Example: ./scripts/release.sh 1.2.3"
+	exit 1
 fi
 
 TAG="v$VERSION"
 
-# Ensure clean working tree
 if [[ -n "$(git status --porcelain)" ]]; then
-  echo "Error: working tree not clean"
-  exit 1
+	echo "Error: working tree not clean"
+	exit 1
 fi
 
-# Ensure on main
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 if [[ "$BRANCH" != "main" ]]; then
-  echo "Error: not on main branch (currently on $BRANCH)"
-  exit 1
+	echo "Error: not on main branch (currently on $BRANCH)"
+	exit 1
 fi
 
-# Pull latest
 git pull --ff-only
 
-# Update CHANGELOG.md with the new tag
 echo "Updating CHANGELOG.md for $TAG..."
 git cliff --config .github/cliff.toml --tag "$TAG" -o CHANGELOG.md
 
-# Commit changelog
 git add CHANGELOG.md
 git commit -m "docs(changelog): update for $TAG"
 
-# Create and push tag
 git tag -a "$TAG" -m "Release $TAG"
 
-# Push commit and tag
 git push origin main
 git push origin "$TAG"
 
