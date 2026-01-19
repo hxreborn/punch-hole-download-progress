@@ -1,5 +1,6 @@
 package eu.hxreborn.phdp.ui.component.preference
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -37,8 +38,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
 import eu.hxreborn.phdp.R
+import eu.hxreborn.phdp.prefs.PrefsManager
+import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.Tokens
 
 private val presetColors =
@@ -239,5 +243,31 @@ private fun ColorSwatch(
                 modifier = Modifier.size(Tokens.ColorCheckIconSize),
             )
         }
+    }
+}
+
+@Preview(name = "Light")
+@Composable
+private fun ColorPreferencePreview() {
+    AppTheme {
+        ColorPreference(
+            value = PrefsManager.DEFAULT_COLOR,
+            onValueChange = {},
+            title = { Text(stringResource(R.string.pref_progress_color_title)) },
+            summary = { Text(stringResource(R.string.pref_progress_color_summary)) },
+        )
+    }
+}
+
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun ColorPreferenceDarkPreview() {
+    AppTheme(darkTheme = true) {
+        ColorPreference(
+            value = PrefsManager.DEFAULT_COLOR,
+            onValueChange = {},
+            title = { Text(stringResource(R.string.pref_progress_color_title)) },
+            summary = { Text(stringResource(R.string.pref_progress_color_summary)) },
+        )
     }
 }

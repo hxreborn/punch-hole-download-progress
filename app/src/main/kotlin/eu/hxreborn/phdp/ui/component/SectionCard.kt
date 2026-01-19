@@ -7,11 +7,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.Tokens
 
 private enum class RowPosition { SINGLE, FIRST, MIDDLE, LAST }
@@ -59,5 +62,19 @@ fun SectionCard(
                 item()
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun SectionCardPreview() {
+    AppTheme {
+        SectionCard(
+            items =
+                listOf(
+                    { Text("First item", Modifier.padding(Tokens.PreferencePadding)) },
+                    { Text("Second item", Modifier.padding(Tokens.PreferencePadding)) },
+                ),
+        )
     }
 }

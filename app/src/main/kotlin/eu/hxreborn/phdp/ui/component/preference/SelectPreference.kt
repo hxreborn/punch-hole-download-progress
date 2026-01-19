@@ -26,6 +26,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.tooling.preview.Preview
+import eu.hxreborn.phdp.R
+import eu.hxreborn.phdp.prefs.PrefsManager
+import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.Tokens
 
 @Composable
@@ -138,4 +142,19 @@ private fun <T> SelectDialog(
             }
         },
     )
+}
+
+@Preview
+@Composable
+private fun SelectPreferencePreview() {
+    AppTheme {
+        SelectPreference(
+            value = PrefsManager.DEFAULT_PERCENT_TEXT_POSITION,
+            onValueChange = {},
+            values = listOf("left", "right"),
+            title = { Text(stringResource(R.string.pref_text_position_title)) },
+            summary = { Text(stringResource(R.string.pref_text_position_summary)) },
+            valueToText = { it.replaceFirstChar { c -> c.uppercase() } },
+        )
+    }
 }

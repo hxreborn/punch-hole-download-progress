@@ -15,10 +15,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import eu.hxreborn.phdp.R
+import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.Tokens
 
 @Composable
@@ -70,6 +75,32 @@ fun TogglePreferenceWithIcon(
                     modifier = Modifier.size(SwitchDefaults.IconSize),
                 )
             },
+        )
+    }
+}
+
+@Preview(name = "Checked")
+@Composable
+private fun TogglePreferenceCheckedPreview() {
+    AppTheme {
+        TogglePreferenceWithIcon(
+            value = true,
+            onValueChange = {},
+            title = { Text(stringResource(R.string.pref_show_percentage_title)) },
+            summary = { Text(stringResource(R.string.pref_show_percentage_summary)) },
+        )
+    }
+}
+
+@Preview(name = "Unchecked")
+@Composable
+private fun TogglePreferenceUncheckedPreview() {
+    AppTheme {
+        TogglePreferenceWithIcon(
+            value = false,
+            onValueChange = {},
+            title = { Text(stringResource(R.string.pref_show_percentage_title)) },
+            summary = { Text(stringResource(R.string.pref_show_percentage_summary)) },
         )
     }
 }

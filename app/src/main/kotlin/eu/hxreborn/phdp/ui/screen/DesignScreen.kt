@@ -1,5 +1,6 @@
 package eu.hxreborn.phdp.ui.screen
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -201,10 +202,10 @@ private fun positionLabelPlain(position: String): String =
         else -> position
     }
 
-@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun DesignScreenPreview() {
-    AppTheme {
+    AppTheme(darkTheme = true) {
         DesignScreen(
             prefsState = PrefsState(),
             onSavePrefs = { _, _ -> },

@@ -8,10 +8,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import eu.hxreborn.phdp.R
+import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.Tokens
 
 @Composable
@@ -50,5 +55,17 @@ fun ActionPreference(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun ActionPreferencePreview() {
+    AppTheme {
+        ActionPreference(
+            onClick = {},
+            title = { Text(stringResource(R.string.pref_debug_completion_title)) },
+            summary = { Text(stringResource(R.string.pref_debug_completion_summary)) },
+        )
     }
 }

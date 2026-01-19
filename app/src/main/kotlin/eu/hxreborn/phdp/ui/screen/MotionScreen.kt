@@ -1,5 +1,6 @@
 package eu.hxreborn.phdp.ui.screen
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -176,10 +177,10 @@ private fun finishStyleLabel(
     return if (index >= 0) entries.getOrNull(index) else null
 }
 
-@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun MotionScreenPreview() {
-    AppTheme {
+    AppTheme(darkTheme = true) {
         MotionScreen(
             prefsState = PrefsState(),
             onSavePrefs = { _, _ -> },
