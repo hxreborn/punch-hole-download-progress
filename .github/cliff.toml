@@ -70,18 +70,25 @@ commit_preprocessors = [
     { pattern = '\((\w+\s)?#([0-9]+)\)', replace = "" },
 ]
 commit_parsers = [
-  { message = "^feat", group = "<!-- 00 -->Features" },
-  { message = "^[fF]ix", group = "<!-- 01 -->Bug Fixes" },
-  { message = "^refactor|^style", group = "<!-- 02 -->Refactor" },
-  { message = "^doc", group = "<!-- 03 -->Documentation" },
-  { message = "^perf", group = "<!-- 04 -->Performance Improvements" },
-  { message = "^test", group = "<!-- 05 -->Testing" },
-  { message = "^chore\\(release\\)|^chore\\(deps\\)|^chore\\(changelog\\)", skip = true },
-  { message = "^[cC]hore", group = "<!-- 06 -->Miscellaneous" },
-  { message = "^build", group = "<!-- 07 -->Build" },
-  { body = ".*[Ss]ecurity", group = "<!-- 08 -->Security" },
+  { message = "^feat", group = "<!-- 00 -->Added" },
+  { message = "^[fF]ix", group = "<!-- 01 -->Fixed" },
+  { message = "^perf", group = "<!-- 02 -->Performance Improvements" },
+  { body = ".*[Ss]ecurity", group = "<!-- 03 -->Security" },
+  { message = "^refactor", group = "<!-- 04 -->Changed" },
+  { message = "^revert", group = "<!-- 05 -->Reverted" },
+  # Skip dev-only
+  { message = "^doc", skip = true },
+  { message = "^test", skip = true },
+  { message = "^build", skip = true },
   { message = "^ci", skip = true },
-  { message = "^revert", group = "<!-- 09 -->Reverted" },
+  { message = "^style", skip = true },
+  # Skip low-context chore commits
+  { message = "^chore:.*[Cc]leanup|^misc:.*[Cc]leanup", skip = true },
+  { message = "^chore:.*[Ii]mprovement", skip = true },
+  { message = "^chore:.*[Dd]ependenc", skip = true },
+  { message = "^chore\\(release\\)|^chore\\(deps\\)|^chore\\(changelog\\)", skip = true },
+  # Catch-all
+  { message = ".*", group = "<!-- 99 -->Other" },
 ]
 filter_commits = false
 tag_pattern = "v[0-9]*"
