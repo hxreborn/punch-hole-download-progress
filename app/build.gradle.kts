@@ -143,6 +143,7 @@ ktlint {
 dependencies {
     compileOnly(libs.libxposed.api)
     implementation(libs.libxposed.service)
+    implementation(libs.libsu.core)
     implementation(libs.lifecycle.runtime)
     implementation(libs.core.ktx)
 

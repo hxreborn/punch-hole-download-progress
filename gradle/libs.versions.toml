@@ -3,6 +3,7 @@ agp = "8.13.1"
 kotlin = "2.1.21"
 ktlint = "14.0.1"
 xposed = "100"
+libsu = "6.0.0"
 lifecycle = "2.8.7"
 core-ktx = "1.17.0"
 compose-bom = "2025.01.01"
@@ -11,6 +12,7 @@ navigation-compose = "2.8.5"
 
 [libraries]
 libxposed-api = { group = "io.github.libxposed", name = "api", version.ref = "xposed" }
+libsu-core = { group = "com.github.topjohnwu.libsu", name = "core", version.ref = "libsu" }
 libxposed-service = { group = "io.github.libxposed", name = "service", version = "100-1.0.0" }
 lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
