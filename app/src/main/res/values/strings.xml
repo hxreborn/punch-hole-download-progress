@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Punch-hole Download Progress</string>
+    <string name="app_tagline">Download progress</string>
     <string name="app_desc">Activity indicator ring around camera cutout</string>
 
     <!-- Restart SystemUI -->
