@@ -4,6 +4,18 @@
 
 ### Added
 
+- [`35f9e9f`](https://github.com/hxreborn/punch-hole-download-progress/commit/35f9e9f01e8aa290fdd14df86fe7f9a16102ca9d) *(ui)* Add @Preview annotations to components
+
+  > Add previews to preference components (ColorPreference, TogglePreferenceWithIcon,
+  > SliderPreferenceWithReset, SelectPreference, ActionPreference) and SectionCard.
+  > Update screen previews to dark mode.
+
+
+## What's Changed
+
+
+### Added
+
 - [`d3b1a55`](https://github.com/hxreborn/punch-hole-download-progress/commit/d3b1a55db6d9c3eb45d7ba596c81bebae850dc46) *(ui)* Add collapsed-only overflow menu in TopAppBar by @hxreborn
 
 - [`298046d`](https://github.com/hxreborn/punch-hole-download-progress/commit/298046d2cf1ab84831e0e144d20c18154b0a4155) *(ui)* Add two-line title with tagline by @hxreborn
