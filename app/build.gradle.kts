@@ -158,3 +158,7 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.compose.preference)
 }
+
+tasks.named("preBuild").configure {
+    dependsOn("ktlintCheck")
+}
