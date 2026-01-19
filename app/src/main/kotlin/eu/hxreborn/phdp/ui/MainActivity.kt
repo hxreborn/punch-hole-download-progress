@@ -15,7 +15,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.edit
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import eu.hxreborn.phdp.PunchHoleProgressApp
 import eu.hxreborn.phdp.R
@@ -37,8 +36,6 @@ class MainActivity :
 
     private var xposedService: XposedService? = null
     private var remotePrefs: SharedPreferences? = null
-
-    val serviceState = MutableLiveData<XposedService?>()
 
     private var showRestartDialog by mutableStateOf(false)
     private var showResetDialog by mutableStateOf(false)
@@ -157,23 +154,8 @@ class MainActivity :
     }
 
     private fun resetToDefaults() {
-        val defaults =
-            mapOf(
-                PrefsManager.KEY_COLOR to PrefsManager.DEFAULT_COLOR,
-                PrefsManager.KEY_STROKE_WIDTH to PrefsManager.DEFAULT_STROKE_WIDTH,
-                PrefsManager.KEY_RING_GAP to PrefsManager.DEFAULT_RING_GAP,
-                PrefsManager.KEY_OPACITY to PrefsManager.DEFAULT_OPACITY,
-                PrefsManager.KEY_HOOKS_FEEDBACK to PrefsManager.DEFAULT_HOOKS_FEEDBACK,
-                PrefsManager.KEY_CLOCKWISE to true,
-                PrefsManager.KEY_FINISH_STYLE to PrefsManager.DEFAULT_FINISH_STYLE,
-                PrefsManager.KEY_FINISH_HOLD_MS to PrefsManager.DEFAULT_FINISH_HOLD_MS,
-                PrefsManager.KEY_FINISH_EXIT_MS to PrefsManager.DEFAULT_FINISH_EXIT_MS,
-                PrefsManager.KEY_FINISH_FLASH_COLOR to PrefsManager.DEFAULT_FINISH_FLASH_COLOR,
-                PrefsManager.KEY_SHOW_DOWNLOAD_COUNT to PrefsManager.DEFAULT_SHOW_DOWNLOAD_COUNT,
-                PrefsManager.KEY_POWER_SAVER_MODE to PrefsManager.DEFAULT_POWER_SAVER_MODE,
-            )
-        prefs.edit { defaults.forEach { (k, v) -> putAny(k, v) } }
-        remotePrefs?.edit(commit = true) { defaults.forEach { (k, v) -> putAny(k, v) } }
+        prefs.edit { PrefsManager.DEFAULTS.forEach { (k, v) -> putAny(k, v) } }
+        remotePrefs?.edit(commit = true) { PrefsManager.DEFAULTS.forEach { (k, v) -> putAny(k, v) } }
         Toast.makeText(this, R.string.reset_done, Toast.LENGTH_SHORT).show()
     }
 
@@ -187,22 +169,15 @@ class MainActivity :
     override fun onServiceBind(service: XposedService) {
         xposedService = service
         remotePrefs = service.getRemotePreferences(PrefsManager.PREFS_GROUP)
-        runOnUiThread {
-            serviceState.value = service
-        }
     }
 
     override fun onServiceDied(service: XposedService) {
         xposedService = null
         remotePrefs = null
-        runOnUiThread {
-            serviceState.value = null
-        }
     }
 
     override fun onResume() {
         super.onResume()
-        serviceState.value = xposedService
         remotePrefs?.edit(commit = true) { putBoolean(PrefsManager.KEY_APP_VISIBLE, true) }
     }
 

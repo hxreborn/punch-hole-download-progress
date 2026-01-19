@@ -82,41 +82,12 @@ fun rememberPrefsState(prefs: SharedPreferences): MutableState<PrefsState> {
     return state
 }
 
+@Suppress("UNUSED_PARAMETER")
 private fun updatePrefsStateForKey(
     current: PrefsState,
     prefs: SharedPreferences,
     key: String?,
-): PrefsState {
-    if (key == null) return readPrefsState(prefs)
-    return when (key) {
-        PrefsManager.KEY_ENABLED -> current.copy(enabled = prefs.readEnabled())
-        PrefsManager.KEY_COLOR -> current.copy(color = prefs.readColor())
-        PrefsManager.KEY_STROKE_WIDTH -> current.copy(strokeWidth = prefs.readStrokeWidth())
-        PrefsManager.KEY_RING_GAP -> current.copy(ringGap = prefs.readRingGap())
-        PrefsManager.KEY_OPACITY -> current.copy(opacity = prefs.readOpacity())
-        PrefsManager.KEY_HOOKS_FEEDBACK -> current.copy(hooksFeedback = prefs.readHooksFeedback())
-        PrefsManager.KEY_CLOCKWISE -> current.copy(clockwise = prefs.readClockwise())
-        PrefsManager.KEY_PROGRESS_EASING -> current.copy(progressEasing = prefs.readProgressEasing())
-        PrefsManager.KEY_ERROR_COLOR -> current.copy(errorColor = prefs.readErrorColor())
-        PrefsManager.KEY_POWER_SAVER_MODE -> current.copy(powerSaverMode = prefs.readPowerSaverMode())
-        PrefsManager.KEY_IDLE_RING_ENABLED -> current.copy(idleRingEnabled = prefs.readIdleRingEnabled())
-        PrefsManager.KEY_IDLE_RING_OPACITY -> current.copy(idleRingOpacity = prefs.readIdleRingOpacity())
-        PrefsManager.KEY_SHOW_DOWNLOAD_COUNT -> current.copy(showDownloadCount = prefs.readShowDownloadCount())
-        PrefsManager.KEY_FINISH_STYLE -> current.copy(finishStyle = prefs.readFinishStyle())
-        PrefsManager.KEY_FINISH_HOLD_MS -> current.copy(finishHoldMs = prefs.readFinishHoldMs())
-        PrefsManager.KEY_FINISH_EXIT_MS -> current.copy(finishExitMs = prefs.readFinishExitMs())
-        PrefsManager.KEY_FINISH_USE_FLASH_COLOR -> current.copy(finishUseFlashColor = prefs.readFinishUseFlashColor())
-        PrefsManager.KEY_FINISH_FLASH_COLOR -> current.copy(finishFlashColor = prefs.readFinishFlashColor())
-        PrefsManager.KEY_MIN_VISIBILITY_ENABLED -> current.copy(minVisibilityEnabled = prefs.readMinVisibilityEnabled())
-        PrefsManager.KEY_MIN_VISIBILITY_MS -> current.copy(minVisibilityMs = prefs.readMinVisibilityMs())
-        PrefsManager.KEY_COMPLETION_PULSE_ENABLED -> current.copy(completionPulseEnabled = prefs.readCompletionPulseEnabled())
-        PrefsManager.KEY_PERCENT_TEXT_ENABLED -> current.copy(percentTextEnabled = prefs.readPercentTextEnabled())
-        PrefsManager.KEY_PERCENT_TEXT_POSITION -> current.copy(percentTextPosition = prefs.readPercentTextPosition())
-        PrefsManager.KEY_FILENAME_TEXT_ENABLED -> current.copy(filenameTextEnabled = prefs.readFilenameTextEnabled())
-        PrefsManager.KEY_FILENAME_TEXT_POSITION -> current.copy(filenameTextPosition = prefs.readFilenameTextPosition())
-        else -> readPrefsState(prefs)
-    }
-}
+): PrefsState = readPrefsState(prefs)
 
 private fun readPrefsState(prefs: SharedPreferences): PrefsState =
     PrefsState(
