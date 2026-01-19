@@ -56,20 +56,23 @@ class IndicatorView(
     private var isPreviewAnimating = false
     private var previewProgress = 0
     private var previewDebounceRunnable: Runnable? = null
-    private val previewDebounceMs = 300L // prevents animation spam when dragging sliders
+
+    // Debounce preview to avoid restart spam during slider drag
+    private val previewDebounceMs = 300L
 
     // Geometry preview state
     private var geometryPreviewRunnable: Runnable? = null
     private var isGeometryPreviewActive = false
-    private val geometryPreviewDurationMs = 3000L // enough time to see geometry changes before ring hides
 
-    // Minimum visibility window for fast downloads
+    // Hold preview long enough to judge geometry changes
+    private val geometryPreviewDurationMs = 3000L
+
+    // Keep ring visible long enough to notice short downloads
     private var downloadStartTime = 0L
     private var pendingFinishRunnable: Runnable? = null
     private val minVisibilityMs: Long
         get() = if (PrefsManager.minVisibilityEnabled) PrefsManager.minVisibilityMs.toLong() else 0L
 
-    // Multi-download count
     @Volatile
     var activeDownloadCount: Int = 0
         set(value) {
@@ -79,7 +82,6 @@ class IndicatorView(
             }
         }
 
-    // Current filename (from leading download)
     @Volatile
     var currentFilename: String? = null
         set(value) {
@@ -89,7 +91,7 @@ class IndicatorView(
             }
         }
 
-    // Power saver state (set from SystemUIHooker)
+    // Power saver state set by SystemUIHooker
     @Volatile
     var isPowerSaveActive: Boolean = false
         set(value) {
@@ -99,12 +101,12 @@ class IndicatorView(
             }
         }
 
-    // Segmented style: 12 segments with 6° gaps = 24° arc per segment
+    // Segmented style 12 segments with 6 deg gaps gives 24 deg arc per segment
     private val segmentCount = 12
     private val segmentGapDegrees = 6f
     private val segmentArcDegrees = (360f - segmentCount * segmentGapDegrees) / segmentCount
 
-    // Progress: 0 = hidden, 1-99 = arc, 100 = finish animation
+    // Progress 0 hides ring 1 to 99 draws arc 100 triggers finish animation
     @Volatile
     var progress: Int = 0
         set(value) {
@@ -139,7 +141,6 @@ class IndicatorView(
                 } else if (newValue in 1..99 && isFinishAnimating) {
                     cancelFinishAnimation()
                 } else if (newValue == 0) {
-                    // Reset start time when progress clears
                     downloadStartTime = 0L
                     pendingFinishRunnable?.let { removeCallbacks(it) }
                     pendingFinishRunnable = null
@@ -148,7 +149,7 @@ class IndicatorView(
             }
         }
 
-    // App visible flag - show ring in preview mode
+    // App visible flag shows ring in preview mode
     @Volatile
     var appVisible: Boolean = false
         set(value) {
@@ -209,7 +210,7 @@ class IndicatorView(
                 )
         }
 
-    // Max width for filename text (calculated from screen width)
+    // Max width for filename text from screen width
     private val maxFilenameWidth: Float
         get() = resources.displayMetrics.widthPixels * 0.25f
 
@@ -235,7 +236,6 @@ class IndicatorView(
     }
 
     private fun updatePaintFromPrefs() {
-        // Apply power saver dim if active
         val effectiveOpacity =
             if (isPowerSaveActive && PrefsManager.powerSaverMode == "dim") {
                 (PrefsManager.opacity * 0.5f).toInt()
@@ -367,19 +367,16 @@ class IndicatorView(
 
         log("Starting finish animation: style=$style, hold=${holdMs}ms, exit=${exitMs}ms, intensity=$intensity")
 
-        // Reset animation state
         displayAlpha = 1f
         displayScale = 1f
         shineAngle = -30f
         segmentHighlight = -1
-        successColorBlend = 1f // Immediately show success color (no overlap with progress color)
+        successColorBlend = 1f // Show success color immediately without overlap with progress color
         completionPulseAlpha = 1f
 
-        // Helper to start the selected style animation
         val startStyleAnimation = {
             when (style) {
                 "snap" -> {
-                    // Instant hide
                     progress = 0
                     isFinishAnimating = false
                 }
@@ -398,7 +395,6 @@ class IndicatorView(
             }
         }
 
-        // Run completion pulse before style animation if enabled
         if (PrefsManager.completionPulseEnabled && style != "snap") {
             animateCompletionPulse { startStyleAnimation() }
         } else {
@@ -415,7 +411,6 @@ class IndicatorView(
         val scalePhaseMs = (totalMs * 0.4f).toInt()
         val fadePhaseMs = totalMs - scalePhaseMs
 
-        // Phase 1: Scale pop with overshoot
         finishAnimator =
             ValueAnimator.ofFloat(0f, 1f).apply {
                 duration = scalePhaseMs.toLong()
@@ -428,7 +423,6 @@ class IndicatorView(
                 addListener(
                     object : android.animation.AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: android.animation.Animator) {
-                            // Phase 2: Settle back and fade
                             finishAnimator =
                                 ValueAnimator.ofFloat(0f, 1f).apply {
                                     duration = fadePhaseMs.toLong()
@@ -458,7 +452,6 @@ class IndicatorView(
         val cascadePhaseMs = (totalMs * 0.6f).toInt()
         val fadePhaseMs = totalMs - cascadePhaseMs
 
-        // Phase 1: Cascade highlight around segments
         finishAnimator =
             ValueAnimator.ofInt(0, segmentCount + 2).apply {
                 duration = cascadePhaseMs.toLong()
@@ -471,7 +464,6 @@ class IndicatorView(
                 addListener(
                     object : android.animation.AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: android.animation.Animator) {
-                            // Phase 2: Fade out
                             segmentHighlight = -1
                             finishAnimator =
                                 ValueAnimator.ofFloat(1f, 0f).apply {
@@ -519,7 +511,7 @@ class IndicatorView(
         completionPulseAlpha = 1f
     }
 
-    // Pulse alpha 100% → 70% → 100% in 400ms for subtle completion feedback
+    // Pulse alpha 100 to 70 to 100 in 400ms for subtle completion feedback
     private fun animateCompletionPulse(onComplete: () -> Unit) {
         pulseAnimator?.cancel()
         pulseAnimator =
@@ -542,7 +534,6 @@ class IndicatorView(
             }
     }
 
-    // Apply easing to progress value
     private fun applyEasing(progress: Int): Float {
         val p = progress / 100f
         return when (PrefsManager.progressEasing) {
@@ -553,14 +544,12 @@ class IndicatorView(
         }
     }
 
-    // Start preview animation (debounced, 0 -> 100 -> finish animation)
+    // Start preview animation debounced from 0 to 100 then finish animation
     fun startPreview() {
         log("IndicatorView: startPreview() - debouncing")
 
-        // Cancel any pending debounce
         previewDebounceRunnable?.let { removeCallbacks(it) }
 
-        // Schedule the actual preview after debounce period
         previewDebounceRunnable =
             Runnable {
                 startPreviewInternal()
@@ -574,7 +563,6 @@ class IndicatorView(
         isPreviewAnimating = true
         previewProgress = 0
 
-        // Animate progress from 0 to 100
         previewAnimator =
             ValueAnimator.ofInt(0, 100).apply {
                 duration = 800
@@ -586,10 +574,9 @@ class IndicatorView(
                 addListener(
                     object : android.animation.AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: android.animation.Animator) {
-                            // Trigger finish animation at 100%
                             previewProgress = 100
                             startFinishAnimation()
-                            // Clear preview state after finish animation (~800ms) + buffer
+                            // Clear preview state after finish animation about 800ms plus buffer
                             postDelayed({
                                 isPreviewAnimating = false
                                 previewProgress = 0
@@ -611,18 +598,15 @@ class IndicatorView(
         previewProgress = 0
     }
 
-    // Show geometry preview (ring at 100% for 3 seconds, debounced)
+    // Show geometry preview at 100 percent for 3 seconds debounced
     fun showGeometryPreview() {
         log("IndicatorView: showGeometryPreview() - debouncing")
 
-        // Cancel any pending geometry preview hide
         geometryPreviewRunnable?.let { removeCallbacks(it) }
 
-        // Show ring immediately at 100%
         isGeometryPreviewActive = true
         invalidate()
 
-        // Schedule hide after duration
         geometryPreviewRunnable =
             Runnable {
                 isGeometryPreviewActive = false
@@ -638,13 +622,12 @@ class IndicatorView(
         isGeometryPreviewActive = false
     }
 
-    // Show error flash animation
     fun showError() {
         if (isFinishAnimating || isErrorAnimating) return
         isErrorAnimating = true
         log("IndicatorView: showError()")
 
-        // Two blinks in 600ms (off→on→off→on→off, 5 keyframes at 120ms each)
+        // Two blinks in 600ms with 5 keyframes at 120ms each
         errorAnimator?.cancel()
         errorAnimator =
             ValueAnimator.ofFloat(0f, 1f, 0f, 1f, 0f).apply {
@@ -688,18 +671,15 @@ class IndicatorView(
             return
         }
 
-        // Skip animations in power saver disable mode
         if (isPowerSaveActive && PrefsManager.powerSaverMode == "disable") {
             return
         }
 
-        // Idle ring mode: draw faint ring when no activity
         if (PrefsManager.idleRingEnabled && progress == 0 && !isFinishAnimating && !isErrorAnimating && !appVisible) {
             canvas.drawPath(scaledPath, idlePaint)
             return
         }
 
-        // Error animation mode
         if (isErrorAnimating) {
             scaledPath.computeBounds(arcBounds, true)
             errorPaint.alpha = (errorAlpha * 255).toInt()
@@ -707,7 +687,7 @@ class IndicatorView(
             return
         }
 
-        // Determine effective progress (preview overrides real progress)
+        // Determine effective progress with preview override
         val effectiveProgress =
             when {
                 isGeometryPreviewActive -> 100
@@ -715,13 +695,7 @@ class IndicatorView(
                 else -> progress
             }
 
-        // Visibility logic:
-        // - Animation in progress: always show
-        // - Geometry preview: show at 100%
-        // - Preview animating: always show
-        // - Active download/test (1-99): always show
-        // - Waiting for minimum visibility (100% with pending finish): show
-        // - Otherwise: hidden
+        // Visibility rules keep ring during animation preview active progress or pending finish
         val shouldDraw =
             when {
                 isFinishAnimating -> true
@@ -736,7 +710,6 @@ class IndicatorView(
             return
         }
 
-        // Apply animation transforms
         canvas.save()
 
         if (displayScale != 1f) {
@@ -744,11 +717,9 @@ class IndicatorView(
             canvas.scale(displayScale, displayScale, arcBounds.centerX(), arcBounds.centerY())
         }
 
-        // Apply alpha and success color
         val animatedPaint =
             Paint(glowPaint).apply {
                 alpha = (glowPaint.alpha * displayAlpha * completionPulseAlpha).toInt()
-                // Apply success color blend
                 if (successColorBlend > 0f) {
                     val successColor =
                         if (PrefsManager.finishUseFlashColor) {
@@ -761,17 +732,14 @@ class IndicatorView(
             }
 
         if (isFinishAnimating) {
-            // Finish animation: draw based on style
             drawFinishAnimation(canvas, animatedPaint)
         } else {
-            // Progress mode: draw arc based on effective progress with easing
             scaledPath.computeBounds(arcBounds, true)
             val easedProgress = applyEasing(effectiveProgress)
             val sweepAngle = 360f * easedProgress
             val actualSweep = if (PrefsManager.clockwise) sweepAngle else -sweepAngle
             canvas.drawArc(arcBounds, -90f, actualSweep, false, animatedPaint)
 
-            // Draw download count badge if enabled and multiple downloads (not during preview)
             if (!isPreviewAnimating && PrefsManager.showDownloadCount && activeDownloadCount > 1 && effectiveProgress > 0) {
                 val centerX = arcBounds.centerX()
                 val centerY = arcBounds.centerY()
@@ -783,12 +751,10 @@ class IndicatorView(
                 )
             }
 
-            // Draw percentage text if enabled and during active progress (1-99%)
             if (PrefsManager.percentTextEnabled && effectiveProgress in 1..99) {
                 drawPercentText(canvas, effectiveProgress)
             }
 
-            // Draw filename text if enabled and during active progress (1-99%)
             if (PrefsManager.filenameTextEnabled && effectiveProgress in 1..99 && currentFilename != null) {
                 drawFilenameText(canvas)
             }
@@ -815,7 +781,6 @@ class IndicatorView(
             }
 
             else -> {
-                // Default: draw full ring with current animation state
                 canvas.drawPath(scaledPath, paint)
             }
         }
@@ -852,11 +817,10 @@ class IndicatorView(
         val textWidth = percentPaint.measureText(text)
         val padding = 8f * density
 
-        // Position text just left or right of ring bounds
         val offsetX =
             when (PrefsManager.percentTextPosition) {
                 "left" -> arcBounds.left - textWidth / 2 - padding
-                else -> arcBounds.right + textWidth / 2 + padding // "right"
+                else -> arcBounds.right + textWidth / 2 + padding
             }
         val offsetY = arcBounds.centerY() + percentPaint.textSize / 3
 
@@ -869,7 +833,6 @@ class IndicatorView(
         filenamePaint.color = PrefsManager.color
         filenamePaint.alpha = (PrefsManager.opacity * 255 / 100)
 
-        // Truncate filename with ellipsis if too long
         val truncated =
             TextUtils
                 .ellipsize(
@@ -881,29 +844,24 @@ class IndicatorView(
 
         val padding = 8f * density
 
-        // Calculate position based on preference
         val (offsetX, offsetY) =
             when (PrefsManager.filenameTextPosition) {
                 "left" -> {
-                    // Left of ring, vertically centered
                     filenamePaint.textAlign = Paint.Align.RIGHT
                     Pair(arcBounds.left - padding, arcBounds.centerY() + filenamePaint.textSize / 3)
                 }
 
                 "right" -> {
-                    // Right of ring, vertically centered
                     filenamePaint.textAlign = Paint.Align.LEFT
                     Pair(arcBounds.right + padding, arcBounds.centerY() + filenamePaint.textSize / 3)
                 }
 
                 "top_left" -> {
-                    // Above and left of ring
                     filenamePaint.textAlign = Paint.Align.RIGHT
                     Pair(arcBounds.left - padding, arcBounds.top - padding)
                 }
 
                 else -> {
-                    // "top_right" - Above and right of ring
                     filenamePaint.textAlign = Paint.Align.LEFT
                     Pair(arcBounds.right + padding, arcBounds.top - padding)
                 }
@@ -925,8 +883,8 @@ class IndicatorView(
     }
 
     companion object {
-        // Non-SDK window type that renders above nav bar without stealing focus
-        // See: cs.android.com/android/platform/superproject/+/main:frameworks/base/core/java/android/view/WindowManager.java
+        // Non SDK window type renders above nav bar without stealing focus
+        // See cs.android.com/android/platform/superproject/+/main:frameworks/base/core/java/android/view/WindowManager.java
         private const val TYPE_NAVIGATION_BAR_PANEL = 2024
 
         // Cap finish animations to prevent sluggish feel
@@ -936,8 +894,7 @@ class IndicatorView(
             val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
             val view = IndicatorView(context)
 
-            // NOT_TOUCHABLE passes input through, NO_LIMITS extends into cutout area,
-            // CUTOUT_MODE_ALWAYS ensures we can draw in the cutout region
+            // NOT_TOUCHABLE passes input through NO_LIMITS extends into cutout area CUTOUT_MODE_ALWAYS enables cutout drawing
             val params =
                 WindowManager
                     .LayoutParams(

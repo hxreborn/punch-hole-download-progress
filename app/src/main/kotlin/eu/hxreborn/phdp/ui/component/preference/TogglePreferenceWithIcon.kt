@@ -33,10 +33,11 @@ fun TogglePreferenceWithIcon(
     val contentAlpha = if (enabled) 1f else Tokens.DISABLED_ALPHA
 
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(enabled = enabled) { onValueChange(!value) }
-            .padding(Tokens.PreferencePadding),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable(enabled = enabled) { onValueChange(!value) }
+                .padding(Tokens.PreferencePadding),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {

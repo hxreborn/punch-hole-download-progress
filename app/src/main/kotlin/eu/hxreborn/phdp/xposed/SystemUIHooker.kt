@@ -34,7 +34,7 @@ object SystemUIHooker {
         hookNotifications(classLoader)
     }
 
-    // CentralSurfacesImpl.start() is the earliest point where we can get SystemUI context
+    // Earliest reliable SystemUI context for overlay attach is CentralSurfacesImpl.start
     private fun hookCentralSurfaces(classLoader: ClassLoader) {
         val targetClass =
             runCatching { classLoader.loadClass(CENTRAL_SURFACES_IMPL) }
@@ -71,7 +71,7 @@ object SystemUIHooker {
                     )
                 }.getOrNull() ?: return
 
-        // postNotification: entry point for new notifications on Android 12+
+        // postNotification entry point for new notifications on Android 12 and later
         targetClass.declaredMethods.filter { it.name == "postNotification" }.forEach { method ->
             runCatching {
                 module.hook(
@@ -81,7 +81,7 @@ object SystemUIHooker {
             }.onSuccess { log("Hooked NotifCollection.postNotification") }
         }
 
-        // retractNotification: called when notifications are dismissed or cancelled
+        // retractNotification called when notifications are dismissed or cancelled
         targetClass.declaredMethods.filter { it.name == "retractNotification" }.forEach { method ->
             runCatching {
                 module.hook(

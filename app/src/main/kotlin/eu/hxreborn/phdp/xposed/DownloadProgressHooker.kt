@@ -16,7 +16,7 @@ object DownloadProgressHooker {
     private const val EXTRA_PROGRESS_MAX = "android.progressMax"
     private const val EXTRA_TITLE = "android.title"
 
-    // Debug logging - logs everything in debug builds, nothing in release
+    // Debug logging for debug builds only
     private inline fun debug(msg: () -> String) {
         if (BuildConfig.DEBUG) log(msg())
     }
@@ -28,12 +28,12 @@ object DownloadProgressHooker {
 
     @Volatile private var getIdMethod: Method? = null
 
-    // Browser/downloader packages using standard android.progress/android.progressMax extras
+    // Whitelist packages that publish progress extras to avoid false positives
     private val SUPPORTED_PACKAGES =
         setOf(
             // System
             "com.android.providers.downloads",
-            // Firefox & forks
+            // Firefox and forks
             "org.mozilla.firefox",
             "org.mozilla.firefox_beta",
             "org.mozilla.fennec_aurora",
@@ -47,7 +47,7 @@ object DownloadProgressHooker {
             "us.spotco.fennec_dos",
             "org.torproject.torbrowser",
             "org.torproject.torbrowser_alpha",
-            // Chrome & Chromium forks
+            // Chrome and Chromium forks
             "com.android.chrome",
             "com.chrome.beta",
             "com.chrome.dev",
@@ -73,10 +73,10 @@ object DownloadProgressHooker {
             "com.sec.android.app.sbrowser",
         )
 
-    // Active downloads: id -> progress (0-100)
+    // Active downloads keyed by id to progress 0 to 100
     private val activeDownloads = ConcurrentHashMap<String, Int>()
 
-    // Active downloads: id -> filename (for display)
+    // Active downloads keyed by id to filename for display
     private val activeFilenames = ConcurrentHashMap<String, String>()
 
     var onProgressChanged: ((Int) -> Unit)? = null
@@ -141,7 +141,7 @@ object DownloadProgressHooker {
         updateFilename()
     }
 
-    // Find filename of download with highest progress (leading download)
+    // Find filename of download with highest progress as leading download
     private fun updateFilename() {
         val leadingId = activeDownloads.maxByOrNull { it.value }?.key
         val filename = leadingId?.let { activeFilenames[it] }

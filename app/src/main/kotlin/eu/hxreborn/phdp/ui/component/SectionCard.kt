@@ -27,7 +27,10 @@ private fun RowPosition.shape(): Shape {
     }
 }
 
-private fun positionOf(index: Int, count: Int) = when {
+private fun positionOf(
+    index: Int,
+    count: Int,
+) = when {
     count == 1 -> RowPosition.SINGLE
     index == 0 -> RowPosition.FIRST
     index == count - 1 -> RowPosition.LAST
@@ -41,9 +44,10 @@ fun SectionCard(
     items: List<@Composable () -> Unit>,
 ) {
     Column(
-        modifier = modifier
-            .padding(horizontal = 8.dp)
-            .alpha(if (enabled) 1f else Tokens.DISABLED_ALPHA),
+        modifier =
+            modifier
+                .padding(horizontal = 8.dp)
+                .alpha(if (enabled) 1f else Tokens.DISABLED_ALPHA),
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         items.forEachIndexed { index, item ->

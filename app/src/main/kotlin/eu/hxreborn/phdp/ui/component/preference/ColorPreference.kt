@@ -41,20 +41,21 @@ import androidx.compose.ui.window.Dialog
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.ui.theme.Tokens
 
-private val presetColors = listOf(
-    0xFF00FFFF.toInt(), // Cyan
-    0xFFFF0000.toInt(), // Red
-    0xFF00FF00.toInt(), // Green
-    0xFF0000FF.toInt(), // Blue
-    0xFFFF00FF.toInt(), // Magenta
-    0xFFFFFF00.toInt(), // Yellow
-    0xFFFF8000.toInt(), // Orange
-    0xFFFFFFFF.toInt(), // White
-    0xFF8000FF.toInt(), // Purple
-    0xFF00FF80.toInt(), // Mint
-    0xFFFF0080.toInt(), // Pink
-    0xFF80FF00.toInt(), // Lime
-)
+private val presetColors =
+    listOf(
+        0xFF00FFFF.toInt(), // Cyan
+        0xFFFF0000.toInt(), // Red
+        0xFF00FF00.toInt(), // Green
+        0xFF0000FF.toInt(), // Blue
+        0xFFFF00FF.toInt(), // Magenta
+        0xFFFFFF00.toInt(), // Yellow
+        0xFFFF8000.toInt(), // Orange
+        0xFFFFFFFF.toInt(), // White
+        0xFF8000FF.toInt(), // Purple
+        0xFF00FF80.toInt(), // Mint
+        0xFFFF0080.toInt(), // Pink
+        0xFF80FF00.toInt(), // Lime
+    )
 
 @Composable
 fun ColorPreference(
@@ -80,10 +81,11 @@ fun ColorPreference(
     }
 
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(enabled = enabled) { showDialog = true }
-            .padding(Tokens.PreferencePadding),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable(enabled = enabled) { showDialog = true }
+                .padding(Tokens.PreferencePadding),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
@@ -105,16 +107,17 @@ fun ColorPreference(
             }
         }
         Box(
-            modifier = Modifier
-                .padding(start = Tokens.PreferenceHorizontalSpacing)
-                .size(Tokens.ColorPreviewSize)
-                .clip(CircleShape)
-                .background(Color(value).copy(alpha = contentAlpha))
-                .border(
-                    width = Tokens.ColorBorderWidth,
-                    color = MaterialTheme.colorScheme.outline.copy(alpha = contentAlpha),
-                    shape = CircleShape,
-                ),
+            modifier =
+                Modifier
+                    .padding(start = Tokens.PreferenceHorizontalSpacing)
+                    .size(Tokens.ColorPreviewSize)
+                    .clip(CircleShape)
+                    .background(Color(value).copy(alpha = contentAlpha))
+                    .border(
+                        width = Tokens.ColorBorderWidth,
+                        color = MaterialTheme.colorScheme.outline.copy(alpha = contentAlpha),
+                        shape = CircleShape,
+                    ),
         )
     }
 }
@@ -171,15 +174,16 @@ private fun ColorPickerDialog(
                 Spacer(modifier = Modifier.height(Tokens.SpacingSm))
 
                 Box(
-                    modifier = Modifier
-                        .size(Tokens.ColorPreviewSizeLarge)
-                        .clip(CircleShape)
-                        .background(Color(selectedColor))
-                        .border(
-                            width = Tokens.ColorBorderWidth,
-                            color = MaterialTheme.colorScheme.outline,
-                            shape = CircleShape,
-                        ),
+                    modifier =
+                        Modifier
+                            .size(Tokens.ColorPreviewSizeLarge)
+                            .clip(CircleShape)
+                            .background(Color(selectedColor))
+                            .border(
+                                width = Tokens.ColorBorderWidth,
+                                color = MaterialTheme.colorScheme.outline,
+                                shape = CircleShape,
+                            ),
                 )
 
                 Spacer(modifier = Modifier.height(Tokens.DialogActionsSpacing))
@@ -205,31 +209,33 @@ private fun ColorSwatch(
     onClick: () -> Unit,
 ) {
     Box(
-        modifier = Modifier
-            .size(Tokens.ColorSwatchSize)
-            .clip(CircleShape)
-            .background(Color(color))
-            .border(
-                width = if (selected) Tokens.ColorBorderWidthSelected else Tokens.ColorBorderWidth,
-                color = if (selected) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.outline
-                },
-                shape = CircleShape,
-            )
-            .clickable(onClick = onClick),
+        modifier =
+            Modifier
+                .size(Tokens.ColorSwatchSize)
+                .clip(CircleShape)
+                .background(Color(color))
+                .border(
+                    width = if (selected) Tokens.ColorBorderWidthSelected else Tokens.ColorBorderWidth,
+                    color =
+                        if (selected) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.outline
+                        },
+                    shape = CircleShape,
+                ).clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         if (selected) {
             Icon(
                 imageVector = Icons.Default.Check,
                 contentDescription = null,
-                tint = if (color == 0xFFFFFFFF.toInt() || color == 0xFFFFFF00.toInt()) {
-                    Color.Black
-                } else {
-                    Color.White
-                },
+                tint =
+                    if (color == 0xFFFFFFFF.toInt() || color == 0xFFFFFF00.toInt()) {
+                        Color.Black
+                    } else {
+                        Color.White
+                    },
                 modifier = Modifier.size(Tokens.ColorCheckIconSize),
             )
         }

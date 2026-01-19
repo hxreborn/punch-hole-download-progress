@@ -81,7 +81,7 @@ object PrefsManager {
     const val MIN_MIN_VISIBILITY_MS = 0
     const val MAX_MIN_VISIBILITY_MS = 2000
 
-    // Reset defaults (excludes KEY_ENABLED)
+    // Reset defaults exclude KEY_ENABLED
     val DEFAULTS: Map<String, Any> =
         mapOf(
             KEY_COLOR to DEFAULT_COLOR,
@@ -232,7 +232,7 @@ object PrefsManager {
             remotePrefs = xposed.getRemotePreferences(PREFS_GROUP)
             refreshCache()
 
-            // Listener lives for SystemUI process lifetime - cleanup via SystemUIHook.detach()
+            // Listener lives for SystemUI process lifetime cleanup via SystemUIHook.detach
             remotePrefs?.registerOnSharedPreferenceChangeListener { prefs, key ->
                 runCatching {
                     refreshCache()

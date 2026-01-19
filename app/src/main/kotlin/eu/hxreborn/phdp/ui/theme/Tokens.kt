@@ -5,91 +5,65 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-/**
- * App design tokens following M3 guidelines as the source of truth.
- *
- * Uses M3 shape, spacing, and emphasis values directly. Only app-specific
- * values (color picker, haptics) are defined here.
- *
- * References:
- * - https://m3.material.io/foundations/layout/understanding-layout
- * - https://m3.material.io/styles/shape/overview
- * - https://m3.material.io/foundations/content-design/text-emphasis
- */
 object Tokens {
     // M3 Layout
-    // M3 compact window horizontal margin = 16dp
     val ScreenHorizontalPadding: Dp = 16.dp
 
     // M3 Spacing Scale
-    // M3 spacing units: 4, 8, 12, 16, 24, 32, 48, 64
     val SpacingXs: Dp = 4.dp
     val SpacingSm: Dp = 8.dp
     val SpacingMd: Dp = 12.dp
     val SpacingLg: Dp = 16.dp
     val SpacingXl: Dp = 24.dp
 
-    // M3 Shapes (using ShapeDefaults directly where possible)
-    // ShapeDefaults.Medium = 12.dp corner radius
+    // M3 shapes use ShapeDefaults where possible
     val CardShape: Shape = ShapeDefaults.Medium
 
-    // ShapeDefaults.Large = 16.dp corner radius - used for prominent cards
     val CardShapeLarge: Shape = ShapeDefaults.Large
 
-    // ShapeDefaults.ExtraLarge = 28.dp corner radius - M3 dialog standard
     val DialogShape: Shape = ShapeDefaults.ExtraLarge
 
-    // M3 Text Emphasis (from M3 content design guidelines)
-    // High emphasis: 87% opacity on dark, 100% on light (handled by colorScheme)
-    // Medium emphasis: 60% opacity - used for secondary text
+    // M3 text emphasis from M3 content design guidelines
     const val MEDIUM_EMPHASIS_ALPHA: Float = 0.60f
 
-    // Disabled: 38% opacity - M3 standard
     const val DISABLED_ALPHA: Float = 0.38f
 
     // M3 Dialog
-    // M3 standard dialog padding = 24dp
     val DialogPadding: Dp = 24.dp
 
-    // M3 dialog title-to-content spacing = 16dp
     val DialogTitleSpacing: Dp = 16.dp
 
-    // M3 dialog content-to-actions spacing = 24dp
     val DialogActionsSpacing: Dp = 24.dp
 
-    // M3 dialog tonal elevation level 3 = 6dp
     val DialogElevation: Dp = 6.dp
 
     // M3 List Item
-    // M3 list item horizontal padding = 16dp
     val ListItemHorizontalPadding: Dp = 16.dp
 
-    // M3 list item vertical padding = 12dp (two-line)
     val ListItemVerticalPadding: Dp = 12.dp
 
-    // M3 list item leading-to-headline spacing = 16dp
     val ListItemLeadingSpacing: Dp = 16.dp
 
-    // Preference Layout (compose-preference reference)
+    // Preference layout from ComposePreference reference
     // https://github.com/zhanghai/ComposePreference
-    val PreferencePadding: Dp = 16.dp // all sides
-    val PreferenceHorizontalSpacing: Dp = 16.dp // between elements
-    val PreferenceVerticalSpacing: Dp = 16.dp // between title/summary
+    val PreferencePadding: Dp = 16.dp
+    val PreferenceHorizontalSpacing: Dp = 16.dp
+    val PreferenceVerticalSpacing: Dp = 16.dp
     val PreferenceIconContainerMinWidth: Dp = 56.dp
     val PreferenceCategoryPaddingTop: Dp = 24.dp
     val PreferenceCategoryPaddingBottom: Dp = 8.dp
 
-    // App-Specific: Settings Layout (ColorBlendr style)
+    // App specific settings layout ColorBlendr style
     // Each row is its own surface with small gap between
-    val GroupSpacing: Dp = 6.dp // vertical margin around groups
-    val RowGap: Dp = 2.dp // gap between individual row surfaces
-    val RowCornerRadius: Dp = 24.dp // corner radius for each row
+    val GroupSpacing: Dp = 6.dp
+    val RowGap: Dp = 2.dp
+    val RowCornerRadius: Dp = 24.dp
 
-    // App-Specific: Section Header
+    // App specific section header
     // Indented from screen edge to align with group content
     val SectionHeaderStartPadding: Dp = 32.dp
 
-    // App-Specific: Color Picker
+    // App specific color picker
     // Custom sizes for color selection UI
     val ColorPreviewSize: Dp = 40.dp
     val ColorPreviewSizeLarge: Dp = 56.dp
@@ -100,11 +74,11 @@ object Tokens {
     val ColorBorderWidth: Dp = 2.dp
     val ColorBorderWidthSelected: Dp = 3.dp
 
-    // App-Specific: Animation
-    // Base duration (scaled by system animator duration scale at runtime)
+    // App specific animation
+    // Base duration scaled by system animator duration scale at runtime
     const val ANIMATION_DURATION_MS: Int = 200
 
-    // App-Specific: Haptic Feedback
+    // App specific haptic feedback
     // Minimum interval between haptic feedback events to prevent buzz
     const val HAPTIC_THROTTLE_MS: Long = 50L
 }

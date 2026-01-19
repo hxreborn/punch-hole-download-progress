@@ -53,9 +53,10 @@ fun SliderPreferenceWithReset(
     val contentAlpha = if (enabled) 1f else Tokens.DISABLED_ALPHA
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(Tokens.PreferencePadding),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(Tokens.PreferencePadding),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -116,11 +117,12 @@ fun SliderPreferenceWithReset(
                 Icon(
                     imageVector = Icons.Default.Refresh,
                     contentDescription = stringResource(R.string.reset),
-                    tint = if (enabled && !isDefault) {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = Tokens.DISABLED_ALPHA)
-                    },
+                    tint =
+                        if (enabled && !isDefault) {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = Tokens.DISABLED_ALPHA)
+                        },
                 )
             }
         }

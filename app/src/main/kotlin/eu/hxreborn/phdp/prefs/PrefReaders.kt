@@ -32,14 +32,14 @@ fun SharedPreferences.readPercentTextEnabled(): Boolean =
 fun SharedPreferences.readFilenameTextEnabled(): Boolean =
     getBoolean(PrefsManager.KEY_FILENAME_TEXT_ENABLED, PrefsManager.DEFAULT_FILENAME_TEXT_ENABLED)
 
-// Int readers (no coercion)
+// Int readers no coercion
 fun SharedPreferences.readColor(): Int = getInt(PrefsManager.KEY_COLOR, PrefsManager.DEFAULT_COLOR)
 
 fun SharedPreferences.readErrorColor(): Int = getInt(PrefsManager.KEY_ERROR_COLOR, PrefsManager.DEFAULT_ERROR_COLOR)
 
 fun SharedPreferences.readFinishFlashColor(): Int = getInt(PrefsManager.KEY_FINISH_FLASH_COLOR, PrefsManager.DEFAULT_FINISH_FLASH_COLOR)
 
-// Int readers (with coercion)
+// Int readers with coercion
 fun SharedPreferences.readOpacity(): Int =
     getInt(PrefsManager.KEY_OPACITY, PrefsManager.DEFAULT_OPACITY)
         .coerceIn(PrefsManager.MIN_OPACITY, PrefsManager.MAX_OPACITY)
@@ -60,7 +60,7 @@ fun SharedPreferences.readMinVisibilityMs(): Int =
     getInt(PrefsManager.KEY_MIN_VISIBILITY_MS, PrefsManager.DEFAULT_MIN_VISIBILITY_MS)
         .coerceIn(PrefsManager.MIN_MIN_VISIBILITY_MS, PrefsManager.MAX_MIN_VISIBILITY_MS)
 
-// Float readers (with coercion)
+// Float readers with coercion
 fun SharedPreferences.readStrokeWidth(): Float =
     getFloat(PrefsManager.KEY_STROKE_WIDTH, PrefsManager.DEFAULT_STROKE_WIDTH)
         .coerceIn(PrefsManager.MIN_STROKE_WIDTH, PrefsManager.MAX_STROKE_WIDTH)

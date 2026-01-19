@@ -57,10 +57,11 @@ fun <T> SelectPreference(
     }
 
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(enabled = enabled) { showDialog = true }
-            .padding(Tokens.PreferencePadding),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable(enabled = enabled) { showDialog = true }
+                .padding(Tokens.PreferencePadding),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
@@ -107,15 +108,15 @@ private fun <T> SelectDialog(
             Column(modifier = Modifier.selectableGroup()) {
                 values.forEach { option ->
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(Tokens.PreferenceIconContainerMinWidth)
-                            .selectable(
-                                selected = option == value,
-                                onClick = { onValueChange(option) },
-                                role = Role.RadioButton,
-                            )
-                            .padding(horizontal = Tokens.PreferencePadding),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(Tokens.PreferenceIconContainerMinWidth)
+                                .selectable(
+                                    selected = option == value,
+                                    onClick = { onValueChange(option) },
+                                    role = Role.RadioButton,
+                                ).padding(horizontal = Tokens.PreferencePadding),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         RadioButton(

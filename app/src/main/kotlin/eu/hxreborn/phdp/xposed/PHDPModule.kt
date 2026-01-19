@@ -40,7 +40,7 @@ class PHDPModule(
         ) {
             // LSPosed Manager logs
             if (t != null) module.log(msg, t) else module.log(msg)
-            // ADB logcat (stripped in release by proguard)
+            // ADB logcat stripped in release by proguard
             if (t != null) Log.d(TAG, msg, t) else Log.d(TAG, msg)
         }
     }
