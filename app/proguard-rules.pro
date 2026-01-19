@@ -1,5 +1,5 @@
 # Keep LSPosed module entry point
--keep class eu.hxreborn.phdp.xposed.PunchHoleProgressModule { *; }
+-keep class eu.hxreborn.phdp.xposed.PHDPModule { *; }
 
 # Keep all hooker classes and their methods
 -keep @io.github.libxposed.api.annotations.XposedHooker class * { *; }

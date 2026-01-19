@@ -9,7 +9,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.util.accessibleField
-import eu.hxreborn.phdp.xposed.PunchHoleProgressModule.Companion.log
+import eu.hxreborn.phdp.xposed.PHDPModule.Companion.log
 import io.github.libxposed.api.XposedInterface
 import io.github.libxposed.api.XposedInterface.AfterHookCallback
 import io.github.libxposed.api.annotations.AfterInvocation
@@ -19,7 +19,7 @@ private const val CENTRAL_SURFACES_IMPL = "com.android.systemui.statusbar.phone.
 private const val NOTIF_COLLECTION =
     "com.android.systemui.statusbar.notification.collection.NotifCollection"
 
-object SystemUIHook {
+object SystemUIHooker {
     @Volatile
     private var attached = false
 
@@ -95,17 +95,17 @@ object SystemUIHook {
     }
 
     private fun wireCallbacks() {
-        DownloadProgressHook.onProgressChanged = { progress ->
+        DownloadProgressHooker.onProgressChanged = { progress ->
             indicatorView?.let { it.post { it.progress = progress } }
         }
-        DownloadProgressHook.onDownloadComplete = { triggerHapticFeedback() }
-        DownloadProgressHook.onDownloadCancelled = {
+        DownloadProgressHooker.onDownloadComplete = { triggerHapticFeedback() }
+        DownloadProgressHooker.onDownloadCancelled = {
             indicatorView?.let { it.post { it.showError() } }
         }
-        DownloadProgressHook.onActiveCountChanged = { count ->
+        DownloadProgressHooker.onActiveCountChanged = { count ->
             indicatorView?.let { it.post { it.activeDownloadCount = count } }
         }
-        DownloadProgressHook.onFilenameChanged = { filename ->
+        DownloadProgressHooker.onFilenameChanged = { filename ->
             indicatorView?.let { it.post { it.currentFilename = filename } }
         }
 
@@ -186,11 +186,11 @@ object SystemUIHook {
         powerSaveReceiver = null
         indicatorView = null
 
-        DownloadProgressHook.onProgressChanged = null
-        DownloadProgressHook.onDownloadComplete = null
-        DownloadProgressHook.onDownloadCancelled = null
-        DownloadProgressHook.onActiveCountChanged = null
-        DownloadProgressHook.onFilenameChanged = null
+        DownloadProgressHooker.onProgressChanged = null
+        DownloadProgressHooker.onDownloadComplete = null
+        DownloadProgressHooker.onDownloadCancelled = null
+        DownloadProgressHooker.onActiveCountChanged = null
+        DownloadProgressHooker.onFilenameChanged = null
 
         PrefsManager.onAppVisibilityChanged = null
         PrefsManager.onTestProgressChanged = null
@@ -209,7 +209,7 @@ class StartHooker : XposedInterface.Hooker {
         @JvmStatic
         @AfterInvocation
         fun after(callback: AfterHookCallback) {
-            if (SystemUIHook.isAttached()) return
+            if (SystemUIHooker.isAttached()) return
 
             val instance = callback.thisObject ?: return
             val context =
@@ -224,7 +224,7 @@ class StartHooker : XposedInterface.Hooker {
 
             runCatching {
                 val view = IndicatorView.attach(context)
-                SystemUIHook.markAttached(view, context)
+                SystemUIHooker.markAttached(view, context)
                 log("IndicatorView attached")
             }.onFailure { log("Failed to attach IndicatorView", it) }
         }

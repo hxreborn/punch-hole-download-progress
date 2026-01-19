@@ -6,7 +6,7 @@ import io.github.libxposed.service.XposedService
 import io.github.libxposed.service.XposedServiceHelper
 import java.util.concurrent.CopyOnWriteArrayList
 
-class PunchHoleProgressApp : Application() {
+class PHDPApp : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
@@ -31,7 +31,7 @@ class PunchHoleProgressApp : Application() {
     companion object {
         private const val TAG = "PHDP"
 
-        lateinit var instance: PunchHoleProgressApp
+        lateinit var instance: PHDPApp
             private set
 
         var service: XposedService? = null

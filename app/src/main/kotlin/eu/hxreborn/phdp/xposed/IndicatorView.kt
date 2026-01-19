@@ -19,7 +19,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.view.animation.OvershootInterpolator
 import eu.hxreborn.phdp.prefs.PrefsManager
-import eu.hxreborn.phdp.xposed.PunchHoleProgressModule.Companion.log
+import eu.hxreborn.phdp.xposed.PHDPModule.Companion.log
 import kotlin.math.pow
 
 class IndicatorView(
@@ -89,7 +89,7 @@ class IndicatorView(
             }
         }
 
-    // Power saver state (set from SystemUIHook)
+    // Power saver state (set from SystemUIHooker)
     @Volatile
     var isPowerSaveActive: Boolean = false
         set(value) {
@@ -327,7 +327,7 @@ class IndicatorView(
         PrefsManager.onTestErrorChanged = null
         PrefsManager.onPreviewTriggered = null
         PrefsManager.onGeometryPreviewTriggered = null
-        SystemUIHook.detach()
+        SystemUIHooker.detach()
     }
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {

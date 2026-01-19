@@ -3,7 +3,7 @@ package eu.hxreborn.phdp.xposed
 import android.app.Notification
 import eu.hxreborn.phdp.BuildConfig
 import eu.hxreborn.phdp.util.accessibleField
-import eu.hxreborn.phdp.xposed.PunchHoleProgressModule.Companion.log
+import eu.hxreborn.phdp.xposed.PHDPModule.Companion.log
 import io.github.libxposed.api.XposedInterface
 import io.github.libxposed.api.XposedInterface.AfterHookCallback
 import io.github.libxposed.api.annotations.AfterInvocation
@@ -11,7 +11,7 @@ import io.github.libxposed.api.annotations.XposedHooker
 import java.lang.reflect.Method
 import java.util.concurrent.ConcurrentHashMap
 
-object DownloadProgressHook {
+object DownloadProgressHooker {
     private const val EXTRA_PROGRESS = "android.progress"
     private const val EXTRA_PROGRESS_MAX = "android.progressMax"
     private const val EXTRA_TITLE = "android.title"
@@ -210,8 +210,8 @@ class NotificationAddHooker : XposedInterface.Hooker {
             callback.args?.forEach { arg ->
                 if (arg == null) return@forEach
 
-                if (DownloadProgressHook.isStatusBarNotification(arg)) {
-                    DownloadProgressHook.processNotification(arg)
+                if (DownloadProgressHooker.isStatusBarNotification(arg)) {
+                    DownloadProgressHooker.processNotification(arg)
                 } else if (arg.javaClass.name.contains("NotificationEntry")) {
                     runCatching {
                         val sbn =
@@ -219,7 +219,7 @@ class NotificationAddHooker : XposedInterface.Hooker {
                                 .getDeclaredField("mSbn")
                                 .apply { isAccessible = true }
                                 .get(arg)
-                        if (sbn != null) DownloadProgressHook.processNotification(sbn)
+                        if (sbn != null) DownloadProgressHooker.processNotification(sbn)
                     }
                 }
             }
@@ -238,15 +238,15 @@ class NotificationRemoveHooker : XposedInterface.Hooker {
             callback.args?.forEach { arg ->
                 if (arg == null) return@forEach
 
-                if (DownloadProgressHook.isStatusBarNotification(arg)) {
-                    DownloadProgressHook.onNotificationRemoved(arg)
+                if (DownloadProgressHooker.isStatusBarNotification(arg)) {
+                    DownloadProgressHooker.onNotificationRemoved(arg)
                     return@forEach
                 }
 
                 if (arg.javaClass.name.contains("NotificationEntry")) {
                     runCatching {
                         val sbn = arg.javaClass.accessibleField("mSbn").get(arg)
-                        if (sbn != null) DownloadProgressHook.onNotificationRemoved(sbn)
+                        if (sbn != null) DownloadProgressHooker.onNotificationRemoved(sbn)
                     }
                 }
             }

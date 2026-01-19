@@ -9,9 +9,9 @@ import io.github.libxposed.api.XposedModule
 import io.github.libxposed.api.XposedModuleInterface.ModuleLoadedParam
 import io.github.libxposed.api.XposedModuleInterface.PackageLoadedParam
 
-internal lateinit var module: PunchHoleProgressModule
+internal lateinit var module: PHDPModule
 
-class PunchHoleProgressModule(
+class PHDPModule(
     base: XposedInterface,
     param: ModuleLoadedParam,
 ) : XposedModule(base, param) {
@@ -25,7 +25,7 @@ class PunchHoleProgressModule(
 
         Companion.log("Device: ${Build.MANUFACTURER} ${Build.MODEL} (SDK ${Build.VERSION.SDK_INT})")
         PrefsManager.init(this)
-        runCatching { SystemUIHook.hook(param.classLoader) }
+        runCatching { SystemUIHooker.hook(param.classLoader) }
             .onSuccess { Companion.log("Hooks registered") }
             .onFailure { Companion.log("Hook failed", it) }
     }
