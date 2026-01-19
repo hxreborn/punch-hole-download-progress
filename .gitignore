@@ -17,3 +17,7 @@ Thumbs.db
 
 # Debug
 *.log
+
+# Local assets
+icons/
+downloading_*.svg
