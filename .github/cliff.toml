@@ -17,7 +17,7 @@ https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}
   {% if commit.scope %}*({{ commit.scope }})* {% endif %}\
   {{ commit.message | upper_first | trim }}\
   {% if commit.breaking %} [**breaking**]{% endif %}\
-  {% if commit.remote.username %} by [@{{ commit.remote.username }}](https://github.com/{{ commit.remote.username }})\
+  {% if commit.remote.username %} by @{{ commit.remote.username }}\
   {%- if commit.remote.pr_number %} in [#{{ commit.remote.pr_number }}]({{ self::remote_url() }}/pull/{{ commit.remote.pr_number }}){% endif %}{% endif %}
 {%- if commit.body %}
 
