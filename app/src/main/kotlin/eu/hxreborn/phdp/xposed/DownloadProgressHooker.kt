@@ -15,6 +15,15 @@ object DownloadProgressHooker {
     private const val EXTRA_PROGRESS = "android.progress"
     private const val EXTRA_PROGRESS_MAX = "android.progressMax"
     private const val EXTRA_TITLE = "android.title"
+    private const val STALE_AGE_MS = 5 * 60 * 1000L
+    private const val SIGNIFICANT_DROP_PERCENT = 25
+
+    data class DownloadState(
+        val packageName: String,
+        val filename: String?,
+        val progress: Int,
+        val lastUpdate: Long,
+    )
 
     // Debug logging for debug builds only
     private inline fun debug(msg: () -> String) {
@@ -73,17 +82,28 @@ object DownloadProgressHooker {
             "com.sec.android.app.sbrowser",
         )
 
-    // Active downloads keyed by id to progress 0 to 100
-    private val activeDownloads = ConcurrentHashMap<String, Int>()
-
-    // Active downloads keyed by id to filename for display
-    private val activeFilenames = ConcurrentHashMap<String, String>()
+    // Active downloads keyed by id to state
+    private val activeDownloads = ConcurrentHashMap<String, DownloadState>()
 
     var onProgressChanged: ((Int) -> Unit)? = null
     var onDownloadComplete: (() -> Unit)? = null
     var onDownloadCancelled: (() -> Unit)? = null
     var onActiveCountChanged: ((Int) -> Unit)? = null
     var onFilenameChanged: ((String?) -> Unit)? = null
+
+    private fun cleanupStaleSamePackage(
+        pkg: String,
+        currentId: String,
+    ) {
+        val now = System.currentTimeMillis()
+        activeDownloads.entries
+            .filter { it.key != currentId && it.value.packageName == pkg }
+            .filter { now - it.value.lastUpdate > STALE_AGE_MS }
+            .forEach { (staleId, state) ->
+                activeDownloads.remove(staleId)
+                log("Removed stale: $staleId at ${state.progress}%")
+            }
+    }
 
     fun processNotification(sbn: Any) {
         val pkg = getPackageName(sbn) ?: return
@@ -100,51 +120,61 @@ object DownloadProgressHooker {
         val title = extras.getCharSequence(EXTRA_TITLE)?.toString()
         debug { "Progress: $progress/$max, title: $title" }
 
-        if (progress >= 0 && max > 0) {
-            val percent = (progress * 100 / max).coerceIn(0, 100)
-            val oldPercent = activeDownloads[id]
-            val wasNew = oldPercent == null
+        // Only process notifications with valid progress extras
+        // Notifications without progress (paused, summary) are ignored
+        // Completion/cancellation handled by NotificationRemoveHooker
+        if (progress < 0 || max <= 0) return
 
-            if (oldPercent != percent) {
-                activeDownloads[id] = percent
-                title?.let { activeFilenames[id] = it }
-                log("Download $pkg: $percent%")
-                updateProgress()
-                if (wasNew) onActiveCountChanged?.invoke(activeDownloads.size)
-            }
+        val percent = (progress * 100 / max).coerceIn(0, 100)
+        val oldState = activeDownloads[id]
+        val reset = oldState != null && oldState.progress - percent >= SIGNIFICANT_DROP_PERCENT
+        if (reset) activeDownloads.remove(id)
+        val wasNew = oldState == null || reset
 
-            if (percent == 100) {
-                activeDownloads.remove(id)
-                activeFilenames.remove(id)
-                onActiveCountChanged?.invoke(activeDownloads.size)
-                onDownloadComplete?.invoke()
-                updateFilename()
-            }
-        } else {
-            val wasTracking = activeDownloads.remove(id)
-            activeFilenames.remove(id)
-            if (wasTracking != null) {
-                log("Download $pkg: complete")
-                onActiveCountChanged?.invoke(activeDownloads.size)
-                onProgressChanged?.invoke(100)
-                onDownloadComplete?.invoke()
-                updateProgress()
-                updateFilename()
-            }
+        cleanupStaleSamePackage(pkg, id)
+
+        val newState =
+            DownloadState(
+                packageName = pkg,
+                filename = title ?: oldState?.filename,
+                progress = percent,
+                lastUpdate = System.currentTimeMillis(),
+            )
+
+        if (oldState?.progress != percent || wasNew) {
+            activeDownloads[id] = newState
+            log("Download $pkg: $percent%")
+            updateProgress()
+            if (wasNew) onActiveCountChanged?.invoke(activeDownloads.size)
+        }
+
+        if (percent == 100) {
+            activeDownloads.remove(id)
+            onActiveCountChanged?.invoke(activeDownloads.size)
+            onDownloadComplete?.invoke()
+            updateFilename()
         }
     }
 
     private fun updateProgress() {
-        val maxProgress = activeDownloads.values.maxOrNull() ?: 0
-        debug { "Progress: $maxProgress% (${activeDownloads.size} active)" }
-        onProgressChanged?.invoke(maxProgress)
+        val avg =
+            if (activeDownloads.isEmpty()) {
+                0
+            } else {
+                activeDownloads.values
+                    .map { it.progress }
+                    .average()
+                    .toInt()
+            }
+        debug { "Progress: $avg% avg (${activeDownloads.size} active)" }
+        onProgressChanged?.invoke(avg)
         updateFilename()
     }
 
     // Find filename of download with highest progress as leading download
     private fun updateFilename() {
-        val leadingId = activeDownloads.maxByOrNull { it.value }?.key
-        val filename = leadingId?.let { activeFilenames[it] }
+        val leadingEntry = activeDownloads.maxByOrNull { it.value.progress }
+        val filename = leadingEntry?.value?.filename
         onFilenameChanged?.invoke(filename)
     }
 
@@ -181,11 +211,10 @@ object DownloadProgressHooker {
         debug { "Notification removed: $id" }
 
         val wasTracking = activeDownloads.remove(id)
-        activeFilenames.remove(id)
         if (wasTracking != null) {
             onActiveCountChanged?.invoke(activeDownloads.size)
-            if (wasTracking < 100) {
-                log("Download cancelled at $wasTracking%")
+            if (wasTracking.progress < 100) {
+                log("Download cancelled at ${wasTracking.progress}%")
                 onDownloadCancelled?.invoke()
             } else {
                 log("Download complete")
