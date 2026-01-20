@@ -13,16 +13,11 @@ object Tokens {
     val LargeAppBarExpandedHeight: Dp = 152.dp
 
     // M3 Spacing Scale
-    val SpacingXs: Dp = 4.dp
     val SpacingSm: Dp = 8.dp
-    val SpacingMd: Dp = 12.dp
     val SpacingLg: Dp = 16.dp
-    val SpacingXl: Dp = 24.dp
 
     // M3 shapes use ShapeDefaults where possible
     val CardShape: Shape = ShapeDefaults.Medium
-
-    val CardShapeLarge: Shape = ShapeDefaults.Large
 
     val DialogShape: Shape = ShapeDefaults.ExtraLarge
 
@@ -40,21 +35,11 @@ object Tokens {
 
     val DialogElevation: Dp = 6.dp
 
-    // M3 List Item
-    val ListItemHorizontalPadding: Dp = 16.dp
-
-    val ListItemVerticalPadding: Dp = 12.dp
-
-    val ListItemLeadingSpacing: Dp = 16.dp
-
     // Preference layout from ComposePreference reference
     // https://github.com/zhanghai/ComposePreference
     val PreferencePadding: Dp = 16.dp
     val PreferenceHorizontalSpacing: Dp = 16.dp
-    val PreferenceVerticalSpacing: Dp = 16.dp
     val PreferenceIconContainerMinWidth: Dp = 56.dp
-    val PreferenceCategoryPaddingTop: Dp = 24.dp
-    val PreferenceCategoryPaddingBottom: Dp = 8.dp
 
     // App specific settings layout ColorBlendr style
     // Each row is its own surface with small gap between
@@ -80,8 +65,4 @@ object Tokens {
     // App specific animation
     // Base duration scaled by system animator duration scale at runtime
     const val ANIMATION_DURATION_MS: Int = 200
-
-    // App specific haptic feedback
-    // Minimum interval between haptic feedback events to prevent buzz
-    const val HAPTIC_THROTTLE_MS: Long = 50L
 }
