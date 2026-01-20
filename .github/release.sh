@@ -40,12 +40,6 @@ fi
 
 git pull --ff-only
 
-echo "Updating CHANGELOG.md for $TAG..."
-git cliff --config .github/cliff.toml --tag "$TAG" -o CHANGELOG.md
-
-git add CHANGELOG.md
-git commit -m "docs(changelog): update for $TAG"
-
 git tag -a "$TAG" -m "Release $TAG"
 
 git push origin main
