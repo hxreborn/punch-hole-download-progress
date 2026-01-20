@@ -81,15 +81,19 @@ object SystemUIHooker {
             }.onSuccess { log("Hooked NotifCollection.postNotification") }
         }
 
-        // retractNotification called when notifications are dismissed or cancelled
-        targetClass.declaredMethods.filter { it.name == "retractNotification" }.forEach { method ->
-            runCatching {
-                module.hook(
-                    method,
-                    NotificationRemoveHooker::class.java,
-                )
-            }.onSuccess { log("Hooked NotifCollection.retractNotification") }
-        }
+        // Hook notification removal - method name varies by Android version
+        // Android 16+: tryRemoveNotification(NotificationEntry)
+        // Android 12-15: onNotificationRemoved(StatusBarNotification, RankingMap, int)
+        targetClass.declaredMethods
+            .filter { it.name == "tryRemoveNotification" || it.name == "onNotificationRemoved" }
+            .forEach { method ->
+                runCatching {
+                    module.hook(
+                        method,
+                        NotificationRemoveHooker::class.java,
+                    )
+                }.onSuccess { log("Hooked NotifCollection.${method.name}") }
+            }
 
         wireCallbacks()
     }
