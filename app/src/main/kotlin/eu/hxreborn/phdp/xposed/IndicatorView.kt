@@ -755,7 +755,7 @@ class IndicatorView(
                 drawPercentText(canvas, effectiveProgress)
             }
 
-            if (PrefsManager.filenameTextEnabled && effectiveProgress in 1..99 && currentFilename != null) {
+            if (PrefsManager.filenameTextEnabled && effectiveProgress in 1..99 && (activeDownloadCount > 1 || currentFilename != null)) {
                 drawFilenameText(canvas)
             }
         }
@@ -828,7 +828,12 @@ class IndicatorView(
     }
 
     private fun drawFilenameText(canvas: Canvas) {
-        val filename = currentFilename ?: return
+        val text =
+            if (activeDownloadCount > 1) {
+                "Downloading $activeDownloadCount files"
+            } else {
+                currentFilename ?: return
+            }
 
         filenamePaint.color = PrefsManager.color
         filenamePaint.alpha = (PrefsManager.opacity * 255 / 100)
@@ -836,7 +841,7 @@ class IndicatorView(
         val truncated =
             TextUtils
                 .ellipsize(
-                    filename,
+                    text,
                     filenamePaint,
                     maxFilenameWidth,
                     TextUtils.TruncateAt.MIDDLE,
