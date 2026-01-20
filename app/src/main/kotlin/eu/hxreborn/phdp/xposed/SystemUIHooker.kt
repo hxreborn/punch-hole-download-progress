@@ -18,6 +18,7 @@ import io.github.libxposed.api.annotations.XposedHooker
 private const val CENTRAL_SURFACES_IMPL = "com.android.systemui.statusbar.phone.CentralSurfacesImpl"
 private const val NOTIF_COLLECTION =
     "com.android.systemui.statusbar.notification.collection.NotifCollection"
+private const val NOTIFICATION_LISTENER = "com.android.systemui.statusbar.NotificationListener"
 
 object SystemUIHooker {
     @Volatile
@@ -31,7 +32,25 @@ object SystemUIHooker {
 
     fun hook(classLoader: ClassLoader) {
         hookCentralSurfaces(classLoader)
+        hookNotificationListener(classLoader)
         hookNotifications(classLoader)
+    }
+
+    // Earliest SystemUI entry point, bypasses GroupCoalescer delay on some apps
+    // Some latency remains because browsers use internal download managers. Would need per pkg hooks to fix
+    private fun hookNotificationListener(classLoader: ClassLoader) {
+        val targetClass =
+            runCatching { classLoader.loadClass(NOTIFICATION_LISTENER) }
+                .onFailure { log("Failed to load $NOTIFICATION_LISTENER", it) }
+                .getOrNull() ?: return
+
+        targetClass.declaredMethods
+            .filter { it.name == "onNotificationPosted" }
+            .forEach { method ->
+                runCatching {
+                    module.hook(method, NotificationAddHooker::class.java)
+                }.onSuccess { log("Hooked NotificationListener.onNotificationPosted") }
+            }
     }
 
     // Earliest reliable SystemUI context for overlay attach is CentralSurfacesImpl.start
