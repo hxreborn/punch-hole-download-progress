@@ -37,7 +37,8 @@ class IndicatorView(
     private val minVisibilityMs: Long
         get() = if (PrefsManager.minVisibilityEnabled) PrefsManager.minVisibilityMs.toLong() else 0L
 
-    @Volatile var activeDownloadCount: Int = 0
+    @Volatile
+    var activeDownloadCount: Int = 0
         set(value) {
             if (field != value) {
                 field = value
@@ -45,7 +46,8 @@ class IndicatorView(
             }
         }
 
-    @Volatile var currentFilename: String? = null
+    @Volatile
+    var currentFilename: String? = null
         set(value) {
             if (field != value) {
                 field = value
@@ -53,7 +55,8 @@ class IndicatorView(
             }
         }
 
-    @Volatile var isPowerSaveActive: Boolean = false
+    @Volatile
+    var isPowerSaveActive: Boolean = false
         set(value) {
             if (field != value) {
                 field = value
@@ -64,7 +67,8 @@ class IndicatorView(
             }
         }
 
-    @Volatile var progress: Int = 0
+    @Volatile
+    var progress: Int = 0
         set(value) {
             val newValue = value.coerceIn(0, 100)
             if (field != newValue) {
@@ -109,7 +113,8 @@ class IndicatorView(
             }
         }
 
-    @Volatile var appVisible: Boolean = false
+    @Volatile
+    var appVisible: Boolean = false
         set(value) {
             if (field != value) {
                 field = value
@@ -271,7 +276,9 @@ class IndicatorView(
 
         cutoutPath?.let { path ->
             path.computeBounds(pathBounds, true)
-            log("Cutout path bounds: ${pathBounds.width()}x${pathBounds.height()} at (${pathBounds.centerX()}, ${pathBounds.centerY()})")
+            log(
+                "Cutout path bounds: ${pathBounds.width()}x${pathBounds.height()} at (${pathBounds.centerX()}, ${pathBounds.centerY()})",
+            )
             recalculateScaledPath()
         }
 
@@ -326,9 +333,7 @@ class IndicatorView(
             }
 
         val isIdleRingMode =
-            PrefsManager.idleRingEnabled &&
-                progress == 0 &&
-                !animator.isFinishAnimating &&
+            PrefsManager.idleRingEnabled && progress == 0 && !animator.isFinishAnimating &&
                 !appVisible
 
         if (isIdleRingMode) {
@@ -364,7 +369,11 @@ class IndicatorView(
 
         val animatedPaint =
             Paint(glowPaint).apply {
-                alpha = (effectiveOpacity * 255 / 100 * animator.displayAlpha * animator.completionPulseAlpha).toInt()
+                alpha =
+                    (
+                        effectiveOpacity * 255 / 100 * animator.displayAlpha *
+                            animator.completionPulseAlpha
+                    ).toInt()
                 if (animator.successColorBlend > 0f) {
                     val successColor =
                         if (PrefsManager.finishUseFlashColor) {
@@ -372,7 +381,8 @@ class IndicatorView(
                         } else {
                             brightenColor(PrefsManager.color, animator.successColorBlend)
                         }
-                    color = blendColors(PrefsManager.color, successColor, animator.successColorBlend)
+                    color =
+                        blendColors(PrefsManager.color, successColor, animator.successColorBlend)
                 }
             }
 
@@ -385,7 +395,8 @@ class IndicatorView(
             canvas.drawArc(arcBounds, -90f, actualSweep, false, animatedPaint)
 
             if (!animator.isPreviewAnimating && PrefsManager.showDownloadCount &&
-                activeDownloadCount > 1 && effectiveProgress > 0
+                activeDownloadCount > 1 &&
+                effectiveProgress > 0
             ) {
                 canvas.drawText(
                     activeDownloadCount.toString(),
@@ -400,7 +411,9 @@ class IndicatorView(
 
         canvas.restore()
 
-        if (drawCount == 1) log("First draw: ring rendered (appVisible=$appVisible, progress=$progress)")
+        if (drawCount == 1) {
+            log("First draw: ring rendered (appVisible=$appVisible, progress=$progress)")
+        }
     }
 
     private fun drawFinishAnimation(
@@ -459,7 +472,13 @@ class IndicatorView(
                     "left" -> arcBounds.left - textWidth / 2 - padding
                     else -> arcBounds.right + textWidth / 2 + padding
                 }
-            specs += TextSpec(text, percentPaint, x, arcBounds.centerY() + percentPaint.textSize / 3)
+            specs +=
+                TextSpec(
+                    text,
+                    percentPaint,
+                    x,
+                    arcBounds.centerY() + percentPaint.textSize / 3,
+                )
         }
 
         if (PrefsManager.filenameTextEnabled && currentFilename != null) {
@@ -473,10 +492,29 @@ class IndicatorView(
                     ).toString()
             val (x, y, align) =
                 when (PrefsManager.filenameTextPosition) {
-                    "left" -> Triple(arcBounds.left - padding, arcBounds.centerY() + filenamePaint.textSize / 3, Paint.Align.RIGHT)
-                    "right" -> Triple(arcBounds.right + padding, arcBounds.centerY() + filenamePaint.textSize / 3, Paint.Align.LEFT)
-                    "top_left" -> Triple(arcBounds.left - padding, arcBounds.top - padding, Paint.Align.RIGHT)
-                    else -> Triple(arcBounds.right + padding, arcBounds.top - padding, Paint.Align.LEFT)
+                    "left" -> {
+                        Triple(
+                            arcBounds.left - padding,
+                            arcBounds.centerY() + filenamePaint.textSize / 3,
+                            Paint.Align.RIGHT,
+                        )
+                    }
+
+                    "right" -> {
+                        Triple(
+                            arcBounds.right + padding,
+                            arcBounds.centerY() + filenamePaint.textSize / 3,
+                            Paint.Align.LEFT,
+                        )
+                    }
+
+                    "top_left" -> {
+                        Triple(arcBounds.left - padding, arcBounds.top - padding, Paint.Align.RIGHT)
+                    }
+
+                    else -> {
+                        Triple(arcBounds.right + padding, arcBounds.top - padding, Paint.Align.LEFT)
+                    }
                 }
             specs += TextSpec(truncated, filenamePaint, x, y, align)
         }
@@ -543,7 +581,8 @@ class IndicatorView(
                             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
                         PixelFormat.TRANSLUCENT,
                     ).apply {
-                        layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
+                        layoutInDisplayCutoutMode =
+                            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
                     }
 
             wm.addView(view, params)

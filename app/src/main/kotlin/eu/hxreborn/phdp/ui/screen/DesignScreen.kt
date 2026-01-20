@@ -51,16 +51,37 @@ fun DesignScreen(
                                 ColorPreference(
                                     value = prefsState.color,
                                     onValueChange = { onSavePrefs(PrefsManager.KEY_COLOR, it) },
-                                    title = { Text(stringResource(R.string.pref_progress_color_title)) },
-                                    summary = { Text(stringResource(R.string.pref_progress_color_summary)) },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_progress_color_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_progress_color_summary),
+                                        )
+                                    },
                                 )
                             },
                             {
                                 ColorPreference(
                                     value = prefsState.finishFlashColor,
-                                    onValueChange = { onSavePrefs(PrefsManager.KEY_FINISH_FLASH_COLOR, it) },
-                                    title = { Text(stringResource(R.string.pref_success_color_title)) },
-                                    summary = { Text(stringResource(R.string.pref_success_color_summary)) },
+                                    onValueChange = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_FINISH_FLASH_COLOR,
+                                            it,
+                                        )
+                                    },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_success_color_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_success_color_summary),
+                                        )
+                                    },
                                 )
                             },
                         ),
@@ -79,12 +100,31 @@ fun DesignScreen(
                             {
                                 SliderPreferenceWithReset(
                                     value = prefsState.strokeWidth,
-                                    onValueChange = { onSavePrefs(PrefsManager.KEY_STROKE_WIDTH, it) },
-                                    title = { Text(stringResource(R.string.pref_stroke_width_title)) },
-                                    summary = { Text(stringResource(R.string.pref_stroke_width_summary)) },
-                                    valueRange = PrefsManager.MIN_STROKE_WIDTH..PrefsManager.MAX_STROKE_WIDTH,
+                                    onValueChange = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_STROKE_WIDTH,
+                                            it,
+                                        )
+                                    },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_stroke_width_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_stroke_width_summary),
+                                        )
+                                    },
+                                    valueRange =
+                                        PrefsManager.MIN_STROKE_WIDTH..PrefsManager.MAX_STROKE_WIDTH,
                                     defaultValue = PrefsManager.DEFAULT_STROKE_WIDTH,
-                                    onReset = { onSavePrefs(PrefsManager.KEY_STROKE_WIDTH, PrefsManager.DEFAULT_STROKE_WIDTH) },
+                                    onReset = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_STROKE_WIDTH,
+                                            PrefsManager.DEFAULT_STROKE_WIDTH,
+                                        )
+                                    },
                                     valueText = { Text("%.1fdp".format(it)) },
                                 )
                             },
@@ -92,23 +132,52 @@ fun DesignScreen(
                                 SliderPreferenceWithReset(
                                     value = prefsState.ringGap,
                                     onValueChange = { onSavePrefs(PrefsManager.KEY_RING_GAP, it) },
-                                    title = { Text(stringResource(R.string.pref_cutout_padding_title)) },
-                                    summary = { Text(stringResource(R.string.pref_cutout_padding_summary)) },
-                                    valueRange = PrefsManager.MIN_RING_GAP..PrefsManager.MAX_RING_GAP,
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_cutout_padding_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_cutout_padding_summary),
+                                        )
+                                    },
+                                    valueRange =
+                                        PrefsManager.MIN_RING_GAP..PrefsManager.MAX_RING_GAP,
                                     defaultValue = PrefsManager.DEFAULT_RING_GAP,
-                                    onReset = { onSavePrefs(PrefsManager.KEY_RING_GAP, PrefsManager.DEFAULT_RING_GAP) },
+                                    onReset = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_RING_GAP,
+                                            PrefsManager.DEFAULT_RING_GAP,
+                                        )
+                                    },
                                     valueText = { Text("%.2fx".format(it)) },
                                 )
                             },
                             {
                                 SliderPreferenceWithReset(
                                     value = prefsState.opacity.toFloat(),
-                                    onValueChange = { onSavePrefs(PrefsManager.KEY_OPACITY, it.toInt()) },
+                                    onValueChange = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_OPACITY,
+                                            it.toInt(),
+                                        )
+                                    },
                                     title = { Text(stringResource(R.string.pref_opacity_title)) },
-                                    summary = { Text(stringResource(R.string.pref_opacity_summary)) },
-                                    valueRange = PrefsManager.MIN_OPACITY.toFloat()..PrefsManager.MAX_OPACITY.toFloat(),
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_opacity_summary),
+                                        )
+                                    },
+                                    valueRange =
+                                        PrefsManager.MIN_OPACITY.toFloat()..PrefsManager.MAX_OPACITY.toFloat(),
                                     defaultValue = PrefsManager.DEFAULT_OPACITY.toFloat(),
-                                    onReset = { onSavePrefs(PrefsManager.KEY_OPACITY, PrefsManager.DEFAULT_OPACITY) },
+                                    onReset = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_OPACITY,
+                                            PrefsManager.DEFAULT_OPACITY,
+                                        )
+                                    },
                                     valueText = { Text("${it.toInt()}%") },
                                 )
                             },
@@ -128,18 +197,44 @@ fun DesignScreen(
                             {
                                 TogglePreferenceWithIcon(
                                     value = prefsState.percentTextEnabled,
-                                    onValueChange = { onSavePrefs(PrefsManager.KEY_PERCENT_TEXT_ENABLED, it) },
-                                    title = { Text(stringResource(R.string.pref_show_percentage_title)) },
-                                    summary = { Text(stringResource(R.string.pref_show_percentage_summary)) },
+                                    onValueChange = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_PERCENT_TEXT_ENABLED,
+                                            it,
+                                        )
+                                    },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_show_percentage_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_show_percentage_summary),
+                                        )
+                                    },
                                 )
                             },
                             {
                                 SelectPreference(
                                     value = prefsState.percentTextPosition,
-                                    onValueChange = { onSavePrefs(PrefsManager.KEY_PERCENT_TEXT_POSITION, it) },
+                                    onValueChange = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_PERCENT_TEXT_POSITION,
+                                            it,
+                                        )
+                                    },
                                     values = listOf("left", "right"),
-                                    title = { Text(stringResource(R.string.pref_text_position_title)) },
-                                    summary = { Text(stringResource(R.string.pref_text_position_summary)) },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_text_position_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_text_position_summary),
+                                        )
+                                    },
                                     enabled = prefsState.percentTextEnabled,
                                     valueToText = { positionLabelPlain(it) },
                                 )
@@ -160,18 +255,44 @@ fun DesignScreen(
                             {
                                 TogglePreferenceWithIcon(
                                     value = prefsState.filenameTextEnabled,
-                                    onValueChange = { onSavePrefs(PrefsManager.KEY_FILENAME_TEXT_ENABLED, it) },
-                                    title = { Text(stringResource(R.string.pref_show_filename_title)) },
-                                    summary = { Text(stringResource(R.string.pref_show_filename_summary)) },
+                                    onValueChange = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_FILENAME_TEXT_ENABLED,
+                                            it,
+                                        )
+                                    },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_show_filename_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_show_filename_summary),
+                                        )
+                                    },
                                 )
                             },
                             {
                                 SelectPreference(
                                     value = prefsState.filenameTextPosition,
-                                    onValueChange = { onSavePrefs(PrefsManager.KEY_FILENAME_TEXT_POSITION, it) },
+                                    onValueChange = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_FILENAME_TEXT_POSITION,
+                                            it,
+                                        )
+                                    },
                                     values = listOf("left", "right", "top_left", "top_right"),
-                                    title = { Text(stringResource(R.string.pref_filename_position_title)) },
-                                    summary = { Text(stringResource(R.string.pref_filename_position_summary)) },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_filename_position_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_filename_position_summary),
+                                        )
+                                    },
                                     enabled = prefsState.filenameTextEnabled,
                                     valueToText = { positionLabelPlain(it) },
                                 )

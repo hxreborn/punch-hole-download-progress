@@ -3,5 +3,5 @@
     android:drawable="@drawable/ic_splash">
     <target
         android:name="icon"
-        android:animation="@animator/splash_icon_scale"/>
+        android:animation="@animator/splash_icon_scale" />
 </animated-vector>

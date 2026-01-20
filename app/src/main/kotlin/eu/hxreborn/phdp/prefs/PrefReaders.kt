@@ -3,9 +3,11 @@ package eu.hxreborn.phdp.prefs
 import android.content.SharedPreferences
 
 // Boolean readers
-fun SharedPreferences.readEnabled(): Boolean = getBoolean(PrefsManager.KEY_ENABLED, PrefsManager.DEFAULT_ENABLED)
+fun SharedPreferences.readEnabled(): Boolean =
+    getBoolean(PrefsManager.KEY_ENABLED, PrefsManager.DEFAULT_ENABLED)
 
-fun SharedPreferences.readHooksFeedback(): Boolean = getBoolean(PrefsManager.KEY_HOOKS_FEEDBACK, PrefsManager.DEFAULT_HOOKS_FEEDBACK)
+fun SharedPreferences.readHooksFeedback(): Boolean =
+    getBoolean(PrefsManager.KEY_HOOKS_FEEDBACK, PrefsManager.DEFAULT_HOOKS_FEEDBACK)
 
 fun SharedPreferences.readAppVisible(): Boolean = getBoolean(PrefsManager.KEY_APP_VISIBLE, false)
 
@@ -24,7 +26,10 @@ fun SharedPreferences.readMinVisibilityEnabled(): Boolean =
     getBoolean(PrefsManager.KEY_MIN_VISIBILITY_ENABLED, PrefsManager.DEFAULT_MIN_VISIBILITY_ENABLED)
 
 fun SharedPreferences.readCompletionPulseEnabled(): Boolean =
-    getBoolean(PrefsManager.KEY_COMPLETION_PULSE_ENABLED, PrefsManager.DEFAULT_COMPLETION_PULSE_ENABLED)
+    getBoolean(
+        PrefsManager.KEY_COMPLETION_PULSE_ENABLED,
+        PrefsManager.DEFAULT_COMPLETION_PULSE_ENABLED,
+    )
 
 fun SharedPreferences.readPercentTextEnabled(): Boolean =
     getBoolean(PrefsManager.KEY_PERCENT_TEXT_ENABLED, PrefsManager.DEFAULT_PERCENT_TEXT_ENABLED)
@@ -35,39 +40,55 @@ fun SharedPreferences.readFilenameTextEnabled(): Boolean =
 // Int readers no coercion
 fun SharedPreferences.readColor(): Int = getInt(PrefsManager.KEY_COLOR, PrefsManager.DEFAULT_COLOR)
 
-fun SharedPreferences.readErrorColor(): Int = getInt(PrefsManager.KEY_ERROR_COLOR, PrefsManager.DEFAULT_ERROR_COLOR)
+fun SharedPreferences.readErrorColor(): Int =
+    getInt(PrefsManager.KEY_ERROR_COLOR, PrefsManager.DEFAULT_ERROR_COLOR)
 
-fun SharedPreferences.readFinishFlashColor(): Int = getInt(PrefsManager.KEY_FINISH_FLASH_COLOR, PrefsManager.DEFAULT_FINISH_FLASH_COLOR)
+fun SharedPreferences.readFinishFlashColor(): Int =
+    getInt(PrefsManager.KEY_FINISH_FLASH_COLOR, PrefsManager.DEFAULT_FINISH_FLASH_COLOR)
 
 // Int readers with coercion
 fun SharedPreferences.readOpacity(): Int =
-    getInt(PrefsManager.KEY_OPACITY, PrefsManager.DEFAULT_OPACITY)
-        .coerceIn(PrefsManager.MIN_OPACITY, PrefsManager.MAX_OPACITY)
+    getInt(
+        PrefsManager.KEY_OPACITY,
+        PrefsManager.DEFAULT_OPACITY,
+    ).coerceIn(PrefsManager.MIN_OPACITY, PrefsManager.MAX_OPACITY)
 
 fun SharedPreferences.readIdleRingOpacity(): Int =
-    getInt(PrefsManager.KEY_IDLE_RING_OPACITY, PrefsManager.DEFAULT_IDLE_RING_OPACITY)
-        .coerceIn(0, 100)
+    getInt(PrefsManager.KEY_IDLE_RING_OPACITY, PrefsManager.DEFAULT_IDLE_RING_OPACITY).coerceIn(
+        0,
+        100,
+    )
 
 fun SharedPreferences.readFinishHoldMs(): Int =
-    getInt(PrefsManager.KEY_FINISH_HOLD_MS, PrefsManager.DEFAULT_FINISH_HOLD_MS)
-        .coerceIn(PrefsManager.MIN_FINISH_HOLD_MS, PrefsManager.MAX_FINISH_HOLD_MS)
+    getInt(PrefsManager.KEY_FINISH_HOLD_MS, PrefsManager.DEFAULT_FINISH_HOLD_MS).coerceIn(
+        PrefsManager.MIN_FINISH_HOLD_MS,
+        PrefsManager.MAX_FINISH_HOLD_MS,
+    )
 
 fun SharedPreferences.readFinishExitMs(): Int =
-    getInt(PrefsManager.KEY_FINISH_EXIT_MS, PrefsManager.DEFAULT_FINISH_EXIT_MS)
-        .coerceIn(PrefsManager.MIN_FINISH_EXIT_MS, PrefsManager.MAX_FINISH_EXIT_MS)
+    getInt(PrefsManager.KEY_FINISH_EXIT_MS, PrefsManager.DEFAULT_FINISH_EXIT_MS).coerceIn(
+        PrefsManager.MIN_FINISH_EXIT_MS,
+        PrefsManager.MAX_FINISH_EXIT_MS,
+    )
 
 fun SharedPreferences.readMinVisibilityMs(): Int =
-    getInt(PrefsManager.KEY_MIN_VISIBILITY_MS, PrefsManager.DEFAULT_MIN_VISIBILITY_MS)
-        .coerceIn(PrefsManager.MIN_MIN_VISIBILITY_MS, PrefsManager.MAX_MIN_VISIBILITY_MS)
+    getInt(PrefsManager.KEY_MIN_VISIBILITY_MS, PrefsManager.DEFAULT_MIN_VISIBILITY_MS).coerceIn(
+        PrefsManager.MIN_MIN_VISIBILITY_MS,
+        PrefsManager.MAX_MIN_VISIBILITY_MS,
+    )
 
 // Float readers with coercion
 fun SharedPreferences.readStrokeWidth(): Float =
-    getFloat(PrefsManager.KEY_STROKE_WIDTH, PrefsManager.DEFAULT_STROKE_WIDTH)
-        .coerceIn(PrefsManager.MIN_STROKE_WIDTH, PrefsManager.MAX_STROKE_WIDTH)
+    getFloat(
+        PrefsManager.KEY_STROKE_WIDTH,
+        PrefsManager.DEFAULT_STROKE_WIDTH,
+    ).coerceIn(PrefsManager.MIN_STROKE_WIDTH, PrefsManager.MAX_STROKE_WIDTH)
 
 fun SharedPreferences.readRingGap(): Float =
-    getFloat(PrefsManager.KEY_RING_GAP, PrefsManager.DEFAULT_RING_GAP)
-        .coerceIn(PrefsManager.MIN_RING_GAP, PrefsManager.MAX_RING_GAP)
+    getFloat(
+        PrefsManager.KEY_RING_GAP,
+        PrefsManager.DEFAULT_RING_GAP,
+    ).coerceIn(PrefsManager.MIN_RING_GAP, PrefsManager.MAX_RING_GAP)
 
 // String readers
 fun SharedPreferences.readProgressEasing(): String =

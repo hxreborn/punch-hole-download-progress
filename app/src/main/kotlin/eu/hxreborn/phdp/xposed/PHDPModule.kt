@@ -18,7 +18,9 @@ class PHDPModule(
 ) : XposedModule(base, param) {
     init {
         module = this
-        Companion.log("Module v${BuildConfig.VERSION_NAME} on ${base.frameworkName} ${base.frameworkVersion}")
+        Companion.log(
+            "Module v${BuildConfig.VERSION_NAME} on ${base.frameworkName} ${base.frameworkVersion}",
+        )
     }
 
     override fun onPackageLoaded(param: PackageLoadedParam) {
@@ -26,8 +28,9 @@ class PHDPModule(
 
         Companion.log("Device: ${Build.MANUFACTURER} ${Build.MODEL} (SDK ${Build.VERSION.SDK_INT})")
         PrefsManager.init(this)
-        runCatching { SystemUIHooker.hook(param.classLoader) }
-            .onSuccess { Companion.log("Hooks registered") }
+        runCatching {
+            SystemUIHooker.hook(param.classLoader)
+        }.onSuccess { Companion.log("Hooks registered") }
             .onFailure { Companion.log("Hook failed", it) }
     }
 

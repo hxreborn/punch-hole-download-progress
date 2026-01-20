@@ -335,11 +335,14 @@ class IndicatorAnimator(
                 onEnd = {
                     previewProgress = 100
                     startFinish(finishStyle, holdMs, exitMs, pulseEnabled) {
-                        view.postDelayed({
-                            previewMode = PreviewMode.NONE
-                            previewProgress = 0
-                            view.invalidate()
-                        }, 200)
+                        view.postDelayed(
+                            {
+                                previewMode = PreviewMode.NONE
+                                previewProgress = 0
+                                view.invalidate()
+                            },
+                            200,
+                        )
                     }
                 },
             )

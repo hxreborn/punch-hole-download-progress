@@ -29,11 +29,14 @@ object DownloadProgressHooker {
         if (BuildConfig.DEBUG) log(msg())
     }
 
-    @Volatile private var getPackageNameMethod: Method? = null
+    @Volatile
+    private var getPackageNameMethod: Method? = null
 
-    @Volatile private var getNotificationMethod: Method? = null
+    @Volatile
+    private var getNotificationMethod: Method? = null
 
-    @Volatile private var getIdMethod: Method? = null
+    @Volatile
+    private var getIdMethod: Method? = null
 
     private val SUPPORTED_PACKAGES =
         setOf(
@@ -183,16 +186,19 @@ object DownloadProgressHooker {
     private fun getPackageName(sbn: Any): String? =
         runCatching {
             val method =
-                getPackageNameMethod
-                    ?: sbn.javaClass.getMethod("getPackageName").also { getPackageNameMethod = it }
+                getPackageNameMethod ?: sbn.javaClass
+                    .getMethod("getPackageName")
+                    .also { getPackageNameMethod = it }
             method.invoke(sbn) as? String
         }.getOrNull()
 
     private fun getNotification(sbn: Any): Notification? =
         runCatching {
             val method =
-                getNotificationMethod
-                    ?: sbn.javaClass.getMethod("getNotification").also { getNotificationMethod = it }
+                getNotificationMethod ?: sbn.javaClass
+                    .getMethod(
+                        "getNotification",
+                    ).also { getNotificationMethod = it }
             method.invoke(sbn) as? Notification
         }.getOrNull()
 
@@ -201,8 +207,7 @@ object DownloadProgressHooker {
         val id =
             runCatching {
                 val method =
-                    getIdMethod
-                        ?: sbn.javaClass.getMethod("getId").also { getIdMethod = it }
+                    getIdMethod ?: sbn.javaClass.getMethod("getId").also { getIdMethod = it }
                 method.invoke(sbn) as? Int
             }.getOrNull() ?: return null
         return "$pkg:$id"
@@ -227,7 +232,8 @@ object DownloadProgressHooker {
         }
     }
 
-    internal fun isStatusBarNotification(obj: Any): Boolean = obj.javaClass.name.contains("StatusBarNotification")
+    internal fun isStatusBarNotification(obj: Any): Boolean =
+        obj.javaClass.name.contains("StatusBarNotification")
 }
 
 @XposedHooker
@@ -248,8 +254,7 @@ class NotificationAddHooker : XposedInterface.Hooker {
                         val sbn =
                             arg.javaClass
                                 .getDeclaredField("mSbn")
-                                .apply { isAccessible = true }
-                                .get(arg)
+                                .apply { isAccessible = true }[arg]
                         if (sbn != null) DownloadProgressHooker.processNotification(sbn)
                     }
                 }

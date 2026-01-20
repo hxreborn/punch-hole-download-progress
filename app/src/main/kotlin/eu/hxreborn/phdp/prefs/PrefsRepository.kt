@@ -43,7 +43,11 @@ class PrefsRepositoryImpl(
 
     override fun resetDefaults() {
         localPrefs.edit { PrefsManager.DEFAULTS.forEach { (k, v) -> putAny(k, v) } }
-        remotePrefsProvider()?.edit(commit = true) { PrefsManager.DEFAULTS.forEach { (k, v) -> putAny(k, v) } }
+        remotePrefsProvider()?.edit(commit = true) {
+            PrefsManager.DEFAULTS.forEach { (k, v) ->
+                putAny(k, v)
+            }
+        }
     }
 
     private fun SharedPreferences.toPrefsState(): PrefsState =

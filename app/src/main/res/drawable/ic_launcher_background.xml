@@ -12,28 +12,28 @@
 
     <!-- Subtle stars -->
     <path
-        android:fillColor="#FFFFFF"
         android:fillAlpha="0.3"
+        android:fillColor="#FFFFFF"
         android:pathData="M20,25m-1,0a1,1 0,1 1,2 0a1,1 0,1 1,-2 0" />
     <path
-        android:fillColor="#FFFFFF"
         android:fillAlpha="0.4"
+        android:fillColor="#FFFFFF"
         android:pathData="M85,30m-1,0a1,1 0,1 1,2 0a1,1 0,1 1,-2 0" />
     <path
-        android:fillColor="#FFFFFF"
         android:fillAlpha="0.3"
+        android:fillColor="#FFFFFF"
         android:pathData="M75,80m-1,0a1,1 0,1 1,2 0a1,1 0,1 1,-2 0" />
     <path
-        android:fillColor="#FFFFFF"
         android:fillAlpha="0.5"
+        android:fillColor="#FFFFFF"
         android:pathData="M30,75m-1,0a1,1 0,1 1,2 0a1,1 0,1 1,-2 0" />
     <path
-        android:fillColor="#FFFFFF"
         android:fillAlpha="0.2"
+        android:fillColor="#FFFFFF"
         android:pathData="M90,60m-1,0a1,1 0,1 1,2 0a1,1 0,1 1,-2 0" />
     <path
-        android:fillColor="#FFFFFF"
         android:fillAlpha="0.3"
+        android:fillColor="#FFFFFF"
         android:pathData="M15,55m-1,0a1,1 0,1 1,2 0a1,1 0,1 1,-2 0" />
 
 </vector>

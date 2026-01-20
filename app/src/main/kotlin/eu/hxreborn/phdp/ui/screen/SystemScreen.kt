@@ -58,7 +58,11 @@ fun SystemScreen(
                                 TogglePreferenceWithIcon(
                                     value = prefsState.enabled,
                                     onValueChange = { onSavePrefs(PrefsManager.KEY_ENABLED, it) },
-                                    title = { Text(stringResource(R.string.pref_enable_service_title)) },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_enable_service_title),
+                                        )
+                                    },
                                     summary = {
                                         val text =
                                             if (prefsState.enabled) {
@@ -87,9 +91,22 @@ fun SystemScreen(
                             {
                                 TogglePreferenceWithIcon(
                                     value = prefsState.showDownloadCount,
-                                    onValueChange = { onSavePrefs(PrefsManager.KEY_SHOW_DOWNLOAD_COUNT, it) },
-                                    title = { Text(stringResource(R.string.pref_show_queue_count_title)) },
-                                    summary = { Text(stringResource(R.string.pref_show_queue_count_summary)) },
+                                    onValueChange = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_SHOW_DOWNLOAD_COUNT,
+                                            it,
+                                        )
+                                    },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_show_queue_count_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_show_queue_count_summary),
+                                        )
+                                    },
                                     enabled = prefsState.enabled,
                                 )
                             },
@@ -97,9 +114,18 @@ fun SystemScreen(
                                 TogglePreferenceWithIcon(
                                     value = prefsState.clockwise,
                                     onValueChange = { onSavePrefs(PrefsManager.KEY_CLOCKWISE, it) },
-                                    title = { Text(stringResource(R.string.pref_invert_rotation_title)) },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_invert_rotation_title),
+                                        )
+                                    },
                                     summary = {
-                                        val text = if (prefsState.clockwise) R.string.clockwise else R.string.counter_clockwise
+                                        val text =
+                                            if (prefsState.clockwise) {
+                                                R.string.clockwise
+                                            } else {
+                                                R.string.counter_clockwise
+                                            }
                                         Text(stringResource(text))
                                     },
                                     enabled = prefsState.enabled,
@@ -122,11 +148,23 @@ fun SystemScreen(
                             {
                                 SelectPreference(
                                     value = prefsState.powerSaverMode,
-                                    onValueChange = { onSavePrefs(PrefsManager.KEY_POWER_SAVER_MODE, it) },
+                                    onValueChange = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_POWER_SAVER_MODE,
+                                            it,
+                                        )
+                                    },
                                     values = powerSaverValues,
-                                    title = { Text(stringResource(R.string.pref_battery_saver_title)) },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_battery_saver_title),
+                                        )
+                                    },
                                     enabled = prefsState.enabled,
-                                    valueToText = { powerSaverLabel(it, powerSaverEntries, powerSaverValues) ?: it },
+                                    valueToText = {
+                                        powerSaverLabel(it, powerSaverEntries, powerSaverValues)
+                                            ?: it
+                                    },
                                 )
                             },
                         ),
@@ -146,16 +184,32 @@ fun SystemScreen(
                             {
                                 ActionPreference(
                                     onClick = onTestSuccess,
-                                    title = { Text(stringResource(R.string.pref_debug_completion_title)) },
-                                    summary = { Text(stringResource(R.string.pref_debug_completion_summary)) },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_debug_completion_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_debug_completion_summary),
+                                        )
+                                    },
                                     enabled = prefsState.enabled,
                                 )
                             },
                             {
                                 ActionPreference(
                                     onClick = onTestFailure,
-                                    title = { Text(stringResource(R.string.pref_test_failure_title)) },
-                                    summary = { Text(stringResource(R.string.pref_test_failure_summary)) },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_test_failure_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_test_failure_summary),
+                                        )
+                                    },
                                     enabled = prefsState.enabled,
                                 )
                             },
@@ -176,7 +230,11 @@ fun SystemScreen(
                                 ActionPreference(
                                     onClick = {},
                                     title = { Text(stringResource(R.string.pref_version_title)) },
-                                    summary = { Text("${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})") },
+                                    summary = {
+                                        Text(
+                                            "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
+                                        )
+                                    },
                                     enabled = false,
                                 )
                             },

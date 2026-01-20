@@ -68,7 +68,8 @@ fun SliderPreferenceWithReset(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 CompositionLocalProvider(
-                    LocalContentColor provides MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
+                    LocalContentColor provides
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
                 ) {
                     ProvideTextStyle(MaterialTheme.typography.bodyLarge) {
                         title()
@@ -76,7 +77,10 @@ fun SliderPreferenceWithReset(
                 }
                 summary?.let {
                     CompositionLocalProvider(
-                        LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
+                        LocalContentColor provides
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                alpha = contentAlpha,
+                            ),
                     ) {
                         ProvideTextStyle(MaterialTheme.typography.bodyMedium) {
                             it()
@@ -87,7 +91,10 @@ fun SliderPreferenceWithReset(
             valueText?.let {
                 Box(modifier = Modifier.padding(start = Tokens.PreferenceHorizontalSpacing)) {
                     CompositionLocalProvider(
-                        LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
+                        LocalContentColor provides
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                alpha = contentAlpha,
+                            ),
                     ) {
                         ProvideTextStyle(MaterialTheme.typography.bodyMedium) {
                             it(sliderValue)
@@ -125,7 +132,9 @@ fun SliderPreferenceWithReset(
                         if (enabled && !isDefault) {
                             MaterialTheme.colorScheme.onSurfaceVariant
                         } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = Tokens.DISABLED_ALPHA)
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                alpha = Tokens.DISABLED_ALPHA,
+                            )
                         },
                 )
             }

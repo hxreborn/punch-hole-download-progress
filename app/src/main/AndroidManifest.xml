@@ -6,17 +6,17 @@
     <application
         android:name=".PHDPApp"
         android:allowBackup="false"
-        android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:label="@string/app_name"
         android:description="@string/app_desc"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PHDP">
 
         <activity
             android:name=".ui.MainActivity"
-            android:theme="@style/Theme.PHDP.Splash"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.PHDP.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

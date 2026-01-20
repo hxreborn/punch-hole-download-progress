@@ -5,18 +5,44 @@ charset = utf-8
 end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
-
-[*.{kt,kts}]
 indent_style = space
 indent_size = 4
+
+[*.kt]
+max_line_length = 100
+ktlint_code_style = ktlint_official
+ij_kotlin_packages_to_use_import_on_demand = unset
+ij_kotlin_allow_trailing_comma = true
+ij_kotlin_allow_trailing_comma_on_call_site = true
+
+[**/ui/**/*.kt]
+max_line_length = 140
 ktlint_function_naming_ignore_when_annotated_with = Composable
 
+[*.kts]
+max_line_length = 120
+ktlint_code_style = ktlint_official
+ij_kotlin_packages_to_use_import_on_demand = unset
+
+[*.java]
+max_line_length = 100
+
+[*.sh]
+indent_size = 2
+shell_variant = bash
+binary_next_line = true
+switch_case_indent = true
+
 [*.toml]
-indent_style = space
-indent_size = 4
+indent_size = 2
+
+[*.properties]
+indent_size = 2
+
+[*.json]
+indent_size = 2
 
 [*.{yml,yaml}]
-indent_style = space
 indent_size = 2
 
 [*.md]

@@ -55,10 +55,22 @@ fun MotionScreen(
                             {
                                 SelectPreference(
                                     value = prefsState.finishStyle,
-                                    onValueChange = { onSavePrefs(PrefsManager.KEY_FINISH_STYLE, it) },
+                                    onValueChange = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_FINISH_STYLE,
+                                            it,
+                                        )
+                                    },
                                     values = finishStyleValues,
-                                    title = { Text(stringResource(R.string.pref_completion_style_title)) },
-                                    valueToText = { finishStyleLabel(it, finishStyleEntries, finishStyleValues) ?: it },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_completion_style_title),
+                                        )
+                                    },
+                                    valueToText = {
+                                        finishStyleLabel(it, finishStyleEntries, finishStyleValues)
+                                            ?: it
+                                    },
                                 )
                             },
                         ),
@@ -77,24 +89,62 @@ fun MotionScreen(
                             {
                                 SliderPreferenceWithReset(
                                     value = prefsState.finishHoldMs.toFloat(),
-                                    onValueChange = { onSavePrefs(PrefsManager.KEY_FINISH_HOLD_MS, it.toInt()) },
-                                    title = { Text(stringResource(R.string.pref_hold_duration_title)) },
-                                    summary = { Text(stringResource(R.string.pref_hold_duration_summary)) },
-                                    valueRange = PrefsManager.MIN_FINISH_HOLD_MS.toFloat()..PrefsManager.MAX_FINISH_HOLD_MS.toFloat(),
+                                    onValueChange = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_FINISH_HOLD_MS,
+                                            it.toInt(),
+                                        )
+                                    },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_hold_duration_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_hold_duration_summary),
+                                        )
+                                    },
+                                    valueRange =
+                                        PrefsManager.MIN_FINISH_HOLD_MS.toFloat()..PrefsManager.MAX_FINISH_HOLD_MS.toFloat(),
                                     defaultValue = PrefsManager.DEFAULT_FINISH_HOLD_MS.toFloat(),
-                                    onReset = { onSavePrefs(PrefsManager.KEY_FINISH_HOLD_MS, PrefsManager.DEFAULT_FINISH_HOLD_MS) },
+                                    onReset = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_FINISH_HOLD_MS,
+                                            PrefsManager.DEFAULT_FINISH_HOLD_MS,
+                                        )
+                                    },
                                     valueText = { Text("${it.toInt()}ms") },
                                 )
                             },
                             {
                                 SliderPreferenceWithReset(
                                     value = prefsState.finishExitMs.toFloat(),
-                                    onValueChange = { onSavePrefs(PrefsManager.KEY_FINISH_EXIT_MS, it.toInt()) },
-                                    title = { Text(stringResource(R.string.pref_exit_duration_title)) },
-                                    summary = { Text(stringResource(R.string.pref_exit_duration_summary)) },
-                                    valueRange = PrefsManager.MIN_FINISH_EXIT_MS.toFloat()..PrefsManager.MAX_FINISH_EXIT_MS.toFloat(),
+                                    onValueChange = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_FINISH_EXIT_MS,
+                                            it.toInt(),
+                                        )
+                                    },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_exit_duration_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_exit_duration_summary),
+                                        )
+                                    },
+                                    valueRange =
+                                        PrefsManager.MIN_FINISH_EXIT_MS.toFloat()..PrefsManager.MAX_FINISH_EXIT_MS.toFloat(),
                                     defaultValue = PrefsManager.DEFAULT_FINISH_EXIT_MS.toFloat(),
-                                    onReset = { onSavePrefs(PrefsManager.KEY_FINISH_EXIT_MS, PrefsManager.DEFAULT_FINISH_EXIT_MS) },
+                                    onReset = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_FINISH_EXIT_MS,
+                                            PrefsManager.DEFAULT_FINISH_EXIT_MS,
+                                        )
+                                    },
                                     valueText = { Text("${it.toInt()}ms") },
                                 )
                             },
@@ -114,17 +164,43 @@ fun MotionScreen(
                             {
                                 TogglePreferenceWithIcon(
                                     value = prefsState.hooksFeedback,
-                                    onValueChange = { onSavePrefs(PrefsManager.KEY_HOOKS_FEEDBACK, it) },
-                                    title = { Text(stringResource(R.string.pref_haptic_feedback_title)) },
-                                    summary = { Text(stringResource(R.string.pref_haptic_feedback_summary)) },
+                                    onValueChange = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_HOOKS_FEEDBACK,
+                                            it,
+                                        )
+                                    },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_haptic_feedback_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_haptic_feedback_summary),
+                                        )
+                                    },
                                 )
                             },
                             {
                                 TogglePreferenceWithIcon(
                                     value = prefsState.completionPulseEnabled,
-                                    onValueChange = { onSavePrefs(PrefsManager.KEY_COMPLETION_PULSE_ENABLED, it) },
-                                    title = { Text(stringResource(R.string.pref_pulse_flash_title)) },
-                                    summary = { Text(stringResource(R.string.pref_pulse_flash_summary)) },
+                                    onValueChange = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_COMPLETION_PULSE_ENABLED,
+                                            it,
+                                        )
+                                    },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_pulse_flash_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_pulse_flash_summary),
+                                        )
+                                    },
                                 )
                             },
                         ),
@@ -143,21 +219,53 @@ fun MotionScreen(
                             {
                                 TogglePreferenceWithIcon(
                                     value = prefsState.minVisibilityEnabled,
-                                    onValueChange = { onSavePrefs(PrefsManager.KEY_MIN_VISIBILITY_ENABLED, it) },
-                                    title = { Text(stringResource(R.string.pref_force_completion_title)) },
-                                    summary = { Text(stringResource(R.string.pref_force_completion_summary)) },
+                                    onValueChange = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_MIN_VISIBILITY_ENABLED,
+                                            it,
+                                        )
+                                    },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_force_completion_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_force_completion_summary),
+                                        )
+                                    },
                                 )
                             },
                             {
                                 SliderPreferenceWithReset(
                                     value = prefsState.minVisibilityMs.toFloat(),
-                                    onValueChange = { onSavePrefs(PrefsManager.KEY_MIN_VISIBILITY_MS, it.toInt()) },
-                                    title = { Text(stringResource(R.string.pref_min_duration_title)) },
-                                    summary = { Text(stringResource(R.string.pref_min_duration_summary)) },
+                                    onValueChange = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_MIN_VISIBILITY_MS,
+                                            it.toInt(),
+                                        )
+                                    },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_min_duration_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_min_duration_summary),
+                                        )
+                                    },
                                     enabled = prefsState.minVisibilityEnabled,
-                                    valueRange = PrefsManager.MIN_MIN_VISIBILITY_MS.toFloat()..PrefsManager.MAX_MIN_VISIBILITY_MS.toFloat(),
+                                    valueRange =
+                                        PrefsManager.MIN_MIN_VISIBILITY_MS.toFloat()..PrefsManager.MAX_MIN_VISIBILITY_MS.toFloat(),
                                     defaultValue = PrefsManager.DEFAULT_MIN_VISIBILITY_MS.toFloat(),
-                                    onReset = { onSavePrefs(PrefsManager.KEY_MIN_VISIBILITY_MS, PrefsManager.DEFAULT_MIN_VISIBILITY_MS) },
+                                    onReset = {
+                                        onSavePrefs(
+                                            PrefsManager.KEY_MIN_VISIBILITY_MS,
+                                            PrefsManager.DEFAULT_MIN_VISIBILITY_MS,
+                                        )
+                                    },
                                     valueText = { Text("${it.toInt()}ms") },
                                 )
                             },

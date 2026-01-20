@@ -43,16 +43,18 @@ object SystemUIHooker {
     private fun hookNotificationListener(classLoader: ClassLoader) {
         val targetClass =
             runCatching { classLoader.loadClass(NOTIFICATION_LISTENER) }
-                .onFailure { log("Failed to load $NOTIFICATION_LISTENER", it) }
-                .getOrNull() ?: return
+                .onFailure {
+                    log(
+                        "Failed to load $NOTIFICATION_LISTENER",
+                        it,
+                    )
+                }.getOrNull() ?: return
 
-        targetClass.declaredMethods
-            .filter { it.name == "onNotificationPosted" }
-            .forEach { method ->
-                runCatching {
-                    module.hook(method, NotificationAddHooker::class.java)
-                }.onSuccess { log("Hooked NotificationListener.onNotificationPosted") }
-            }
+        targetClass.declaredMethods.filter { it.name == "onNotificationPosted" }.forEach { method ->
+            runCatching {
+                module.hook(method, NotificationAddHooker::class.java)
+            }.onSuccess { log("Hooked NotificationListener.onNotificationPosted") }
+        }
     }
 
     // Earliest reliable SystemUI context for overlay attach is CentralSurfacesImpl.start
@@ -106,8 +108,10 @@ object SystemUIHooker {
         // Android 16+: tryRemoveNotification(NotificationEntry)
         // Android 12-15: onNotificationRemoved(StatusBarNotification, RankingMap, int)
         targetClass.declaredMethods
-            .filter { it.name == "tryRemoveNotification" || it.name == "onNotificationRemoved" }
-            .forEach { method ->
+            .filter {
+                it.name == "tryRemoveNotification" ||
+                    it.name == "onNotificationRemoved"
+            }.forEach { method ->
                 runCatching {
                     module.hook(
                         method,

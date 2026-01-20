@@ -70,7 +70,8 @@ fun <T> SelectPreference(
     ) {
         Column(modifier = Modifier.weight(1f)) {
             CompositionLocalProvider(
-                LocalContentColor provides MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
+                LocalContentColor provides
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
             ) {
                 ProvideTextStyle(MaterialTheme.typography.bodyLarge) {
                     title()
@@ -78,7 +79,8 @@ fun <T> SelectPreference(
             }
             summary?.let {
                 CompositionLocalProvider(
-                    LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
+                    LocalContentColor provides
+                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
                 ) {
                     ProvideTextStyle(MaterialTheme.typography.bodyMedium) {
                         it()
@@ -87,7 +89,8 @@ fun <T> SelectPreference(
             }
         }
         CompositionLocalProvider(
-            LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
+            LocalContentColor provides
+                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
         ) {
             ProvideTextStyle(MaterialTheme.typography.bodyMedium) {
                 Text(valueToText(value))
@@ -127,7 +130,9 @@ private fun <T> SelectDialog(
                             selected = option == value,
                             onClick = null,
                         )
-                        Spacer(modifier = Modifier.padding(start = Tokens.PreferenceHorizontalSpacing))
+                        Spacer(
+                            modifier = Modifier.padding(start = Tokens.PreferenceHorizontalSpacing),
+                        )
                         Text(
                             text = valueToText(option),
                             style = MaterialTheme.typography.bodyLarge,
