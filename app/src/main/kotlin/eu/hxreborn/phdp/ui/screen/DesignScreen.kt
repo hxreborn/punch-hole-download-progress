@@ -224,7 +224,17 @@ fun DesignScreen(
                                             it,
                                         )
                                     },
-                                    values = listOf("left", "right"),
+                                    values =
+                                        listOf(
+                                            "left",
+                                            "right",
+                                            "top_left",
+                                            "top_right",
+                                            "bottom_left",
+                                            "bottom_right",
+                                            "top",
+                                            "bottom",
+                                        ),
                                     title = {
                                         Text(
                                             stringResource(R.string.pref_text_position_title),
@@ -282,7 +292,17 @@ fun DesignScreen(
                                             it,
                                         )
                                     },
-                                    values = listOf("left", "right", "top_left", "top_right"),
+                                    values =
+                                        listOf(
+                                            "left",
+                                            "right",
+                                            "top_left",
+                                            "top_right",
+                                            "bottom_left",
+                                            "bottom_right",
+                                            "top",
+                                            "bottom",
+                                        ),
                                     title = {
                                         Text(
                                             stringResource(R.string.pref_filename_position_title),
@@ -320,6 +340,10 @@ private fun positionLabelPlain(position: String): String =
         "right" -> "Right"
         "top_left" -> "Top Left"
         "top_right" -> "Top Right"
+        "bottom_left" -> "Bottom Left"
+        "bottom_right" -> "Bottom Right"
+        "top" -> "Top"
+        "bottom" -> "Bottom"
         else -> position
     }
 

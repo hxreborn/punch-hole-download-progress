@@ -467,18 +467,81 @@ class IndicatorView(
         if (PrefsManager.percentTextEnabled) {
             val text = "$progressVal%"
             val textWidth = percentPaint.measureText(text)
-            val x =
+            val (x, y, align) =
                 when (PrefsManager.percentTextPosition) {
-                    "left" -> arcBounds.left - textWidth / 2 - padding
-                    else -> arcBounds.right + textWidth / 2 + padding
+                    "left" -> {
+                        Triple(
+                            arcBounds.left - textWidth / 2 - padding,
+                            arcBounds.centerY() + percentPaint.textSize / 3,
+                            null,
+                        )
+                    }
+
+                    "right" -> {
+                        Triple(
+                            arcBounds.right + textWidth / 2 + padding,
+                            arcBounds.centerY() + percentPaint.textSize / 3,
+                            null,
+                        )
+                    }
+
+                    "top_left" -> {
+                        Triple(
+                            arcBounds.left - padding,
+                            arcBounds.top - padding,
+                            Paint.Align.RIGHT,
+                        )
+                    }
+
+                    "top_right" -> {
+                        Triple(
+                            arcBounds.right + padding,
+                            arcBounds.top - padding,
+                            Paint.Align.LEFT,
+                        )
+                    }
+
+                    "bottom_left" -> {
+                        Triple(
+                            arcBounds.left - padding,
+                            arcBounds.bottom + percentPaint.textSize + padding,
+                            Paint.Align.RIGHT,
+                        )
+                    }
+
+                    "bottom_right" -> {
+                        Triple(
+                            arcBounds.right + padding,
+                            arcBounds.bottom + percentPaint.textSize + padding,
+                            Paint.Align.LEFT,
+                        )
+                    }
+
+                    "top" -> {
+                        Triple(
+                            arcBounds.centerX(),
+                            arcBounds.top - padding,
+                            Paint.Align.CENTER,
+                        )
+                    }
+
+                    "bottom" -> {
+                        Triple(
+                            arcBounds.centerX(),
+                            arcBounds.bottom + percentPaint.textSize + padding,
+                            Paint.Align.CENTER,
+                        )
+                    }
+
+                    else -> {
+                        Triple(
+                            arcBounds.right + textWidth / 2 + padding,
+                            arcBounds.centerY() + percentPaint.textSize / 3,
+                            null,
+                        )
+                    }
                 }
-            specs +=
-                TextSpec(
-                    text,
-                    percentPaint,
-                    x,
-                    arcBounds.centerY() + percentPaint.textSize / 3,
-                )
+            specs += TextSpec(text, percentPaint, x, y, align)
         }
 
         if (PrefsManager.filenameTextEnabled && currentFilename != null) {
@@ -509,11 +572,59 @@ class IndicatorView(
                     }
 
                     "top_left" -> {
-                        Triple(arcBounds.left - padding, arcBounds.top - padding, Paint.Align.RIGHT)
+                        Triple(
+                            arcBounds.left - padding,
+                            arcBounds.top - padding,
+                            Paint.Align.RIGHT,
+                        )
+                    }
+
+                    "top_right" -> {
+                        Triple(
+                            arcBounds.right + padding,
+                            arcBounds.top - padding,
+                            Paint.Align.LEFT,
+                        )
+                    }
+
+                    "bottom_left" -> {
+                        Triple(
+                            arcBounds.left - padding,
+                            arcBounds.bottom + filenamePaint.textSize + padding,
+                            Paint.Align.RIGHT,
+                        )
+                    }
+
+                    "bottom_right" -> {
+                        Triple(
+                            arcBounds.right + padding,
+                            arcBounds.bottom + filenamePaint.textSize + padding,
+                            Paint.Align.LEFT,
+                        )
+                    }
+
+                    "top" -> {
+                        Triple(
+                            arcBounds.centerX(),
+                            arcBounds.top - padding,
+                            Paint.Align.CENTER,
+                        )
+                    }
+
+                    "bottom" -> {
+                        Triple(
+                            arcBounds.centerX(),
+                            arcBounds.bottom + filenamePaint.textSize + padding,
+                            Paint.Align.CENTER,
+                        )
                     }
 
                     else -> {
-                        Triple(arcBounds.right + padding, arcBounds.top - padding, Paint.Align.LEFT)
+                        Triple(
+                            arcBounds.right + padding,
+                            arcBounds.top - padding,
+                            Paint.Align.LEFT,
+                        )
                     }
                 }
             specs += TextSpec(truncated, filenamePaint, x, y, align)

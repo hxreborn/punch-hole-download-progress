@@ -60,6 +60,10 @@
     <string name="position_right">Right</string>
     <string name="position_top_left">Top Left</string>
     <string name="position_top_right">Top Right</string>
+    <string name="position_bottom_left">Bottom Left</string>
+    <string name="position_bottom_right">Bottom Right</string>
+    <string name="position_top">Top</string>
+    <string name="position_bottom">Bottom</string>
 
     <!-- Design: Filename Text -->
     <string name="pref_show_filename_title">Filename label</string>
