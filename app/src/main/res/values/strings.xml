@@ -103,8 +103,8 @@
     <!-- System: Visibility -->
     <string name="pref_show_queue_count_title">Queue counter</string>
     <string name="pref_show_queue_count_summary">Display number of concurrent active downloads</string>
-    <string name="pref_invert_rotation_title">Rotation direction</string>
-    <string name="pref_invert_rotation_summary">Reverses arc progress from counter-clockwise to clockwise</string>
+    <string name="pref_invert_rotation_title">Progress direction</string>
+    <string name="pref_invert_rotation_summary">Direction the arc fills around the cutout</string>
     <string name="clockwise">Clockwise</string>
     <string name="counter_clockwise">Counter-clockwise</string>
 
