@@ -22,6 +22,8 @@ import eu.hxreborn.phdp.ui.theme.Tokens
 import me.zhanghai.compose.preference.ProvidePreferenceLocals
 import me.zhanghai.compose.preference.preferenceCategory
 
+private const val SLIDER_STEP_MS = 50f
+
 @Composable
 fun MotionScreen(
     prefsState: PrefsState,
@@ -115,6 +117,7 @@ fun MotionScreen(
                                         )
                                     },
                                     valueText = { Text("${it.toInt()}ms") },
+                                    stepSize = SLIDER_STEP_MS,
                                 )
                             },
                             {
@@ -146,6 +149,7 @@ fun MotionScreen(
                                         )
                                     },
                                     valueText = { Text("${it.toInt()}ms") },
+                                    stepSize = SLIDER_STEP_MS,
                                 )
                             },
                         ),
@@ -267,6 +271,7 @@ fun MotionScreen(
                                         )
                                     },
                                     valueText = { Text("${it.toInt()}ms") },
+                                    stepSize = SLIDER_STEP_MS,
                                 )
                             },
                         ),

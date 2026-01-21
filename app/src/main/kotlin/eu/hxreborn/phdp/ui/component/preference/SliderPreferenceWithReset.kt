@@ -30,6 +30,16 @@ import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.Tokens
 import kotlin.math.abs
+import kotlin.math.roundToInt
+
+private fun Float.roundToStep(
+    stepSize: Float,
+    range: ClosedFloatingPointRange<Float>,
+): Float {
+    if (stepSize <= 0f) return this
+    val stepped = (((this - range.start) / stepSize).roundToInt() * stepSize + range.start)
+    return stepped.coerceIn(range)
+}
 
 @Composable
 fun SliderPreferenceWithReset(
@@ -43,6 +53,7 @@ fun SliderPreferenceWithReset(
     summary: @Composable (() -> Unit)? = null,
     valueText: @Composable ((Float) -> Unit)? = null,
     enabled: Boolean = true,
+    stepSize: Float = 0f,
 ) {
     // Track dragging state to avoid resetting slider during drag
     var isDragging by remember { mutableStateOf(false) }
@@ -111,7 +122,7 @@ fun SliderPreferenceWithReset(
                 value = sliderValue,
                 onValueChange = {
                     isDragging = true
-                    sliderValue = it
+                    sliderValue = it.roundToStep(stepSize, valueRange)
                 },
                 onValueChangeFinished = {
                     onValueChange(sliderValue)
