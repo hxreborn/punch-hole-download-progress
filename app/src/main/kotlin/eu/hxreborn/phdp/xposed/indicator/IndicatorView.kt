@@ -29,6 +29,7 @@ class IndicatorView(
     private val arcBounds = RectF()
     private var drawCount = 0
     private val density = resources.displayMetrics.density
+    private val badgePainter = BadgePainter(density)
 
     private val animator = IndicatorAnimator(this)
 
@@ -126,11 +127,6 @@ class IndicatorView(
     private val glowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private val shinePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private val errorPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
-    private val countPaint =
-        Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            textAlign = Paint.Align.CENTER
-            typeface = Typeface.DEFAULT_BOLD
-        }
     private val idlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private val percentPaint =
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -208,10 +204,7 @@ class IndicatorView(
             strokeWidth = PrefsManager.strokeWidth * density * 1.5f
         }
 
-        countPaint.apply {
-            color = PrefsManager.color
-            textSize = 10f * density
-        }
+        badgePainter.updateColors(PrefsManager.color)
 
         idlePaint.apply {
             color = PrefsManager.color
@@ -394,19 +387,22 @@ class IndicatorView(
             val actualSweep = if (PrefsManager.clockwise) sweepAngle else -sweepAngle
             canvas.drawArc(arcBounds, -90f, actualSweep, false, animatedPaint)
 
-            if (!animator.isPreviewAnimating && PrefsManager.showDownloadCount &&
-                activeDownloadCount > 1 &&
-                effectiveProgress > 0
-            ) {
-                canvas.drawText(
-                    activeDownloadCount.toString(),
-                    arcBounds.centerX(),
-                    arcBounds.centerY() + countPaint.textSize / 3,
-                    countPaint,
-                )
-            }
-
             if (effectiveProgress in 1..99) drawLabels(canvas, effectiveProgress)
+        }
+
+        // Badge drawn BELOW the ring (not at center - that's behind camera hardware)
+        if (!animator.isPreviewAnimating && PrefsManager.showDownloadCount &&
+            activeDownloadCount > 1
+        ) {
+            scaledPath.computeBounds(arcBounds, true)
+            val badgeTop = arcBounds.bottom + 8f * density
+            badgePainter.draw(
+                canvas,
+                arcBounds.centerX(),
+                badgeTop,
+                activeDownloadCount,
+                effectiveOpacity,
+            )
         }
 
         canvas.restore()
@@ -544,7 +540,9 @@ class IndicatorView(
             specs += TextSpec(text, percentPaint, x, y, align)
         }
 
-        if (PrefsManager.filenameTextEnabled && currentFilename != null) {
+        if (PrefsManager.filenameTextEnabled && currentFilename != null &&
+            activeDownloadCount <= 1
+        ) {
             val truncated =
                 TextUtils
                     .ellipsize(
