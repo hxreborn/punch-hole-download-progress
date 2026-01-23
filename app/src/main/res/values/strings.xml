@@ -19,8 +19,8 @@
     <string name="more_options">More options</string>
 
     <!-- Tab Titles -->
-    <string name="tab_design">Design</string>
-    <string name="tab_motion">Motion</string>
+    <string name="tab_design">Appearance</string>
+    <string name="tab_motion">Behavior</string>
     <string name="tab_system">System</string>
 
     <!-- Group Headers -->
@@ -29,6 +29,7 @@
     <string name="group_percent_text">Percentage Text</string>
     <string name="group_filename_text">Filename Text</string>
     <string name="group_animation">Animation</string>
+    <string name="group_indicators">Indicators</string>
     <string name="group_timing">Timing</string>
     <string name="group_feedback">Feedback</string>
     <string name="group_fast_downloads">Fast Downloads</string>
@@ -43,6 +44,8 @@
     <string name="pref_progress_color_summary">Ring fill color during active downloads</string>
     <string name="pref_success_color_title">Completion color</string>
     <string name="pref_success_color_summary">Ring color applied when download finishes</string>
+    <string name="pref_error_color_title">Error color</string>
+    <string name="pref_error_color_summary">Ring color applied when download fails</string>
 
     <!-- Design: Geometry -->
     <string name="pref_stroke_width_title">Thickness</string>

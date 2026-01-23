@@ -23,7 +23,7 @@ import me.zhanghai.compose.preference.ProvidePreferenceLocals
 import me.zhanghai.compose.preference.preferenceCategory
 
 @Composable
-fun DesignScreen(
+fun AppearanceScreen(
     prefsState: PrefsState,
     onSavePrefs: (key: String, value: Any) -> Unit,
     contentPadding: PaddingValues,
@@ -80,6 +80,20 @@ fun DesignScreen(
                                     summary = {
                                         Text(
                                             stringResource(R.string.pref_success_color_summary),
+                                        )
+                                    },
+                                )
+                            },
+                            {
+                                ColorPreference(
+                                    value = prefsState.errorColor,
+                                    onValueChange = {
+                                        onSavePrefs(PrefsManager.KEY_ERROR_COLOR, it)
+                                    },
+                                    title = { Text(stringResource(R.string.pref_error_color_title)) },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_error_color_summary),
                                         )
                                     },
                                 )
@@ -349,9 +363,9 @@ private fun positionLabelPlain(position: String): String =
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun DesignScreenPreview() {
+private fun AppearanceScreenPreview() {
     AppTheme(darkTheme = true) {
-        DesignScreen(
+        AppearanceScreen(
             prefsState = PrefsState(),
             onSavePrefs = { _, _ -> },
             contentPadding = PaddingValues(),

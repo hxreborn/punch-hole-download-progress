@@ -9,10 +9,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.SlowMotionVideo
+import androidx.compose.material.icons.filled.Widgets
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.SlowMotionVideo
+import androidx.compose.material.icons.outlined.Widgets
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -28,8 +28,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import eu.hxreborn.phdp.R
-import eu.hxreborn.phdp.ui.screen.DesignScreen
-import eu.hxreborn.phdp.ui.screen.MotionScreen
+import eu.hxreborn.phdp.ui.screen.AppearanceScreen
+import eu.hxreborn.phdp.ui.screen.BehaviorScreen
 import eu.hxreborn.phdp.ui.screen.SystemScreen
 import eu.hxreborn.phdp.ui.state.PrefsState
 import eu.hxreborn.phdp.ui.theme.Tokens
@@ -62,8 +62,8 @@ val bottomNavItems =
         BottomNavItem(
             route = Screen.Motion.route,
             titleRes = R.string.tab_motion,
-            selectedIcon = Icons.Filled.SlowMotionVideo,
-            unselectedIcon = Icons.Outlined.SlowMotionVideo,
+            selectedIcon = Icons.Filled.Widgets,
+            unselectedIcon = Icons.Outlined.Widgets,
         ),
         BottomNavItem(
             route = Screen.System.route,
@@ -81,7 +81,6 @@ fun MainNavHost(
     onTestSuccess: () -> Unit,
     onTestFailure: () -> Unit,
     onClearDownloads: () -> Unit,
-    onPreviewAnimation: () -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
@@ -95,17 +94,16 @@ fun MainNavHost(
         popExitTransition = { fadeOut(tween(Tokens.ANIMATION_DURATION_MS)) },
     ) {
         composable(Screen.Design.route) {
-            DesignScreen(
+            AppearanceScreen(
                 prefsState = prefsState,
                 onSavePrefs = onSavePrefs,
                 contentPadding = contentPadding,
             )
         }
         composable(Screen.Motion.route) {
-            MotionScreen(
+            BehaviorScreen(
                 prefsState = prefsState,
                 onSavePrefs = onSavePrefs,
-                onPreviewAnimation = onPreviewAnimation,
                 contentPadding = contentPadding,
             )
         }

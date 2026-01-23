@@ -55,7 +55,6 @@ fun PunchHoleProgressContent(
     onTestSuccess: () -> Unit,
     onTestFailure: () -> Unit,
     onClearDownloads: () -> Unit,
-    onPreviewAnimation: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
@@ -146,7 +145,6 @@ fun PunchHoleProgressContent(
             onTestSuccess = onTestSuccess,
             onTestFailure = onTestFailure,
             onClearDownloads = onClearDownloads,
-            onPreviewAnimation = onPreviewAnimation,
             contentPadding = paddingValues,
         )
     }

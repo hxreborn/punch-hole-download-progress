@@ -14,7 +14,6 @@ import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.preference.SelectPreference
-import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithReset
 import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
 import eu.hxreborn.phdp.ui.state.PrefsState
 import eu.hxreborn.phdp.ui.theme.AppTheme
@@ -22,13 +21,10 @@ import eu.hxreborn.phdp.ui.theme.Tokens
 import me.zhanghai.compose.preference.ProvidePreferenceLocals
 import me.zhanghai.compose.preference.preferenceCategory
 
-private const val SLIDER_STEP_MS = 50f
-
 @Composable
-fun MotionScreen(
+fun BehaviorScreen(
     prefsState: PrefsState,
     onSavePrefs: (key: String, value: Any) -> Unit,
-    onPreviewAnimation: () -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
@@ -80,81 +76,58 @@ fun MotionScreen(
                                     },
                                 )
                             },
+                            {
+                                TogglePreferenceWithIcon(
+                                    value = prefsState.clockwise,
+                                    onValueChange = { onSavePrefs(PrefsManager.KEY_CLOCKWISE, it) },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_invert_rotation_title),
+                                        )
+                                    },
+                                    summary = {
+                                        val text =
+                                            if (prefsState.clockwise) {
+                                                R.string.clockwise
+                                            } else {
+                                                R.string.counter_clockwise
+                                            }
+                                        Text(stringResource(text))
+                                    },
+                                )
+                            },
                         ),
                 )
             }
 
             preferenceCategory(
-                key = "motion_timing_header",
-                title = { Text(stringResource(R.string.group_timing)) },
+                key = "behavior_indicators_header",
+                title = { Text(stringResource(R.string.group_indicators)) },
             )
 
-            item(key = "motion_timing_section") {
+            item(key = "behavior_indicators_section") {
                 SectionCard(
                     items =
                         listOf(
                             {
-                                SliderPreferenceWithReset(
-                                    value = prefsState.finishHoldMs.toFloat(),
+                                TogglePreferenceWithIcon(
+                                    value = prefsState.showDownloadCount,
                                     onValueChange = {
                                         onSavePrefs(
-                                            PrefsManager.KEY_FINISH_HOLD_MS,
-                                            it.toInt(),
+                                            PrefsManager.KEY_SHOW_DOWNLOAD_COUNT,
+                                            it,
                                         )
                                     },
                                     title = {
                                         Text(
-                                            stringResource(R.string.pref_hold_duration_title),
+                                            stringResource(R.string.pref_show_queue_count_title),
                                         )
                                     },
                                     summary = {
                                         Text(
-                                            stringResource(R.string.pref_hold_duration_summary),
+                                            stringResource(R.string.pref_show_queue_count_summary),
                                         )
                                     },
-                                    valueRange =
-                                        PrefsManager.MIN_FINISH_HOLD_MS.toFloat()..PrefsManager.MAX_FINISH_HOLD_MS.toFloat(),
-                                    defaultValue = PrefsManager.DEFAULT_FINISH_HOLD_MS.toFloat(),
-                                    onReset = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_FINISH_HOLD_MS,
-                                            PrefsManager.DEFAULT_FINISH_HOLD_MS,
-                                        )
-                                    },
-                                    valueText = { Text("${it.toInt()}ms") },
-                                    stepSize = SLIDER_STEP_MS,
-                                )
-                            },
-                            {
-                                SliderPreferenceWithReset(
-                                    value = prefsState.finishExitMs.toFloat(),
-                                    onValueChange = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_FINISH_EXIT_MS,
-                                            it.toInt(),
-                                        )
-                                    },
-                                    title = {
-                                        Text(
-                                            stringResource(R.string.pref_exit_duration_title),
-                                        )
-                                    },
-                                    summary = {
-                                        Text(
-                                            stringResource(R.string.pref_exit_duration_summary),
-                                        )
-                                    },
-                                    valueRange =
-                                        PrefsManager.MIN_FINISH_EXIT_MS.toFloat()..PrefsManager.MAX_FINISH_EXIT_MS.toFloat(),
-                                    defaultValue = PrefsManager.DEFAULT_FINISH_EXIT_MS.toFloat(),
-                                    onReset = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_FINISH_EXIT_MS,
-                                            PrefsManager.DEFAULT_FINISH_EXIT_MS,
-                                        )
-                                    },
-                                    valueText = { Text("${it.toInt()}ms") },
-                                    stepSize = SLIDER_STEP_MS,
                                 )
                             },
                         ),
@@ -215,73 +188,6 @@ fun MotionScreen(
                         ),
                 )
             }
-
-            preferenceCategory(
-                key = "motion_fast_header",
-                title = { Text(stringResource(R.string.group_fast_downloads)) },
-            )
-
-            item(key = "motion_fast_section") {
-                SectionCard(
-                    items =
-                        listOf(
-                            {
-                                TogglePreferenceWithIcon(
-                                    value = prefsState.minVisibilityEnabled,
-                                    onValueChange = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_MIN_VISIBILITY_ENABLED,
-                                            it,
-                                        )
-                                    },
-                                    title = {
-                                        Text(
-                                            stringResource(R.string.pref_force_completion_title),
-                                        )
-                                    },
-                                    summary = {
-                                        Text(
-                                            stringResource(R.string.pref_force_completion_summary),
-                                        )
-                                    },
-                                )
-                            },
-                            {
-                                SliderPreferenceWithReset(
-                                    value = prefsState.minVisibilityMs.toFloat(),
-                                    onValueChange = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_MIN_VISIBILITY_MS,
-                                            it.toInt(),
-                                        )
-                                    },
-                                    title = {
-                                        Text(
-                                            stringResource(R.string.pref_min_duration_title),
-                                        )
-                                    },
-                                    summary = {
-                                        Text(
-                                            stringResource(R.string.pref_min_duration_summary),
-                                        )
-                                    },
-                                    enabled = prefsState.minVisibilityEnabled,
-                                    valueRange =
-                                        PrefsManager.MIN_MIN_VISIBILITY_MS.toFloat()..PrefsManager.MAX_MIN_VISIBILITY_MS.toFloat(),
-                                    defaultValue = PrefsManager.DEFAULT_MIN_VISIBILITY_MS.toFloat(),
-                                    onReset = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_MIN_VISIBILITY_MS,
-                                            PrefsManager.DEFAULT_MIN_VISIBILITY_MS,
-                                        )
-                                    },
-                                    valueText = { Text("${it.toInt()}ms") },
-                                    stepSize = SLIDER_STEP_MS,
-                                )
-                            },
-                        ),
-                )
-            }
         }
     }
 }
@@ -294,12 +200,11 @@ private fun finishStyleLabel(
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun MotionScreenPreview() {
+private fun BehaviorScreenPreview() {
     AppTheme(darkTheme = true) {
-        MotionScreen(
+        BehaviorScreen(
             prefsState = PrefsState(),
             onSavePrefs = { _, _ -> },
-            onPreviewAnimation = {},
             contentPadding = PaddingValues(),
         )
     }

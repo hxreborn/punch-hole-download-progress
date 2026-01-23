@@ -48,103 +48,12 @@ fun SystemScreen(
                 ),
         ) {
             preferenceCategory(
-                key = "system_service_header",
-                title = { Text(stringResource(R.string.group_service)) },
-            )
-
-            item(key = "system_service_section") {
-                SectionCard(
-                    items =
-                        listOf(
-                            {
-                                TogglePreferenceWithIcon(
-                                    value = prefsState.enabled,
-                                    onValueChange = { onSavePrefs(PrefsManager.KEY_ENABLED, it) },
-                                    title = {
-                                        Text(
-                                            stringResource(R.string.pref_enable_service_title),
-                                        )
-                                    },
-                                    summary = {
-                                        val text =
-                                            if (prefsState.enabled) {
-                                                R.string.pref_enable_service_on
-                                            } else {
-                                                R.string.pref_enable_service_off
-                                            }
-                                        Text(stringResource(text))
-                                    },
-                                )
-                            },
-                        ),
-                )
-            }
-
-            preferenceCategory(
-                key = "system_visibility_header",
-                title = { Text(stringResource(R.string.group_visibility)) },
-            )
-
-            item(key = "system_visibility_section") {
-                SectionCard(
-                    enabled = prefsState.enabled,
-                    items =
-                        listOf(
-                            {
-                                TogglePreferenceWithIcon(
-                                    value = prefsState.showDownloadCount,
-                                    onValueChange = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_SHOW_DOWNLOAD_COUNT,
-                                            it,
-                                        )
-                                    },
-                                    title = {
-                                        Text(
-                                            stringResource(R.string.pref_show_queue_count_title),
-                                        )
-                                    },
-                                    summary = {
-                                        Text(
-                                            stringResource(R.string.pref_show_queue_count_summary),
-                                        )
-                                    },
-                                    enabled = prefsState.enabled,
-                                )
-                            },
-                            {
-                                TogglePreferenceWithIcon(
-                                    value = prefsState.clockwise,
-                                    onValueChange = { onSavePrefs(PrefsManager.KEY_CLOCKWISE, it) },
-                                    title = {
-                                        Text(
-                                            stringResource(R.string.pref_invert_rotation_title),
-                                        )
-                                    },
-                                    summary = {
-                                        val text =
-                                            if (prefsState.clockwise) {
-                                                R.string.clockwise
-                                            } else {
-                                                R.string.counter_clockwise
-                                            }
-                                        Text(stringResource(text))
-                                    },
-                                    enabled = prefsState.enabled,
-                                )
-                            },
-                        ),
-                )
-            }
-
-            preferenceCategory(
                 key = "system_power_header",
                 title = { Text(stringResource(R.string.group_power)) },
             )
 
             item(key = "system_power_section") {
                 SectionCard(
-                    enabled = prefsState.enabled,
                     items =
                         listOf(
                             {
@@ -171,7 +80,6 @@ fun SystemScreen(
                                             ) ?: prefsState.powerSaverMode,
                                         )
                                     },
-                                    enabled = prefsState.enabled,
                                     valueToText = {
                                         powerSaverLabel(it, powerSaverEntries, powerSaverValues)
                                             ?: it
@@ -189,7 +97,6 @@ fun SystemScreen(
 
             item(key = "system_diagnostics_section") {
                 SectionCard(
-                    enabled = prefsState.enabled,
                     items =
                         listOf(
                             {
@@ -205,7 +112,6 @@ fun SystemScreen(
                                             stringResource(R.string.pref_debug_completion_summary),
                                         )
                                     },
-                                    enabled = prefsState.enabled,
                                 )
                             },
                             {
@@ -221,7 +127,6 @@ fun SystemScreen(
                                             stringResource(R.string.pref_test_failure_summary),
                                         )
                                     },
-                                    enabled = prefsState.enabled,
                                 )
                             },
                             {
@@ -237,7 +142,6 @@ fun SystemScreen(
                                             stringResource(R.string.pref_clear_downloads_summary),
                                         )
                                     },
-                                    enabled = prefsState.enabled,
                                 )
                             },
                         ),

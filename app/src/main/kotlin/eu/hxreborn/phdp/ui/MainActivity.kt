@@ -69,7 +69,6 @@ class MainActivity :
                     onTestSuccess = ::simulateSuccess,
                     onTestFailure = ::simulateFailure,
                     onClearDownloads = ::clearDownloads,
-                    onPreviewAnimation = ::previewCompletion,
                 )
 
                 if (showRestartDialog) {
@@ -136,10 +135,6 @@ class MainActivity :
             }
             saveToPrefs(PrefsManager.KEY_TEST_PROGRESS, -1)
         }
-    }
-
-    private fun previewCompletion() {
-        saveToPrefs(PrefsManager.KEY_PREVIEW_TRIGGER, System.currentTimeMillis())
     }
 
     private fun clearDownloads() {
