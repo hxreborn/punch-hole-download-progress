@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Punch-hole Download Progress</string>
-    <string name="app_tagline">Download progress</string>
     <string name="app_desc">Activity indicator ring around camera cutout</string>
 
     <!-- Restart SystemUI -->
     <string name="restart_systemui">Restart SystemUI</string>
     <string name="restart_systemui_confirm">This will restart SystemUI to apply changes. Continue?</string>
     <string name="restart">Restart</string>
-    <string name="restarting">Restarting…</string>
     <string name="restart_success">SystemUI restarted</string>
     <string name="restart_failed_detail">Failed to restart SystemUI: %1$s</string>
     <string name="root_not_granted">Root not granted. Please grant root to Punch-hole Download Progress.</string>
@@ -30,11 +28,7 @@
     <string name="group_filename_text">Filename Text</string>
     <string name="group_animation">Animation</string>
     <string name="group_indicators">Indicators</string>
-    <string name="group_timing">Timing</string>
     <string name="group_feedback">Feedback</string>
-    <string name="group_fast_downloads">Fast Downloads</string>
-    <string name="group_service">Service</string>
-    <string name="group_visibility">Visibility</string>
     <string name="group_power">Power</string>
     <string name="group_diagnostics">Diagnostics</string>
     <string name="group_about">About</string>
@@ -60,14 +54,6 @@
     <string name="pref_show_percentage_summary">Display current progress as numeric text</string>
     <string name="pref_text_position_title">Label position</string>
     <string name="pref_text_position_summary">Placement of the percentage text</string>
-    <string name="position_left">Left</string>
-    <string name="position_right">Right</string>
-    <string name="position_top_left">Top Left</string>
-    <string name="position_top_right">Top Right</string>
-    <string name="position_bottom_left">Bottom Left</string>
-    <string name="position_bottom_right">Bottom Right</string>
-    <string name="position_top">Top</string>
-    <string name="position_bottom">Bottom</string>
 
     <!-- Design: Filename Text -->
     <string name="pref_show_filename_title">Filename label</string>
@@ -78,13 +64,8 @@
     <!-- Motion: Animation -->
     <string name="pref_completion_style_title">Completion style</string>
     <string name="pref_completion_style_summary">Visual effect when downloads finish</string>
-    <string name="long_press_preview_hint">Long-press to preview</string>
 
     <!-- Motion: Timing -->
-    <string name="pref_hold_duration_title">Completion delay</string>
-    <string name="pref_hold_duration_summary">Pause before completion animation</string>
-    <string name="pref_exit_duration_title">Animation duration</string>
-    <string name="pref_exit_duration_summary">Duration of completion animation</string>
 
     <!-- Motion: Feedback -->
     <string name="pref_haptic_feedback_title">Haptic feedback</string>
@@ -93,28 +74,18 @@
     <string name="pref_pulse_flash_summary">Brief dim before completion animation</string>
 
     <!-- Motion: Fast Downloads -->
-    <string name="pref_min_duration_title">Min duration</string>
-    <string name="pref_min_duration_summary">Skip indicator for downloads completing under this threshold</string>
-    <string name="pref_force_completion_title">Force completion</string>
-    <string name="pref_force_completion_summary">Play completion effect even when download finishes instantly</string>
 
     <!-- System: Service -->
-    <string name="pref_enable_service_title">Service</string>
-    <string name="pref_enable_service_summary">Monitor and display download progress</string>
-    <string name="pref_enable_service_on">Monitoring downloads</string>
-    <string name="pref_enable_service_off">Service disabled</string>
 
     <!-- System: Visibility -->
     <string name="pref_show_queue_count_title">Queue counter</string>
     <string name="pref_show_queue_count_summary">Display number of concurrent active downloads</string>
     <string name="pref_invert_rotation_title">Progress direction</string>
-    <string name="pref_invert_rotation_summary">Direction the arc fills around the cutout</string>
     <string name="clockwise">Clockwise</string>
     <string name="counter_clockwise">Counter-clockwise</string>
 
     <!-- System: Power -->
     <string name="pref_battery_saver_title">Battery saver mode</string>
-    <string name="pref_battery_saver_summary">Indicator behavior when battery saver is active</string>
 
     <!-- System: Diagnostics -->
     <string name="pref_debug_completion_title">Simulate completion</string>
@@ -136,7 +107,6 @@
     <string name="reset_confirm">Reset all settings to defaults?</string>
     <string name="reset_done">Settings reset</string>
     <string name="reset">Reset</string>
-    <string name="undo">Undo</string>
 
     <!-- Dialog Arrays: Completion Style -->
     <string-array name="finish_style_entries">
