@@ -338,16 +338,6 @@ fun AppearanceScreen(
     }
 }
 
-@Composable
-private fun positionLabel(position: String): String =
-    when (position) {
-        "left" -> stringResource(R.string.position_left)
-        "right" -> stringResource(R.string.position_right)
-        "top_left" -> stringResource(R.string.position_top_left)
-        "top_right" -> stringResource(R.string.position_top_right)
-        else -> position
-    }
-
 private fun positionLabelPlain(position: String): String =
     when (position) {
         "left" -> "Left"
