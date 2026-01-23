@@ -379,7 +379,7 @@ class IndicatorView(
             activeDownloadCount > 1
         ) {
             scaledPath.computeBounds(arcBounds, true)
-            val badgeTop = arcBounds.bottom + 8f * density
+            val badgeTop = arcBounds.bottom + 4f * density
             badgePainter.draw(
                 canvas,
                 arcBounds.centerX(),
@@ -441,7 +441,7 @@ class IndicatorView(
         progressVal: Int,
     ) {
         val alpha = effectiveOpacity * 255 / 100
-        val padding = 8f * density
+        val padding = 4f * density
         val specs = mutableListOf<TextSpec>()
 
         if (PrefsManager.percentTextEnabled) {

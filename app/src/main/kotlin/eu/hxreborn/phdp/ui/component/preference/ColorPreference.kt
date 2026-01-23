@@ -46,20 +46,28 @@ import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import eu.hxreborn.phdp.ui.theme.Tokens
 
-private val presetColors =
+private val materialColors =
     listOf(
-        0xFF00FFFF.toInt(), // Cyan
-        0xFFFF0000.toInt(), // Red
-        0xFF00FF00.toInt(), // Green
-        0xFF0000FF.toInt(), // Blue
-        0xFFFF00FF.toInt(), // Magenta
-        0xFFFFFF00.toInt(), // Yellow
-        0xFFFF8000.toInt(), // Orange
+        0xFFF44336.toInt(), // Red 500
+        0xFFE91E63.toInt(), // Pink 500
+        0xFF9C27B0.toInt(), // Purple 500
+        0xFF673AB7.toInt(), // Deep Purple 500
+        0xFF3F51B5.toInt(), // Indigo 500
+        0xFF2196F3.toInt(), // Blue 500
+        0xFF03A9F4.toInt(), // Light Blue 500
+        0xFF00BCD4.toInt(), // Cyan 500
+        0xFF009688.toInt(), // Teal 500
+        0xFF4CAF50.toInt(), // Green 500
+        0xFF8BC34A.toInt(), // Light Green 500
+        0xFFCDDC39.toInt(), // Lime 500
+        0xFFFFEB3B.toInt(), // Yellow 500
+        0xFFFFC107.toInt(), // Amber 500
+        0xFFFF9800.toInt(), // Orange 500
+        0xFFFF5722.toInt(), // Deep Orange 500
+        0xFF795548.toInt(), // Brown 500
+        0xFF9E9E9E.toInt(), // Grey 500
+        0xFF607D8B.toInt(), // Blue Grey 500
         0xFFFFFFFF.toInt(), // White
-        0xFF8000FF.toInt(), // Purple
-        0xFF00FF80.toInt(), // Mint
-        0xFFFF0080.toInt(), // Pink
-        0xFF80FF00.toInt(), // Lime
     )
 
 @Composable
@@ -161,7 +169,7 @@ private fun ColorPickerDialog(
                     horizontalArrangement = Arrangement.spacedBy(Tokens.ColorGridSpacing),
                     verticalArrangement = Arrangement.spacedBy(Tokens.ColorGridSpacing),
                 ) {
-                    items(presetColors) { color ->
+                    items(materialColors) { color ->
                         ColorSwatch(
                             color = color,
                             selected = color == selectedColor,

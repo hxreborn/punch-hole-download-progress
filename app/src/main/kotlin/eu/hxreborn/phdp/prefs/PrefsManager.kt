@@ -44,13 +44,13 @@ object PrefsManager {
 
     // Defaults
     const val DEFAULT_ENABLED = true
-    const val DEFAULT_COLOR = 0xFF00FFFF.toInt()
+    const val DEFAULT_COLOR = 0xFF2196F3.toInt() // Blue 500
     const val DEFAULT_STROKE_WIDTH = 2f
     const val DEFAULT_RING_GAP = 1.155f
     const val DEFAULT_OPACITY = 90
     const val DEFAULT_HOOKS_FEEDBACK = false
     const val DEFAULT_PROGRESS_EASING = "linear"
-    const val DEFAULT_ERROR_COLOR = 0xFFFF5252.toInt() // Material Red
+    const val DEFAULT_ERROR_COLOR = 0xFFF44336.toInt() // Red 500
     const val DEFAULT_POWER_SAVER_MODE = "normal"
     const val DEFAULT_SHOW_DOWNLOAD_COUNT = false
     const val DEFAULT_MIN_VISIBILITY_ENABLED = true
