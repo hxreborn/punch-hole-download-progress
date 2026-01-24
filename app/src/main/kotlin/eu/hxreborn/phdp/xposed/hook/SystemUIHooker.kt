@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.PowerManager
-import android.view.HapticFeedbackConstants
+import androidx.core.view.HapticFeedbackConstantsCompat
 import androidx.core.view.ViewCompat
 import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.util.accessibleField
@@ -207,7 +207,7 @@ object SystemUIHooker {
         if (!PrefsManager.hooksFeedback) return
         val view = indicatorView ?: return
         view.post {
-            ViewCompat.performHapticFeedback(view, HapticFeedbackConstants.CONFIRM)
+            ViewCompat.performHapticFeedback(view, HapticFeedbackConstantsCompat.CONFIRM)
         }
     }
 
