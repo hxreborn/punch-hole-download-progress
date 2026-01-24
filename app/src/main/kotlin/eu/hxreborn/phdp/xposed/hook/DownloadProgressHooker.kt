@@ -17,6 +17,7 @@ object DownloadProgressHooker {
     private const val EXTRA_TITLE = "android.title"
     private const val STALE_AGE_MS = 5 * 60 * 1000L
     private const val SIGNIFICANT_DROP_PERCENT = 25
+    private const val LOW_PROGRESS_THRESHOLD = 5
 
     data class DownloadState(
         val packageName: String,
@@ -187,7 +188,10 @@ object DownloadProgressHooker {
 
     private fun updateFilename() {
         val leadingEntry = activeDownloads.maxByOrNull { it.value.progress }
-        val filename = leadingEntry?.value?.filename
+        val filename =
+            leadingEntry?.value?.filename?.takeUnless {
+                it.contains("Untitled", ignoreCase = true)
+            }
         onFilenameChanged?.invoke(filename)
     }
 
@@ -228,15 +232,19 @@ object DownloadProgressHooker {
         val wasTracking = activeDownloads.remove(id)
         if (wasTracking != null) {
             onActiveCountChanged?.invoke(activeDownloads.size)
-            if (wasTracking.progress < 100) {
-                log("Download cancelled at ${wasTracking.progress}%")
-                onDownloadCancelled?.invoke()
-            } else {
-                log("Download complete")
-                onProgressChanged?.invoke(100)
-                onDownloadComplete?.invoke()
-            }
             updateProgress()
+            when {
+                wasTracking.progress >= 100 -> {
+                    log("Download complete")
+                    onProgressChanged?.invoke(100)
+                    onDownloadComplete?.invoke()
+                }
+
+                wasTracking.progress >= LOW_PROGRESS_THRESHOLD -> {
+                    log("Download cancelled at ${wasTracking.progress}%")
+                    onDownloadCancelled?.invoke()
+                }
+            }
         }
     }
 
