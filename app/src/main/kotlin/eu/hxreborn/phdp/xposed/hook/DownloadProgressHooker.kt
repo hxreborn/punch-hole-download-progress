@@ -242,6 +242,24 @@ object DownloadProgressHooker {
 
     internal fun isStatusBarNotification(obj: Any): Boolean =
         obj.javaClass.name.contains("StatusBarNotification")
+
+    internal inline fun processNotificationArg(
+        arg: Any?,
+        action: (Any) -> Unit,
+    ) {
+        if (arg == null) return
+        when {
+            isStatusBarNotification(arg) -> {
+                action(arg)
+            }
+
+            arg.javaClass.name.contains("NotificationEntry") -> {
+                runCatching { arg.javaClass.accessibleField("mSbn").get(arg) }
+                    .getOrNull()
+                    ?.let(action)
+            }
+        }
+    }
 }
 
 @XposedHooker
@@ -251,21 +269,11 @@ class NotificationAddHooker : XposedInterface.Hooker {
         @AfterInvocation
         fun after(callback: AfterHookCallback) {
             if (BuildConfig.DEBUG) log("NotificationAddHooker: ${callback.args.size} args")
-
-            callback.args.forEach { arg ->
-                if (arg == null) return@forEach
-
-                if (DownloadProgressHooker.isStatusBarNotification(arg)) {
-                    DownloadProgressHooker.processNotification(arg)
-                } else if (arg.javaClass.name.contains("NotificationEntry")) {
-                    runCatching {
-                        val sbn =
-                            arg.javaClass
-                                .getDeclaredField("mSbn")
-                                .apply { isAccessible = true }[arg]
-                        if (sbn != null) DownloadProgressHooker.processNotification(sbn)
-                    }
-                }
+            callback.args.forEach {
+                DownloadProgressHooker.processNotificationArg(
+                    it,
+                    DownloadProgressHooker::processNotification,
+                )
             }
         }
     }
@@ -278,21 +286,11 @@ class NotificationRemoveHooker : XposedInterface.Hooker {
         @AfterInvocation
         fun after(callback: AfterHookCallback) {
             if (BuildConfig.DEBUG) log("NotificationRemoveHooker: ${callback.args.size} args")
-
-            callback.args.forEach { arg ->
-                if (arg == null) return@forEach
-
-                if (DownloadProgressHooker.isStatusBarNotification(arg)) {
-                    DownloadProgressHooker.onNotificationRemoved(arg)
-                    return@forEach
-                }
-
-                if (arg.javaClass.name.contains("NotificationEntry")) {
-                    runCatching {
-                        val sbn = arg.javaClass.accessibleField("mSbn").get(arg)
-                        if (sbn != null) DownloadProgressHooker.onNotificationRemoved(sbn)
-                    }
-                }
+            callback.args.forEach {
+                DownloadProgressHooker.processNotificationArg(
+                    it,
+                    DownloadProgressHooker::onNotificationRemoved,
+                )
             }
         }
     }
