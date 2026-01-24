@@ -12,7 +12,7 @@ body:
     attributes:
       label: What would you like?
       placeholder: |
-        A new animation style, app support, UI tweak - anything goes.
+        A new animation style, app support, UI tweak, anything goes.
 
         For app support requests, include the package name if you know it:
         adb shell pm list packages | grep <name>
