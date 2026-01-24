@@ -1,0 +1,10 @@
+name: Feature Request
+description: Suggest an improvement or request app support
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What would you like?
+    validations:
+      required: true

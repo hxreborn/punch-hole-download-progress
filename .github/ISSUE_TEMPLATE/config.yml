@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security Vulnerability
+    url: https://github.com/hxreborn/punch-hole-download-progress/security/advisories/new
+    about: Report security issues privately.

@@ -1,0 +1,71 @@
+name: Bug Report
+description: Something isn't working
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: What's broken?
+      options:
+        - Ring not appearing
+        - Ring position/size wrong
+        - Downloads not detected
+        - Settings not applying
+        - Performance issue
+        - Crash
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      placeholder: What happened? What did you expect?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open app X
+        2. Start a download
+        3. ...
+
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      placeholder: "Pixel 8 Pro"
+
+  - type: input
+    id: android
+    attributes:
+      label: Android version
+      placeholder: "15 QPR2"
+
+  - type: input
+    id: rom
+    attributes:
+      label: ROM (if custom)
+      placeholder: "LineageOS 22 / Evolution X 9.5"
+
+  - type: input
+    id: lsposed
+    attributes:
+      label: LSPosed version
+      placeholder: "1.10.2 (7199)"
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Export from LSPosed Manager if available
+      render: shell
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else?
