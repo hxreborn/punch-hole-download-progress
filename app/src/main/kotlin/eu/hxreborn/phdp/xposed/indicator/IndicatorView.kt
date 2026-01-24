@@ -14,6 +14,7 @@ import android.text.TextUtils
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
+import androidx.core.graphics.withSave
 import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.xposed.PHDPModule.Companion.log
 import eu.hxreborn.phdp.xposed.hook.SystemUIHooker
@@ -127,6 +128,7 @@ class IndicatorView(
     private val glowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private val shinePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private val errorPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
+    private val animatedPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private val percentPaint =
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             textAlign = Paint.Align.CENTER
@@ -332,64 +334,60 @@ class IndicatorView(
             return
         }
 
-        canvas.save()
-
-        if (animator.displayScale != 1f) {
-            scaledPath.computeBounds(arcBounds, true)
-            canvas.scale(
-                animator.displayScale,
-                animator.displayScale,
-                arcBounds.centerX(),
-                arcBounds.centerY(),
-            )
-        }
-
-        val animatedPaint =
-            Paint(glowPaint).apply {
-                alpha =
-                    (
-                        effectiveOpacity * 255 / 100 * animator.displayAlpha *
-                            animator.completionPulseAlpha
-                    ).toInt()
-                if (animator.successColorBlend > 0f) {
-                    val successColor =
-                        if (PrefsManager.finishUseFlashColor) {
-                            PrefsManager.finishFlashColor
-                        } else {
-                            brightenColor(PrefsManager.color, animator.successColorBlend)
-                        }
-                    color =
-                        blendColors(PrefsManager.color, successColor, animator.successColorBlend)
-                }
+        canvas.withSave {
+            if (animator.displayScale != 1f) {
+                scaledPath.computeBounds(arcBounds, true)
+                scale(
+                    animator.displayScale,
+                    animator.displayScale,
+                    arcBounds.centerX(),
+                    arcBounds.centerY(),
+                )
             }
 
-        if (animator.isFinishAnimating) {
-            drawFinishAnimation(canvas, animatedPaint)
-        } else {
-            scaledPath.computeBounds(arcBounds, true)
-            val sweepAngle = 360f * applyEasing(effectiveProgress, PrefsManager.progressEasing)
-            val actualSweep = if (PrefsManager.clockwise) sweepAngle else -sweepAngle
-            canvas.drawArc(arcBounds, -90f, actualSweep, false, animatedPaint)
+            animatedPaint.set(glowPaint)
+            animatedPaint.alpha =
+                (
+                    effectiveOpacity * 255 / 100 * animator.displayAlpha *
+                        animator.completionPulseAlpha
+                ).toInt()
+            if (animator.successColorBlend > 0f) {
+                val successColor =
+                    if (PrefsManager.finishUseFlashColor) {
+                        PrefsManager.finishFlashColor
+                    } else {
+                        brightenColor(PrefsManager.color, animator.successColorBlend)
+                    }
+                animatedPaint.color =
+                    blendColors(PrefsManager.color, successColor, animator.successColorBlend)
+            }
 
-            if (effectiveProgress in 1..99) drawLabels(canvas, effectiveProgress)
+            if (animator.isFinishAnimating) {
+                drawFinishAnimation(this, animatedPaint)
+            } else {
+                scaledPath.computeBounds(arcBounds, true)
+                val sweepAngle = 360f * applyEasing(effectiveProgress, PrefsManager.progressEasing)
+                val actualSweep = if (PrefsManager.clockwise) sweepAngle else -sweepAngle
+                drawArc(arcBounds, -90f, actualSweep, false, animatedPaint)
+
+                if (effectiveProgress in 1..99) drawLabels(this, effectiveProgress)
+            }
+
+            // Badge drawn BELOW the ring (not at center - that's behind camera hardware)
+            if (!animator.isPreviewAnimating && PrefsManager.showDownloadCount &&
+                activeDownloadCount > 1
+            ) {
+                scaledPath.computeBounds(arcBounds, true)
+                val badgeTop = arcBounds.bottom + 4f * density
+                badgePainter.draw(
+                    this,
+                    arcBounds.centerX(),
+                    badgeTop,
+                    activeDownloadCount,
+                    effectiveOpacity,
+                )
+            }
         }
-
-        // Badge drawn BELOW the ring (not at center - that's behind camera hardware)
-        if (!animator.isPreviewAnimating && PrefsManager.showDownloadCount &&
-            activeDownloadCount > 1
-        ) {
-            scaledPath.computeBounds(arcBounds, true)
-            val badgeTop = arcBounds.bottom + 4f * density
-            badgePainter.draw(
-                canvas,
-                arcBounds.centerX(),
-                badgeTop,
-                activeDownloadCount,
-                effectiveOpacity,
-            )
-        }
-
-        canvas.restore()
 
         if (drawCount == 1) {
             log("First draw: ring rendered (appVisible=$appVisible, progress=$progress)")
@@ -448,71 +446,12 @@ class IndicatorView(
             val text = "$progressVal%"
             val textWidth = percentPaint.measureText(text)
             val (x, y, align) =
-                when (PrefsManager.percentTextPosition) {
-                    "left" -> {
-                        Triple(
-                            arcBounds.left - textWidth / 2 - padding,
-                            arcBounds.centerY() + percentPaint.textSize / 3,
-                            null,
-                        )
-                    }
-
-                    "top_left" -> {
-                        Triple(
-                            arcBounds.left - padding,
-                            arcBounds.top - padding,
-                            Paint.Align.RIGHT,
-                        )
-                    }
-
-                    "top_right" -> {
-                        Triple(
-                            arcBounds.right + padding,
-                            arcBounds.top - padding,
-                            Paint.Align.LEFT,
-                        )
-                    }
-
-                    "bottom_left" -> {
-                        Triple(
-                            arcBounds.left - padding,
-                            arcBounds.bottom + percentPaint.textSize + padding,
-                            Paint.Align.RIGHT,
-                        )
-                    }
-
-                    "bottom_right" -> {
-                        Triple(
-                            arcBounds.right + padding,
-                            arcBounds.bottom + percentPaint.textSize + padding,
-                            Paint.Align.LEFT,
-                        )
-                    }
-
-                    "top" -> {
-                        Triple(
-                            arcBounds.centerX(),
-                            arcBounds.top - padding,
-                            Paint.Align.CENTER,
-                        )
-                    }
-
-                    "bottom" -> {
-                        Triple(
-                            arcBounds.centerX(),
-                            arcBounds.bottom + percentPaint.textSize + padding,
-                            Paint.Align.CENTER,
-                        )
-                    }
-
-                    else -> {
-                        Triple(
-                            arcBounds.right + textWidth / 2 + padding,
-                            arcBounds.centerY() + percentPaint.textSize / 3,
-                            null,
-                        )
-                    }
-                }
+                computeLabelPosition(
+                    PrefsManager.percentTextPosition,
+                    padding,
+                    percentPaint.textSize,
+                    textWidth,
+                )
             specs += TextSpec(text, percentPaint, x, y, align)
         }
 
@@ -528,71 +467,12 @@ class IndicatorView(
                         TextUtils.TruncateAt.MIDDLE,
                     ).toString()
             val (x, y, align) =
-                when (PrefsManager.filenameTextPosition) {
-                    "left" -> {
-                        Triple(
-                            arcBounds.left - padding,
-                            arcBounds.centerY() + filenamePaint.textSize / 3,
-                            Paint.Align.RIGHT,
-                        )
-                    }
-
-                    "right" -> {
-                        Triple(
-                            arcBounds.right + padding,
-                            arcBounds.centerY() + filenamePaint.textSize / 3,
-                            Paint.Align.LEFT,
-                        )
-                    }
-
-                    "top_left" -> {
-                        Triple(
-                            arcBounds.left - padding,
-                            arcBounds.top - padding,
-                            Paint.Align.RIGHT,
-                        )
-                    }
-
-                    "bottom_left" -> {
-                        Triple(
-                            arcBounds.left - padding,
-                            arcBounds.bottom + filenamePaint.textSize + padding,
-                            Paint.Align.RIGHT,
-                        )
-                    }
-
-                    "bottom_right" -> {
-                        Triple(
-                            arcBounds.right + padding,
-                            arcBounds.bottom + filenamePaint.textSize + padding,
-                            Paint.Align.LEFT,
-                        )
-                    }
-
-                    "top" -> {
-                        Triple(
-                            arcBounds.centerX(),
-                            arcBounds.top - padding,
-                            Paint.Align.CENTER,
-                        )
-                    }
-
-                    "bottom" -> {
-                        Triple(
-                            arcBounds.centerX(),
-                            arcBounds.bottom + filenamePaint.textSize + padding,
-                            Paint.Align.CENTER,
-                        )
-                    }
-
-                    else -> {
-                        Triple(
-                            arcBounds.right + padding,
-                            arcBounds.top - padding,
-                            Paint.Align.LEFT,
-                        )
-                    }
-                }
+                computeLabelPosition(
+                    PrefsManager.filenameTextPosition,
+                    padding,
+                    filenamePaint.textSize,
+                    textWidth = null,
+                )
             specs += TextSpec(truncated, filenamePaint, x, y, align)
         }
 
@@ -603,6 +483,92 @@ class IndicatorView(
             canvas.drawText(spec.text, spec.x, spec.y, spec.paint)
         }
     }
+
+    private fun computeLabelPosition(
+        position: String,
+        padding: Float,
+        textSize: Float,
+        textWidth: Float?,
+    ): Triple<Float, Float, Paint.Align?> =
+        when (position) {
+            "left" -> {
+                Triple(
+                    textWidth?.let { arcBounds.left - it / 2 - padding }
+                        ?: (arcBounds.left - padding),
+                    arcBounds.centerY() + textSize / 3,
+                    textWidth?.let { null } ?: Paint.Align.RIGHT,
+                )
+            }
+
+            "right" -> {
+                Triple(
+                    textWidth?.let {
+                        arcBounds.right + it / 2 + padding
+                    } ?: (arcBounds.right + padding),
+                    arcBounds.centerY() + textSize / 3,
+                    textWidth?.let { null } ?: Paint.Align.LEFT,
+                )
+            }
+
+            "top_left" -> {
+                Triple(
+                    arcBounds.left - padding,
+                    arcBounds.top - padding,
+                    Paint.Align.RIGHT,
+                )
+            }
+
+            "top_right" -> {
+                Triple(
+                    arcBounds.right + padding,
+                    arcBounds.top - padding,
+                    Paint.Align.LEFT,
+                )
+            }
+
+            "bottom_left" -> {
+                Triple(
+                    arcBounds.left - padding,
+                    arcBounds.bottom + textSize + padding,
+                    Paint.Align.RIGHT,
+                )
+            }
+
+            "bottom_right" -> {
+                Triple(
+                    arcBounds.right + padding,
+                    arcBounds.bottom + textSize + padding,
+                    Paint.Align.LEFT,
+                )
+            }
+
+            "top" -> {
+                Triple(
+                    arcBounds.centerX(),
+                    arcBounds.top - padding,
+                    Paint.Align.CENTER,
+                )
+            }
+
+            "bottom" -> {
+                Triple(
+                    arcBounds.centerX(),
+                    arcBounds.bottom + textSize + padding,
+                    Paint.Align.CENTER,
+                )
+            }
+
+            else -> {
+                Triple(
+                    textWidth?.let {
+                        arcBounds.right + it / 2 + padding
+                    } ?: (arcBounds.right + padding),
+                    textWidth?.let { arcBounds.centerY() + textSize / 3 }
+                        ?: (arcBounds.top - padding),
+                    textWidth?.let { null } ?: Paint.Align.LEFT,
+                )
+            }
+        }
 
     private fun brightenColor(
         color: Int,
