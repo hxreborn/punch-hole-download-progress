@@ -188,7 +188,10 @@ object DownloadProgressHooker {
 
     private fun updateFilename() {
         val leadingEntry = activeDownloads.maxByOrNull { it.value.progress }
-        val filename = leadingEntry?.value?.filename
+        val filename =
+            leadingEntry?.value?.filename?.takeUnless {
+                it.contains("Untitled", ignoreCase = true)
+            }
         onFilenameChanged?.invoke(filename)
     }
 
