@@ -3,6 +3,11 @@ name: Mirror to Xposed-Modules-Repo
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to mirror (e.g., v1.0.0)'
+        required: true
 
 concurrency:
   group: mirror-release
@@ -10,16 +15,37 @@ concurrency:
 
 jobs:
   mirror:
-    if: startsWith(github.event.release.tag_name, 'v')
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      TAG_NAME: ${{ inputs.tag || github.event.release.tag_name }}
 
     steps:
+      - name: Validate tag
+        run: |
+          if [[ ! "$TAG_NAME" =~ ^v ]]; then
+            echo "::error::Tag must start with 'v'"
+            exit 1
+          fi
+
+      - name: Fetch release info
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh release view "$TAG_NAME" --repo "$REPO" --json name,body,isPrerelease \
+            --jq '"name=\(.name)\nprerelease=\(.isPrerelease)"' >> "$GITHUB_OUTPUT"
+
+          # Body needs special handling for multiline
+          echo "body<<BODY_EOF" >> "$GITHUB_OUTPUT"
+          gh release view "$TAG_NAME" --repo "$REPO" --json body --jq '.body' >> "$GITHUB_OUTPUT"
+          echo "BODY_EOF" >> "$GITHUB_OUTPUT"
+
       - name: Download APK from release
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG_NAME: ${{ github.event.release.tag_name }}
           REPO: ${{ github.repository }}
         run: |
           mkdir -p ./artifacts
@@ -37,10 +63,10 @@ jobs:
         with:
           repository: Xposed-Modules-Repo/eu.hxreborn.phdp
           token: ${{ secrets.XPOSED_REPO_PAT }}
-          tag_name: ${{ github.event.release.tag_name }}
-          name: ${{ github.event.release.name }}
-          body: ${{ github.event.release.body }}
-          prerelease: ${{ github.event.release.prerelease }}
+          tag_name: ${{ env.TAG_NAME }}
+          name: ${{ steps.release.outputs.name }}
+          body: ${{ steps.release.outputs.body }}
+          prerelease: ${{ steps.release.outputs.prerelease }}
           files: ./artifacts/*-release.apk
           fail_on_unmatched_files: true
           make_latest: true
