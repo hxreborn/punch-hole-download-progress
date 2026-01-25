@@ -39,6 +39,11 @@ jobs:
           VERSION_CODE=$((MAJOR * 10000 + COMMITS))
           echo "name=$VERSION_NAME" >> $GITHUB_OUTPUT
           echo "code=$VERSION_CODE" >> $GITHUB_OUTPUT
+          if [[ "$VERSION_NAME" =~ (rc|alpha|beta) ]]; then
+            echo "prerelease=true" >> $GITHUB_OUTPUT
+          else
+            echo "prerelease=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Build libxposed to mavenLocal
         uses: nick-fields/retry@v3
@@ -79,7 +84,7 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          prerelease: true
+          prerelease: ${{ steps.version.outputs.prerelease }}
           body: ${{ steps.changelog.outputs.content }}
           files: app/build/outputs/apk/release/*.apk
 
@@ -88,7 +93,7 @@ jobs:
         with:
           repository: Xposed-Modules-Repo/eu.hxreborn.phdp
           token: ${{ secrets.XPOSED_REPO_PAT }}
-          prerelease: true
+          prerelease: ${{ steps.version.outputs.prerelease }}
           body: ${{ steps.changelog.outputs.content }}
           files: app/build/outputs/apk/release/*.apk
           fail_on_unmatched_files: true
