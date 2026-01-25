@@ -64,7 +64,7 @@ RELEASE_KEY_PASSWORD=<key_password>
 
 ## Contributing
 
-Pull requests welcome. [Open an issue](https://github.com/hxreborn/punch-hole-download-progress/issues/new) for bugs or feature requests.
+Pull requests welcome. [Open an issue](https://github.com/hxreborn/punch-hole-download-progress/issues/new/choose) for bugs or feature requests.
 
 ## License
 
