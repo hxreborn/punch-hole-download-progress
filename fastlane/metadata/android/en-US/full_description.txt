@@ -1,0 +1,5 @@
+<p>Xposed module that renders download progress as an animated ring around the camera cutout.</p>
+
+<p>System download notifications are intercepted and visualized with customizable colors, animations, and haptic feedback. Features include an active download counter and battery saver-aware rendering.</p>
+
+<p>Requires Android 12+, LSPosed, and a phone with a punch-hole display.</p>
