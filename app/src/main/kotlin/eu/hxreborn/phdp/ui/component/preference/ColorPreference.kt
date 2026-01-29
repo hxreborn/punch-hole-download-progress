@@ -143,7 +143,6 @@ private fun ColorPickerDialog(
     onDismiss: () -> Unit,
     onColorSelected: (Int) -> Unit,
 ) {
-    // Fall back to Blue 500 if initialColor isn't in palette
     var selectedColor by remember {
         mutableIntStateOf(materialColors.find { it == initialColor } ?: materialColors[5])
     }

@@ -40,9 +40,33 @@ fi
 
 git pull --ff-only
 
-git tag -a "$TAG" -m "Release $TAG"
+if ! command -v git-cliff &>/dev/null; then
+	echo "Error: git-cliff not installed"
+	exit 1
+fi
 
+if [[ ! -f ".github/cliff.toml" ]]; then
+	echo "Error: .github/cliff.toml not found"
+	exit 1
+fi
+
+PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "none")
+COMMIT_COUNT=$(git rev-list "${PREV_TAG}..HEAD" --count 2>/dev/null || git rev-list HEAD --count)
+
+echo "Releasing ${PREV_TAG} → ${TAG} (${COMMIT_COUNT} commits)"
+echo ""
+git cliff --config .github/cliff.toml --tag "$TAG" --unreleased
+echo ""
+
+read -rp "Push and release? [y/N] " confirm
+if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+	echo "Aborted"
+	exit 1
+fi
+
+git tag -a "$TAG" -m "Release $TAG"
 git push origin main
 git push origin "$TAG"
 
+echo ""
 echo "Released $TAG"
