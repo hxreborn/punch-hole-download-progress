@@ -151,11 +151,12 @@ class IndicatorView(
                     resources.displayMetrics,
                 )
         }
-    private val maxFilenameWidth: Float get() = resources.displayMetrics.widthPixels * 0.25f
+    private val maxFilenameWidth: Float
+        get() = resources.displayMetrics.widthPixels * MAX_FILENAME_WIDTH_RATIO
     private val effectiveOpacity: Int
         get() =
             if (isPowerSaveActive && PrefsManager.powerSaverMode == "dim") {
-                (PrefsManager.opacity * 0.5f).toInt()
+                (PrefsManager.opacity * POWER_SAVER_DIM_FACTOR).toInt()
             } else {
                 PrefsManager.opacity
             }
@@ -197,12 +198,12 @@ class IndicatorView(
                     brightenColor(PrefsManager.color, 0.5f)
                 }
             alpha = 255
-            strokeWidth = PrefsManager.strokeWidth * density * 1.2f
+            strokeWidth = PrefsManager.strokeWidth * density * SHINE_STROKE_MULTIPLIER
         }
 
         errorPaint.apply {
             color = PrefsManager.errorColor
-            strokeWidth = PrefsManager.strokeWidth * density * 1.5f
+            strokeWidth = PrefsManager.strokeWidth * density * ERROR_STROKE_MULTIPLIER
         }
 
         badgePainter.updateColors(PrefsManager.color)
@@ -382,7 +383,7 @@ class IndicatorView(
                 activeDownloadCount > 1
             ) {
                 scaledPath.computeBounds(arcBounds, true)
-                val badgeTop = arcBounds.bottom + 4f * density
+                val badgeTop = arcBounds.bottom + BADGE_TOP_PADDING_DP * density
                 badgePainter.draw(
                     this,
                     arcBounds.centerX(),
@@ -415,19 +416,27 @@ class IndicatorView(
         canvas: Canvas,
         paint: Paint,
     ) {
-        val segmentCount = 12
-        val segmentGapDegrees = 6f
-        val segmentArcDegrees = (360f - segmentCount * segmentGapDegrees) / segmentCount
-
-        for (i in 0 until segmentCount) {
-            val startAngle = -90f + i * (segmentArcDegrees + segmentGapDegrees)
+        for (i in 0 until IndicatorAnimator.SEGMENT_COUNT) {
+            val startAngle =
+                -90f +
+                    i *
+                    (
+                        IndicatorAnimator.SEGMENT_ARC_DEGREES +
+                            IndicatorAnimator.SEGMENT_GAP_DEGREES
+                    )
             val segmentPaint =
                 if (i == animator.segmentHighlight || i == animator.segmentHighlight - 1) {
                     Paint(shinePaint).apply { alpha = (255 * animator.displayAlpha).toInt() }
                 } else {
                     Paint(paint)
                 }
-            canvas.drawArc(arcBounds, startAngle, segmentArcDegrees, false, segmentPaint)
+            canvas.drawArc(
+                arcBounds,
+                startAngle,
+                IndicatorAnimator.SEGMENT_ARC_DEGREES,
+                false,
+                segmentPaint,
+            )
         }
     }
 
@@ -444,7 +453,7 @@ class IndicatorView(
         progressVal: Int,
     ) {
         val alpha = effectiveOpacity * 255 / 100
-        val padding = 4f * density
+        val padding = LABEL_PADDING_DP * density
         val specs = mutableListOf<TextSpec>()
 
         if (PrefsManager.percentTextEnabled) {
@@ -641,6 +650,14 @@ class IndicatorView(
 
     companion object {
         private const val TYPE_NAVIGATION_BAR_PANEL = 2024
+
+        // Drawing constants
+        private const val MAX_FILENAME_WIDTH_RATIO = 0.25f
+        private const val POWER_SAVER_DIM_FACTOR = 0.5f
+        private const val SHINE_STROKE_MULTIPLIER = 1.2f
+        private const val ERROR_STROKE_MULTIPLIER = 1.5f
+        private const val BADGE_TOP_PADDING_DP = 4f
+        private const val LABEL_PADDING_DP = 4f
 
         fun attach(context: Context): IndicatorView {
             val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager

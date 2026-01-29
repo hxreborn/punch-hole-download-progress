@@ -53,8 +53,14 @@ class IndicatorAnimator(
 
     companion object {
         private const val MAX_ANIMATION_MS = 800
-        private const val SEGMENT_COUNT = 12
-        private const val SEGMENT_GAP_DEGREES = 6f
+        private const val FINISH_INTENSITY = 1.5f
+        private const val POP_SCALE_FACTOR = 0.08f
+        private const val SEGMENT_COLOR_BLEND_FACTOR = 0.4f
+        private const val PULSE_MIN_ALPHA = 0.7f
+        private const val PULSE_DURATION_MS = 400L
+
+        const val SEGMENT_COUNT = 12
+        const val SEGMENT_GAP_DEGREES = 6f
         const val SEGMENT_ARC_DEGREES = (360f - SEGMENT_COUNT * SEGMENT_GAP_DEGREES) / SEGMENT_COUNT
     }
 
@@ -132,7 +138,7 @@ class IndicatorAnimator(
         cancelFinish()
         isFinishAnimating = true
 
-        val intensity = 1.5f
+        val intensity = FINISH_INTENSITY
         log("Starting finish animation: style=$style, hold=${holdMs}ms, exit=${exitMs}ms")
 
         displayAlpha = 1f
@@ -184,14 +190,18 @@ class IndicatorAnimator(
                 values = floatArrayOf(0f, 1f),
                 durationMs = scalePhaseMs,
                 interpolator = OvershootInterpolator(2f * intensity),
-                onUpdate = { fraction -> displayScale = 1f + (0.08f * intensity * fraction) },
+                onUpdate = { fraction ->
+                    displayScale =
+                        1f + (POP_SCALE_FACTOR * intensity * fraction)
+                },
                 onEnd = {
                     finishAnimator =
                         play(
                             values = floatArrayOf(0f, 1f),
                             durationMs = fadePhaseMs,
                             onUpdate = { fraction ->
-                                displayScale = 1f + (0.08f * intensity * (1f - fraction * 0.5f))
+                                displayScale =
+                                    1f + (POP_SCALE_FACTOR * intensity * (1f - fraction * 0.5f))
                                 displayAlpha = 1f - fraction
                             },
                             onEnd = { finishEnd(onComplete) },
@@ -217,7 +227,7 @@ class IndicatorAnimator(
                 durationMs = cascadePhaseMs,
                 onUpdate = { segment ->
                     segmentHighlight = segment
-                    successColorBlend = intensity * 0.4f
+                    successColorBlend = intensity * SEGMENT_COLOR_BLEND_FACTOR
                 },
                 onEnd = {
                     segmentHighlight = -1
@@ -243,8 +253,8 @@ class IndicatorAnimator(
         pulseAnimator?.cancel()
         pulseAnimator =
             play(
-                values = floatArrayOf(1f, 0.7f, 1f),
-                durationMs = 400,
+                values = floatArrayOf(1f, PULSE_MIN_ALPHA, 1f),
+                durationMs = PULSE_DURATION_MS,
                 onUpdate = { alpha -> completionPulseAlpha = alpha },
                 onEnd = {
                     completionPulseAlpha = 1f
