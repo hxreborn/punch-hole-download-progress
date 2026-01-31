@@ -1,7 +1,7 @@
 package eu.hxreborn.phdp.ui
 
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -14,24 +14,19 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.TransformOrigin
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextMotion
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.util.lerp
 import androidx.navigation3.runtime.rememberNavBackStack
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.ui.navigation.BottomNav
@@ -62,12 +57,16 @@ fun PunchHoleProgressContent(
     val showMainAppBar = currentKey != Screen.Calibration
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-            snapAnimationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing),
+            snapAnimationSpec =
+                spring(
+                    dampingRatio = Spring.DampingRatioNoBouncy,
+                    stiffness = Spring.StiffnessLow,
+                ),
         )
     var menuExpanded by remember { mutableStateOf(false) }
-    val collapsedFraction = scrollBehavior.state.collapsedFraction
-    val isCollapsed = collapsedFraction >= 1f
-    val titleScale = lerp(1.25f, 1f, collapsedFraction)
+    val isCollapsed by remember {
+        derivedStateOf { scrollBehavior.state.collapsedFraction >= 1f }
+    }
 
     Scaffold(
         modifier =
@@ -82,18 +81,7 @@ fun PunchHoleProgressContent(
                     title = {
                         Text(
                             text = stringResource(R.string.app_name),
-                            maxLines = 2,
-                            softWrap = true,
-                            lineHeight = 32.sp,
-                            modifier =
-                                Modifier
-                                    .padding(end = 16.dp)
-                                    .graphicsLayer {
-                                        scaleX = titleScale
-                                        scaleY = titleScale
-                                        transformOrigin = TransformOrigin(0f, 0.5f)
-                                    },
-                            style = LocalTextStyle.current.copy(textMotion = TextMotion.Animated),
+                            modifier = Modifier.padding(end = 16.dp),
                         )
                     },
                     expandedHeight = Tokens.LargeAppBarExpandedHeight,
