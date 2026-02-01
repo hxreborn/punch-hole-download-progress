@@ -41,7 +41,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
 import eu.hxreborn.phdp.R
-import eu.hxreborn.phdp.prefs.PrefsManager
+import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import eu.hxreborn.phdp.ui.theme.Tokens
@@ -264,7 +264,7 @@ private fun ColorSwatch(
 private fun ColorPreferencePreview() {
     AppTheme {
         ColorPreference(
-            value = PrefsManager.DEFAULT_COLOR,
+            value = Prefs.color.default,
             onValueChange = {},
             title = { Text(stringResource(R.string.pref_progress_color_title)) },
             summary = { Text(stringResource(R.string.pref_progress_color_summary)) },
@@ -277,7 +277,7 @@ private fun ColorPreferencePreview() {
 private fun ColorPreferenceDarkPreview() {
     AppTheme(darkThemeConfig = DarkThemeConfig.DARK) {
         ColorPreference(
-            value = PrefsManager.DEFAULT_COLOR,
+            value = Prefs.color.default,
             onValueChange = {},
             title = { Text(stringResource(R.string.pref_progress_color_title)) },
             summary = { Text(stringResource(R.string.pref_progress_color_summary)) },

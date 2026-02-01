@@ -67,7 +67,7 @@ fun TogglePreferenceWithIcon(
         }
         Switch(
             checked = value,
-            onCheckedChange = null,
+            onCheckedChange = onValueChange,
             enabled = enabled,
             modifier = Modifier.padding(start = Tokens.PreferenceHorizontalSpacing),
             thumbContent = {

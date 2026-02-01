@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import eu.hxreborn.phdp.R
-import eu.hxreborn.phdp.prefs.PrefsManager
+import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.preference.ColorPreference
 import eu.hxreborn.phdp.ui.component.preference.NavigationPreference
@@ -53,7 +53,7 @@ fun AppearanceScreen(
                             {
                                 ColorPreference(
                                     value = prefsState.color,
-                                    onValueChange = { onSavePrefs(PrefsManager.KEY_COLOR, it) },
+                                    onValueChange = { onSavePrefs(Prefs.color.key, it) },
                                     title = {
                                         Text(
                                             stringResource(R.string.pref_progress_color_title),
@@ -69,12 +69,7 @@ fun AppearanceScreen(
                             {
                                 ColorPreference(
                                     value = prefsState.finishFlashColor,
-                                    onValueChange = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_FINISH_FLASH_COLOR,
-                                            it,
-                                        )
-                                    },
+                                    onValueChange = { onSavePrefs(Prefs.finishFlashColor.key, it) },
                                     title = {
                                         Text(
                                             stringResource(R.string.pref_success_color_title),
@@ -90,9 +85,7 @@ fun AppearanceScreen(
                             {
                                 ColorPreference(
                                     value = prefsState.errorColor,
-                                    onValueChange = {
-                                        onSavePrefs(PrefsManager.KEY_ERROR_COLOR, it)
-                                    },
+                                    onValueChange = { onSavePrefs(Prefs.errorColor.key, it) },
                                     title = { Text(stringResource(R.string.pref_error_color_title)) },
                                     summary = {
                                         Text(
@@ -117,12 +110,7 @@ fun AppearanceScreen(
                             {
                                 SliderPreferenceWithReset(
                                     value = prefsState.strokeWidth,
-                                    onValueChange = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_STROKE_WIDTH,
-                                            it,
-                                        )
-                                    },
+                                    onValueChange = { onSavePrefs(Prefs.strokeWidth.key, it) },
                                     title = {
                                         Text(
                                             stringResource(R.string.pref_stroke_width_title),
@@ -133,14 +121,10 @@ fun AppearanceScreen(
                                             stringResource(R.string.pref_stroke_width_summary),
                                         )
                                     },
-                                    valueRange =
-                                        PrefsManager.MIN_STROKE_WIDTH..PrefsManager.MAX_STROKE_WIDTH,
-                                    defaultValue = PrefsManager.DEFAULT_STROKE_WIDTH,
+                                    valueRange = Prefs.strokeWidth.range!!,
+                                    defaultValue = Prefs.strokeWidth.default,
                                     onReset = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_STROKE_WIDTH,
-                                            PrefsManager.DEFAULT_STROKE_WIDTH,
-                                        )
+                                        onSavePrefs(Prefs.strokeWidth.key, Prefs.strokeWidth.default)
                                     },
                                     valueText = { Text("%.1fdp".format(it)) },
                                 )
@@ -148,7 +132,7 @@ fun AppearanceScreen(
                             {
                                 SliderPreferenceWithReset(
                                     value = prefsState.ringGap,
-                                    onValueChange = { onSavePrefs(PrefsManager.KEY_RING_GAP, it) },
+                                    onValueChange = { onSavePrefs(Prefs.ringGap.key, it) },
                                     title = {
                                         Text(
                                             stringResource(R.string.pref_cutout_padding_title),
@@ -159,41 +143,29 @@ fun AppearanceScreen(
                                             stringResource(R.string.pref_cutout_padding_summary),
                                         )
                                     },
-                                    valueRange =
-                                        PrefsManager.MIN_RING_GAP..PrefsManager.MAX_RING_GAP,
-                                    defaultValue = PrefsManager.DEFAULT_RING_GAP,
+                                    valueRange = Prefs.ringGap.range!!,
+                                    defaultValue = Prefs.ringGap.default,
                                     onReset = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_RING_GAP,
-                                            PrefsManager.DEFAULT_RING_GAP,
-                                        )
+                                        onSavePrefs(Prefs.ringGap.key, Prefs.ringGap.default)
                                     },
                                     valueText = { Text("%.2fx".format(it)) },
                                 )
                             },
                             {
+                                val opacityRange = Prefs.opacity.range!!
                                 SliderPreferenceWithReset(
                                     value = prefsState.opacity.toFloat(),
-                                    onValueChange = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_OPACITY,
-                                            it.toInt(),
-                                        )
-                                    },
+                                    onValueChange = { onSavePrefs(Prefs.opacity.key, it.toInt()) },
                                     title = { Text(stringResource(R.string.pref_opacity_title)) },
                                     summary = {
                                         Text(
                                             stringResource(R.string.pref_opacity_summary),
                                         )
                                     },
-                                    valueRange =
-                                        PrefsManager.MIN_OPACITY.toFloat()..PrefsManager.MAX_OPACITY.toFloat(),
-                                    defaultValue = PrefsManager.DEFAULT_OPACITY.toFloat(),
+                                    valueRange = opacityRange.first.toFloat()..opacityRange.last.toFloat(),
+                                    defaultValue = Prefs.opacity.default.toFloat(),
                                     onReset = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_OPACITY,
-                                            PrefsManager.DEFAULT_OPACITY,
-                                        )
+                                        onSavePrefs(Prefs.opacity.key, Prefs.opacity.default)
                                     },
                                     valueText = { Text("${it.toInt()}%") },
                                 )
@@ -226,10 +198,7 @@ fun AppearanceScreen(
                                 TogglePreferenceWithIcon(
                                     value = prefsState.percentTextEnabled,
                                     onValueChange = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_PERCENT_TEXT_ENABLED,
-                                            it,
-                                        )
+                                        onSavePrefs(Prefs.percentTextEnabled.key, it)
                                     },
                                     title = {
                                         Text(
@@ -247,10 +216,7 @@ fun AppearanceScreen(
                                 SelectPreference(
                                     value = prefsState.percentTextPosition,
                                     onValueChange = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_PERCENT_TEXT_POSITION,
-                                            it,
-                                        )
+                                        onSavePrefs(Prefs.percentTextPosition.key, it)
                                     },
                                     values =
                                         listOf(
@@ -294,10 +260,7 @@ fun AppearanceScreen(
                                 TogglePreferenceWithIcon(
                                     value = prefsState.filenameTextEnabled,
                                     onValueChange = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_FILENAME_TEXT_ENABLED,
-                                            it,
-                                        )
+                                        onSavePrefs(Prefs.filenameTextEnabled.key, it)
                                     },
                                     title = {
                                         Text(
@@ -315,10 +278,7 @@ fun AppearanceScreen(
                                 SelectPreference(
                                     value = prefsState.filenameTextPosition,
                                     onValueChange = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_FILENAME_TEXT_POSITION,
-                                            it,
-                                        )
+                                        onSavePrefs(Prefs.filenameTextPosition.key, it)
                                     },
                                     values =
                                         listOf(

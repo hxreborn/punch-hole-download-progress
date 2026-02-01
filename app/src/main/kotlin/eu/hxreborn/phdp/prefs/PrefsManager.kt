@@ -4,258 +4,95 @@ import android.content.SharedPreferences
 import eu.hxreborn.phdp.xposed.PHDPModule.Companion.log
 
 object PrefsManager {
-    const val PREFS_GROUP = "phdp_settings"
-
-    // Keys
-    const val KEY_ENABLED = "enabled"
-    const val KEY_COLOR = "color"
-    const val KEY_STROKE_WIDTH = "stroke_width"
-    const val KEY_RING_GAP = "ring_gap"
-    const val KEY_OPACITY = "opacity"
-    const val KEY_HOOKS_FEEDBACK = "hooks_feedback"
-    const val KEY_APP_VISIBLE = "app_visible"
-    const val KEY_CLOCKWISE = "clockwise"
-    const val KEY_TEST_PROGRESS = "test_progress"
-    const val KEY_TEST_ERROR = "test_error"
-    const val KEY_PROGRESS_EASING = "progress_easing"
-    const val KEY_ERROR_COLOR = "error_color"
-    const val KEY_POWER_SAVER_MODE = "power_saver_mode"
-    const val KEY_SHOW_DOWNLOAD_COUNT = "show_download_count"
-    const val KEY_MIN_VISIBILITY_ENABLED = "min_visibility_enabled"
-    const val KEY_MIN_VISIBILITY_MS = "min_visibility_ms"
-    const val KEY_COMPLETION_PULSE_ENABLED = "completion_pulse_enabled"
-    const val KEY_PERCENT_TEXT_ENABLED = "percent_text_enabled"
-    const val KEY_PERCENT_TEXT_POSITION = "percent_text_position"
-    const val KEY_FILENAME_TEXT_ENABLED = "filename_text_enabled"
-    const val KEY_FILENAME_TEXT_POSITION = "filename_text_position"
-    const val KEY_FINISH_STYLE = "finish_style"
-    const val KEY_FINISH_HOLD_MS = "finish_hold_ms"
-    const val KEY_FINISH_EXIT_MS = "finish_exit_ms"
-    const val KEY_FINISH_USE_FLASH_COLOR = "finish_use_flash_color"
-    const val KEY_FINISH_FLASH_COLOR = "finish_flash_color"
-    const val KEY_PREVIEW_TRIGGER = "preview_trigger"
-    const val KEY_CLEAR_DOWNLOADS_TRIGGER = "clear_downloads_trigger"
-    const val KEY_DARK_THEME_CONFIG = "dark_theme_config"
-    const val KEY_USE_DYNAMIC_COLOR = "use_dynamic_color"
-    const val KEY_RING_SCALE_X = "ring_scale_x"
-    const val KEY_RING_SCALE_Y = "ring_scale_y"
-    const val KEY_RING_SCALE_LINKED = "ring_scale_linked"
-
-    const val KEY_RING_OFFSET_X = "ring_offset_x"
-    const val KEY_RING_OFFSET_Y = "ring_offset_y"
-    const val KEY_PERSISTENT_PREVIEW = "persistent_preview"
-
-    // Keys that trigger preview when changed
-    private val VISUAL_KEYS =
-        setOf(
-            KEY_COLOR,
-            KEY_STROKE_WIDTH,
-            KEY_RING_GAP,
-            KEY_OPACITY,
-            KEY_CLOCKWISE,
-            KEY_RING_SCALE_X,
-            KEY_RING_SCALE_Y,
-            KEY_RING_OFFSET_X,
-            KEY_RING_OFFSET_Y,
-        )
-
-    // Defaults
-    const val DEFAULT_ENABLED = true
-    const val DEFAULT_COLOR = 0xFF2196F3.toInt() // Blue 500
-    const val DEFAULT_STROKE_WIDTH = 2f
-    const val DEFAULT_RING_GAP = 1.155f
-    const val DEFAULT_OPACITY = 90
-    const val DEFAULT_HOOKS_FEEDBACK = false
-    const val DEFAULT_PROGRESS_EASING = "linear"
-    const val DEFAULT_ERROR_COLOR = 0xFFF44336.toInt() // Red 500
-    const val DEFAULT_POWER_SAVER_MODE = "normal"
-    const val DEFAULT_SHOW_DOWNLOAD_COUNT = false
-    const val DEFAULT_MIN_VISIBILITY_ENABLED = true
-    const val DEFAULT_MIN_VISIBILITY_MS = 500
-    const val DEFAULT_COMPLETION_PULSE_ENABLED = true
-    const val DEFAULT_PERCENT_TEXT_ENABLED = false
-    const val DEFAULT_PERCENT_TEXT_POSITION = "right"
-    const val DEFAULT_FILENAME_TEXT_ENABLED = false
-    const val DEFAULT_FILENAME_TEXT_POSITION = "top_right"
-    const val DEFAULT_FINISH_STYLE = "pop"
-    const val DEFAULT_FINISH_HOLD_MS = 500
-    const val DEFAULT_FINISH_EXIT_MS = 500
-    const val DEFAULT_FINISH_USE_FLASH_COLOR = true
-    const val DEFAULT_FINISH_FLASH_COLOR = 0xFFFFFFFF.toInt()
-    const val DEFAULT_DARK_THEME_CONFIG = "follow_system"
-    const val DEFAULT_USE_DYNAMIC_COLOR = true
-    const val DEFAULT_RING_SCALE = 1.0f
-    const val DEFAULT_RING_SCALE_LINKED = true
-    const val DEFAULT_RING_OFFSET = 0f
-
-    // Ranges
-    const val MIN_STROKE_WIDTH = 0.5f
-    const val MAX_STROKE_WIDTH = 10.0f
-    const val MIN_RING_GAP = 0.5f
-    const val MAX_RING_GAP = 3.0f
-    const val MIN_OPACITY = 1
-    const val MAX_OPACITY = 100
-    const val MIN_FINISH_HOLD_MS = 0
-    const val MAX_FINISH_HOLD_MS = 5000
-    const val MIN_FINISH_EXIT_MS = 50
-    const val MAX_FINISH_EXIT_MS = 3000
-    const val MIN_MIN_VISIBILITY_MS = 0
-    const val MAX_MIN_VISIBILITY_MS = 2000
-    const val MIN_RING_SCALE = 0.25f
-    const val MAX_RING_SCALE = 3.0f
-    const val MIN_RING_OFFSET = -500f
-    const val MAX_RING_OFFSET = 500f
-
-    // Reset defaults exclude KEY_ENABLED
-    val DEFAULTS: Map<String, Any> =
-        mapOf(
-            KEY_COLOR to DEFAULT_COLOR,
-            KEY_STROKE_WIDTH to DEFAULT_STROKE_WIDTH,
-            KEY_RING_GAP to DEFAULT_RING_GAP,
-            KEY_OPACITY to DEFAULT_OPACITY,
-            KEY_HOOKS_FEEDBACK to DEFAULT_HOOKS_FEEDBACK,
-            KEY_CLOCKWISE to true,
-            KEY_PROGRESS_EASING to DEFAULT_PROGRESS_EASING,
-            KEY_ERROR_COLOR to DEFAULT_ERROR_COLOR,
-            KEY_POWER_SAVER_MODE to DEFAULT_POWER_SAVER_MODE,
-            KEY_SHOW_DOWNLOAD_COUNT to DEFAULT_SHOW_DOWNLOAD_COUNT,
-            KEY_MIN_VISIBILITY_ENABLED to DEFAULT_MIN_VISIBILITY_ENABLED,
-            KEY_MIN_VISIBILITY_MS to DEFAULT_MIN_VISIBILITY_MS,
-            KEY_COMPLETION_PULSE_ENABLED to DEFAULT_COMPLETION_PULSE_ENABLED,
-            KEY_PERCENT_TEXT_ENABLED to DEFAULT_PERCENT_TEXT_ENABLED,
-            KEY_PERCENT_TEXT_POSITION to DEFAULT_PERCENT_TEXT_POSITION,
-            KEY_FILENAME_TEXT_ENABLED to DEFAULT_FILENAME_TEXT_ENABLED,
-            KEY_FILENAME_TEXT_POSITION to DEFAULT_FILENAME_TEXT_POSITION,
-            KEY_FINISH_STYLE to DEFAULT_FINISH_STYLE,
-            KEY_FINISH_HOLD_MS to DEFAULT_FINISH_HOLD_MS,
-            KEY_FINISH_EXIT_MS to DEFAULT_FINISH_EXIT_MS,
-            KEY_FINISH_USE_FLASH_COLOR to DEFAULT_FINISH_USE_FLASH_COLOR,
-            KEY_FINISH_FLASH_COLOR to DEFAULT_FINISH_FLASH_COLOR,
-            KEY_RING_SCALE_X to DEFAULT_RING_SCALE,
-            KEY_RING_SCALE_Y to DEFAULT_RING_SCALE,
-            KEY_RING_SCALE_LINKED to DEFAULT_RING_SCALE_LINKED,
-            KEY_RING_OFFSET_X to DEFAULT_RING_OFFSET,
-            KEY_RING_OFFSET_Y to DEFAULT_RING_OFFSET,
-        )
-
-    // Cached values
     @Volatile
     private var remotePrefs: SharedPreferences? = null
 
-    @Volatile
-    var enabled = DEFAULT_ENABLED
+    // Cached values
+    @Volatile var enabled = Prefs.enabled.default
         private set
 
-    @Volatile
-    var color = DEFAULT_COLOR
+    @Volatile var color = Prefs.color.default
         private set
 
-    @Volatile
-    var strokeWidth = DEFAULT_STROKE_WIDTH
+    @Volatile var strokeWidth = Prefs.strokeWidth.default
         private set
 
-    @Volatile
-    var ringGap = DEFAULT_RING_GAP
+    @Volatile var ringGap = Prefs.ringGap.default
         private set
 
-    @Volatile
-    var opacity = DEFAULT_OPACITY
+    @Volatile var opacity = Prefs.opacity.default
         private set
 
-    @Volatile
-    var hooksFeedback = DEFAULT_HOOKS_FEEDBACK
+    @Volatile var hooksFeedback = Prefs.hooksFeedback.default
         private set
 
-    @Volatile
-    var appVisible = false
+    @Volatile var appVisible = Prefs.appVisible.default
         private set
 
-    @Volatile
-    var clockwise = true
+    @Volatile var clockwise = Prefs.clockwise.default
         private set
 
-    @Volatile
-    var progressEasing = DEFAULT_PROGRESS_EASING
+    @Volatile var progressEasing = Prefs.progressEasing.default
         private set
 
-    @Volatile
-    var errorColor = DEFAULT_ERROR_COLOR
+    @Volatile var errorColor = Prefs.errorColor.default
         private set
 
-    @Volatile
-    var powerSaverMode = DEFAULT_POWER_SAVER_MODE
+    @Volatile var powerSaverMode = Prefs.powerSaverMode.default
         private set
 
-    @Volatile
-    var showDownloadCount = DEFAULT_SHOW_DOWNLOAD_COUNT
+    @Volatile var showDownloadCount = Prefs.showDownloadCount.default
         private set
 
-    @Volatile
-    var finishStyle = DEFAULT_FINISH_STYLE
+    @Volatile var finishStyle = Prefs.finishStyle.default
         private set
 
-    @Volatile
-    var finishHoldMs = DEFAULT_FINISH_HOLD_MS
+    @Volatile var finishHoldMs = Prefs.finishHoldMs.default
         private set
 
-    @Volatile
-    var finishExitMs = DEFAULT_FINISH_EXIT_MS
+    @Volatile var finishExitMs = Prefs.finishExitMs.default
         private set
 
-    @Volatile
-    var finishUseFlashColor = DEFAULT_FINISH_USE_FLASH_COLOR
+    @Volatile var finishUseFlashColor = Prefs.finishUseFlashColor.default
         private set
 
-    @Volatile
-    var finishFlashColor = DEFAULT_FINISH_FLASH_COLOR
+    @Volatile var finishFlashColor = Prefs.finishFlashColor.default
         private set
 
-    @Volatile
-    var minVisibilityEnabled = DEFAULT_MIN_VISIBILITY_ENABLED
+    @Volatile var minVisibilityEnabled = Prefs.minVisibilityEnabled.default
         private set
 
-    @Volatile
-    var minVisibilityMs = DEFAULT_MIN_VISIBILITY_MS
+    @Volatile var minVisibilityMs = Prefs.minVisibilityMs.default
         private set
 
-    @Volatile
-    var completionPulseEnabled = DEFAULT_COMPLETION_PULSE_ENABLED
+    @Volatile var completionPulseEnabled = Prefs.completionPulseEnabled.default
         private set
 
-    @Volatile
-    var percentTextEnabled = DEFAULT_PERCENT_TEXT_ENABLED
+    @Volatile var percentTextEnabled = Prefs.percentTextEnabled.default
         private set
 
-    @Volatile
-    var percentTextPosition = DEFAULT_PERCENT_TEXT_POSITION
+    @Volatile var percentTextPosition = Prefs.percentTextPosition.default
         private set
 
-    @Volatile
-    var filenameTextEnabled = DEFAULT_FILENAME_TEXT_ENABLED
+    @Volatile var filenameTextEnabled = Prefs.filenameTextEnabled.default
         private set
 
-    @Volatile
-    var filenameTextPosition = DEFAULT_FILENAME_TEXT_POSITION
+    @Volatile var filenameTextPosition = Prefs.filenameTextPosition.default
         private set
 
-    @Volatile
-    var ringScaleX = DEFAULT_RING_SCALE
+    @Volatile var ringScaleX = Prefs.ringScaleX.default
         private set
 
-    @Volatile
-    var ringScaleY = DEFAULT_RING_SCALE
+    @Volatile var ringScaleY = Prefs.ringScaleY.default
         private set
 
-    @Volatile
-    var ringScaleLinked = DEFAULT_RING_SCALE_LINKED
+    @Volatile var ringScaleLinked = Prefs.ringScaleLinked.default
         private set
 
-    @Volatile
-    var ringOffsetX = DEFAULT_RING_OFFSET
+    @Volatile var ringOffsetX = Prefs.ringOffsetX.default
         private set
 
-    @Volatile
-    var ringOffsetY = DEFAULT_RING_OFFSET
+    @Volatile var ringOffsetY = Prefs.ringOffsetY.default
         private set
 
     // Callbacks
@@ -271,45 +108,42 @@ object PrefsManager {
 
     fun init(xposed: io.github.libxposed.api.XposedInterface) {
         runCatching {
-            remotePrefs = xposed.getRemotePreferences(PREFS_GROUP)
+            remotePrefs = xposed.getRemotePreferences(Prefs.GROUP)
             refreshCache()
 
-            // Listener lives for SystemUI process lifetime cleanup via SystemUIHook.detach
             remotePrefs?.registerOnSharedPreferenceChangeListener { prefs, key ->
                 runCatching {
                     refreshCache()
                     when (key) {
-                        KEY_APP_VISIBLE -> {
+                        Prefs.appVisible.key -> {
                             onAppVisibilityChanged?.invoke(appVisible)
                         }
 
-                        KEY_TEST_PROGRESS -> {
-                            val progress = prefs.getInt(KEY_TEST_PROGRESS, -1)
+                        Prefs.testProgress.key -> {
+                            val progress = Prefs.testProgress.read(prefs)
                             if (progress >= 0) {
                                 onTestProgressChanged?.invoke(progress)
                                 if (progress == 100) onDownloadComplete?.invoke()
                             }
                         }
 
-                        KEY_TEST_ERROR -> {
-                            onTestErrorChanged?.invoke(prefs.getBoolean(KEY_TEST_ERROR, false))
+                        Prefs.testError.key -> {
+                            onTestErrorChanged?.invoke(Prefs.testError.read(prefs))
                         }
 
-                        KEY_PREVIEW_TRIGGER -> {
+                        Prefs.previewTrigger.key -> {
                             onPreviewTriggered?.invoke()
                         }
 
-                        KEY_CLEAR_DOWNLOADS_TRIGGER -> {
+                        Prefs.clearDownloadsTrigger.key -> {
                             onClearDownloadsTriggered?.invoke()
                         }
 
-                        KEY_PERSISTENT_PREVIEW -> {
-                            onPersistentPreviewChanged?.invoke(
-                                prefs.getBoolean(KEY_PERSISTENT_PREVIEW, false),
-                            )
+                        Prefs.persistentPreview.key -> {
+                            onPersistentPreviewChanged?.invoke(Prefs.persistentPreview.read(prefs))
                         }
 
-                        in VISUAL_KEYS -> {
+                        in Prefs.visualKeys -> {
                             onPrefsChanged?.invoke()
                             onGeometryPreviewTriggered?.invoke()
                         }
@@ -324,87 +158,38 @@ object PrefsManager {
         }.onFailure { log("PrefsManager.init() failed", it) }
     }
 
-    // Cache refresh
     private fun refreshCache() {
         runCatching {
             remotePrefs?.let { prefs ->
-                enabled = prefs.read(KEY_ENABLED, DEFAULT_ENABLED)
-                color = prefs.read(KEY_COLOR, DEFAULT_COLOR)
-                strokeWidth =
-                    prefs.readFloat(
-                        KEY_STROKE_WIDTH,
-                        DEFAULT_STROKE_WIDTH,
-                        MIN_STROKE_WIDTH..MAX_STROKE_WIDTH,
-                    )
-                ringGap =
-                    prefs.readFloat(KEY_RING_GAP, DEFAULT_RING_GAP, MIN_RING_GAP..MAX_RING_GAP)
-                opacity = prefs.readInt(KEY_OPACITY, DEFAULT_OPACITY, MIN_OPACITY..MAX_OPACITY)
-                hooksFeedback = prefs.read(KEY_HOOKS_FEEDBACK, DEFAULT_HOOKS_FEEDBACK)
-                appVisible = prefs.read(KEY_APP_VISIBLE, false)
-                clockwise = prefs.read(KEY_CLOCKWISE, true)
-                progressEasing = prefs.readString(KEY_PROGRESS_EASING, DEFAULT_PROGRESS_EASING)
-                errorColor = prefs.read(KEY_ERROR_COLOR, DEFAULT_ERROR_COLOR)
-                powerSaverMode = prefs.readString(KEY_POWER_SAVER_MODE, DEFAULT_POWER_SAVER_MODE)
-                showDownloadCount = prefs.read(KEY_SHOW_DOWNLOAD_COUNT, DEFAULT_SHOW_DOWNLOAD_COUNT)
-                finishStyle = prefs.readString(KEY_FINISH_STYLE, DEFAULT_FINISH_STYLE)
-                finishHoldMs =
-                    prefs.readInt(
-                        KEY_FINISH_HOLD_MS,
-                        DEFAULT_FINISH_HOLD_MS,
-                        MIN_FINISH_HOLD_MS..MAX_FINISH_HOLD_MS,
-                    )
-                finishExitMs =
-                    prefs.readInt(
-                        KEY_FINISH_EXIT_MS,
-                        DEFAULT_FINISH_EXIT_MS,
-                        MIN_FINISH_EXIT_MS..MAX_FINISH_EXIT_MS,
-                    )
-                finishUseFlashColor =
-                    prefs.read(KEY_FINISH_USE_FLASH_COLOR, DEFAULT_FINISH_USE_FLASH_COLOR)
-                finishFlashColor = prefs.read(KEY_FINISH_FLASH_COLOR, DEFAULT_FINISH_FLASH_COLOR)
-                minVisibilityEnabled =
-                    prefs.read(KEY_MIN_VISIBILITY_ENABLED, DEFAULT_MIN_VISIBILITY_ENABLED)
-                minVisibilityMs =
-                    prefs.readInt(
-                        KEY_MIN_VISIBILITY_MS,
-                        DEFAULT_MIN_VISIBILITY_MS,
-                        MIN_MIN_VISIBILITY_MS..MAX_MIN_VISIBILITY_MS,
-                    )
-                completionPulseEnabled =
-                    prefs.read(KEY_COMPLETION_PULSE_ENABLED, DEFAULT_COMPLETION_PULSE_ENABLED)
-                percentTextEnabled =
-                    prefs.read(KEY_PERCENT_TEXT_ENABLED, DEFAULT_PERCENT_TEXT_ENABLED)
-                percentTextPosition =
-                    prefs.readString(KEY_PERCENT_TEXT_POSITION, DEFAULT_PERCENT_TEXT_POSITION)
-                filenameTextEnabled =
-                    prefs.read(KEY_FILENAME_TEXT_ENABLED, DEFAULT_FILENAME_TEXT_ENABLED)
-                filenameTextPosition =
-                    prefs.readString(KEY_FILENAME_TEXT_POSITION, DEFAULT_FILENAME_TEXT_POSITION)
-                ringScaleX =
-                    prefs.readFloat(
-                        KEY_RING_SCALE_X,
-                        DEFAULT_RING_SCALE,
-                        MIN_RING_SCALE..MAX_RING_SCALE,
-                    )
-                ringScaleY =
-                    prefs.readFloat(
-                        KEY_RING_SCALE_Y,
-                        DEFAULT_RING_SCALE,
-                        MIN_RING_SCALE..MAX_RING_SCALE,
-                    )
-                ringScaleLinked = prefs.read(KEY_RING_SCALE_LINKED, DEFAULT_RING_SCALE_LINKED)
-                ringOffsetX =
-                    prefs.readFloat(
-                        KEY_RING_OFFSET_X,
-                        DEFAULT_RING_OFFSET,
-                        MIN_RING_OFFSET..MAX_RING_OFFSET,
-                    )
-                ringOffsetY =
-                    prefs.readFloat(
-                        KEY_RING_OFFSET_Y,
-                        DEFAULT_RING_OFFSET,
-                        MIN_RING_OFFSET..MAX_RING_OFFSET,
-                    )
+                enabled = Prefs.enabled.read(prefs)
+                color = Prefs.color.read(prefs)
+                strokeWidth = Prefs.strokeWidth.read(prefs)
+                ringGap = Prefs.ringGap.read(prefs)
+                opacity = Prefs.opacity.read(prefs)
+                hooksFeedback = Prefs.hooksFeedback.read(prefs)
+                appVisible = Prefs.appVisible.read(prefs)
+                clockwise = Prefs.clockwise.read(prefs)
+                progressEasing = Prefs.progressEasing.read(prefs)
+                errorColor = Prefs.errorColor.read(prefs)
+                powerSaverMode = Prefs.powerSaverMode.read(prefs)
+                showDownloadCount = Prefs.showDownloadCount.read(prefs)
+                finishStyle = Prefs.finishStyle.read(prefs)
+                finishHoldMs = Prefs.finishHoldMs.read(prefs)
+                finishExitMs = Prefs.finishExitMs.read(prefs)
+                finishUseFlashColor = Prefs.finishUseFlashColor.read(prefs)
+                finishFlashColor = Prefs.finishFlashColor.read(prefs)
+                minVisibilityEnabled = Prefs.minVisibilityEnabled.read(prefs)
+                minVisibilityMs = Prefs.minVisibilityMs.read(prefs)
+                completionPulseEnabled = Prefs.completionPulseEnabled.read(prefs)
+                percentTextEnabled = Prefs.percentTextEnabled.read(prefs)
+                percentTextPosition = Prefs.percentTextPosition.read(prefs)
+                filenameTextEnabled = Prefs.filenameTextEnabled.read(prefs)
+                filenameTextPosition = Prefs.filenameTextPosition.read(prefs)
+                ringScaleX = Prefs.ringScaleX.read(prefs)
+                ringScaleY = Prefs.ringScaleY.read(prefs)
+                ringScaleLinked = Prefs.ringScaleLinked.read(prefs)
+                ringOffsetX = Prefs.ringOffsetX.read(prefs)
+                ringOffsetY = Prefs.ringOffsetY.read(prefs)
             }
         }.onFailure { log("refreshCache() failed", it) }
     }

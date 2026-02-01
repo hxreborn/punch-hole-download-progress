@@ -13,7 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import eu.hxreborn.phdp.R
-import eu.hxreborn.phdp.prefs.PrefsManager
+import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.SettingsScaffold
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithStepper
@@ -35,13 +35,13 @@ fun CalibrationScreen(
 ) {
     // Enable preview when screen is visible, disable when backgrounded or navigating away
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
-        onSavePrefs(PrefsManager.KEY_PERSISTENT_PREVIEW, true)
+        onSavePrefs(Prefs.persistentPreview.key, true)
     }
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
-        onSavePrefs(PrefsManager.KEY_PERSISTENT_PREVIEW, false)
+        onSavePrefs(Prefs.persistentPreview.key, false)
     }
     DisposableEffect(Unit) {
-        onDispose { onSavePrefs(PrefsManager.KEY_PERSISTENT_PREVIEW, false) }
+        onDispose { onSavePrefs(Prefs.persistentPreview.key, false) }
     }
 
     SettingsScaffold(
@@ -71,18 +71,17 @@ fun CalibrationScreen(
                                     SliderPreferenceWithStepper(
                                         value = prefsState.ringOffsetX,
                                         onValueChange = {
-                                            onSavePrefs(PrefsManager.KEY_RING_OFFSET_X, it)
+                                            onSavePrefs(Prefs.ringOffsetX.key, it)
                                         },
                                         title = {
                                             Text(stringResource(R.string.pref_ring_offset_x_title))
                                         },
-                                        valueRange =
-                                            PrefsManager.MIN_RING_OFFSET..PrefsManager.MAX_RING_OFFSET,
-                                        defaultValue = PrefsManager.DEFAULT_RING_OFFSET,
+                                        valueRange = Prefs.ringOffsetX.range!!,
+                                        defaultValue = Prefs.ringOffsetX.default,
                                         onReset = {
                                             onSavePrefs(
-                                                PrefsManager.KEY_RING_OFFSET_X,
-                                                PrefsManager.DEFAULT_RING_OFFSET,
+                                                Prefs.ringOffsetX.key,
+                                                Prefs.ringOffsetX.default,
                                             )
                                         },
                                         stepSize = 1f,
@@ -94,18 +93,17 @@ fun CalibrationScreen(
                                     SliderPreferenceWithStepper(
                                         value = prefsState.ringOffsetY,
                                         onValueChange = {
-                                            onSavePrefs(PrefsManager.KEY_RING_OFFSET_Y, it)
+                                            onSavePrefs(Prefs.ringOffsetY.key, it)
                                         },
                                         title = {
                                             Text(stringResource(R.string.pref_ring_offset_y_title))
                                         },
-                                        valueRange =
-                                            PrefsManager.MIN_RING_OFFSET..PrefsManager.MAX_RING_OFFSET,
-                                        defaultValue = PrefsManager.DEFAULT_RING_OFFSET,
+                                        valueRange = Prefs.ringOffsetY.range!!,
+                                        defaultValue = Prefs.ringOffsetY.default,
                                         onReset = {
                                             onSavePrefs(
-                                                PrefsManager.KEY_RING_OFFSET_Y,
-                                                PrefsManager.DEFAULT_RING_OFFSET,
+                                                Prefs.ringOffsetY.key,
+                                                Prefs.ringOffsetY.default,
                                             )
                                         },
                                         stepSize = 1f,
@@ -130,10 +128,10 @@ fun CalibrationScreen(
                                     TogglePreferenceWithIcon(
                                         value = prefsState.ringScaleLinked,
                                         onValueChange = {
-                                            onSavePrefs(PrefsManager.KEY_RING_SCALE_LINKED, it)
+                                            onSavePrefs(Prefs.ringScaleLinked.key, it)
                                             if (it) {
                                                 onSavePrefs(
-                                                    PrefsManager.KEY_RING_SCALE_Y,
+                                                    Prefs.ringScaleY.key,
                                                     prefsState.ringScaleX,
                                                 )
                                             }
@@ -150,26 +148,25 @@ fun CalibrationScreen(
                                     SliderPreferenceWithStepper(
                                         value = prefsState.ringScaleX,
                                         onValueChange = {
-                                            onSavePrefs(PrefsManager.KEY_RING_SCALE_X, it)
+                                            onSavePrefs(Prefs.ringScaleX.key, it)
                                             if (prefsState.ringScaleLinked) {
-                                                onSavePrefs(PrefsManager.KEY_RING_SCALE_Y, it)
+                                                onSavePrefs(Prefs.ringScaleY.key, it)
                                             }
                                         },
                                         title = {
                                             Text(stringResource(R.string.pref_ring_scale_x_title))
                                         },
-                                        valueRange =
-                                            PrefsManager.MIN_RING_SCALE..PrefsManager.MAX_RING_SCALE,
-                                        defaultValue = PrefsManager.DEFAULT_RING_SCALE,
+                                        valueRange = Prefs.ringScaleX.range!!,
+                                        defaultValue = Prefs.ringScaleX.default,
                                         onReset = {
                                             onSavePrefs(
-                                                PrefsManager.KEY_RING_SCALE_X,
-                                                PrefsManager.DEFAULT_RING_SCALE,
+                                                Prefs.ringScaleX.key,
+                                                Prefs.ringScaleX.default,
                                             )
                                             if (prefsState.ringScaleLinked) {
                                                 onSavePrefs(
-                                                    PrefsManager.KEY_RING_SCALE_Y,
-                                                    PrefsManager.DEFAULT_RING_SCALE,
+                                                    Prefs.ringScaleY.key,
+                                                    Prefs.ringScaleY.default,
                                                 )
                                             }
                                         },
@@ -182,18 +179,17 @@ fun CalibrationScreen(
                                     SliderPreferenceWithStepper(
                                         value = prefsState.ringScaleY,
                                         onValueChange = {
-                                            onSavePrefs(PrefsManager.KEY_RING_SCALE_Y, it)
+                                            onSavePrefs(Prefs.ringScaleY.key, it)
                                         },
                                         title = {
                                             Text(stringResource(R.string.pref_ring_scale_y_title))
                                         },
-                                        valueRange =
-                                            PrefsManager.MIN_RING_SCALE..PrefsManager.MAX_RING_SCALE,
-                                        defaultValue = PrefsManager.DEFAULT_RING_SCALE,
+                                        valueRange = Prefs.ringScaleY.range!!,
+                                        defaultValue = Prefs.ringScaleY.default,
                                         onReset = {
                                             onSavePrefs(
-                                                PrefsManager.KEY_RING_SCALE_Y,
-                                                PrefsManager.DEFAULT_RING_SCALE,
+                                                Prefs.ringScaleY.key,
+                                                Prefs.ringScaleY.default,
                                             )
                                         },
                                         stepSize = 0.05f,

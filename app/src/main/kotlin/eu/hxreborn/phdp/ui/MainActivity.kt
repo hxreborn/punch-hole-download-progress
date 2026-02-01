@@ -21,7 +21,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import eu.hxreborn.phdp.PHDPApp
 import eu.hxreborn.phdp.R
-import eu.hxreborn.phdp.prefs.PrefsManager
+import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.prefs.PrefsRepository
 import eu.hxreborn.phdp.prefs.PrefsRepositoryImpl
 import eu.hxreborn.phdp.ui.theme.AppTheme
@@ -50,7 +50,7 @@ class MainActivity :
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        prefs = getSharedPreferences(PrefsManager.PREFS_GROUP, Context.MODE_PRIVATE)
+        prefs = getSharedPreferences(Prefs.GROUP, Context.MODE_PRIVATE)
         repository = PrefsRepositoryImpl(prefs) { remotePrefs }
         viewModel = ViewModelProvider(this, SettingsViewModelFactory(repository))[SettingsViewModel::class.java]
 
@@ -145,28 +145,28 @@ class MainActivity :
     private fun simulateSuccess() {
         lifecycleScope.launch {
             for (progress in 0..100 step 5) {
-                viewModel.save(PrefsManager.KEY_TEST_PROGRESS, progress)
+                viewModel.save(Prefs.testProgress.key, progress)
                 delay(100)
             }
-            viewModel.save(PrefsManager.KEY_TEST_PROGRESS, -1)
+            viewModel.save(Prefs.testProgress.key, -1)
         }
     }
 
     private fun clearDownloads() {
-        viewModel.save(PrefsManager.KEY_CLEAR_DOWNLOADS_TRIGGER, System.currentTimeMillis())
+        viewModel.save(Prefs.clearDownloadsTrigger.key, System.currentTimeMillis())
         Toast.makeText(this, R.string.clear_downloads_done, Toast.LENGTH_SHORT).show()
     }
 
     private fun simulateFailure() {
         lifecycleScope.launch {
             for (progress in 0..60 step 10) {
-                viewModel.save(PrefsManager.KEY_TEST_PROGRESS, progress)
+                viewModel.save(Prefs.testProgress.key, progress)
                 delay(100)
             }
-            viewModel.save(PrefsManager.KEY_TEST_ERROR, true)
+            viewModel.save(Prefs.testError.key, true)
             delay(100)
-            viewModel.save(PrefsManager.KEY_TEST_PROGRESS, -1)
-            viewModel.save(PrefsManager.KEY_TEST_ERROR, false)
+            viewModel.save(Prefs.testProgress.key, -1)
+            viewModel.save(Prefs.testError.key, false)
         }
     }
 
@@ -177,7 +177,7 @@ class MainActivity :
 
     override fun onServiceBind(service: XposedService) {
         xposedService = service
-        remotePrefs = service.getRemotePreferences(PrefsManager.PREFS_GROUP)
+        remotePrefs = service.getRemotePreferences(Prefs.GROUP)
     }
 
     override fun onServiceDied(service: XposedService) {
@@ -187,12 +187,12 @@ class MainActivity :
 
     override fun onResume() {
         super.onResume()
-        remotePrefs?.edit(commit = true) { putBoolean(PrefsManager.KEY_APP_VISIBLE, true) }
+        remotePrefs?.edit(commit = true) { putBoolean(Prefs.appVisible.key, true) }
     }
 
     override fun onPause() {
         super.onPause()
-        remotePrefs?.edit(commit = true) { putBoolean(PrefsManager.KEY_APP_VISIBLE, false) }
+        remotePrefs?.edit(commit = true) { putBoolean(Prefs.appVisible.key, false) }
     }
 
     private fun performRestart() {

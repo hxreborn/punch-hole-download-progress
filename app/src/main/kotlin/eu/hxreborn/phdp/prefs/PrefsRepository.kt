@@ -3,6 +3,7 @@ package eu.hxreborn.phdp.prefs
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import eu.hxreborn.phdp.ui.state.PrefsState
+import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -42,155 +43,64 @@ class PrefsRepositoryImpl(
     }
 
     override fun resetDefaults() {
-        localPrefs.edit { PrefsManager.DEFAULTS.forEach { (k, v) -> putAny(k, v) } }
-        remotePrefsProvider()?.edit(commit = true) {
-            PrefsManager.DEFAULTS.forEach { (k, v) ->
-                putAny(k, v)
-            }
-        }
+        localPrefs.edit { Prefs.resettable.forEach { it.reset(this) } }
+        remotePrefsProvider()?.edit(commit = true) { Prefs.resettable.forEach { it.reset(this) } }
     }
 
     private fun SharedPreferences.toPrefsState(): PrefsState =
         PrefsState(
-            enabled = read(PrefsManager.KEY_ENABLED, PrefsManager.DEFAULT_ENABLED),
-            color = read(PrefsManager.KEY_COLOR, PrefsManager.DEFAULT_COLOR),
-            strokeWidth =
-                readFloat(
-                    PrefsManager.KEY_STROKE_WIDTH,
-                    PrefsManager.DEFAULT_STROKE_WIDTH,
-                    PrefsManager.MIN_STROKE_WIDTH..PrefsManager.MAX_STROKE_WIDTH,
-                ),
-            ringGap =
-                readFloat(
-                    PrefsManager.KEY_RING_GAP,
-                    PrefsManager.DEFAULT_RING_GAP,
-                    PrefsManager.MIN_RING_GAP..PrefsManager.MAX_RING_GAP,
-                ),
-            opacity =
-                readInt(
-                    PrefsManager.KEY_OPACITY,
-                    PrefsManager.DEFAULT_OPACITY,
-                    PrefsManager.MIN_OPACITY..PrefsManager.MAX_OPACITY,
-                ),
-            hooksFeedback =
-                read(
-                    PrefsManager.KEY_HOOKS_FEEDBACK,
-                    PrefsManager.DEFAULT_HOOKS_FEEDBACK,
-                ),
-            clockwise = read(PrefsManager.KEY_CLOCKWISE, true),
-            progressEasing =
-                readString(
-                    PrefsManager.KEY_PROGRESS_EASING,
-                    PrefsManager.DEFAULT_PROGRESS_EASING,
-                ),
-            errorColor = read(PrefsManager.KEY_ERROR_COLOR, PrefsManager.DEFAULT_ERROR_COLOR),
-            powerSaverMode =
-                readString(
-                    PrefsManager.KEY_POWER_SAVER_MODE,
-                    PrefsManager.DEFAULT_POWER_SAVER_MODE,
-                ),
-            showDownloadCount =
-                read(
-                    PrefsManager.KEY_SHOW_DOWNLOAD_COUNT,
-                    PrefsManager.DEFAULT_SHOW_DOWNLOAD_COUNT,
-                ),
-            finishStyle =
-                readString(
-                    PrefsManager.KEY_FINISH_STYLE,
-                    PrefsManager.DEFAULT_FINISH_STYLE,
-                ),
-            finishHoldMs =
-                readInt(
-                    PrefsManager.KEY_FINISH_HOLD_MS,
-                    PrefsManager.DEFAULT_FINISH_HOLD_MS,
-                    PrefsManager.MIN_FINISH_HOLD_MS..PrefsManager.MAX_FINISH_HOLD_MS,
-                ),
-            finishExitMs =
-                readInt(
-                    PrefsManager.KEY_FINISH_EXIT_MS,
-                    PrefsManager.DEFAULT_FINISH_EXIT_MS,
-                    PrefsManager.MIN_FINISH_EXIT_MS..PrefsManager.MAX_FINISH_EXIT_MS,
-                ),
-            finishUseFlashColor =
-                read(
-                    PrefsManager.KEY_FINISH_USE_FLASH_COLOR,
-                    PrefsManager.DEFAULT_FINISH_USE_FLASH_COLOR,
-                ),
-            finishFlashColor =
-                read(
-                    PrefsManager.KEY_FINISH_FLASH_COLOR,
-                    PrefsManager.DEFAULT_FINISH_FLASH_COLOR,
-                ),
-            minVisibilityEnabled =
-                read(
-                    PrefsManager.KEY_MIN_VISIBILITY_ENABLED,
-                    PrefsManager.DEFAULT_MIN_VISIBILITY_ENABLED,
-                ),
-            minVisibilityMs =
-                readInt(
-                    PrefsManager.KEY_MIN_VISIBILITY_MS,
-                    PrefsManager.DEFAULT_MIN_VISIBILITY_MS,
-                    PrefsManager.MIN_MIN_VISIBILITY_MS..PrefsManager.MAX_MIN_VISIBILITY_MS,
-                ),
-            completionPulseEnabled =
-                read(
-                    PrefsManager.KEY_COMPLETION_PULSE_ENABLED,
-                    PrefsManager.DEFAULT_COMPLETION_PULSE_ENABLED,
-                ),
-            percentTextEnabled =
-                read(
-                    PrefsManager.KEY_PERCENT_TEXT_ENABLED,
-                    PrefsManager.DEFAULT_PERCENT_TEXT_ENABLED,
-                ),
-            percentTextPosition =
-                readString(
-                    PrefsManager.KEY_PERCENT_TEXT_POSITION,
-                    PrefsManager.DEFAULT_PERCENT_TEXT_POSITION,
-                ),
-            filenameTextEnabled =
-                read(
-                    PrefsManager.KEY_FILENAME_TEXT_ENABLED,
-                    PrefsManager.DEFAULT_FILENAME_TEXT_ENABLED,
-                ),
-            filenameTextPosition =
-                readString(
-                    PrefsManager.KEY_FILENAME_TEXT_POSITION,
-                    PrefsManager.DEFAULT_FILENAME_TEXT_POSITION,
-                ),
+            enabled = Prefs.enabled.read(this),
+            color = Prefs.color.read(this),
+            strokeWidth = Prefs.strokeWidth.read(this),
+            ringGap = Prefs.ringGap.read(this),
+            opacity = Prefs.opacity.read(this),
+            hooksFeedback = Prefs.hooksFeedback.read(this),
+            clockwise = Prefs.clockwise.read(this),
+            progressEasing = Prefs.progressEasing.read(this),
+            errorColor = Prefs.errorColor.read(this),
+            powerSaverMode = Prefs.powerSaverMode.read(this),
+            showDownloadCount = Prefs.showDownloadCount.read(this),
+            finishStyle = Prefs.finishStyle.read(this),
+            finishHoldMs = Prefs.finishHoldMs.read(this),
+            finishExitMs = Prefs.finishExitMs.read(this),
+            finishUseFlashColor = Prefs.finishUseFlashColor.read(this),
+            finishFlashColor = Prefs.finishFlashColor.read(this),
+            minVisibilityEnabled = Prefs.minVisibilityEnabled.read(this),
+            minVisibilityMs = Prefs.minVisibilityMs.read(this),
+            completionPulseEnabled = Prefs.completionPulseEnabled.read(this),
+            percentTextEnabled = Prefs.percentTextEnabled.read(this),
+            percentTextPosition = Prefs.percentTextPosition.read(this),
+            filenameTextEnabled = Prefs.filenameTextEnabled.read(this),
+            filenameTextPosition = Prefs.filenameTextPosition.read(this),
             darkThemeConfig = readDarkThemeConfig(),
-            useDynamicColor =
-                read(
-                    PrefsManager.KEY_USE_DYNAMIC_COLOR,
-                    PrefsManager.DEFAULT_USE_DYNAMIC_COLOR,
-                ),
-            ringScaleX =
-                readFloat(
-                    PrefsManager.KEY_RING_SCALE_X,
-                    PrefsManager.DEFAULT_RING_SCALE,
-                    PrefsManager.MIN_RING_SCALE..PrefsManager.MAX_RING_SCALE,
-                ),
-            ringScaleY =
-                readFloat(
-                    PrefsManager.KEY_RING_SCALE_Y,
-                    PrefsManager.DEFAULT_RING_SCALE,
-                    PrefsManager.MIN_RING_SCALE..PrefsManager.MAX_RING_SCALE,
-                ),
-            ringScaleLinked =
-                read(
-                    PrefsManager.KEY_RING_SCALE_LINKED,
-                    PrefsManager.DEFAULT_RING_SCALE_LINKED,
-                ),
-            ringOffsetX =
-                readFloat(
-                    PrefsManager.KEY_RING_OFFSET_X,
-                    PrefsManager.DEFAULT_RING_OFFSET,
-                    PrefsManager.MIN_RING_OFFSET..PrefsManager.MAX_RING_OFFSET,
-                ),
-            ringOffsetY =
-                readFloat(
-                    PrefsManager.KEY_RING_OFFSET_Y,
-                    PrefsManager.DEFAULT_RING_OFFSET,
-                    PrefsManager.MIN_RING_OFFSET..PrefsManager.MAX_RING_OFFSET,
-                ),
+            useDynamicColor = Prefs.useDynamicColor.read(this),
+            ringScaleX = Prefs.ringScaleX.read(this),
+            ringScaleY = Prefs.ringScaleY.read(this),
+            ringScaleLinked = Prefs.ringScaleLinked.read(this),
+            ringOffsetX = Prefs.ringOffsetX.read(this),
+            ringOffsetY = Prefs.ringOffsetY.read(this),
         )
+
+    private fun SharedPreferences.readDarkThemeConfig(): DarkThemeConfig {
+        val value = Prefs.darkThemeConfig.read(this)
+        return when (value) {
+            "light" -> DarkThemeConfig.LIGHT
+            "dark" -> DarkThemeConfig.DARK
+            else -> DarkThemeConfig.FOLLOW_SYSTEM
+        }
+    }
 }
+
+private fun SharedPreferences.Editor.putAny(
+    key: String,
+    value: Any,
+): SharedPreferences.Editor =
+    apply {
+        when (value) {
+            is Int -> putInt(key, value)
+            is Long -> putLong(key, value)
+            is Float -> putFloat(key, value)
+            is Boolean -> putBoolean(key, value)
+            is String -> putString(key, value)
+        }
+    }

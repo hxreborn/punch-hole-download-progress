@@ -26,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import eu.hxreborn.phdp.R
-import eu.hxreborn.phdp.prefs.PrefsManager
+import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.Tokens
 import kotlin.math.abs
@@ -158,12 +158,12 @@ fun SliderPreferenceWithReset(
 private fun SliderPreferencePreview() {
     AppTheme {
         SliderPreferenceWithReset(
-            value = PrefsManager.DEFAULT_STROKE_WIDTH,
+            value = Prefs.strokeWidth.default,
             onValueChange = {},
             title = { Text(stringResource(R.string.pref_stroke_width_title)) },
             summary = { Text(stringResource(R.string.pref_stroke_width_summary)) },
-            valueRange = PrefsManager.MIN_STROKE_WIDTH..PrefsManager.MAX_STROKE_WIDTH,
-            defaultValue = PrefsManager.DEFAULT_STROKE_WIDTH,
+            valueRange = Prefs.strokeWidth.range!!,
+            defaultValue = Prefs.strokeWidth.default,
             onReset = {},
             valueText = { Text("%.1fdp".format(it)) },
         )
@@ -175,12 +175,12 @@ private fun SliderPreferencePreview() {
 private fun SliderPreferenceModifiedPreview() {
     AppTheme {
         SliderPreferenceWithReset(
-            value = PrefsManager.MAX_STROKE_WIDTH,
+            value = Prefs.strokeWidth.range!!.endInclusive,
             onValueChange = {},
             title = { Text(stringResource(R.string.pref_stroke_width_title)) },
             summary = { Text(stringResource(R.string.pref_stroke_width_summary)) },
-            valueRange = PrefsManager.MIN_STROKE_WIDTH..PrefsManager.MAX_STROKE_WIDTH,
-            defaultValue = PrefsManager.DEFAULT_STROKE_WIDTH,
+            valueRange = Prefs.strokeWidth.range!!,
+            defaultValue = Prefs.strokeWidth.default,
             onReset = {},
             valueText = { Text("%.1fdp".format(it)) },
         )

@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import eu.hxreborn.phdp.BuildConfig
 import eu.hxreborn.phdp.R
-import eu.hxreborn.phdp.prefs.PrefsManager
+import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.preference.SelectPreference
 import eu.hxreborn.phdp.ui.state.PrefsState
@@ -59,12 +59,7 @@ fun SystemScreen(
                             {
                                 SelectPreference(
                                     value = prefsState.powerSaverMode,
-                                    onValueChange = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_POWER_SAVER_MODE,
-                                            it,
-                                        )
-                                    },
+                                    onValueChange = { onSavePrefs(Prefs.powerSaverMode.key, it) },
                                     values = powerSaverValues,
                                     title = {
                                         Text(

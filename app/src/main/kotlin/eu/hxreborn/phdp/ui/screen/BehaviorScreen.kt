@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import eu.hxreborn.phdp.R
-import eu.hxreborn.phdp.prefs.PrefsManager
+import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.preference.SelectPreference
 import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
@@ -54,12 +54,7 @@ fun BehaviorScreen(
                             {
                                 SelectPreference(
                                     value = prefsState.finishStyle,
-                                    onValueChange = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_FINISH_STYLE,
-                                            it,
-                                        )
-                                    },
+                                    onValueChange = { onSavePrefs(Prefs.finishStyle.key, it) },
                                     values = finishStyleValues,
                                     title = {
                                         Text(
@@ -80,7 +75,7 @@ fun BehaviorScreen(
                             {
                                 TogglePreferenceWithIcon(
                                     value = prefsState.clockwise,
-                                    onValueChange = { onSavePrefs(PrefsManager.KEY_CLOCKWISE, it) },
+                                    onValueChange = { onSavePrefs(Prefs.clockwise.key, it) },
                                     title = {
                                         Text(
                                             stringResource(R.string.pref_invert_rotation_title),
@@ -113,12 +108,7 @@ fun BehaviorScreen(
                             {
                                 TogglePreferenceWithIcon(
                                     value = prefsState.showDownloadCount,
-                                    onValueChange = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_SHOW_DOWNLOAD_COUNT,
-                                            it,
-                                        )
-                                    },
+                                    onValueChange = { onSavePrefs(Prefs.showDownloadCount.key, it) },
                                     title = {
                                         Text(
                                             stringResource(R.string.pref_show_queue_count_title),
@@ -147,12 +137,7 @@ fun BehaviorScreen(
                             {
                                 TogglePreferenceWithIcon(
                                     value = prefsState.hooksFeedback,
-                                    onValueChange = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_HOOKS_FEEDBACK,
-                                            it,
-                                        )
-                                    },
+                                    onValueChange = { onSavePrefs(Prefs.hooksFeedback.key, it) },
                                     title = {
                                         Text(
                                             stringResource(R.string.pref_haptic_feedback_title),
@@ -169,10 +154,7 @@ fun BehaviorScreen(
                                 TogglePreferenceWithIcon(
                                     value = prefsState.completionPulseEnabled,
                                     onValueChange = {
-                                        onSavePrefs(
-                                            PrefsManager.KEY_COMPLETION_PULSE_ENABLED,
-                                            it,
-                                        )
+                                        onSavePrefs(Prefs.completionPulseEnabled.key, it)
                                     },
                                     title = {
                                         Text(
