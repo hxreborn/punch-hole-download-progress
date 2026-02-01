@@ -10,7 +10,7 @@ core-splashscreen = "1.2.0"
 compose-bom = "2026.01.00"
 activity-compose = "1.12.2"
 navigation3 = "1.1.0-alpha02"
-material3 = "1.5.0-alpha12"
+material3 = "1.5.0-alpha13"
 compose-preference = "1.1.1"
 serialization = "1.8.1"
 
