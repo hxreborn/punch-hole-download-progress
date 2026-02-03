@@ -9,9 +9,11 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesomeMotion
+import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AutoAwesomeMotion
+import androidx.compose.material.icons.outlined.Dashboard
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
@@ -32,6 +34,7 @@ import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.ui.screen.AppearanceScreen
 import eu.hxreborn.phdp.ui.screen.BehaviorScreen
 import eu.hxreborn.phdp.ui.screen.CalibrationScreen
+import eu.hxreborn.phdp.ui.screen.PackageSelectionScreen
 import eu.hxreborn.phdp.ui.screen.SystemScreen
 import eu.hxreborn.phdp.ui.state.PrefsState
 import eu.hxreborn.phdp.ui.theme.Tokens
@@ -44,6 +47,9 @@ sealed interface Screen : NavKey {
 
     @Serializable
     data object Motion : Screen
+
+    @Serializable
+    data object Packages : Screen
 
     @Serializable
     data object System : Screen
@@ -72,6 +78,12 @@ val bottomNavItems =
             titleRes = R.string.tab_motion,
             selectedIcon = Icons.Filled.AutoAwesomeMotion,
             unselectedIcon = Icons.Outlined.AutoAwesomeMotion,
+        ),
+        BottomNavItem(
+            key = Screen.Packages,
+            titleRes = R.string.tab_packages,
+            selectedIcon = Icons.Filled.Dashboard,
+            unselectedIcon = Icons.Outlined.Dashboard,
         ),
         BottomNavItem(
             key = Screen.System,
@@ -130,6 +142,13 @@ fun MainNavDisplay(
                 }
                 entry<Screen.Motion> {
                     BehaviorScreen(
+                        prefsState = prefsState,
+                        onSavePrefs = onSavePrefs,
+                        contentPadding = contentPadding,
+                    )
+                }
+                entry<Screen.Packages> {
+                    PackageSelectionScreen(
                         prefsState = prefsState,
                         onSavePrefs = onSavePrefs,
                         contentPadding = contentPadding,

@@ -95,6 +95,9 @@ object PrefsManager {
     @Volatile var ringOffsetY = Prefs.ringOffsetY.default
         private set
 
+    @Volatile var selectedPackages = Prefs.selectedPackages.default
+        private set
+
     // Callbacks
     var onPrefsChanged: (() -> Unit)? = null
     var onAppVisibilityChanged: ((Boolean) -> Unit)? = null
@@ -110,6 +113,7 @@ object PrefsManager {
         runCatching {
             remotePrefs = xposed.getRemotePreferences(Prefs.GROUP)
             refreshCache()
+            log("Package selection: ${selectedPackages.size} packages")
 
             remotePrefs?.registerOnSharedPreferenceChangeListener { prefs, key ->
                 runCatching {
@@ -190,6 +194,7 @@ object PrefsManager {
                 ringScaleLinked = Prefs.ringScaleLinked.read(prefs)
                 ringOffsetX = Prefs.ringOffsetX.read(prefs)
                 ringOffsetY = Prefs.ringOffsetY.read(prefs)
+                selectedPackages = Prefs.selectedPackages.read(prefs)
             }
         }.onFailure { log("refreshCache() failed", it) }
     }

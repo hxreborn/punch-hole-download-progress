@@ -46,6 +46,26 @@ object Tokens {
     val GroupSpacing: Dp = 6.dp
     val RowGap: Dp = 2.dp
     val RowCornerRadius: Dp = 24.dp
+    val SectionHorizontalMargin: Dp = 12.dp
+
+    // App icon in list items
+    val AppIconSize: Dp = 48.dp
+    val AppIconCornerRadius: Dp = 12.dp
+    val LoadingIndicatorSize: Dp = 24.dp
+
+    // M3 checkbox size for skeleton
+    val CheckboxSize: Dp = 24.dp
+
+    // Loading skeleton placeholder
+    val SkeletonTitleHeight: Dp = 16.dp
+    val SkeletonSubtitleHeight: Dp = 12.dp
+    val SmallCornerRadius: Dp = 4.dp
+
+    // Package selection screen
+    const val SEARCH_DEBOUNCE_MS: Long = 200
+    const val SHIMMER_PLACEHOLDER_COUNT: Int = 6
+    const val EMPTY_STATE_FADE_MS: Int = 500
+    val EmptyStatePadding: Dp = 48.dp
 
     // App specific section header
     // Indented from screen edge to align with group content
@@ -65,4 +85,12 @@ object Tokens {
     // App specific animation
     // Base duration scaled by system animator duration scale at runtime
     const val ANIMATION_DURATION_MS: Int = 200
+
+    // Overflow menu
+    val MenuCornerRadius: Dp = 28.dp
+    const val MENU_SWITCH_SCALE: Float = 0.8f
+
+    // Expressive checkbox
+    val CheckboxCornerRadius: Dp = 8.dp
+    val CheckboxIconSize: Dp = 18.dp
 }

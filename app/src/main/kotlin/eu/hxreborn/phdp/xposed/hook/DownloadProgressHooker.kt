@@ -2,6 +2,7 @@ package eu.hxreborn.phdp.xposed.hook
 
 import android.app.Notification
 import eu.hxreborn.phdp.BuildConfig
+import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.util.accessibleField
 import eu.hxreborn.phdp.xposed.PHDPModule.Companion.log
 import io.github.libxposed.api.XposedInterface
@@ -39,54 +40,6 @@ object DownloadProgressHooker {
     @Volatile
     private var getIdMethod: Method? = null
 
-    private val SUPPORTED_PACKAGES =
-        setOf(
-            // System
-            "com.android.providers.downloads",
-            // Download managers
-            "com.dv.adm",
-            "com.dv.adm.pay",
-            // Firefox and forks
-            "org.mozilla.firefox",
-            "org.mozilla.firefox_beta",
-            "org.mozilla.fennec_aurora",
-            "org.mozilla.fennec_fdroid",
-            "org.mozilla.focus",
-            "org.mozilla.klar",
-            "io.github.nicktechnik.niceraven",
-            "io.github.forkmaintainers.iceraven",
-            "us.nickel.nickel_niceraven",
-            "us.nickel.nickel.niceraven",
-            "us.spotco.fennec_dos",
-            "org.torproject.torbrowser",
-            "org.torproject.torbrowser_alpha",
-            // Chrome and Chromium forks
-            "com.android.chrome",
-            "com.chrome.beta",
-            "com.chrome.dev",
-            "com.chrome.canary",
-            "org.chromium.chrome",
-            "org.cromite.cromite",
-            "com.brave.browser",
-            "com.brave.browser_beta",
-            "com.brave.browser_nightly",
-            "org.nickel.nickel",
-            "app.nickel.nickel",
-            "app.nickelglo.nickelglo",
-            "app.nickelglo.nickelglo.nickelglo",
-            "app.nickel.nickel.nickel",
-            "app.vanadium.browser",
-            "com.kiwibrowser.browser",
-            "com.vivaldi.browser",
-            "com.opera.browser",
-            "com.opera.mini.native",
-            "com.microsoft.emmx",
-            "com.duckduckgo.mobile.android",
-            "com.yandex.browser",
-            // Samsung
-            "com.sec.android.app.sbrowser",
-        )
-
     private val activeDownloads = ConcurrentHashMap<String, DownloadState>()
 
     var onProgressChanged: ((Int) -> Unit)? = null
@@ -121,7 +74,7 @@ object DownloadProgressHooker {
         val pkg = getPackageName(sbn) ?: return
         debug { "Notification from: $pkg" }
 
-        if (pkg !in SUPPORTED_PACKAGES) return
+        if (pkg !in PrefsManager.selectedPackages) return
 
         val id = getNotificationId(sbn) ?: return
         val notification = getNotification(sbn) ?: return

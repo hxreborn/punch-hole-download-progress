@@ -79,6 +79,8 @@ class PrefsRepositoryImpl(
             ringScaleLinked = Prefs.ringScaleLinked.read(this),
             ringOffsetX = Prefs.ringOffsetX.read(this),
             ringOffsetY = Prefs.ringOffsetY.read(this),
+            selectedPackages = Prefs.selectedPackages.read(this),
+            showSystemPackages = Prefs.showSystemPackages.read(this),
         )
 
     private fun SharedPreferences.readDarkThemeConfig(): DarkThemeConfig {
@@ -97,10 +99,29 @@ private fun SharedPreferences.Editor.putAny(
 ): SharedPreferences.Editor =
     apply {
         when (value) {
-            is Int -> putInt(key, value)
-            is Long -> putLong(key, value)
-            is Float -> putFloat(key, value)
-            is Boolean -> putBoolean(key, value)
-            is String -> putString(key, value)
+            is Int -> {
+                putInt(key, value)
+            }
+
+            is Long -> {
+                putLong(key, value)
+            }
+
+            is Float -> {
+                putFloat(key, value)
+            }
+
+            is Boolean -> {
+                putBoolean(key, value)
+            }
+
+            is String -> {
+                putString(key, value)
+            }
+
+            is Set<*> -> {
+                @Suppress("UNCHECKED_CAST")
+                putStringSet(key, value as Set<String>)
+            }
         }
     }

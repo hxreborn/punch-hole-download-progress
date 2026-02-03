@@ -8,8 +8,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.RestartAlt
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,6 +27,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.rememberNavBackStack
 import eu.hxreborn.phdp.R
+import eu.hxreborn.phdp.ui.component.OverflowMenu
+import eu.hxreborn.phdp.ui.component.OverflowMenuItem
 import eu.hxreborn.phdp.ui.navigation.BottomNav
 import eu.hxreborn.phdp.ui.navigation.MainNavDisplay
 import eu.hxreborn.phdp.ui.navigation.Screen
@@ -95,28 +95,24 @@ fun PunchHoleProgressContent(
                                         contentDescription = stringResource(R.string.more_options),
                                     )
                                 }
-                                DropdownMenu(
+                                OverflowMenu(
                                     expanded = menuExpanded,
-                                    onDismissRequest = { menuExpanded = false },
+                                    onDismiss = { menuExpanded = false },
                                 ) {
-                                    DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.restart_systemui)) },
+                                    OverflowMenuItem(
+                                        text = stringResource(R.string.restart_systemui),
+                                        icon = Icons.Default.Refresh,
                                         onClick = {
                                             menuExpanded = false
                                             onMenuAction(MenuAction.RestartSystemUI)
                                         },
-                                        leadingIcon = {
-                                            Icon(Icons.Default.Refresh, contentDescription = null)
-                                        },
                                     )
-                                    DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.reset_defaults)) },
+                                    OverflowMenuItem(
+                                        text = stringResource(R.string.reset_defaults),
+                                        icon = Icons.Default.RestartAlt,
                                         onClick = {
                                             menuExpanded = false
                                             onMenuAction(MenuAction.Reset)
-                                        },
-                                        leadingIcon = {
-                                            Icon(Icons.Default.RestartAlt, contentDescription = null)
                                         },
                                     )
                                 }

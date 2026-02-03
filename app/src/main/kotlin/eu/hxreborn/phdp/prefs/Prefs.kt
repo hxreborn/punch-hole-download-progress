@@ -50,6 +50,59 @@ object Prefs {
     val darkThemeConfig = StringPref("dark_theme_config", "follow_system")
     val useDynamicColor = BoolPref("use_dynamic_color", true)
 
+    val defaultSupportedPackages: Set<String> =
+        setOf(
+            // System
+            "com.android.providers.downloads",
+            // Download managers
+            "com.dv.adm",
+            "com.dv.adm.pay",
+            "idm.internet.download.manager",
+            "idm.internet.download.manager.plus",
+            "com.downloadmanager.android",
+            "com.download.video.manager.downloader",
+            // Firefox and forks
+            "org.mozilla.firefox",
+            "org.mozilla.fenix",
+            "org.mozilla.firefox_beta",
+            "org.mozilla.fennec_aurora",
+            "org.mozilla.fennec_fdroid",
+            "org.mozilla.focus",
+            "io.github.forkmaintainers.iceraven",
+            "us.spotco.fennec_dos",
+            "org.torproject.torbrowser",
+            "org.torproject.torbrowser_alpha",
+            // Chrome and Chromium forks
+            "com.android.chrome",
+            "com.chrome.beta",
+            "com.chrome.dev",
+            "com.chrome.canary",
+            "org.chromium.chrome",
+            "org.cromite.cromite",
+            "com.brave.browser",
+            "com.brave.browser_beta",
+            "com.brave.browser_nightly",
+            "app.vanadium.browser",
+            "com.kiwibrowser.browser",
+            "com.vivaldi.browser",
+            "com.opera.browser",
+            "com.opera.mini.native",
+            "com.microsoft.emmx",
+            "com.duckduckgo.mobile.android",
+            "com.yandex.browser",
+            // Samsung
+            "com.sec.android.app.sbrowser",
+            // App stores
+            "org.fdroid.fdroid",
+            "com.looker.droidify",
+            "com.machiav3lli.fdroid",
+            "com.aurora.store",
+            "dev.imranr.obtainium",
+        )
+
+    val selectedPackages = SetPref("selected_packages", defaultSupportedPackages)
+    val showSystemPackages = BoolPref("show_system_packages", false)
+
     // Trigger-only (ephemeral, not in resettable)
     val testProgress = IntPref("test_progress", -1)
     val testError = BoolPref("test_error", false)

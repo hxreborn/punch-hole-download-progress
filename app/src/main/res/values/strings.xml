@@ -21,6 +21,25 @@
     <string name="tab_design">Appearance</string>
     <string name="tab_motion">Behavior</string>
     <string name="tab_system">System</string>
+    <string name="tab_packages">Apps</string>
+
+    <!-- Packages -->
+    <string name="packages_search_hint">Search apps…</string>
+    <string name="packages_filter_system">System</string>
+    <string name="packages_selected_count">%1$d selected</string>
+    <string name="packages_empty_search">¯\\_(ツ)_/¯</string>
+    <string name="clear_search">Clear search</string>
+    <string name="clear">Clear</string>
+    <string name="clear_selection">Clear selection</string>
+    <string name="clear_selection_count">Clear Selection (%1$d)</string>
+    <string name="clear_selection_confirm">Clear %1$d selected apps?</string>
+    <string name="selection_cleared">Selection cleared</string>
+    <string name="apply_defaults">Apply Default Apps</string>
+    <string name="defaults_applied">Added %1$d apps</string>
+    <string name="defaults_none_added">All default applications are already selected</string>
+    <string name="undo">Undo</string>
+    <string name="help">How it works</string>
+    <string name="packages_help">This module detects downloads by reading the app\'s notifications.\n\nTo see the progress ring, the app must actively show a notification with a progress bar. If notifications are disabled or hidden, the ring will not appear.</string>
 
     <!-- Group Headers -->
     <string name="group_colors">Colors</string>

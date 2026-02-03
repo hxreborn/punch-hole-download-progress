@@ -79,3 +79,18 @@ class StringPref(
         editor.putString(key, value)
     }
 }
+
+class SetPref(
+    key: String,
+    default: Set<String>,
+) : PrefSpec<Set<String>>(key, default) {
+    override fun read(prefs: SharedPreferences): Set<String> =
+        (prefs.getStringSet(key, default) ?: default).toSet()
+
+    override fun write(
+        editor: SharedPreferences.Editor,
+        value: Set<String>,
+    ) {
+        editor.putStringSet(key, value)
+    }
+}
