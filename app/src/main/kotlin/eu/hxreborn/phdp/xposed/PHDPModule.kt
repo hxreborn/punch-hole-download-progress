@@ -42,9 +42,13 @@ class PHDPModule(
             msg: String,
             t: Throwable? = null,
         ) {
-            if (t != null) module.log(msg, t) else module.log(msg)
-            // Logcat stripped in release via proguard.
-            if (t != null) Log.d(TAG, msg, t) else Log.d(TAG, msg)
+            if (t == null) {
+                module.log(msg)
+                Log.d(TAG, msg)
+            } else {
+                module.log(msg, t)
+                Log.d(TAG, msg, t)
+            }
         }
     }
 }
