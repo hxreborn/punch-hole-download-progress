@@ -20,3 +20,4 @@ Thumbs.db
 
 # Local assets
 asset/
+.directory
