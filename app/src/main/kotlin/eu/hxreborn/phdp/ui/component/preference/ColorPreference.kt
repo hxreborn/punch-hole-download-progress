@@ -44,55 +44,8 @@ import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
+import eu.hxreborn.phdp.ui.theme.MaterialPalette
 import eu.hxreborn.phdp.ui.theme.Tokens
-
-private val materialColors =
-    listOf(
-        0xFFF44336.toInt(), // Red 500
-        0xFFE91E63.toInt(), // Pink 500
-        0xFF9C27B0.toInt(), // Purple 500
-        0xFF673AB7.toInt(), // Deep Purple 500
-        0xFF3F51B5.toInt(), // Indigo 500
-        0xFF2196F3.toInt(), // Blue 500
-        0xFF03A9F4.toInt(), // Light Blue 500
-        0xFF00BCD4.toInt(), // Cyan 500
-        0xFF009688.toInt(), // Teal 500
-        0xFF4CAF50.toInt(), // Green 500
-        0xFF8BC34A.toInt(), // Light Green 500
-        0xFFCDDC39.toInt(), // Lime 500
-        0xFFFFEB3B.toInt(), // Yellow 500
-        0xFFFFC107.toInt(), // Amber 500
-        0xFFFF9800.toInt(), // Orange 500
-        0xFFFF5722.toInt(), // Deep Orange 500
-        0xFF795548.toInt(), // Brown 500
-        0xFF9E9E9E.toInt(), // Grey 500
-        0xFF607D8B.toInt(), // Blue Grey 500
-        0xFFFFFFFF.toInt(), // White
-    )
-
-val bgColors =
-    listOf(
-        0xFF808080.toInt(), // Grey
-        0xFF9E9E9E.toInt(), // Grey 500
-        0xFFBDBDBD.toInt(), // Grey 400
-        0xFFE0E0E0.toInt(), // Grey 300
-        0xFF607D8B.toInt(), // Blue Grey 500
-        0xFF78909C.toInt(), // Blue Grey 400
-        0xFF90A4AE.toInt(), // Blue Grey 300
-        0xFFB0BEC5.toInt(), // Blue Grey 200
-        0xFF455A64.toInt(), // Blue Grey 700
-        0xFF37474F.toInt(), // Blue Grey 800
-        0xFF263238.toInt(), // Blue Grey 900
-        0xFF424242.toInt(), // Grey 800
-        0xFF616161.toInt(), // Grey 700
-        0xFF757575.toInt(), // Grey 600
-        0xFFEEEEEE.toInt(), // Grey 200
-        0xFFF5F5F5.toInt(), // Grey 100
-        0xFF212121.toInt(), // Grey 900
-        0xFF000000.toInt(), // Black
-        0xFFFFFFFF.toInt(), // White
-        0xFFCFD8DC.toInt(), // Blue Grey 100
-    )
 
 @Composable
 fun ColorPreference(
@@ -102,7 +55,7 @@ fun ColorPreference(
     modifier: Modifier = Modifier,
     summary: @Composable (() -> Unit)? = null,
     enabled: Boolean = true,
-    colors: List<Int> = materialColors,
+    colors: List<Int> = MaterialPalette.materialColors,
 ) {
     var showDialog by remember { mutableStateOf(false) }
     val contentAlpha = if (enabled) 1f else Tokens.DISABLED_ALPHA
@@ -275,7 +228,7 @@ private fun ColorSwatch(
                 imageVector = Icons.Default.Check,
                 contentDescription = null,
                 tint =
-                    if (color == 0xFFFFFFFF.toInt() || color == 0xFFFFFF00.toInt()) {
+                    if (color == MaterialPalette.White || color == MaterialPalette.Yellow500) {
                         Color.Black
                     } else {
                         Color.White

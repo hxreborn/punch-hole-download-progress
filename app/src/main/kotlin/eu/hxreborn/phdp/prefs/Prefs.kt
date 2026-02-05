@@ -1,5 +1,7 @@
 package eu.hxreborn.phdp.prefs
 
+import eu.hxreborn.phdp.ui.theme.MaterialPalette
+
 object Prefs {
     const val GROUP = "phdp_settings"
 
@@ -9,17 +11,17 @@ object Prefs {
     val appVisible = BoolPref("app_visible", false)
 
     // Appearance
-    val color = IntPref("color", 0xFF2196F3.toInt())
+    val color = IntPref("color", MaterialPalette.Blue500)
     val strokeWidth = FloatPref("stroke_width", 2f, 0.5f..10f)
     val ringGap = FloatPref("ring_gap", 1.155f, 0.5f..3f)
     val opacity = IntPref("opacity", 90, 1..100)
     val clockwise = BoolPref("clockwise", true)
-    val errorColor = IntPref("error_color", 0xFFF44336.toInt())
+    val errorColor = IntPref("error_color", MaterialPalette.Red500)
     val strokeCapStyle = StringPref("stroke_cap_style", "flat")
 
     // Background ring
     val backgroundRingEnabled = BoolPref("background_ring_enabled", true)
-    val backgroundRingColor = IntPref("background_ring_color", 0xFF808080.toInt())
+    val backgroundRingColor = IntPref("background_ring_color", MaterialPalette.Grey)
     val backgroundRingOpacity = IntPref("background_ring_opacity", 30, 1..100)
 
     // Geometry
@@ -35,7 +37,7 @@ object Prefs {
     val finishHoldMs = IntPref("finish_hold_ms", 500, 0..5000)
     val finishExitMs = IntPref("finish_exit_ms", 500, 50..3000)
     val finishUseFlashColor = BoolPref("finish_use_flash_color", true)
-    val finishFlashColor = IntPref("finish_flash_color", 0xFFFFFFFF.toInt())
+    val finishFlashColor = IntPref("finish_flash_color", MaterialPalette.White)
     val completionPulseEnabled = BoolPref("completion_pulse_enabled", true)
 
     // Text overlays

@@ -17,10 +17,10 @@ import eu.hxreborn.phdp.ui.component.preference.NavigationPreference
 import eu.hxreborn.phdp.ui.component.preference.SelectPreference
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithReset
 import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
-import eu.hxreborn.phdp.ui.component.preference.bgColors
 import eu.hxreborn.phdp.ui.state.PrefsState
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
+import eu.hxreborn.phdp.ui.theme.MaterialPalette
 import eu.hxreborn.phdp.ui.theme.Tokens
 import me.zhanghai.compose.preference.ProvidePreferenceLocals
 import me.zhanghai.compose.preference.preferenceCategory
@@ -251,7 +251,7 @@ fun AppearanceScreen(
                                         )
                                     },
                                     enabled = prefsState.backgroundRingEnabled,
-                                    colors = bgColors,
+                                    colors = MaterialPalette.backgroundColors,
                                 )
                             },
                             {
