@@ -70,6 +70,30 @@ private val materialColors =
         0xFFFFFFFF.toInt(), // White
     )
 
+val bgColors =
+    listOf(
+        0xFF808080.toInt(), // Grey
+        0xFF9E9E9E.toInt(), // Grey 500
+        0xFFBDBDBD.toInt(), // Grey 400
+        0xFFE0E0E0.toInt(), // Grey 300
+        0xFF607D8B.toInt(), // Blue Grey 500
+        0xFF78909C.toInt(), // Blue Grey 400
+        0xFF90A4AE.toInt(), // Blue Grey 300
+        0xFFB0BEC5.toInt(), // Blue Grey 200
+        0xFF455A64.toInt(), // Blue Grey 700
+        0xFF37474F.toInt(), // Blue Grey 800
+        0xFF263238.toInt(), // Blue Grey 900
+        0xFF424242.toInt(), // Grey 800
+        0xFF616161.toInt(), // Grey 700
+        0xFF757575.toInt(), // Grey 600
+        0xFFEEEEEE.toInt(), // Grey 200
+        0xFFF5F5F5.toInt(), // Grey 100
+        0xFF212121.toInt(), // Grey 900
+        0xFF000000.toInt(), // Black
+        0xFFFFFFFF.toInt(), // White
+        0xFFCFD8DC.toInt(), // Blue Grey 100
+    )
+
 @Composable
 fun ColorPreference(
     value: Int,
@@ -78,6 +102,7 @@ fun ColorPreference(
     modifier: Modifier = Modifier,
     summary: @Composable (() -> Unit)? = null,
     enabled: Boolean = true,
+    colors: List<Int> = materialColors,
 ) {
     var showDialog by remember { mutableStateOf(false) }
     val contentAlpha = if (enabled) 1f else Tokens.DISABLED_ALPHA
@@ -85,6 +110,7 @@ fun ColorPreference(
     if (showDialog) {
         ColorPickerDialog(
             initialColor = value,
+            colors = colors,
             onDismiss = { showDialog = false },
             onColorSelected = { color ->
                 onValueChange(color)
@@ -140,11 +166,12 @@ fun ColorPreference(
 @Composable
 private fun ColorPickerDialog(
     initialColor: Int,
+    colors: List<Int>,
     onDismiss: () -> Unit,
     onColorSelected: (Int) -> Unit,
 ) {
     var selectedColor by remember {
-        mutableIntStateOf(materialColors.find { it == initialColor } ?: materialColors[5])
+        mutableIntStateOf(colors.find { it == initialColor } ?: colors[0])
     }
 
     Dialog(onDismissRequest = onDismiss) {
@@ -171,7 +198,7 @@ private fun ColorPickerDialog(
                     horizontalArrangement = Arrangement.spacedBy(Tokens.ColorGridSpacing),
                     verticalArrangement = Arrangement.spacedBy(Tokens.ColorGridSpacing),
                 ) {
-                    items(materialColors) { color ->
+                    items(colors) { color ->
                         ColorSwatch(
                             color = color,
                             selected = color == selectedColor,

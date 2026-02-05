@@ -8,94 +8,140 @@ object PrefsManager {
     private var remotePrefs: SharedPreferences? = null
 
     // Cached values
-    @Volatile var enabled = Prefs.enabled.default
+    @Volatile
+    var enabled = Prefs.enabled.default
         private set
 
-    @Volatile var color = Prefs.color.default
+    @Volatile
+    var color = Prefs.color.default
         private set
 
-    @Volatile var strokeWidth = Prefs.strokeWidth.default
+    @Volatile
+    var strokeWidth = Prefs.strokeWidth.default
         private set
 
-    @Volatile var ringGap = Prefs.ringGap.default
+    @Volatile
+    var ringGap = Prefs.ringGap.default
         private set
 
-    @Volatile var opacity = Prefs.opacity.default
+    @Volatile
+    var opacity = Prefs.opacity.default
         private set
 
-    @Volatile var hooksFeedback = Prefs.hooksFeedback.default
+    @Volatile
+    var hooksFeedback = Prefs.hooksFeedback.default
         private set
 
-    @Volatile var appVisible = Prefs.appVisible.default
+    @Volatile
+    var appVisible = Prefs.appVisible.default
         private set
 
-    @Volatile var clockwise = Prefs.clockwise.default
+    @Volatile
+    var clockwise = Prefs.clockwise.default
         private set
 
-    @Volatile var progressEasing = Prefs.progressEasing.default
+    @Volatile
+    var progressEasing = Prefs.progressEasing.default
         private set
 
-    @Volatile var errorColor = Prefs.errorColor.default
+    @Volatile
+    var errorColor = Prefs.errorColor.default
         private set
 
-    @Volatile var powerSaverMode = Prefs.powerSaverMode.default
+    @Volatile
+    var powerSaverMode = Prefs.powerSaverMode.default
         private set
 
-    @Volatile var showDownloadCount = Prefs.showDownloadCount.default
+    @Volatile
+    var showDownloadCount = Prefs.showDownloadCount.default
         private set
 
-    @Volatile var finishStyle = Prefs.finishStyle.default
+    @Volatile
+    var finishStyle = Prefs.finishStyle.default
         private set
 
-    @Volatile var finishHoldMs = Prefs.finishHoldMs.default
+    @Volatile
+    var finishHoldMs = Prefs.finishHoldMs.default
         private set
 
-    @Volatile var finishExitMs = Prefs.finishExitMs.default
+    @Volatile
+    var finishExitMs = Prefs.finishExitMs.default
         private set
 
-    @Volatile var finishUseFlashColor = Prefs.finishUseFlashColor.default
+    @Volatile
+    var finishUseFlashColor = Prefs.finishUseFlashColor.default
         private set
 
-    @Volatile var finishFlashColor = Prefs.finishFlashColor.default
+    @Volatile
+    var finishFlashColor = Prefs.finishFlashColor.default
         private set
 
-    @Volatile var minVisibilityEnabled = Prefs.minVisibilityEnabled.default
+    @Volatile
+    var minVisibilityEnabled = Prefs.minVisibilityEnabled.default
         private set
 
-    @Volatile var minVisibilityMs = Prefs.minVisibilityMs.default
+    @Volatile
+    var minVisibilityMs = Prefs.minVisibilityMs.default
         private set
 
-    @Volatile var completionPulseEnabled = Prefs.completionPulseEnabled.default
+    @Volatile
+    var completionPulseEnabled = Prefs.completionPulseEnabled.default
         private set
 
-    @Volatile var percentTextEnabled = Prefs.percentTextEnabled.default
+    @Volatile
+    var percentTextEnabled = Prefs.percentTextEnabled.default
         private set
 
-    @Volatile var percentTextPosition = Prefs.percentTextPosition.default
+    @Volatile
+    var percentTextPosition = Prefs.percentTextPosition.default
         private set
 
-    @Volatile var filenameTextEnabled = Prefs.filenameTextEnabled.default
+    @Volatile
+    var filenameTextEnabled = Prefs.filenameTextEnabled.default
         private set
 
-    @Volatile var filenameTextPosition = Prefs.filenameTextPosition.default
+    @Volatile
+    var filenameTextPosition = Prefs.filenameTextPosition.default
         private set
 
-    @Volatile var ringScaleX = Prefs.ringScaleX.default
+    @Volatile
+    var ringScaleX = Prefs.ringScaleX.default
         private set
 
-    @Volatile var ringScaleY = Prefs.ringScaleY.default
+    @Volatile
+    var ringScaleY = Prefs.ringScaleY.default
         private set
 
-    @Volatile var ringScaleLinked = Prefs.ringScaleLinked.default
+    @Volatile
+    var ringScaleLinked = Prefs.ringScaleLinked.default
         private set
 
-    @Volatile var ringOffsetX = Prefs.ringOffsetX.default
+    @Volatile
+    var ringOffsetX = Prefs.ringOffsetX.default
         private set
 
-    @Volatile var ringOffsetY = Prefs.ringOffsetY.default
+    @Volatile
+    var ringOffsetY = Prefs.ringOffsetY.default
         private set
 
-    @Volatile var selectedPackages = Prefs.selectedPackages.default
+    @Volatile
+    var strokeCapStyle = Prefs.strokeCapStyle.default
+        private set
+
+    @Volatile
+    var backgroundRingEnabled = Prefs.backgroundRingEnabled.default
+        private set
+
+    @Volatile
+    var backgroundRingColor = Prefs.backgroundRingColor.default
+        private set
+
+    @Volatile
+    var backgroundRingOpacity = Prefs.backgroundRingOpacity.default
+        private set
+
+    @Volatile
+    var selectedPackages = Prefs.selectedPackages.default
         private set
 
     // Callbacks
@@ -194,6 +240,10 @@ object PrefsManager {
                 ringScaleLinked = Prefs.ringScaleLinked.read(prefs)
                 ringOffsetX = Prefs.ringOffsetX.read(prefs)
                 ringOffsetY = Prefs.ringOffsetY.read(prefs)
+                strokeCapStyle = Prefs.strokeCapStyle.read(prefs)
+                backgroundRingEnabled = Prefs.backgroundRingEnabled.read(prefs)
+                backgroundRingColor = Prefs.backgroundRingColor.read(prefs)
+                backgroundRingOpacity = Prefs.backgroundRingOpacity.read(prefs)
                 selectedPackages = Prefs.selectedPackages.read(prefs)
             }
         }.onFailure { log("refreshCache() failed", it) }

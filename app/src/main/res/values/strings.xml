@@ -61,6 +61,28 @@
     <string name="pref_error_color_title">Error color</string>
     <string name="pref_error_color_summary">Ring color applied when download fails</string>
 
+    <!-- Design: Stroke Style -->
+    <string name="pref_stroke_cap_style_title">Ring edge style</string>
+    <string name="pref_stroke_cap_style_summary">Shape of ring edges</string>
+    <string-array name="stroke_cap_entries">
+        <item>Flat</item>
+        <item>Semicircle</item>
+        <item>Square</item>
+    </string-array>
+    <string-array name="stroke_cap_values">
+        <item>flat</item>
+        <item>round</item>
+        <item>square</item>
+    </string-array>
+
+    <!-- Design: Background Ring -->
+    <string name="group_background_ring">Background Ring</string>
+    <string name="pref_background_ring_enabled_title">Show background ring</string>
+    <string name="pref_background_ring_enabled_summary">Dimmed ring behind the progress ring</string>
+    <string name="pref_background_ring_color_title">Background ring color</string>
+    <string name="pref_background_ring_color_summary">Color of the background ring</string>
+    <string name="pref_background_ring_opacity_title">Background ring opacity</string>
+
     <!-- Design: Geometry -->
     <string name="pref_stroke_width_title">Thickness</string>
     <string name="pref_stroke_width_summary">Progress arc width</string>

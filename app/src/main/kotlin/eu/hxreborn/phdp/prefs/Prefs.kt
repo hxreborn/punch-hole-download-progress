@@ -15,6 +15,12 @@ object Prefs {
     val opacity = IntPref("opacity", 90, 1..100)
     val clockwise = BoolPref("clockwise", true)
     val errorColor = IntPref("error_color", 0xFFF44336.toInt())
+    val strokeCapStyle = StringPref("stroke_cap_style", "flat")
+
+    // Background ring
+    val backgroundRingEnabled = BoolPref("background_ring_enabled", true)
+    val backgroundRingColor = IntPref("background_ring_color", 0xFF808080.toInt())
+    val backgroundRingOpacity = IntPref("background_ring_opacity", 30, 1..100)
 
     // Geometry
     val ringScaleX = FloatPref("ring_scale_x", 1f, 0.25f..3f)
@@ -119,6 +125,10 @@ object Prefs {
             opacity,
             clockwise,
             errorColor,
+            strokeCapStyle,
+            backgroundRingEnabled,
+            backgroundRingColor,
+            backgroundRingOpacity,
             ringScaleX,
             ringScaleY,
             ringScaleLinked,
@@ -150,6 +160,10 @@ object Prefs {
             ringGap.key,
             opacity.key,
             clockwise.key,
+            strokeCapStyle.key,
+            backgroundRingEnabled.key,
+            backgroundRingColor.key,
+            backgroundRingOpacity.key,
             ringScaleX.key,
             ringScaleY.key,
             ringOffsetX.key,

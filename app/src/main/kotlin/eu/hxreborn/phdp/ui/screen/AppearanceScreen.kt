@@ -17,6 +17,7 @@ import eu.hxreborn.phdp.ui.component.preference.NavigationPreference
 import eu.hxreborn.phdp.ui.component.preference.SelectPreference
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithReset
 import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
+import eu.hxreborn.phdp.ui.component.preference.bgColors
 import eu.hxreborn.phdp.ui.state.PrefsState
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
@@ -171,6 +172,26 @@ fun AppearanceScreen(
                                 )
                             },
                             {
+                                SelectPreference(
+                                    value = prefsState.strokeCapStyle,
+                                    onValueChange = {
+                                        onSavePrefs(Prefs.strokeCapStyle.key, it)
+                                    },
+                                    values = listOf("flat", "round", "square"),
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_stroke_cap_style_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_stroke_cap_style_summary),
+                                        )
+                                    },
+                                    valueToText = { strokeCapLabel(it) },
+                                )
+                            },
+                            {
                                 NavigationPreference(
                                     onClick = onNavigateToCalibration,
                                     title = {
@@ -179,6 +200,82 @@ fun AppearanceScreen(
                                     summary = {
                                         Text(stringResource(R.string.pref_calibrate_ring_summary))
                                     },
+                                )
+                            },
+                        ),
+                )
+            }
+
+            preferenceCategory(
+                key = "design_background_ring_header",
+                title = { Text(stringResource(R.string.group_background_ring)) },
+            )
+
+            item(key = "design_background_ring_section") {
+                SectionCard(
+                    enabled = prefsState.backgroundRingEnabled,
+                    items =
+                        listOf(
+                            {
+                                TogglePreferenceWithIcon(
+                                    value = prefsState.backgroundRingEnabled,
+                                    onValueChange = {
+                                        onSavePrefs(Prefs.backgroundRingEnabled.key, it)
+                                    },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_background_ring_enabled_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_background_ring_enabled_summary),
+                                        )
+                                    },
+                                )
+                            },
+                            {
+                                ColorPreference(
+                                    value = prefsState.backgroundRingColor,
+                                    onValueChange = {
+                                        onSavePrefs(Prefs.backgroundRingColor.key, it)
+                                    },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_background_ring_color_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_background_ring_color_summary),
+                                        )
+                                    },
+                                    enabled = prefsState.backgroundRingEnabled,
+                                    colors = bgColors,
+                                )
+                            },
+                            {
+                                val opacityRange = Prefs.backgroundRingOpacity.range!!
+                                SliderPreferenceWithReset(
+                                    value = prefsState.backgroundRingOpacity.toFloat(),
+                                    onValueChange = {
+                                        onSavePrefs(Prefs.backgroundRingOpacity.key, it.toInt())
+                                    },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_background_ring_opacity_title),
+                                        )
+                                    },
+                                    valueRange = opacityRange.first.toFloat()..opacityRange.last.toFloat(),
+                                    defaultValue = Prefs.backgroundRingOpacity.default.toFloat(),
+                                    onReset = {
+                                        onSavePrefs(
+                                            Prefs.backgroundRingOpacity.key,
+                                            Prefs.backgroundRingOpacity.default,
+                                        )
+                                    },
+                                    valueText = { Text("${it.toInt()}%") },
+                                    enabled = prefsState.backgroundRingEnabled,
                                 )
                             },
                         ),
@@ -323,6 +420,14 @@ private fun positionLabelPlain(position: String): String =
         "top" -> "Top"
         "bottom" -> "Bottom"
         else -> position
+    }
+
+private fun strokeCapLabel(style: String): String =
+    when (style) {
+        "flat" -> "Flat"
+        "round" -> "Semicircle"
+        "square" -> "Square"
+        else -> style
     }
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
