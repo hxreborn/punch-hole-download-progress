@@ -36,6 +36,8 @@ class IndicatorView(
 
     private var downloadStartTime = 0L
     private var pendingFinishRunnable: Runnable? = null
+    private var lastProgressChangeTime = 0L
+    private val burnInHideRunnable = Runnable { invalidate() }
     private val minVisibilityMs: Long
         get() = if (PrefsManager.minVisibilityEnabled) PrefsManager.minVisibilityMs.toLong() else 0L
 
@@ -76,6 +78,11 @@ class IndicatorView(
             if (field != newValue) {
                 val oldValue = field
                 field = newValue
+                lastProgressChangeTime = System.currentTimeMillis()
+                removeCallbacks(burnInHideRunnable)
+                if (newValue in 1..99) {
+                    postDelayed(burnInHideRunnable, BURN_IN_HIDE_DELAY_MS)
+                }
                 log("IndicatorView: progress = $newValue")
 
                 if (oldValue == 0 && newValue > 0) {
@@ -264,6 +271,7 @@ class IndicatorView(
         animator.cancelAll()
         pendingFinishRunnable?.let { removeCallbacks(it) }
         pendingFinishRunnable = null
+        removeCallbacks(burnInHideRunnable)
         PrefsManager.onPrefsChanged = null
         PrefsManager.onTestProgressChanged = null
         PrefsManager.onTestErrorChanged = null
@@ -346,12 +354,17 @@ class IndicatorView(
                 else -> progress
             }
 
+        val isBurnInHidden =
+            effectiveProgress in 1..99 &&
+                lastProgressChangeTime > 0 &&
+                System.currentTimeMillis() - lastProgressChangeTime >= BURN_IN_HIDE_DELAY_MS
+
         val shouldDraw =
             when {
                 animator.isFinishAnimating -> true
                 animator.isGeometryPreviewActive -> true
                 animator.isPreviewAnimating -> true
-                effectiveProgress in 1..99 -> true
+                effectiveProgress in 1..99 -> !isBurnInHidden
                 pendingFinishRunnable != null -> true
                 else -> false
             }
@@ -705,6 +718,7 @@ class IndicatorView(
         private const val ERROR_STROKE_MULTIPLIER = 1.5f
         private const val BADGE_TOP_PADDING_DP = 4f
         private const val LABEL_PADDING_DP = 4f
+        private const val BURN_IN_HIDE_DELAY_MS = 10_000L
 
         fun attach(context: Context): IndicatorView {
             val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
