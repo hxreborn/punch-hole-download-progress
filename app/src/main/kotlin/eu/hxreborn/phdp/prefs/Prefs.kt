@@ -99,6 +99,7 @@ object Prefs {
             // Samsung
             "com.sec.android.app.sbrowser",
             // App stores
+            "com.android.vending",
             "org.fdroid.fdroid",
             "com.looker.droidify",
             "com.machiav3lli.fdroid",
