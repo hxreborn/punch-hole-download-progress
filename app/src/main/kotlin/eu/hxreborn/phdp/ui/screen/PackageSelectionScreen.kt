@@ -177,6 +177,14 @@ private fun SearchField(
                         )
                         HorizontalDivider()
                         OverflowMenuItem(
+                            text = stringResource(R.string.apply_defaults),
+                            icon = Icons.Outlined.SaveAlt,
+                            onClick = {
+                                showMenu = false
+                                onApplyDefaults()
+                            },
+                        )
+                        OverflowMenuItem(
                             text = stringResource(R.string.clear_selection_count, selectedCount),
                             icon = Icons.Outlined.ClearAll,
                             onClick = {
@@ -196,14 +204,6 @@ private fun SearchField(
                                 } else {
                                     LocalContentColor.current
                                 },
-                        )
-                        OverflowMenuItem(
-                            text = stringResource(R.string.apply_defaults),
-                            icon = Icons.Outlined.SaveAlt,
-                            onClick = {
-                                showMenu = false
-                                onApplyDefaults()
-                            },
                         )
                         HorizontalDivider()
                         OverflowMenuItem(
