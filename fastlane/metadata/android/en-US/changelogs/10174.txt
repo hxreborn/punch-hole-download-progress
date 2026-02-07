@@ -1,0 +1,4 @@
+Burn-in protection for stalled downloads
+Background ring behind the progress arc
+Google Play Store added to recommended apps
+Visual refinements to colors and overflow menu
