@@ -30,6 +30,8 @@ fun AppearanceScreen(
     prefsState: PrefsState,
     onSavePrefs: (key: String, value: Any) -> Unit,
     onNavigateToCalibration: () -> Unit,
+    onNavigateToPercentCalibration: () -> Unit,
+    onNavigateToFilenameCalibration: () -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
@@ -310,34 +312,22 @@ fun AppearanceScreen(
                                 )
                             },
                             {
-                                SelectPreference(
-                                    value = prefsState.percentTextPosition,
-                                    onValueChange = {
-                                        onSavePrefs(Prefs.percentTextPosition.key, it)
-                                    },
-                                    values =
-                                        listOf(
-                                            "left",
-                                            "right",
-                                            "top_left",
-                                            "top_right",
-                                            "bottom_left",
-                                            "bottom_right",
-                                            "top",
-                                            "bottom",
-                                        ),
+                                NavigationPreference(
+                                    onClick = onNavigateToPercentCalibration,
                                     title = {
                                         Text(
-                                            stringResource(R.string.pref_text_position_title),
+                                            stringResource(
+                                                R.string.pref_calibrate_percent_title,
+                                            ),
                                         )
                                     },
                                     summary = {
                                         Text(
-                                            stringResource(R.string.pref_text_position_summary),
+                                            stringResource(
+                                                R.string.pref_calibrate_percent_summary,
+                                            ),
                                         )
                                     },
-                                    enabled = prefsState.percentTextEnabled,
-                                    valueToText = { positionLabelPlain(it) },
                                 )
                             },
                         ),
@@ -372,34 +362,22 @@ fun AppearanceScreen(
                                 )
                             },
                             {
-                                SelectPreference(
-                                    value = prefsState.filenameTextPosition,
-                                    onValueChange = {
-                                        onSavePrefs(Prefs.filenameTextPosition.key, it)
-                                    },
-                                    values =
-                                        listOf(
-                                            "left",
-                                            "right",
-                                            "top_left",
-                                            "top_right",
-                                            "bottom_left",
-                                            "bottom_right",
-                                            "top",
-                                            "bottom",
-                                        ),
+                                NavigationPreference(
+                                    onClick = onNavigateToFilenameCalibration,
                                     title = {
                                         Text(
-                                            stringResource(R.string.pref_filename_position_title),
+                                            stringResource(
+                                                R.string.pref_calibrate_filename_title,
+                                            ),
                                         )
                                     },
                                     summary = {
                                         Text(
-                                            stringResource(R.string.pref_filename_position_summary),
+                                            stringResource(
+                                                R.string.pref_calibrate_filename_summary,
+                                            ),
                                         )
                                     },
-                                    enabled = prefsState.filenameTextEnabled,
-                                    valueToText = { positionLabelPlain(it) },
                                 )
                             },
                         ),
@@ -408,19 +386,6 @@ fun AppearanceScreen(
         }
     }
 }
-
-private fun positionLabelPlain(position: String): String =
-    when (position) {
-        "left" -> "Left"
-        "right" -> "Right"
-        "top_left" -> "Top Left"
-        "top_right" -> "Top Right"
-        "bottom_left" -> "Bottom Left"
-        "bottom_right" -> "Bottom Right"
-        "top" -> "Top"
-        "bottom" -> "Bottom"
-        else -> position
-    }
 
 private fun strokeCapLabel(style: String): String =
     when (style) {
@@ -438,6 +403,8 @@ private fun AppearanceScreenPreview() {
             prefsState = PrefsState(),
             onSavePrefs = { _, _ -> },
             onNavigateToCalibration = {},
+            onNavigateToPercentCalibration = {},
+            onNavigateToFilenameCalibration = {},
             contentPadding = PaddingValues(),
         )
     }

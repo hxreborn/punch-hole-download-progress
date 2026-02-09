@@ -156,7 +156,9 @@ object SystemUIHooker {
             indicatorView?.let { it.post { it.startDynamicPreviewAnim() } }
         }
         PrefsManager.onGeometryPreviewTriggered = {
-            indicatorView?.let { it.post { it.showStaticPreviewAnim() } }
+            // Keep preview persistent if calibration screen is open
+            val autoHide = !PrefsManager.persistentPreviewActive
+            indicatorView?.let { it.post { it.showStaticPreviewAnim(autoHide) } }
         }
         PrefsManager.onDownloadComplete = { triggerHapticFeedback() }
         PrefsManager.onTestErrorChanged = { isError ->

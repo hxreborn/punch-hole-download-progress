@@ -57,6 +57,14 @@ object PrefsManager {
         private set
 
     @Volatile
+    var badgeOffsetX = Prefs.badgeOffsetX.default
+        private set
+
+    @Volatile
+    var badgeOffsetY = Prefs.badgeOffsetY.default
+        private set
+
+    @Volatile
     var finishStyle = Prefs.finishStyle.default
         private set
 
@@ -97,11 +105,27 @@ object PrefsManager {
         private set
 
     @Volatile
+    var percentTextOffsetX = Prefs.percentTextOffsetX.default
+        private set
+
+    @Volatile
+    var percentTextOffsetY = Prefs.percentTextOffsetY.default
+        private set
+
+    @Volatile
     var filenameTextEnabled = Prefs.filenameTextEnabled.default
         private set
 
     @Volatile
     var filenameTextPosition = Prefs.filenameTextPosition.default
+        private set
+
+    @Volatile
+    var filenameTextOffsetX = Prefs.filenameTextOffsetX.default
+        private set
+
+    @Volatile
+    var filenameTextOffsetY = Prefs.filenameTextOffsetY.default
         private set
 
     @Volatile
@@ -142,6 +166,10 @@ object PrefsManager {
 
     @Volatile
     var selectedPackages = Prefs.selectedPackages.default
+        private set
+
+    @Volatile
+    var persistentPreviewActive = false
         private set
 
     // Callbacks
@@ -190,7 +218,9 @@ object PrefsManager {
                         }
 
                         Prefs.persistentPreview.key -> {
-                            onPersistentPreviewChanged?.invoke(Prefs.persistentPreview.read(prefs))
+                            val enabled = Prefs.persistentPreview.read(prefs)
+                            persistentPreviewActive = enabled
+                            onPersistentPreviewChanged?.invoke(enabled)
                         }
 
                         in Prefs.visualKeys -> {
@@ -223,6 +253,8 @@ object PrefsManager {
                 errorColor = Prefs.errorColor.read(prefs)
                 powerSaverMode = Prefs.powerSaverMode.read(prefs)
                 showDownloadCount = Prefs.showDownloadCount.read(prefs)
+                badgeOffsetX = Prefs.badgeOffsetX.read(prefs)
+                badgeOffsetY = Prefs.badgeOffsetY.read(prefs)
                 finishStyle = Prefs.finishStyle.read(prefs)
                 finishHoldMs = Prefs.finishHoldMs.read(prefs)
                 finishExitMs = Prefs.finishExitMs.read(prefs)
@@ -233,8 +265,12 @@ object PrefsManager {
                 completionPulseEnabled = Prefs.completionPulseEnabled.read(prefs)
                 percentTextEnabled = Prefs.percentTextEnabled.read(prefs)
                 percentTextPosition = Prefs.percentTextPosition.read(prefs)
+                percentTextOffsetX = Prefs.percentTextOffsetX.read(prefs)
+                percentTextOffsetY = Prefs.percentTextOffsetY.read(prefs)
                 filenameTextEnabled = Prefs.filenameTextEnabled.read(prefs)
                 filenameTextPosition = Prefs.filenameTextPosition.read(prefs)
+                filenameTextOffsetX = Prefs.filenameTextOffsetX.read(prefs)
+                filenameTextOffsetY = Prefs.filenameTextOffsetY.read(prefs)
                 ringScaleX = Prefs.ringScaleX.read(prefs)
                 ringScaleY = Prefs.ringScaleY.read(prefs)
                 ringScaleLinked = Prefs.ringScaleLinked.read(prefs)

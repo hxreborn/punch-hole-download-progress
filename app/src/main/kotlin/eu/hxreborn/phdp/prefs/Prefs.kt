@@ -43,13 +43,19 @@ object Prefs {
     // Text overlays
     val percentTextEnabled = BoolPref("percent_text_enabled", false)
     val percentTextPosition = StringPref("percent_text_position", "right")
+    val percentTextOffsetX = FloatPref("percent_text_offset_x", 0f, -200f..200f)
+    val percentTextOffsetY = FloatPref("percent_text_offset_y", 0f, -200f..200f)
     val filenameTextEnabled = BoolPref("filename_text_enabled", false)
     val filenameTextPosition = StringPref("filename_text_position", "top_right")
+    val filenameTextOffsetX = FloatPref("filename_text_offset_x", 0f, -200f..200f)
+    val filenameTextOffsetY = FloatPref("filename_text_offset_y", 0f, -200f..200f)
 
     // Timing
     val minVisibilityEnabled = BoolPref("min_visibility_enabled", true)
     val minVisibilityMs = IntPref("min_visibility_ms", 500, 0..2000)
     val showDownloadCount = BoolPref("show_download_count", false)
+    val badgeOffsetX = FloatPref("badge_offset_x", 0f, -200f..200f)
+    val badgeOffsetY = FloatPref("badge_offset_y", 0f, -200f..200f)
 
     // Power
     val powerSaverMode = StringPref("power_saver_mode", "normal")
@@ -146,11 +152,17 @@ object Prefs {
             completionPulseEnabled,
             percentTextEnabled,
             percentTextPosition,
+            percentTextOffsetX,
+            percentTextOffsetY,
             filenameTextEnabled,
             filenameTextPosition,
+            filenameTextOffsetX,
+            filenameTextOffsetY,
             minVisibilityEnabled,
             minVisibilityMs,
             showDownloadCount,
+            badgeOffsetX,
+            badgeOffsetY,
             powerSaverMode,
             hooksFeedback,
         )
@@ -171,5 +183,13 @@ object Prefs {
             ringScaleY.key,
             ringOffsetX.key,
             ringOffsetY.key,
+            percentTextPosition.key,
+            percentTextOffsetX.key,
+            percentTextOffsetY.key,
+            filenameTextPosition.key,
+            filenameTextOffsetX.key,
+            filenameTextOffsetY.key,
+            badgeOffsetX.key,
+            badgeOffsetY.key,
         )
 }

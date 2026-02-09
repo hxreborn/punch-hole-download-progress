@@ -435,20 +435,30 @@ class IndicatorView(
                 val actualSweep = if (PrefsManager.clockwise) sweepAngle else -sweepAngle
                 drawArc(arcBounds, -90f, actualSweep, false, animatedPaint)
 
-                if (effectiveProgress in 1..99) drawLabels(this, effectiveProgress)
+                val showLabels =
+                    effectiveProgress in 1..99 || animator.isGeometryPreviewActive
+                if (showLabels) drawLabels(this, effectiveProgress)
             }
 
             // Badge drawn BELOW the ring (not at center - that's behind camera hardware)
-            if (!animator.isPreviewAnimating && PrefsManager.showDownloadCount &&
-                activeDownloadCount > 1
-            ) {
+            val showBadge =
+                !animator.isPreviewAnimating && PrefsManager.showDownloadCount &&
+                    (activeDownloadCount > 1 || animator.isGeometryPreviewActive)
+            if (showBadge) {
                 scaledPath.computeBounds(arcBounds, true)
-                val badgeTop = arcBounds.bottom + BADGE_TOP_PADDING_DP * density
+                val viewDensity = this@IndicatorView.density
+                val badgeCenterX =
+                    arcBounds.centerX() + PrefsManager.badgeOffsetX * viewDensity
+                val badgeTop =
+                    arcBounds.bottom + BADGE_TOP_PADDING_DP * viewDensity +
+                        PrefsManager.badgeOffsetY * viewDensity
+                val badgeCount =
+                    if (animator.isGeometryPreviewActive) 3 else activeDownloadCount
                 badgePainter.draw(
                     this,
-                    arcBounds.centerX(),
+                    badgeCenterX,
                     badgeTop,
-                    activeDownloadCount,
+                    badgeCount,
                     effectiveOpacity,
                 )
             }
@@ -519,34 +529,43 @@ class IndicatorView(
         if (PrefsManager.percentTextEnabled) {
             val text = "$progressVal%"
             val textWidth = percentPaint.measureText(text)
-            val (x, y, align) =
+            val (baseX, baseY, align) =
                 computeLabelPosition(
                     PrefsManager.percentTextPosition,
                     padding,
                     percentPaint.textSize,
                     textWidth,
                 )
+            val x = baseX + PrefsManager.percentTextOffsetX * density
+            val y = baseY + PrefsManager.percentTextOffsetY * density
             specs += TextSpec(text, percentPaint, x, y, align)
         }
 
-        if (PrefsManager.filenameTextEnabled && currentFilename != null &&
-            activeDownloadCount <= 1
+        val isGeometryPreview = animator.isGeometryPreviewActive
+        val filenameToShow =
+            currentFilename
+                ?: if (isGeometryPreview) PREVIEW_FILENAME else null
+
+        if (PrefsManager.filenameTextEnabled && filenameToShow != null &&
+            (activeDownloadCount <= 1 || isGeometryPreview)
         ) {
             val truncated =
                 TextUtils
                     .ellipsize(
-                        currentFilename,
+                        filenameToShow,
                         filenamePaint,
                         maxFilenameWidth,
                         TextUtils.TruncateAt.MIDDLE,
                     ).toString()
-            val (x, y, align) =
+            val (baseX, baseY, align) =
                 computeLabelPosition(
                     PrefsManager.filenameTextPosition,
                     padding,
                     filenamePaint.textSize,
                     textWidth = null,
                 )
+            val x = baseX + PrefsManager.filenameTextOffsetX * density
+            val y = baseY + PrefsManager.filenameTextOffsetY * density
             specs += TextSpec(truncated, filenamePaint, x, y, align)
         }
 
@@ -719,6 +738,8 @@ class IndicatorView(
         private const val BADGE_TOP_PADDING_DP = 4f
         private const val LABEL_PADDING_DP = 4f
         private const val BURN_IN_HIDE_DELAY_MS = 10_000L
+        private const val PREVIEW_FILENAME =
+            "EvolutionX-16.0-20260116-RMX2170-11.6-Unofficial.zip"
 
         fun attach(context: Context): IndicatorView {
             val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager

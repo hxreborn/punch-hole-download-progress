@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.ui.component.SectionCard
+import eu.hxreborn.phdp.ui.component.preference.NavigationPreference
 import eu.hxreborn.phdp.ui.component.preference.SelectPreference
 import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
 import eu.hxreborn.phdp.ui.state.PrefsState
@@ -27,6 +28,7 @@ import me.zhanghai.compose.preference.preferenceCategory
 fun BehaviorScreen(
     prefsState: PrefsState,
     onSavePrefs: (key: String, value: Any) -> Unit,
+    onNavigateToBadgeCalibration: () -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
@@ -121,6 +123,26 @@ fun BehaviorScreen(
                                     },
                                 )
                             },
+                            {
+                                NavigationPreference(
+                                    onClick = onNavigateToBadgeCalibration,
+                                    enabled = prefsState.showDownloadCount,
+                                    title = {
+                                        Text(
+                                            stringResource(
+                                                R.string.pref_calibrate_badge_title,
+                                            ),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(
+                                                R.string.pref_calibrate_badge_summary,
+                                            ),
+                                        )
+                                    },
+                                )
+                            },
                         ),
                 )
             }
@@ -182,6 +204,7 @@ private fun BehaviorScreenPreview() {
         BehaviorScreen(
             prefsState = PrefsState(),
             onSavePrefs = { _, _ -> },
+            onNavigateToBadgeCalibration = {},
             contentPadding = PaddingValues(),
         )
     }

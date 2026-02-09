@@ -157,8 +157,8 @@ private fun SelectPreferencePreview() {
             value = Prefs.percentTextPosition.default,
             onValueChange = {},
             values = listOf("left", "right"),
-            title = { Text(stringResource(R.string.pref_text_position_title)) },
-            summary = { Text(stringResource(R.string.pref_text_position_summary)) },
+            title = { Text(stringResource(R.string.pref_calibrate_percent_title)) },
+            summary = { Text(stringResource(R.string.pref_calibrate_percent_summary)) },
             valueToText = { it.replaceFirstChar { c -> c.uppercase() } },
         )
     }

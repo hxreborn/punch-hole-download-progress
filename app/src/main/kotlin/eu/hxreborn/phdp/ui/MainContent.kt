@@ -54,7 +54,11 @@ fun PunchHoleProgressContent(
 ) {
     val backStack = rememberNavBackStack(Screen.Design)
     val currentKey = backStack.lastOrNull() as? Screen
-    val showMainAppBar = currentKey != Screen.Calibration
+    val showMainAppBar =
+        currentKey != Screen.Calibration &&
+            currentKey != Screen.PercentCalibration &&
+            currentKey != Screen.FilenameCalibration &&
+            currentKey != Screen.BadgeCalibration
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
             snapAnimationSpec =

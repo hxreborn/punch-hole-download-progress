@@ -31,11 +31,13 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import eu.hxreborn.phdp.R
+import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.ui.screen.AppearanceScreen
 import eu.hxreborn.phdp.ui.screen.BehaviorScreen
 import eu.hxreborn.phdp.ui.screen.CalibrationScreen
 import eu.hxreborn.phdp.ui.screen.PackageSelectionScreen
 import eu.hxreborn.phdp.ui.screen.SystemScreen
+import eu.hxreborn.phdp.ui.screen.TextCalibrationScreen
 import eu.hxreborn.phdp.ui.state.PrefsState
 import eu.hxreborn.phdp.ui.theme.Tokens
 import kotlinx.serialization.Serializable
@@ -56,6 +58,15 @@ sealed interface Screen : NavKey {
 
     @Serializable
     data object Calibration : Screen
+
+    @Serializable
+    data object PercentCalibration : Screen
+
+    @Serializable
+    data object FilenameCalibration : Screen
+
+    @Serializable
+    data object BadgeCalibration : Screen
 }
 
 data class BottomNavItem(
@@ -115,6 +126,12 @@ fun MainNavDisplay(
                         prefsState = prefsState,
                         onSavePrefs = onSavePrefs,
                         onNavigateToCalibration = { backStack.add(Screen.Calibration) },
+                        onNavigateToPercentCalibration = {
+                            backStack.add(Screen.PercentCalibration)
+                        },
+                        onNavigateToFilenameCalibration = {
+                            backStack.add(Screen.FilenameCalibration)
+                        },
                         contentPadding = contentPadding,
                     )
                 }
@@ -140,10 +157,91 @@ fun MainNavDisplay(
                         contentPadding = contentPadding,
                     )
                 }
+                entry<Screen.PercentCalibration>(
+                    metadata =
+                        NavDisplay.transitionSpec {
+                            slideInHorizontally(initialOffsetX = { it }) togetherWith
+                                slideOutHorizontally(targetOffsetX = { -it })
+                        } +
+                            NavDisplay.popTransitionSpec {
+                                slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                                    slideOutHorizontally(targetOffsetX = { it })
+                            } +
+                            NavDisplay.predictivePopTransitionSpec {
+                                slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                                    slideOutHorizontally(targetOffsetX = { it })
+                            },
+                ) {
+                    TextCalibrationScreen(
+                        titleRes = R.string.pref_calibrate_percent_title,
+                        offsetX = prefsState.percentTextOffsetX,
+                        offsetY = prefsState.percentTextOffsetY,
+                        offsetXPref = Prefs.percentTextOffsetX,
+                        offsetYPref = Prefs.percentTextOffsetY,
+                        onSavePrefs = onSavePrefs,
+                        onNavigateBack = { backStack.removeLastOrNull() },
+                        contentPadding = contentPadding,
+                    )
+                }
+                entry<Screen.FilenameCalibration>(
+                    metadata =
+                        NavDisplay.transitionSpec {
+                            slideInHorizontally(initialOffsetX = { it }) togetherWith
+                                slideOutHorizontally(targetOffsetX = { -it })
+                        } +
+                            NavDisplay.popTransitionSpec {
+                                slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                                    slideOutHorizontally(targetOffsetX = { it })
+                            } +
+                            NavDisplay.predictivePopTransitionSpec {
+                                slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                                    slideOutHorizontally(targetOffsetX = { it })
+                            },
+                ) {
+                    TextCalibrationScreen(
+                        titleRes = R.string.pref_calibrate_filename_title,
+                        offsetX = prefsState.filenameTextOffsetX,
+                        offsetY = prefsState.filenameTextOffsetY,
+                        offsetXPref = Prefs.filenameTextOffsetX,
+                        offsetYPref = Prefs.filenameTextOffsetY,
+                        onSavePrefs = onSavePrefs,
+                        onNavigateBack = { backStack.removeLastOrNull() },
+                        contentPadding = contentPadding,
+                    )
+                }
+                entry<Screen.BadgeCalibration>(
+                    metadata =
+                        NavDisplay.transitionSpec {
+                            slideInHorizontally(initialOffsetX = { it }) togetherWith
+                                slideOutHorizontally(targetOffsetX = { -it })
+                        } +
+                            NavDisplay.popTransitionSpec {
+                                slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                                    slideOutHorizontally(targetOffsetX = { it })
+                            } +
+                            NavDisplay.predictivePopTransitionSpec {
+                                slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                                    slideOutHorizontally(targetOffsetX = { it })
+                            },
+                ) {
+                    TextCalibrationScreen(
+                        titleRes = R.string.pref_calibrate_badge_title,
+                        offsetX = prefsState.badgeOffsetX,
+                        offsetY = prefsState.badgeOffsetY,
+                        offsetXPref = Prefs.badgeOffsetX,
+                        offsetYPref = Prefs.badgeOffsetY,
+                        onSavePrefs = onSavePrefs,
+                        onNavigateBack = { backStack.removeLastOrNull() },
+                        contentPadding = contentPadding,
+                    )
+                }
                 entry<Screen.Motion> {
                     BehaviorScreen(
                         prefsState = prefsState,
                         onSavePrefs = onSavePrefs,
+                        onNavigateToBadgeCalibration = {
+                            backStack.add(Screen.BadgeCalibration)
+                        },
                         contentPadding = contentPadding,
                     )
                 }
@@ -192,7 +290,13 @@ fun BottomNav(
     NavigationBar(modifier = modifier) {
         val effectiveKey =
             when (currentKey) {
-                Screen.Calibration -> Screen.Design
+                Screen.Calibration,
+                Screen.PercentCalibration,
+                Screen.FilenameCalibration,
+                -> Screen.Design
+
+                Screen.BadgeCalibration -> Screen.Motion
+
                 else -> currentKey
             }
         bottomNavItems.forEach { item ->
