@@ -21,7 +21,7 @@ https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}
   {%- if commit.remote.pr_number %} in [#{{ commit.remote.pr_number }}]({{ self::remote_url() }}/pull/{{ commit.remote.pr_number }}){% endif %}{% endif %}
 {%- if commit.body %}
 
-{{ commit.body | indent(prefix="  > ", first=true, blank=true) }}
+{{ commit.body | indent(prefix="  ", first=true, blank=true) }}
 {%- endif %}
 {%- for footer in commit.footers %}
 {%- if footer.token != "Signed-off-by" and footer.token != "Co-authored-by" %}
@@ -60,14 +60,14 @@ No user-facing changes in this release.
 footer = ""
 trim = false
 postprocessors = [
-    { pattern = ' +\n', replace = "\n" },
+  { pattern = ' +\n', replace = "\n" },
 ]
 
 [git]
 conventional_commits = true
 filter_unconventional = true
 commit_preprocessors = [
-    { pattern = '\((\w+\s)?#([0-9]+)\)', replace = "" },
+  { pattern = '\((\w+\s)?#([0-9]+)\)', replace = "" },
 ]
 commit_parsers = [
   { message = "^feat", group = "<!-- 00 -->Added" },
