@@ -1,22 +1,27 @@
 package eu.hxreborn.phdp.ui.screen
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.hxreborn.phdp.BuildConfig
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.Prefs
+import eu.hxreborn.phdp.ui.SettingsUiState
+import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.preference.SelectPreference
-import eu.hxreborn.phdp.ui.state.PrefsState
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import eu.hxreborn.phdp.ui.theme.Tokens
@@ -27,14 +32,14 @@ import me.zhanghai.compose.preference.preferenceCategory
 
 @Composable
 fun SystemScreen(
-    prefsState: PrefsState,
-    onSavePrefs: (key: String, value: Any) -> Unit,
-    onTestSuccess: () -> Unit,
-    onTestFailure: () -> Unit,
-    onClearDownloads: () -> Unit,
+    viewModel: SettingsViewModel,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val prefsState = (uiState as? SettingsUiState.Success)?.prefs ?: return
+    val context = LocalContext.current
+
     val powerSaverEntries = stringArrayResource(R.array.power_saver_entries).toList()
     val powerSaverValues = stringArrayResource(R.array.power_saver_values).toList()
 
@@ -59,7 +64,7 @@ fun SystemScreen(
                             {
                                 SelectPreference(
                                     value = prefsState.powerSaverMode,
-                                    onValueChange = { onSavePrefs(Prefs.powerSaverMode.key, it) },
+                                    onValueChange = { viewModel.savePref(Prefs.powerSaverMode, it) },
                                     values = powerSaverValues,
                                     title = {
                                         Text(
@@ -92,7 +97,7 @@ fun SystemScreen(
                         listOf(
                             {
                                 Preference(
-                                    onClick = onTestSuccess,
+                                    onClick = { viewModel.simulateSuccess() },
                                     title = {
                                         Text(
                                             stringResource(R.string.pref_debug_completion_title),
@@ -107,7 +112,7 @@ fun SystemScreen(
                             },
                             {
                                 Preference(
-                                    onClick = onTestFailure,
+                                    onClick = { viewModel.simulateFailure() },
                                     title = {
                                         Text(
                                             stringResource(R.string.pref_test_failure_title),
@@ -122,7 +127,15 @@ fun SystemScreen(
                             },
                             {
                                 Preference(
-                                    onClick = onClearDownloads,
+                                    onClick = {
+                                        viewModel.clearDownloads()
+                                        Toast
+                                            .makeText(
+                                                context,
+                                                R.string.clear_downloads_done,
+                                                Toast.LENGTH_SHORT,
+                                            ).show()
+                                    },
                                     title = {
                                         Text(
                                             stringResource(R.string.pref_clear_downloads_title),
@@ -169,16 +182,13 @@ fun SystemScreen(
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun SystemScreenPreview() {
     AppTheme(darkThemeConfig = DarkThemeConfig.DARK) {
         SystemScreen(
-            prefsState = PrefsState(),
-            onSavePrefs = { _, _ -> },
-            onTestSuccess = {},
-            onTestFailure = {},
-            onClearDownloads = {},
+            viewModel = PreviewViewModel(),
             contentPadding = PaddingValues(),
         )
     }

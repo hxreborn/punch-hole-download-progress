@@ -11,9 +11,9 @@ import kotlinx.coroutines.flow.callbackFlow
 interface PrefsRepository {
     val state: Flow<PrefsState>
 
-    fun save(
-        key: String,
-        value: Any,
+    fun <T : Any> save(
+        pref: PrefSpec<T>,
+        value: T,
     )
 
     fun resetDefaults()
@@ -34,12 +34,12 @@ class PrefsRepositoryImpl(
             awaitClose { localPrefs.unregisterOnSharedPreferenceChangeListener(listener) }
         }
 
-    override fun save(
-        key: String,
-        value: Any,
+    override fun <T : Any> save(
+        pref: PrefSpec<T>,
+        value: T,
     ) {
-        localPrefs.edit { putAny(key, value) }
-        remotePrefsProvider()?.edit(commit = true) { putAny(key, value) }
+        localPrefs.edit { pref.write(this, value) }
+        remotePrefsProvider()?.edit(commit = true) { pref.write(this, value) }
     }
 
     override fun resetDefaults() {
@@ -113,36 +113,3 @@ class PrefsRepositoryImpl(
         }
     }
 }
-
-private fun SharedPreferences.Editor.putAny(
-    key: String,
-    value: Any,
-): SharedPreferences.Editor =
-    apply {
-        when (value) {
-            is Int -> {
-                putInt(key, value)
-            }
-
-            is Long -> {
-                putLong(key, value)
-            }
-
-            is Float -> {
-                putFloat(key, value)
-            }
-
-            is Boolean -> {
-                putBoolean(key, value)
-            }
-
-            is String -> {
-                putString(key, value)
-            }
-
-            is Set<*> -> {
-                @Suppress("UNCHECKED_CAST")
-                putStringSet(key, value as Set<String>)
-            }
-        }
-    }

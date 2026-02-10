@@ -13,11 +13,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import eu.hxreborn.phdp.R
-import eu.hxreborn.phdp.prefs.BoolPref
-import eu.hxreborn.phdp.prefs.FloatPref
-import eu.hxreborn.phdp.prefs.IntPref
+import eu.hxreborn.phdp.prefs.BoundPref
 import eu.hxreborn.phdp.prefs.Prefs
-import eu.hxreborn.phdp.prefs.StringPref
+import eu.hxreborn.phdp.prefs.bind
+import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.SettingsScaffold
 import eu.hxreborn.phdp.ui.component.preference.SelectPreference
@@ -31,49 +30,46 @@ import eu.hxreborn.phdp.ui.theme.Tokens
 import me.zhanghai.compose.preference.ProvidePreferenceLocals
 import me.zhanghai.compose.preference.preferenceCategory
 
+data class TypographyConfig(
+    val fontSize: BoundPref<Float>,
+    val bold: BoundPref<Boolean>? = null,
+    val italic: BoundPref<Boolean>? = null,
+)
+
+data class LayoutConfig(
+    val truncateEnabled: BoundPref<Boolean>,
+    val maxLength: BoundPref<Int>? = null,
+    val maxLengthTitleRes: Int? = null,
+    val maxLengthSuffix: String? = null,
+    val ellipsize: BoundPref<String>? = null,
+    val ellipsizeValues: List<String>? = null,
+    val previewText: BoundPref<String>? = null,
+)
+
 @Composable
 fun TextCalibrationScreen(
     titleRes: Int,
-    offsetX: Float,
-    offsetY: Float,
-    offsetXPref: FloatPref,
-    offsetYPref: FloatPref,
-    onSavePrefs: (key: String, value: Any) -> Unit,
+    offsetX: BoundPref<Float>,
+    offsetY: BoundPref<Float>,
+    viewModel: SettingsViewModel,
     onNavigateBack: () -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
-    fontSize: Float? = null,
-    fontSizePref: FloatPref? = null,
-    bold: Boolean? = null,
-    boldPref: BoolPref? = null,
-    italic: Boolean? = null,
-    italicPref: BoolPref? = null,
-    truncateEnabled: Boolean? = null,
-    truncateEnabledPref: BoolPref? = null,
-    extraInt: Int? = null,
-    extraIntPref: IntPref? = null,
-    extraIntTitleRes: Int? = null,
-    extraIntSuffix: String? = null,
-    ellipsize: String? = null,
-    ellipsizePref: StringPref? = null,
-    ellipsizeValues: List<String>? = null,
-    previewText: String? = null,
-    previewTextPref: StringPref? = null,
+    typography: TypographyConfig? = null,
+    layout: LayoutConfig? = null,
 ) {
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
-        onSavePrefs(Prefs.persistentPreview.key, true)
+        viewModel.savePref(Prefs.persistentPreview, true)
     }
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
-        onSavePrefs(Prefs.persistentPreview.key, false)
+        viewModel.savePref(Prefs.persistentPreview, false)
     }
     DisposableEffect(Unit) {
-        onDispose { onSavePrefs(Prefs.persistentPreview.key, false) }
+        onDispose { viewModel.savePref(Prefs.persistentPreview, false) }
     }
 
-    val hasTypography = fontSize != null || bold != null || italic != null
-    val hasLayout =
-        truncateEnabled != null || extraInt != null ||
-            ellipsize != null || previewText != null
+    val hasTypography = typography != null
+    val hasLayout = layout != null
     val splitCards = hasTypography && hasLayout
 
     SettingsScaffold(
@@ -99,15 +95,7 @@ fun TextCalibrationScreen(
                         SectionCard(
                             items =
                                 buildList {
-                                    typographyItems(
-                                        fontSize,
-                                        fontSizePref,
-                                        bold,
-                                        boldPref,
-                                        italic,
-                                        italicPref,
-                                        onSavePrefs,
-                                    )
+                                    typographyItems(typography, viewModel)
                                 },
                         )
                     }
@@ -119,27 +107,8 @@ fun TextCalibrationScreen(
                         SectionCard(
                             items =
                                 buildList {
-                                    offsetItems(
-                                        offsetX,
-                                        offsetXPref,
-                                        offsetY,
-                                        offsetYPref,
-                                        onSavePrefs,
-                                    )
-                                    layoutItems(
-                                        truncateEnabled,
-                                        truncateEnabledPref,
-                                        extraInt,
-                                        extraIntPref,
-                                        extraIntTitleRes,
-                                        extraIntSuffix,
-                                        ellipsize,
-                                        ellipsizePref,
-                                        ellipsizeValues,
-                                        previewText,
-                                        previewTextPref,
-                                        onSavePrefs,
-                                    )
+                                    offsetItems(offsetX, offsetY, viewModel)
+                                    layoutItems(layout, viewModel)
                                 },
                         )
                     }
@@ -149,22 +118,8 @@ fun TextCalibrationScreen(
                         SectionCard(
                             items =
                                 buildList {
-                                    typographyItems(
-                                        fontSize,
-                                        fontSizePref,
-                                        bold,
-                                        boldPref,
-                                        italic,
-                                        italicPref,
-                                        onSavePrefs,
-                                    )
-                                    offsetItems(
-                                        offsetX,
-                                        offsetXPref,
-                                        offsetY,
-                                        offsetYPref,
-                                        onSavePrefs,
-                                    )
+                                    typographyItems(typography, viewModel)
+                                    offsetItems(offsetX, offsetY, viewModel)
                                 },
                         )
                     }
@@ -175,44 +130,39 @@ fun TextCalibrationScreen(
 }
 
 private fun MutableList<@Composable () -> Unit>.typographyItems(
-    fontSize: Float?,
-    fontSizePref: FloatPref?,
-    bold: Boolean?,
-    boldPref: BoolPref?,
-    italic: Boolean?,
-    italicPref: BoolPref?,
-    onSavePrefs: (String, Any) -> Unit,
+    typography: TypographyConfig?,
+    viewModel: SettingsViewModel,
 ) {
-    if (fontSize != null && fontSizePref != null) {
-        add {
-            SliderPreferenceWithStepper(
-                value = fontSize,
-                onValueChange = { onSavePrefs(fontSizePref.key, it) },
-                title = { Text(stringResource(R.string.pref_font_size_title)) },
-                valueRange = fontSizePref.range!!,
-                defaultValue = fontSizePref.default,
-                onReset = { onSavePrefs(fontSizePref.key, fontSizePref.default) },
-                stepSize = 0.5f,
-                decimalPlaces = 1,
-                suffix = "sp",
-            )
-        }
+    if (typography == null) return
+    val (fontSize, bold, italic) = typography
+    add {
+        SliderPreferenceWithStepper(
+            value = fontSize.value,
+            onValueChange = { viewModel.savePref(fontSize.spec, it) },
+            title = { Text(stringResource(R.string.pref_font_size_title)) },
+            valueRange = (fontSize.spec as eu.hxreborn.phdp.prefs.FloatPref).range!!,
+            defaultValue = fontSize.spec.default,
+            onReset = { viewModel.savePref(fontSize.spec, fontSize.spec.default) },
+            stepSize = 0.5f,
+            decimalPlaces = 1,
+            suffix = "sp",
+        )
     }
-    if (bold != null && boldPref != null && italic != null && italicPref != null) {
+    if (bold != null && italic != null) {
         add {
             TextStyleChipsPreference(
-                bold = bold,
-                onBoldChange = { onSavePrefs(boldPref.key, it) },
-                italic = italic,
-                onItalicChange = { onSavePrefs(italicPref.key, it) },
+                bold = bold.value,
+                onBoldChange = { viewModel.savePref(bold.spec, it) },
+                italic = italic.value,
+                onItalicChange = { viewModel.savePref(italic.spec, it) },
                 title = { Text(stringResource(R.string.pref_text_style_title)) },
             )
         }
-    } else if (bold != null && boldPref != null) {
+    } else if (bold != null) {
         add {
             TogglePreferenceWithIcon(
-                value = bold,
-                onValueChange = { onSavePrefs(boldPref.key, it) },
+                value = bold.value,
+                onValueChange = { viewModel.savePref(bold.spec, it) },
                 title = { Text(stringResource(R.string.pref_bold_title)) },
             )
         }
@@ -220,20 +170,20 @@ private fun MutableList<@Composable () -> Unit>.typographyItems(
 }
 
 private fun MutableList<@Composable () -> Unit>.offsetItems(
-    offsetX: Float,
-    offsetXPref: FloatPref,
-    offsetY: Float,
-    offsetYPref: FloatPref,
-    onSavePrefs: (String, Any) -> Unit,
+    offsetX: BoundPref<Float>,
+    offsetY: BoundPref<Float>,
+    viewModel: SettingsViewModel,
 ) {
+    val xSpec = offsetX.spec as eu.hxreborn.phdp.prefs.FloatPref
+    val ySpec = offsetY.spec as eu.hxreborn.phdp.prefs.FloatPref
     add {
         SliderPreferenceWithStepper(
-            value = offsetX,
-            onValueChange = { onSavePrefs(offsetXPref.key, it) },
+            value = offsetX.value,
+            onValueChange = { viewModel.savePref(xSpec, it) },
             title = { Text(stringResource(R.string.pref_ring_offset_x_title)) },
-            valueRange = offsetXPref.range!!,
-            defaultValue = offsetXPref.default,
-            onReset = { onSavePrefs(offsetXPref.key, offsetXPref.default) },
+            valueRange = xSpec.range!!,
+            defaultValue = xSpec.default,
+            onReset = { viewModel.savePref(xSpec, xSpec.default) },
             stepSize = 1f,
             decimalPlaces = 0,
             suffix = "px",
@@ -241,12 +191,12 @@ private fun MutableList<@Composable () -> Unit>.offsetItems(
     }
     add {
         SliderPreferenceWithStepper(
-            value = offsetY,
-            onValueChange = { onSavePrefs(offsetYPref.key, it) },
+            value = offsetY.value,
+            onValueChange = { viewModel.savePref(ySpec, it) },
             title = { Text(stringResource(R.string.pref_ring_offset_y_title)) },
-            valueRange = offsetYPref.range!!,
-            defaultValue = offsetYPref.default,
-            onReset = { onSavePrefs(offsetYPref.key, offsetYPref.default) },
+            valueRange = ySpec.range!!,
+            defaultValue = ySpec.default,
+            onReset = { viewModel.savePref(ySpec, ySpec.default) },
             stepSize = 1f,
             decimalPlaces = 0,
             suffix = "px",
@@ -255,100 +205,92 @@ private fun MutableList<@Composable () -> Unit>.offsetItems(
 }
 
 private fun MutableList<@Composable () -> Unit>.layoutItems(
-    truncateEnabled: Boolean?,
-    truncateEnabledPref: BoolPref?,
-    extraInt: Int?,
-    extraIntPref: IntPref?,
-    extraIntTitleRes: Int?,
-    extraIntSuffix: String?,
-    ellipsize: String?,
-    ellipsizePref: StringPref?,
-    ellipsizeValues: List<String>?,
-    previewText: String?,
-    previewTextPref: StringPref?,
-    onSavePrefs: (String, Any) -> Unit,
+    layout: LayoutConfig?,
+    viewModel: SettingsViewModel,
 ) {
-    if (truncateEnabled != null && truncateEnabledPref != null) {
-        add {
-            TogglePreferenceWithIcon(
-                value = truncateEnabled,
-                onValueChange = { onSavePrefs(truncateEnabledPref.key, it) },
-                title = { Text(stringResource(R.string.pref_filename_truncate_title)) },
-            )
-        }
+    if (layout == null) return
+    val truncateEnabled = layout.truncateEnabled
+    add {
+        TogglePreferenceWithIcon(
+            value = truncateEnabled.value,
+            onValueChange = { viewModel.savePref(truncateEnabled.spec, it) },
+            title = { Text(stringResource(R.string.pref_filename_truncate_title)) },
+        )
     }
-    if (extraInt != null && extraIntPref != null && extraIntTitleRes != null) {
+    val maxLength = layout.maxLength
+    if (maxLength != null && layout.maxLengthTitleRes != null) {
+        val intSpec = maxLength.spec as eu.hxreborn.phdp.prefs.IntPref
         add {
             SliderPreferenceWithStepper(
-                value = extraInt.toFloat(),
-                onValueChange = { onSavePrefs(extraIntPref.key, it.toInt()) },
-                title = { Text(stringResource(extraIntTitleRes)) },
+                value = maxLength.value.toFloat(),
+                onValueChange = { viewModel.savePref(intSpec, it.toInt()) },
+                title = { Text(stringResource(layout.maxLengthTitleRes)) },
                 valueRange =
-                    extraIntPref.range!!.let {
+                    intSpec.range!!.let {
                         it.first.toFloat()..it.last.toFloat()
                     },
-                defaultValue = extraIntPref.default.toFloat(),
-                onReset = { onSavePrefs(extraIntPref.key, extraIntPref.default) },
+                defaultValue = intSpec.default.toFloat(),
+                onReset = { viewModel.savePref(intSpec, intSpec.default) },
                 stepSize = 1f,
                 decimalPlaces = 0,
-                suffix = extraIntSuffix ?: "",
-                enabled = truncateEnabled ?: true,
+                suffix = layout.maxLengthSuffix ?: "",
+                enabled = truncateEnabled.value,
             )
         }
     }
-    if (ellipsize != null && ellipsizePref != null && ellipsizeValues != null) {
+    val ellipsize = layout.ellipsize
+    if (ellipsize != null && layout.ellipsizeValues != null) {
         add {
             SelectPreference(
-                value = ellipsize,
-                onValueChange = { onSavePrefs(ellipsizePref.key, it) },
-                values = ellipsizeValues,
+                value = ellipsize.value,
+                onValueChange = { viewModel.savePref(ellipsize.spec, it) },
+                values = layout.ellipsizeValues,
                 title = { Text(stringResource(R.string.pref_ellipsize_title)) },
-                enabled = truncateEnabled ?: true,
+                enabled = truncateEnabled.value,
                 valueToText = { it.replaceFirstChar { c -> c.uppercase() } },
             )
         }
     }
-    if (previewText != null && previewTextPref != null) {
+    val previewText = layout.previewText
+    if (previewText != null) {
         add {
             TextInputPreference(
-                value = previewText,
-                onValueChange = { onSavePrefs(previewTextPref.key, it) },
+                value = previewText.value,
+                onValueChange = { viewModel.savePref(previewText.spec, it) },
                 title = { Text(stringResource(R.string.pref_preview_text_title)) },
-                defaultValue = previewTextPref.default,
+                defaultValue = previewText.spec.default,
             )
         }
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun TextCalibrationScreenPreview() {
     AppTheme(darkThemeConfig = DarkThemeConfig.DARK) {
         TextCalibrationScreen(
             titleRes = R.string.pref_calibrate_filename_title,
-            offsetX = 0f,
-            offsetY = 0f,
-            offsetXPref = Prefs.filenameTextOffsetX,
-            offsetYPref = Prefs.filenameTextOffsetY,
-            onSavePrefs = { _, _ -> },
+            offsetX = Prefs.filenameTextOffsetX bind 0f,
+            offsetY = Prefs.filenameTextOffsetY bind 0f,
+            viewModel = PreviewViewModel(),
             onNavigateBack = {},
             contentPadding = PaddingValues(),
-            fontSize = 7f,
-            fontSizePref = Prefs.filenameTextSize,
-            bold = false,
-            boldPref = Prefs.filenameTextBold,
-            italic = false,
-            italicPref = Prefs.filenameTextItalic,
-            truncateEnabled = true,
-            truncateEnabledPref = Prefs.filenameTruncateEnabled,
-            extraInt = 20,
-            extraIntPref = Prefs.filenameMaxChars,
-            extraIntTitleRes = R.string.pref_filename_max_chars_title,
-            ellipsize = "middle",
-            ellipsizePref = Prefs.filenameEllipsize,
-            ellipsizeValues = listOf("start", "middle", "end"),
-            previewText = Prefs.previewFilenameText.default,
-            previewTextPref = Prefs.previewFilenameText,
+            typography =
+                TypographyConfig(
+                    fontSize = Prefs.filenameTextSize bind 7f,
+                    bold = Prefs.filenameTextBold bind false,
+                    italic = Prefs.filenameTextItalic bind false,
+                ),
+            layout =
+                LayoutConfig(
+                    truncateEnabled = Prefs.filenameTruncateEnabled bind true,
+                    maxLength = Prefs.filenameMaxChars bind 20,
+                    maxLengthTitleRes = R.string.pref_filename_max_chars_title,
+                    ellipsize = Prefs.filenameEllipsize bind "middle",
+                    ellipsizeValues = listOf("start", "middle", "end"),
+                    previewText = Prefs.previewFilenameText bind Prefs.previewFilenameText.default,
+                ),
         )
     }
 }

@@ -32,7 +32,6 @@ import eu.hxreborn.phdp.ui.component.OverflowMenuItem
 import eu.hxreborn.phdp.ui.navigation.BottomNav
 import eu.hxreborn.phdp.ui.navigation.MainNavDisplay
 import eu.hxreborn.phdp.ui.navigation.Screen
-import eu.hxreborn.phdp.ui.state.PrefsState
 import eu.hxreborn.phdp.ui.theme.Tokens
 
 sealed class MenuAction {
@@ -44,12 +43,8 @@ sealed class MenuAction {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PunchHoleProgressContent(
-    prefsState: PrefsState,
-    onSavePrefs: (key: String, value: Any) -> Unit,
+    viewModel: SettingsViewModel,
     onMenuAction: (MenuAction) -> Unit,
-    onTestSuccess: () -> Unit,
-    onTestFailure: () -> Unit,
-    onClearDownloads: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val backStack = rememberNavBackStack(Screen.Design)
@@ -135,11 +130,7 @@ fun PunchHoleProgressContent(
     ) { paddingValues ->
         MainNavDisplay(
             backStack = backStack,
-            prefsState = prefsState,
-            onSavePrefs = onSavePrefs,
-            onTestSuccess = onTestSuccess,
-            onTestFailure = onTestFailure,
-            onClearDownloads = onClearDownloads,
+            viewModel = viewModel,
             contentPadding = paddingValues,
         )
     }

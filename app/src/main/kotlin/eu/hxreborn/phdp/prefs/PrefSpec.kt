@@ -94,3 +94,10 @@ class SetPref(
         editor.putStringSet(key, value)
     }
 }
+
+data class BoundPref<T : Any>(
+    val value: T,
+    val spec: PrefSpec<T>,
+)
+
+infix fun <T : Any> PrefSpec<T>.bind(value: T) = BoundPref(value, this)

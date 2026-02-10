@@ -22,21 +22,18 @@ import androidx.lifecycle.lifecycleScope
 import eu.hxreborn.phdp.PHDPApp
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.Prefs
-import eu.hxreborn.phdp.prefs.PrefsRepository
 import eu.hxreborn.phdp.prefs.PrefsRepositoryImpl
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import eu.hxreborn.phdp.util.RootUtils
 import io.github.libxposed.service.XposedService
 import io.github.libxposed.service.XposedServiceHelper
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainActivity :
     ComponentActivity(),
     XposedServiceHelper.OnServiceListener {
     private lateinit var prefs: SharedPreferences
-    private lateinit var repository: PrefsRepository
     private lateinit var viewModel: SettingsViewModel
 
     private var xposedService: XposedService? = null
@@ -51,8 +48,8 @@ class MainActivity :
         super.onCreate(savedInstanceState)
 
         prefs = getSharedPreferences(Prefs.GROUP, Context.MODE_PRIVATE)
-        repository = PrefsRepositoryImpl(prefs) { remotePrefs }
-        viewModel = ViewModelProvider(this, SettingsViewModelFactory(repository))[SettingsViewModel::class.java]
+        val repository = PrefsRepositoryImpl(prefs) { remotePrefs }
+        viewModel = ViewModelProvider(this, SettingsViewModelFactory(repository))[SettingsViewModelImpl::class.java]
 
         PHDPApp.addServiceListener(this)
 
@@ -78,17 +75,13 @@ class MainActivity :
                 val state = uiState
                 if (state is SettingsUiState.Success) {
                     PunchHoleProgressContent(
-                        prefsState = state.prefs,
-                        onSavePrefs = viewModel::save,
+                        viewModel = viewModel,
                         onMenuAction = { action ->
                             when (action) {
                                 MenuAction.RestartSystemUI -> showRestartDialog = true
                                 MenuAction.Reset -> showResetDialog = true
                             }
                         },
-                        onTestSuccess = ::simulateSuccess,
-                        onTestFailure = ::simulateFailure,
-                        onClearDownloads = ::clearDownloads,
                     )
                 }
 
@@ -139,34 +132,6 @@ class MainActivity :
                     )
                 }
             }
-        }
-    }
-
-    private fun simulateSuccess() {
-        lifecycleScope.launch {
-            for (progress in 0..100 step 5) {
-                viewModel.save(Prefs.testProgress.key, progress)
-                delay(100)
-            }
-            viewModel.save(Prefs.testProgress.key, -1)
-        }
-    }
-
-    private fun clearDownloads() {
-        viewModel.save(Prefs.clearDownloadsTrigger.key, System.currentTimeMillis())
-        Toast.makeText(this, R.string.clear_downloads_done, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun simulateFailure() {
-        lifecycleScope.launch {
-            for (progress in 0..60 step 10) {
-                viewModel.save(Prefs.testProgress.key, progress)
-                delay(100)
-            }
-            viewModel.save(Prefs.testError.key, true)
-            delay(100)
-            viewModel.save(Prefs.testProgress.key, -1)
-            viewModel.save(Prefs.testError.key, false)
         }
     }
 

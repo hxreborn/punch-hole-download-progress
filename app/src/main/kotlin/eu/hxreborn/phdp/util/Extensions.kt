@@ -1,7 +1,5 @@
 package eu.hxreborn.phdp.util
 
-import android.view.HapticFeedbackConstants
-import android.view.View
 import java.lang.reflect.Field
 
 internal fun Class<*>.accessibleField(name: String): Field =
@@ -9,10 +7,6 @@ internal fun Class<*>.accessibleField(name: String): Field =
         isAccessible =
             true
     }
-
-fun View.weakVibrate() {
-    performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
-}
 
 fun labelFromValues(
     value: String,

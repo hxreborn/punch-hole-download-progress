@@ -6,11 +6,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.hxreborn.phdp.R
+import eu.hxreborn.phdp.prefs.PrefSpec
 import eu.hxreborn.phdp.prefs.Prefs
+import eu.hxreborn.phdp.ui.SettingsUiState
+import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.preference.ColorPreference
 import eu.hxreborn.phdp.ui.component.preference.NavigationPreference
@@ -22,19 +27,24 @@ import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import eu.hxreborn.phdp.ui.theme.MaterialPalette
 import eu.hxreborn.phdp.ui.theme.Tokens
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import me.zhanghai.compose.preference.ProvidePreferenceLocals
 import me.zhanghai.compose.preference.preferenceCategory
 
+enum class CalibrationTarget { RING, PERCENT, FILENAME }
+
 @Composable
 fun AppearanceScreen(
-    prefsState: PrefsState,
-    onSavePrefs: (key: String, value: Any) -> Unit,
-    onNavigateToCalibration: () -> Unit,
-    onNavigateToPercentCalibration: () -> Unit,
-    onNavigateToFilenameCalibration: () -> Unit,
+    viewModel: SettingsViewModel,
+    onNavigateToCalibration: (CalibrationTarget) -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val prefsState = (uiState as? SettingsUiState.Success)?.prefs ?: return
+
     ProvidePreferenceLocals {
         LazyColumn(
             modifier = modifier.fillMaxSize(),
@@ -56,7 +66,7 @@ fun AppearanceScreen(
                             {
                                 ColorPreference(
                                     value = prefsState.color,
-                                    onValueChange = { onSavePrefs(Prefs.color.key, it) },
+                                    onValueChange = { viewModel.savePref(Prefs.color, it) },
                                     title = {
                                         Text(
                                             stringResource(R.string.pref_progress_color_title),
@@ -72,7 +82,7 @@ fun AppearanceScreen(
                             {
                                 ColorPreference(
                                     value = prefsState.finishFlashColor,
-                                    onValueChange = { onSavePrefs(Prefs.finishFlashColor.key, it) },
+                                    onValueChange = { viewModel.savePref(Prefs.finishFlashColor, it) },
                                     title = {
                                         Text(
                                             stringResource(R.string.pref_success_color_title),
@@ -88,7 +98,7 @@ fun AppearanceScreen(
                             {
                                 ColorPreference(
                                     value = prefsState.errorColor,
-                                    onValueChange = { onSavePrefs(Prefs.errorColor.key, it) },
+                                    onValueChange = { viewModel.savePref(Prefs.errorColor, it) },
                                     title = { Text(stringResource(R.string.pref_error_color_title)) },
                                     summary = {
                                         Text(
@@ -113,7 +123,7 @@ fun AppearanceScreen(
                             {
                                 SliderPreferenceWithReset(
                                     value = prefsState.strokeWidth,
-                                    onValueChange = { onSavePrefs(Prefs.strokeWidth.key, it) },
+                                    onValueChange = { viewModel.savePref(Prefs.strokeWidth, it) },
                                     title = {
                                         Text(
                                             stringResource(R.string.pref_stroke_width_title),
@@ -127,7 +137,7 @@ fun AppearanceScreen(
                                     valueRange = Prefs.strokeWidth.range!!,
                                     defaultValue = Prefs.strokeWidth.default,
                                     onReset = {
-                                        onSavePrefs(Prefs.strokeWidth.key, Prefs.strokeWidth.default)
+                                        viewModel.savePref(Prefs.strokeWidth, Prefs.strokeWidth.default)
                                     },
                                     valueText = { Text("%.1fdp".format(it)) },
                                 )
@@ -135,7 +145,7 @@ fun AppearanceScreen(
                             {
                                 SliderPreferenceWithReset(
                                     value = prefsState.ringGap,
-                                    onValueChange = { onSavePrefs(Prefs.ringGap.key, it) },
+                                    onValueChange = { viewModel.savePref(Prefs.ringGap, it) },
                                     title = {
                                         Text(
                                             stringResource(R.string.pref_cutout_padding_title),
@@ -149,7 +159,7 @@ fun AppearanceScreen(
                                     valueRange = Prefs.ringGap.range!!,
                                     defaultValue = Prefs.ringGap.default,
                                     onReset = {
-                                        onSavePrefs(Prefs.ringGap.key, Prefs.ringGap.default)
+                                        viewModel.savePref(Prefs.ringGap, Prefs.ringGap.default)
                                     },
                                     valueText = { Text("%.2fx".format(it)) },
                                 )
@@ -158,7 +168,7 @@ fun AppearanceScreen(
                                 val opacityRange = Prefs.opacity.range!!
                                 SliderPreferenceWithReset(
                                     value = prefsState.opacity.toFloat(),
-                                    onValueChange = { onSavePrefs(Prefs.opacity.key, it.toInt()) },
+                                    onValueChange = { viewModel.savePref(Prefs.opacity, it.toInt()) },
                                     title = { Text(stringResource(R.string.pref_opacity_title)) },
                                     summary = {
                                         Text(
@@ -168,7 +178,7 @@ fun AppearanceScreen(
                                     valueRange = opacityRange.first.toFloat()..opacityRange.last.toFloat(),
                                     defaultValue = Prefs.opacity.default.toFloat(),
                                     onReset = {
-                                        onSavePrefs(Prefs.opacity.key, Prefs.opacity.default)
+                                        viewModel.savePref(Prefs.opacity, Prefs.opacity.default)
                                     },
                                     valueText = { Text("${it.toInt()}%") },
                                 )
@@ -177,7 +187,7 @@ fun AppearanceScreen(
                                 SelectPreference(
                                     value = prefsState.strokeCapStyle,
                                     onValueChange = {
-                                        onSavePrefs(Prefs.strokeCapStyle.key, it)
+                                        viewModel.savePref(Prefs.strokeCapStyle, it)
                                     },
                                     values = listOf("flat", "round", "square"),
                                     title = {
@@ -195,7 +205,7 @@ fun AppearanceScreen(
                             },
                             {
                                 NavigationPreference(
-                                    onClick = onNavigateToCalibration,
+                                    onClick = { onNavigateToCalibration(CalibrationTarget.RING) },
                                     title = {
                                         Text(stringResource(R.string.pref_calibrate_ring_title))
                                     },
@@ -222,7 +232,7 @@ fun AppearanceScreen(
                                 TogglePreferenceWithIcon(
                                     value = prefsState.backgroundRingEnabled,
                                     onValueChange = {
-                                        onSavePrefs(Prefs.backgroundRingEnabled.key, it)
+                                        viewModel.savePref(Prefs.backgroundRingEnabled, it)
                                     },
                                     title = {
                                         Text(
@@ -240,7 +250,7 @@ fun AppearanceScreen(
                                 ColorPreference(
                                     value = prefsState.backgroundRingColor,
                                     onValueChange = {
-                                        onSavePrefs(Prefs.backgroundRingColor.key, it)
+                                        viewModel.savePref(Prefs.backgroundRingColor, it)
                                     },
                                     title = {
                                         Text(
@@ -261,7 +271,7 @@ fun AppearanceScreen(
                                 SliderPreferenceWithReset(
                                     value = prefsState.backgroundRingOpacity.toFloat(),
                                     onValueChange = {
-                                        onSavePrefs(Prefs.backgroundRingOpacity.key, it.toInt())
+                                        viewModel.savePref(Prefs.backgroundRingOpacity, it.toInt())
                                     },
                                     title = {
                                         Text(
@@ -271,8 +281,8 @@ fun AppearanceScreen(
                                     valueRange = opacityRange.first.toFloat()..opacityRange.last.toFloat(),
                                     defaultValue = Prefs.backgroundRingOpacity.default.toFloat(),
                                     onReset = {
-                                        onSavePrefs(
-                                            Prefs.backgroundRingOpacity.key,
+                                        viewModel.savePref(
+                                            Prefs.backgroundRingOpacity,
                                             Prefs.backgroundRingOpacity.default,
                                         )
                                     },
@@ -297,7 +307,7 @@ fun AppearanceScreen(
                                 TogglePreferenceWithIcon(
                                     value = prefsState.percentTextEnabled,
                                     onValueChange = {
-                                        onSavePrefs(Prefs.percentTextEnabled.key, it)
+                                        viewModel.savePref(Prefs.percentTextEnabled, it)
                                     },
                                     title = {
                                         Text(
@@ -313,7 +323,7 @@ fun AppearanceScreen(
                             },
                             {
                                 NavigationPreference(
-                                    onClick = onNavigateToPercentCalibration,
+                                    onClick = { onNavigateToCalibration(CalibrationTarget.PERCENT) },
                                     title = {
                                         Text(
                                             stringResource(
@@ -347,7 +357,7 @@ fun AppearanceScreen(
                                 TogglePreferenceWithIcon(
                                     value = prefsState.filenameTextEnabled,
                                     onValueChange = {
-                                        onSavePrefs(Prefs.filenameTextEnabled.key, it)
+                                        viewModel.savePref(Prefs.filenameTextEnabled, it)
                                     },
                                     title = {
                                         Text(
@@ -363,7 +373,7 @@ fun AppearanceScreen(
                             },
                             {
                                 NavigationPreference(
-                                    onClick = onNavigateToFilenameCalibration,
+                                    onClick = { onNavigateToCalibration(CalibrationTarget.FILENAME) },
                                     title = {
                                         Text(
                                             stringResource(
@@ -395,17 +405,33 @@ private fun strokeCapLabel(style: String): String =
         else -> style
     }
 
+@Suppress("ViewModelConstructorInComposable")
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun AppearanceScreenPreview() {
     AppTheme(darkThemeConfig = DarkThemeConfig.DARK) {
         AppearanceScreen(
-            prefsState = PrefsState(),
-            onSavePrefs = { _, _ -> },
+            viewModel = PreviewViewModel(),
             onNavigateToCalibration = {},
-            onNavigateToPercentCalibration = {},
-            onNavigateToFilenameCalibration = {},
             contentPadding = PaddingValues(),
         )
     }
+}
+
+internal class PreviewViewModel : SettingsViewModel() {
+    override val uiState: StateFlow<SettingsUiState> =
+        MutableStateFlow(SettingsUiState.Success(PrefsState())).asStateFlow()
+
+    override fun <T : Any> savePref(
+        pref: PrefSpec<T>,
+        value: T,
+    ) {}
+
+    override fun resetDefaults() {}
+
+    override fun simulateSuccess() {}
+
+    override fun simulateFailure() {}
+
+    override fun clearDownloads() {}
 }

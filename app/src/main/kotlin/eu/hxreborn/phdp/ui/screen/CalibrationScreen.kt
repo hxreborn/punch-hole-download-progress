@@ -7,18 +7,21 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.Prefs
+import eu.hxreborn.phdp.ui.SettingsUiState
+import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.SettingsScaffold
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithStepper
 import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
-import eu.hxreborn.phdp.ui.state.PrefsState
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import eu.hxreborn.phdp.ui.theme.Tokens
@@ -27,21 +30,22 @@ import me.zhanghai.compose.preference.preferenceCategory
 
 @Composable
 fun CalibrationScreen(
-    prefsState: PrefsState,
-    onSavePrefs: (key: String, value: Any) -> Unit,
+    viewModel: SettingsViewModel,
     onNavigateBack: () -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
-    // Enable preview when screen is visible, disable when backgrounded or navigating away
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val prefsState = (uiState as? SettingsUiState.Success)?.prefs ?: return
+
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
-        onSavePrefs(Prefs.persistentPreview.key, true)
+        viewModel.savePref(Prefs.persistentPreview, true)
     }
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
-        onSavePrefs(Prefs.persistentPreview.key, false)
+        viewModel.savePref(Prefs.persistentPreview, false)
     }
     DisposableEffect(Unit) {
-        onDispose { onSavePrefs(Prefs.persistentPreview.key, false) }
+        onDispose { viewModel.savePref(Prefs.persistentPreview, false) }
     }
 
     SettingsScaffold(
@@ -71,7 +75,7 @@ fun CalibrationScreen(
                                     SliderPreferenceWithStepper(
                                         value = prefsState.ringOffsetX,
                                         onValueChange = {
-                                            onSavePrefs(Prefs.ringOffsetX.key, it)
+                                            viewModel.savePref(Prefs.ringOffsetX, it)
                                         },
                                         title = {
                                             Text(stringResource(R.string.pref_ring_offset_x_title))
@@ -79,8 +83,8 @@ fun CalibrationScreen(
                                         valueRange = Prefs.ringOffsetX.range!!,
                                         defaultValue = Prefs.ringOffsetX.default,
                                         onReset = {
-                                            onSavePrefs(
-                                                Prefs.ringOffsetX.key,
+                                            viewModel.savePref(
+                                                Prefs.ringOffsetX,
                                                 Prefs.ringOffsetX.default,
                                             )
                                         },
@@ -93,7 +97,7 @@ fun CalibrationScreen(
                                     SliderPreferenceWithStepper(
                                         value = prefsState.ringOffsetY,
                                         onValueChange = {
-                                            onSavePrefs(Prefs.ringOffsetY.key, it)
+                                            viewModel.savePref(Prefs.ringOffsetY, it)
                                         },
                                         title = {
                                             Text(stringResource(R.string.pref_ring_offset_y_title))
@@ -101,8 +105,8 @@ fun CalibrationScreen(
                                         valueRange = Prefs.ringOffsetY.range!!,
                                         defaultValue = Prefs.ringOffsetY.default,
                                         onReset = {
-                                            onSavePrefs(
-                                                Prefs.ringOffsetY.key,
+                                            viewModel.savePref(
+                                                Prefs.ringOffsetY,
                                                 Prefs.ringOffsetY.default,
                                             )
                                         },
@@ -128,10 +132,10 @@ fun CalibrationScreen(
                                     TogglePreferenceWithIcon(
                                         value = prefsState.ringScaleLinked,
                                         onValueChange = {
-                                            onSavePrefs(Prefs.ringScaleLinked.key, it)
+                                            viewModel.savePref(Prefs.ringScaleLinked, it)
                                             if (it) {
-                                                onSavePrefs(
-                                                    Prefs.ringScaleY.key,
+                                                viewModel.savePref(
+                                                    Prefs.ringScaleY,
                                                     prefsState.ringScaleX,
                                                 )
                                             }
@@ -148,9 +152,9 @@ fun CalibrationScreen(
                                     SliderPreferenceWithStepper(
                                         value = prefsState.ringScaleX,
                                         onValueChange = {
-                                            onSavePrefs(Prefs.ringScaleX.key, it)
+                                            viewModel.savePref(Prefs.ringScaleX, it)
                                             if (prefsState.ringScaleLinked) {
-                                                onSavePrefs(Prefs.ringScaleY.key, it)
+                                                viewModel.savePref(Prefs.ringScaleY, it)
                                             }
                                         },
                                         title = {
@@ -159,13 +163,13 @@ fun CalibrationScreen(
                                         valueRange = Prefs.ringScaleX.range!!,
                                         defaultValue = Prefs.ringScaleX.default,
                                         onReset = {
-                                            onSavePrefs(
-                                                Prefs.ringScaleX.key,
+                                            viewModel.savePref(
+                                                Prefs.ringScaleX,
                                                 Prefs.ringScaleX.default,
                                             )
                                             if (prefsState.ringScaleLinked) {
-                                                onSavePrefs(
-                                                    Prefs.ringScaleY.key,
+                                                viewModel.savePref(
+                                                    Prefs.ringScaleY,
                                                     Prefs.ringScaleY.default,
                                                 )
                                             }
@@ -179,7 +183,7 @@ fun CalibrationScreen(
                                     SliderPreferenceWithStepper(
                                         value = prefsState.ringScaleY,
                                         onValueChange = {
-                                            onSavePrefs(Prefs.ringScaleY.key, it)
+                                            viewModel.savePref(Prefs.ringScaleY, it)
                                         },
                                         title = {
                                             Text(stringResource(R.string.pref_ring_scale_y_title))
@@ -187,8 +191,8 @@ fun CalibrationScreen(
                                         valueRange = Prefs.ringScaleY.range!!,
                                         defaultValue = Prefs.ringScaleY.default,
                                         onReset = {
-                                            onSavePrefs(
-                                                Prefs.ringScaleY.key,
+                                            viewModel.savePref(
+                                                Prefs.ringScaleY,
                                                 Prefs.ringScaleY.default,
                                             )
                                         },
@@ -206,13 +210,13 @@ fun CalibrationScreen(
     }
 }
 
+@Suppress("ViewModelConstructorInComposable")
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun CalibrationScreenPreview() {
     AppTheme(darkThemeConfig = DarkThemeConfig.DARK) {
         CalibrationScreen(
-            prefsState = PrefsState(),
-            onSavePrefs = { _, _ -> },
+            viewModel = PreviewViewModel(),
             onNavigateBack = {},
             contentPadding = PaddingValues(),
         )

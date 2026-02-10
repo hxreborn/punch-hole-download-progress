@@ -77,16 +77,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.hxreborn.phdp.BuildConfig
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.Prefs
+import eu.hxreborn.phdp.ui.SettingsUiState
+import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.AppTypeChip
 import eu.hxreborn.phdp.ui.component.ExpressiveCheckbox
 import eu.hxreborn.phdp.ui.component.OverflowMenu
 import eu.hxreborn.phdp.ui.component.OverflowMenuItem
 import eu.hxreborn.phdp.ui.component.OverflowMenuToggle
 import eu.hxreborn.phdp.ui.component.drawVerticalScrollbar
-import eu.hxreborn.phdp.ui.state.PrefsState
 import eu.hxreborn.phdp.ui.theme.Tokens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -390,13 +392,16 @@ private fun ShimmerListItem(modifier: Modifier = Modifier) {
     }
 }
 
+@Suppress("UNUSED_VALUE") // Compose mutableStateOf reads aren't tracked by the IDE
 @Composable
 fun PackageSelectionScreen(
-    prefsState: PrefsState,
-    onSavePrefs: (key: String, value: Any) -> Unit,
+    viewModel: SettingsViewModel,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val prefsState = (uiState as? SettingsUiState.Success)?.prefs ?: return
+
     var searchQuery by remember { mutableStateOf("") }
     var debouncedQuery by remember { mutableStateOf("") }
     var showSystemApps by remember { mutableStateOf(false) }
@@ -408,7 +413,7 @@ fun PackageSelectionScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val saveSelection: (Set<String>) -> Unit = { selection ->
-        onSavePrefs(Prefs.selectedPackages.key, selection)
+        viewModel.savePref(Prefs.selectedPackages, selection)
     }
 
     val selectedCount = prefsState.selectedPackages.size
@@ -418,7 +423,6 @@ fun PackageSelectionScreen(
         debouncedQuery = searchQuery
     }
 
-    // Show all apps filtered by search and system toggle
     val filteredApps =
         remember(appState.apps, debouncedQuery, showSystemApps) {
             appState.apps.filter { app ->
@@ -632,7 +636,6 @@ private fun applyDefaults(
         return
     }
 
-    val previousSelection = currentSelection
     onSave(currentSelection + defaultsToApply)
     scope.launch {
         val result =
@@ -642,7 +645,7 @@ private fun applyDefaults(
                 duration = SnackbarDuration.Short,
             )
         if (result == SnackbarResult.ActionPerformed) {
-            onSave(previousSelection)
+            onSave(currentSelection)
         }
     }
 }

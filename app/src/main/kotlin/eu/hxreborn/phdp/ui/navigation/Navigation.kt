@@ -21,24 +21,31 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.Prefs
+import eu.hxreborn.phdp.prefs.bind
+import eu.hxreborn.phdp.ui.SettingsUiState
+import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.screen.AppearanceScreen
 import eu.hxreborn.phdp.ui.screen.BehaviorScreen
 import eu.hxreborn.phdp.ui.screen.CalibrationScreen
+import eu.hxreborn.phdp.ui.screen.CalibrationTarget
+import eu.hxreborn.phdp.ui.screen.LayoutConfig
 import eu.hxreborn.phdp.ui.screen.PackageSelectionScreen
 import eu.hxreborn.phdp.ui.screen.SystemScreen
 import eu.hxreborn.phdp.ui.screen.TextCalibrationScreen
-import eu.hxreborn.phdp.ui.state.PrefsState
+import eu.hxreborn.phdp.ui.screen.TypographyConfig
 import eu.hxreborn.phdp.ui.theme.Tokens
 import kotlinx.serialization.Serializable
 
@@ -104,14 +111,24 @@ val bottomNavItems =
         ),
     )
 
+private val slideTransitionMetadata =
+    NavDisplay.transitionSpec {
+        slideInHorizontally(initialOffsetX = { it }) togetherWith
+            slideOutHorizontally(targetOffsetX = { -it })
+    } +
+        NavDisplay.popTransitionSpec {
+            slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                slideOutHorizontally(targetOffsetX = { it })
+        } +
+        NavDisplay.predictivePopTransitionSpec {
+            slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                slideOutHorizontally(targetOffsetX = { it })
+        }
+
 @Composable
 fun MainNavDisplay(
     backStack: NavBackStack<NavKey>,
-    prefsState: PrefsState,
-    onSavePrefs: (key: String, value: Any) -> Unit,
-    onTestSuccess: () -> Unit,
-    onTestFailure: () -> Unit,
-    onClearDownloads: () -> Unit,
+    viewModel: SettingsViewModel,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
@@ -123,147 +140,90 @@ fun MainNavDisplay(
             entryProvider {
                 entry<Screen.Design> {
                     AppearanceScreen(
-                        prefsState = prefsState,
-                        onSavePrefs = onSavePrefs,
-                        onNavigateToCalibration = { backStack.add(Screen.Calibration) },
-                        onNavigateToPercentCalibration = {
-                            backStack.add(Screen.PercentCalibration)
-                        },
-                        onNavigateToFilenameCalibration = {
-                            backStack.add(Screen.FilenameCalibration)
+                        viewModel = viewModel,
+                        onNavigateToCalibration = { target ->
+                            backStack.add(
+                                when (target) {
+                                    CalibrationTarget.RING -> Screen.Calibration
+                                    CalibrationTarget.PERCENT -> Screen.PercentCalibration
+                                    CalibrationTarget.FILENAME -> Screen.FilenameCalibration
+                                },
+                            )
                         },
                         contentPadding = contentPadding,
                     )
                 }
-                entry<Screen.Calibration>(
-                    metadata =
-                        NavDisplay.transitionSpec {
-                            slideInHorizontally(initialOffsetX = { it }) togetherWith
-                                slideOutHorizontally(targetOffsetX = { -it })
-                        } +
-                            NavDisplay.popTransitionSpec {
-                                slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                                    slideOutHorizontally(targetOffsetX = { it })
-                            } +
-                            NavDisplay.predictivePopTransitionSpec {
-                                slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                                    slideOutHorizontally(targetOffsetX = { it })
-                            },
-                ) {
+                entry<Screen.Calibration>(metadata = slideTransitionMetadata) {
                     CalibrationScreen(
-                        prefsState = prefsState,
-                        onSavePrefs = onSavePrefs,
+                        viewModel = viewModel,
                         onNavigateBack = { backStack.removeLastOrNull() },
                         contentPadding = contentPadding,
                     )
                 }
-                entry<Screen.PercentCalibration>(
-                    metadata =
-                        NavDisplay.transitionSpec {
-                            slideInHorizontally(initialOffsetX = { it }) togetherWith
-                                slideOutHorizontally(targetOffsetX = { -it })
-                        } +
-                            NavDisplay.popTransitionSpec {
-                                slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                                    slideOutHorizontally(targetOffsetX = { it })
-                            } +
-                            NavDisplay.predictivePopTransitionSpec {
-                                slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                                    slideOutHorizontally(targetOffsetX = { it })
-                            },
-                ) {
+                entry<Screen.PercentCalibration>(metadata = slideTransitionMetadata) {
+                    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                    val prefs = (uiState as? SettingsUiState.Success)?.prefs ?: return@entry
                     TextCalibrationScreen(
                         titleRes = R.string.pref_calibrate_percent_title,
-                        offsetX = prefsState.percentTextOffsetX,
-                        offsetY = prefsState.percentTextOffsetY,
-                        offsetXPref = Prefs.percentTextOffsetX,
-                        offsetYPref = Prefs.percentTextOffsetY,
-                        onSavePrefs = onSavePrefs,
+                        offsetX = Prefs.percentTextOffsetX bind prefs.percentTextOffsetX,
+                        offsetY = Prefs.percentTextOffsetY bind prefs.percentTextOffsetY,
+                        viewModel = viewModel,
                         onNavigateBack = { backStack.removeLastOrNull() },
                         contentPadding = contentPadding,
-                        fontSize = prefsState.percentTextSize,
-                        fontSizePref = Prefs.percentTextSize,
-                        bold = prefsState.percentTextBold,
-                        boldPref = Prefs.percentTextBold,
-                        italic = prefsState.percentTextItalic,
-                        italicPref = Prefs.percentTextItalic,
+                        typography =
+                            TypographyConfig(
+                                fontSize = Prefs.percentTextSize bind prefs.percentTextSize,
+                                bold = Prefs.percentTextBold bind prefs.percentTextBold,
+                                italic = Prefs.percentTextItalic bind prefs.percentTextItalic,
+                            ),
                     )
                 }
-                entry<Screen.FilenameCalibration>(
-                    metadata =
-                        NavDisplay.transitionSpec {
-                            slideInHorizontally(initialOffsetX = { it }) togetherWith
-                                slideOutHorizontally(targetOffsetX = { -it })
-                        } +
-                            NavDisplay.popTransitionSpec {
-                                slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                                    slideOutHorizontally(targetOffsetX = { it })
-                            } +
-                            NavDisplay.predictivePopTransitionSpec {
-                                slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                                    slideOutHorizontally(targetOffsetX = { it })
-                            },
-                ) {
+                entry<Screen.FilenameCalibration>(metadata = slideTransitionMetadata) {
+                    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                    val prefs = (uiState as? SettingsUiState.Success)?.prefs ?: return@entry
                     TextCalibrationScreen(
                         titleRes = R.string.pref_calibrate_filename_title,
-                        offsetX = prefsState.filenameTextOffsetX,
-                        offsetY = prefsState.filenameTextOffsetY,
-                        offsetXPref = Prefs.filenameTextOffsetX,
-                        offsetYPref = Prefs.filenameTextOffsetY,
-                        onSavePrefs = onSavePrefs,
+                        offsetX = Prefs.filenameTextOffsetX bind prefs.filenameTextOffsetX,
+                        offsetY = Prefs.filenameTextOffsetY bind prefs.filenameTextOffsetY,
+                        viewModel = viewModel,
                         onNavigateBack = { backStack.removeLastOrNull() },
                         contentPadding = contentPadding,
-                        fontSize = prefsState.filenameTextSize,
-                        fontSizePref = Prefs.filenameTextSize,
-                        bold = prefsState.filenameTextBold,
-                        boldPref = Prefs.filenameTextBold,
-                        italic = prefsState.filenameTextItalic,
-                        italicPref = Prefs.filenameTextItalic,
-                        truncateEnabled = prefsState.filenameTruncateEnabled,
-                        truncateEnabledPref = Prefs.filenameTruncateEnabled,
-                        extraInt = prefsState.filenameMaxChars,
-                        extraIntPref = Prefs.filenameMaxChars,
-                        extraIntTitleRes = R.string.pref_filename_max_chars_title,
-                        extraIntSuffix = "",
-                        ellipsize = prefsState.filenameEllipsize,
-                        ellipsizePref = Prefs.filenameEllipsize,
-                        ellipsizeValues = listOf("start", "middle", "end"),
-                        previewText = prefsState.previewFilenameText,
-                        previewTextPref = Prefs.previewFilenameText,
+                        typography =
+                            TypographyConfig(
+                                fontSize = Prefs.filenameTextSize bind prefs.filenameTextSize,
+                                bold = Prefs.filenameTextBold bind prefs.filenameTextBold,
+                                italic = Prefs.filenameTextItalic bind prefs.filenameTextItalic,
+                            ),
+                        layout =
+                            LayoutConfig(
+                                truncateEnabled = Prefs.filenameTruncateEnabled bind prefs.filenameTruncateEnabled,
+                                maxLength = Prefs.filenameMaxChars bind prefs.filenameMaxChars,
+                                maxLengthTitleRes = R.string.pref_filename_max_chars_title,
+                                ellipsize = Prefs.filenameEllipsize bind prefs.filenameEllipsize,
+                                ellipsizeValues = listOf("start", "middle", "end"),
+                                previewText = Prefs.previewFilenameText bind prefs.previewFilenameText,
+                            ),
                     )
                 }
-                entry<Screen.BadgeCalibration>(
-                    metadata =
-                        NavDisplay.transitionSpec {
-                            slideInHorizontally(initialOffsetX = { it }) togetherWith
-                                slideOutHorizontally(targetOffsetX = { -it })
-                        } +
-                            NavDisplay.popTransitionSpec {
-                                slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                                    slideOutHorizontally(targetOffsetX = { it })
-                            } +
-                            NavDisplay.predictivePopTransitionSpec {
-                                slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                                    slideOutHorizontally(targetOffsetX = { it })
-                            },
-                ) {
+                entry<Screen.BadgeCalibration>(metadata = slideTransitionMetadata) {
+                    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                    val prefs = (uiState as? SettingsUiState.Success)?.prefs ?: return@entry
                     TextCalibrationScreen(
                         titleRes = R.string.pref_calibrate_badge_title,
-                        offsetX = prefsState.badgeOffsetX,
-                        offsetY = prefsState.badgeOffsetY,
-                        offsetXPref = Prefs.badgeOffsetX,
-                        offsetYPref = Prefs.badgeOffsetY,
-                        onSavePrefs = onSavePrefs,
+                        offsetX = Prefs.badgeOffsetX bind prefs.badgeOffsetX,
+                        offsetY = Prefs.badgeOffsetY bind prefs.badgeOffsetY,
+                        viewModel = viewModel,
                         onNavigateBack = { backStack.removeLastOrNull() },
                         contentPadding = contentPadding,
-                        fontSize = prefsState.badgeTextSize,
-                        fontSizePref = Prefs.badgeTextSize,
+                        typography =
+                            TypographyConfig(
+                                fontSize = Prefs.badgeTextSize bind prefs.badgeTextSize,
+                            ),
                     )
                 }
                 entry<Screen.Motion> {
                     BehaviorScreen(
-                        prefsState = prefsState,
-                        onSavePrefs = onSavePrefs,
+                        viewModel = viewModel,
                         onNavigateToBadgeCalibration = {
                             backStack.add(Screen.BadgeCalibration)
                         },
@@ -272,18 +232,13 @@ fun MainNavDisplay(
                 }
                 entry<Screen.Packages> {
                     PackageSelectionScreen(
-                        prefsState = prefsState,
-                        onSavePrefs = onSavePrefs,
+                        viewModel = viewModel,
                         contentPadding = contentPadding,
                     )
                 }
                 entry<Screen.System> {
                     SystemScreen(
-                        prefsState = prefsState,
-                        onSavePrefs = onSavePrefs,
-                        onTestSuccess = onTestSuccess,
-                        onTestFailure = onTestFailure,
-                        onClearDownloads = onClearDownloads,
+                        viewModel = viewModel,
                         contentPadding = contentPadding,
                     )
                 }

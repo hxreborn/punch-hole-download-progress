@@ -10,7 +10,6 @@ import android.graphics.PixelFormat
 import android.graphics.RectF
 import android.graphics.Typeface
 import android.text.TextPaint
-import android.text.TextUtils
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -163,8 +162,6 @@ class IndicatorView(
                     resources.displayMetrics,
                 )
         }
-    private val maxFilenameWidth: Float
-        get() = resources.displayMetrics.widthPixels * MAX_FILENAME_WIDTH_RATIO
     private val effectiveOpacity: Int
         get() =
             if (isPowerSaveActive && PrefsManager.powerSaverMode == "dim") {
@@ -792,18 +789,10 @@ class IndicatorView(
             else -> Typeface.NORMAL
         }
 
-    private fun ellipsizeMode(value: String): TextUtils.TruncateAt =
-        when (value) {
-            "start" -> TextUtils.TruncateAt.START
-            "end" -> TextUtils.TruncateAt.END
-            else -> TextUtils.TruncateAt.MIDDLE
-        }
-
     companion object {
         private const val TYPE_NAVIGATION_BAR_PANEL = 2024
 
         // Drawing constants
-        private const val MAX_FILENAME_WIDTH_RATIO = 0.25f
         private const val POWER_SAVER_DIM_FACTOR = 0.5f
         private const val SHINE_STROKE_MULTIPLIER = 1.2f
         private const val ERROR_STROKE_MULTIPLIER = 1.5f
