@@ -65,6 +65,10 @@ object PrefsManager {
         private set
 
     @Volatile
+    var badgeTextSize = Prefs.badgeTextSize.default
+        private set
+
+    @Volatile
     var finishStyle = Prefs.finishStyle.default
         private set
 
@@ -113,6 +117,10 @@ object PrefsManager {
         private set
 
     @Volatile
+    var percentTextSize = Prefs.percentTextSize.default
+        private set
+
+    @Volatile
     var filenameTextEnabled = Prefs.filenameTextEnabled.default
         private set
 
@@ -126,6 +134,42 @@ object PrefsManager {
 
     @Volatile
     var filenameTextOffsetY = Prefs.filenameTextOffsetY.default
+        private set
+
+    @Volatile
+    var filenameTextSize = Prefs.filenameTextSize.default
+        private set
+
+    @Volatile
+    var filenameMaxChars = Prefs.filenameMaxChars.default
+        private set
+
+    @Volatile
+    var filenameTruncateEnabled = Prefs.filenameTruncateEnabled.default
+        private set
+
+    @Volatile
+    var percentTextBold = Prefs.percentTextBold.default
+        private set
+
+    @Volatile
+    var percentTextItalic = Prefs.percentTextItalic.default
+        private set
+
+    @Volatile
+    var filenameTextBold = Prefs.filenameTextBold.default
+        private set
+
+    @Volatile
+    var filenameTextItalic = Prefs.filenameTextItalic.default
+        private set
+
+    @Volatile
+    var filenameEllipsize = Prefs.filenameEllipsize.default
+        private set
+
+    @Volatile
+    var previewFilenameText = Prefs.previewFilenameText.default
         private set
 
     @Volatile
@@ -255,6 +299,7 @@ object PrefsManager {
                 showDownloadCount = Prefs.showDownloadCount.read(prefs)
                 badgeOffsetX = Prefs.badgeOffsetX.read(prefs)
                 badgeOffsetY = Prefs.badgeOffsetY.read(prefs)
+                badgeTextSize = Prefs.badgeTextSize.read(prefs)
                 finishStyle = Prefs.finishStyle.read(prefs)
                 finishHoldMs = Prefs.finishHoldMs.read(prefs)
                 finishExitMs = Prefs.finishExitMs.read(prefs)
@@ -267,10 +312,20 @@ object PrefsManager {
                 percentTextPosition = Prefs.percentTextPosition.read(prefs)
                 percentTextOffsetX = Prefs.percentTextOffsetX.read(prefs)
                 percentTextOffsetY = Prefs.percentTextOffsetY.read(prefs)
+                percentTextSize = Prefs.percentTextSize.read(prefs)
                 filenameTextEnabled = Prefs.filenameTextEnabled.read(prefs)
                 filenameTextPosition = Prefs.filenameTextPosition.read(prefs)
                 filenameTextOffsetX = Prefs.filenameTextOffsetX.read(prefs)
                 filenameTextOffsetY = Prefs.filenameTextOffsetY.read(prefs)
+                filenameTextSize = Prefs.filenameTextSize.read(prefs)
+                filenameMaxChars = Prefs.filenameMaxChars.read(prefs)
+                filenameTruncateEnabled = Prefs.filenameTruncateEnabled.read(prefs)
+                percentTextBold = Prefs.percentTextBold.read(prefs)
+                percentTextItalic = Prefs.percentTextItalic.read(prefs)
+                filenameTextBold = Prefs.filenameTextBold.read(prefs)
+                filenameTextItalic = Prefs.filenameTextItalic.read(prefs)
+                filenameEllipsize = Prefs.filenameEllipsize.read(prefs)
+                previewFilenameText = Prefs.previewFilenameText.read(prefs)
                 ringScaleX = Prefs.ringScaleX.read(prefs)
                 ringScaleY = Prefs.ringScaleY.read(prefs)
                 ringScaleLinked = Prefs.ringScaleLinked.read(prefs)

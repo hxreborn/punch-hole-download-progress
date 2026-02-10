@@ -235,7 +235,32 @@ class IndicatorView(
             this.strokeCap = strokeCap
         }
 
-        badgePainter.updateColors(PrefsManager.color)
+        percentPaint.apply {
+            textSize =
+                android.util.TypedValue.applyDimension(
+                    android.util.TypedValue.COMPLEX_UNIT_SP,
+                    PrefsManager.percentTextSize,
+                    resources.displayMetrics,
+                )
+            typeface =
+                Typeface.defaultFromStyle(
+                    typefaceStyle(PrefsManager.percentTextBold, PrefsManager.percentTextItalic),
+                )
+        }
+        filenamePaint.apply {
+            textSize =
+                android.util.TypedValue.applyDimension(
+                    android.util.TypedValue.COMPLEX_UNIT_SP,
+                    PrefsManager.filenameTextSize,
+                    resources.displayMetrics,
+                )
+            typeface =
+                Typeface.defaultFromStyle(
+                    typefaceStyle(PrefsManager.filenameTextBold, PrefsManager.filenameTextItalic),
+                )
+        }
+
+        badgePainter.updateColors(PrefsManager.color, PrefsManager.badgeTextSize)
 
         log(
             "Paint updated: color=${Integer.toHexString(PrefsManager.color)}, " +
@@ -544,19 +569,21 @@ class IndicatorView(
         val isGeometryPreview = animator.isGeometryPreviewActive
         val filenameToShow =
             currentFilename
-                ?: if (isGeometryPreview) PREVIEW_FILENAME else null
+                ?: if (isGeometryPreview) PrefsManager.previewFilenameText else null
 
         if (PrefsManager.filenameTextEnabled && filenameToShow != null &&
             (activeDownloadCount <= 1 || isGeometryPreview)
         ) {
             val truncated =
-                TextUtils
-                    .ellipsize(
+                if (PrefsManager.filenameTruncateEnabled) {
+                    truncateWithEllipsis(
                         filenameToShow,
-                        filenamePaint,
-                        maxFilenameWidth,
-                        TextUtils.TruncateAt.MIDDLE,
-                    ).toString()
+                        PrefsManager.filenameMaxChars,
+                        PrefsManager.filenameEllipsize,
+                    )
+                } else {
+                    filenameToShow
+                }
             val (baseX, baseY, align) =
                 computeLabelPosition(
                     PrefsManager.filenameTextPosition,
@@ -727,6 +754,51 @@ class IndicatorView(
         )
     }
 
+    // Char-based truncation where ellipsis counts toward maxChars
+    private fun truncateWithEllipsis(
+        text: String,
+        maxChars: Int,
+        mode: String,
+    ): String {
+        if (text.length <= maxChars) return text
+        val ellipsis = "\u2026"
+        val available = maxChars - 1
+        if (available <= 0) return ellipsis
+        return when (mode) {
+            "start" -> {
+                ellipsis + text.takeLast(available)
+            }
+
+            "end" -> {
+                text.take(available) + ellipsis
+            }
+
+            else -> {
+                val head = (available + 1) / 2
+                val tail = available - head
+                text.take(head) + ellipsis + text.takeLast(tail)
+            }
+        }
+    }
+
+    private fun typefaceStyle(
+        bold: Boolean,
+        italic: Boolean,
+    ): Int =
+        when {
+            bold && italic -> Typeface.BOLD_ITALIC
+            bold -> Typeface.BOLD
+            italic -> Typeface.ITALIC
+            else -> Typeface.NORMAL
+        }
+
+    private fun ellipsizeMode(value: String): TextUtils.TruncateAt =
+        when (value) {
+            "start" -> TextUtils.TruncateAt.START
+            "end" -> TextUtils.TruncateAt.END
+            else -> TextUtils.TruncateAt.MIDDLE
+        }
+
     companion object {
         private const val TYPE_NAVIGATION_BAR_PANEL = 2024
 
@@ -738,8 +810,6 @@ class IndicatorView(
         private const val BADGE_TOP_PADDING_DP = 4f
         private const val LABEL_PADDING_DP = 4f
         private const val BURN_IN_HIDE_DELAY_MS = 10_000L
-        private const val PREVIEW_FILENAME =
-            "EvolutionX-16.0-20260116-RMX2170-11.6-Unofficial.zip"
 
         fun attach(context: Context): IndicatorView {
             val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager

@@ -30,6 +30,7 @@ class BadgePainter(
 
     fun updateColors(
         @ColorInt baseColor: Int,
+        textSizeSp: Float = TEXT_SIZE_SP,
     ) {
         val luminance = ColorUtils.calculateLuminance(baseColor)
         bgPaint.color = darkenColor(baseColor, DARKEN_FACTOR)
@@ -39,7 +40,7 @@ class BadgePainter(
             } else {
                 brightenColor(baseColor, BRIGHTEN_FACTOR)
             }
-        textPaint.textSize = TEXT_SIZE_SP * density
+        textPaint.textSize = textSizeSp * density
     }
 
     fun draw(

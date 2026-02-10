@@ -111,13 +111,13 @@
     <!-- Design: Percentage Text -->
     <string name="pref_show_percentage_title">Percentage label</string>
     <string name="pref_show_percentage_summary">Display current progress as numeric text</string>
-    <string name="pref_calibrate_percent_title">Calibrate position</string>
+    <string name="pref_calibrate_percent_title">Calibrate percentage</string>
     <string name="pref_calibrate_percent_summary">Adjust percentage label placement</string>
 
     <!-- Design: Filename Text -->
     <string name="pref_show_filename_title">Filename label</string>
     <string name="pref_show_filename_summary">Display the name of the file being downloaded</string>
-    <string name="pref_calibrate_filename_title">Calibrate position</string>
+    <string name="pref_calibrate_filename_title">Calibrate filename</string>
     <string name="pref_calibrate_filename_summary">Adjust filename label placement</string>
 
     <!-- Motion: Animation -->
@@ -139,8 +139,21 @@
     <!-- System: Visibility -->
     <string name="pref_show_queue_count_title">Queue counter</string>
     <string name="pref_show_queue_count_summary">Display number of concurrent active downloads</string>
-    <string name="pref_calibrate_badge_title">Calibrate position</string>
+    <string name="pref_calibrate_badge_title">Calibrate counter</string>
     <string name="pref_calibrate_badge_summary">Adjust queue counter placement</string>
+    <string name="pref_font_size_title">Font size</string>
+    <string name="pref_bold_title">Bold</string>
+    <string name="pref_italic_title">Italic</string>
+    <string name="pref_text_style_title">Text style</string>
+    <string name="group_typography">Typography</string>
+    <string name="group_layout">Layout</string>
+    <string name="pref_ellipsize_title">Ellipsize</string>
+    <string name="ellipsize_start">Start</string>
+    <string name="ellipsize_middle">Middle</string>
+    <string name="ellipsize_end">End</string>
+    <string name="pref_filename_truncate_title">Character limit</string>
+    <string name="pref_filename_max_chars_title">Max characters</string>
+    <string name="pref_preview_text_title">Preview text</string>
     <string name="pref_invert_rotation_title">Progress direction</string>
     <string name="clockwise">Clockwise</string>
     <string name="counter_clockwise">Counter-clockwise</string>

@@ -181,6 +181,12 @@ fun MainNavDisplay(
                         onSavePrefs = onSavePrefs,
                         onNavigateBack = { backStack.removeLastOrNull() },
                         contentPadding = contentPadding,
+                        fontSize = prefsState.percentTextSize,
+                        fontSizePref = Prefs.percentTextSize,
+                        bold = prefsState.percentTextBold,
+                        boldPref = Prefs.percentTextBold,
+                        italic = prefsState.percentTextItalic,
+                        italicPref = Prefs.percentTextItalic,
                     )
                 }
                 entry<Screen.FilenameCalibration>(
@@ -207,6 +213,23 @@ fun MainNavDisplay(
                         onSavePrefs = onSavePrefs,
                         onNavigateBack = { backStack.removeLastOrNull() },
                         contentPadding = contentPadding,
+                        fontSize = prefsState.filenameTextSize,
+                        fontSizePref = Prefs.filenameTextSize,
+                        bold = prefsState.filenameTextBold,
+                        boldPref = Prefs.filenameTextBold,
+                        italic = prefsState.filenameTextItalic,
+                        italicPref = Prefs.filenameTextItalic,
+                        truncateEnabled = prefsState.filenameTruncateEnabled,
+                        truncateEnabledPref = Prefs.filenameTruncateEnabled,
+                        extraInt = prefsState.filenameMaxChars,
+                        extraIntPref = Prefs.filenameMaxChars,
+                        extraIntTitleRes = R.string.pref_filename_max_chars_title,
+                        extraIntSuffix = "",
+                        ellipsize = prefsState.filenameEllipsize,
+                        ellipsizePref = Prefs.filenameEllipsize,
+                        ellipsizeValues = listOf("start", "middle", "end"),
+                        previewText = prefsState.previewFilenameText,
+                        previewTextPref = Prefs.previewFilenameText,
                     )
                 }
                 entry<Screen.BadgeCalibration>(
@@ -233,6 +256,8 @@ fun MainNavDisplay(
                         onSavePrefs = onSavePrefs,
                         onNavigateBack = { backStack.removeLastOrNull() },
                         contentPadding = contentPadding,
+                        fontSize = prefsState.badgeTextSize,
+                        fontSizePref = Prefs.badgeTextSize,
                     )
                 }
                 entry<Screen.Motion> {

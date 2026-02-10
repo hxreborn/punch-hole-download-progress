@@ -45,10 +45,24 @@ object Prefs {
     val percentTextPosition = StringPref("percent_text_position", "right")
     val percentTextOffsetX = FloatPref("percent_text_offset_x", 0f, -200f..200f)
     val percentTextOffsetY = FloatPref("percent_text_offset_y", 0f, -200f..200f)
+    val percentTextSize = FloatPref("percent_text_size", 8f, 4f..20f)
     val filenameTextEnabled = BoolPref("filename_text_enabled", false)
     val filenameTextPosition = StringPref("filename_text_position", "top_right")
     val filenameTextOffsetX = FloatPref("filename_text_offset_x", 0f, -200f..200f)
     val filenameTextOffsetY = FloatPref("filename_text_offset_y", 0f, -200f..200f)
+    val filenameTextSize = FloatPref("filename_text_size", 7f, 4f..20f)
+    val filenameMaxChars = IntPref("filename_max_chars", 20, 5..100)
+    val filenameTruncateEnabled = BoolPref("filename_truncate_enabled", true)
+    val percentTextBold = BoolPref("percent_text_bold", true)
+    val percentTextItalic = BoolPref("percent_text_italic", false)
+    val filenameTextBold = BoolPref("filename_text_bold", false)
+    val filenameTextItalic = BoolPref("filename_text_italic", false)
+    val filenameEllipsize = StringPref("filename_ellipsize", "middle")
+    val previewFilenameText =
+        StringPref(
+            "preview_filename_text",
+            "EvolutionX-16.0-20260116-RMX2170-11.6-Unofficial.zip",
+        )
 
     // Timing
     val minVisibilityEnabled = BoolPref("min_visibility_enabled", true)
@@ -56,6 +70,7 @@ object Prefs {
     val showDownloadCount = BoolPref("show_download_count", false)
     val badgeOffsetX = FloatPref("badge_offset_x", 0f, -200f..200f)
     val badgeOffsetY = FloatPref("badge_offset_y", 0f, -200f..200f)
+    val badgeTextSize = FloatPref("badge_text_size", 10f, 4f..20f)
 
     // Power
     val powerSaverMode = StringPref("power_saver_mode", "normal")
@@ -154,15 +169,26 @@ object Prefs {
             percentTextPosition,
             percentTextOffsetX,
             percentTextOffsetY,
+            percentTextSize,
             filenameTextEnabled,
             filenameTextPosition,
             filenameTextOffsetX,
             filenameTextOffsetY,
+            filenameTextSize,
+            filenameMaxChars,
+            filenameTruncateEnabled,
+            percentTextBold,
+            percentTextItalic,
+            filenameTextBold,
+            filenameTextItalic,
+            filenameEllipsize,
+            previewFilenameText,
             minVisibilityEnabled,
             minVisibilityMs,
             showDownloadCount,
             badgeOffsetX,
             badgeOffsetY,
+            badgeTextSize,
             powerSaverMode,
             hooksFeedback,
         )
@@ -186,10 +212,21 @@ object Prefs {
             percentTextPosition.key,
             percentTextOffsetX.key,
             percentTextOffsetY.key,
+            percentTextSize.key,
             filenameTextPosition.key,
             filenameTextOffsetX.key,
             filenameTextOffsetY.key,
+            filenameTextSize.key,
+            filenameMaxChars.key,
+            filenameTruncateEnabled.key,
+            percentTextBold.key,
+            percentTextItalic.key,
+            filenameTextBold.key,
+            filenameTextItalic.key,
+            filenameEllipsize.key,
+            previewFilenameText.key,
             badgeOffsetX.key,
             badgeOffsetY.key,
+            badgeTextSize.key,
         )
 }
