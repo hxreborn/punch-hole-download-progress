@@ -1,0 +1,5 @@
+Added calibration screens for text overlay positioning
+Added font size, bold, and italic options for text labels
+Added About section
+Fixed ring position drifting when device is rotated
+Fixed flicker when switching between calibration screens
