@@ -10,6 +10,7 @@ import android.graphics.PixelFormat
 import android.graphics.RectF
 import android.graphics.Typeface
 import android.text.TextPaint
+import android.view.Surface
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -727,10 +728,39 @@ class IndicatorView(
         arcBounds.applyCalibration()
     }
 
+    private var lastLoggedRotation = -1
+
+    // Rotate portrait-calibrated offset vector to match current display rotation
+    private fun rotateOffset(
+        dx: Float,
+        dy: Float,
+    ): Pair<Float, Float> {
+        val rotation = display?.rotation ?: Surface.ROTATION_0
+        val (rx, ry) =
+            when (rotation) {
+                Surface.ROTATION_90 -> dy to -dx
+                Surface.ROTATION_180 -> -dx to -dy
+                Surface.ROTATION_270 -> -dy to dx
+                else -> dx to dy
+            }
+        if (rotation != lastLoggedRotation) {
+            val label =
+                when (rotation) {
+                    Surface.ROTATION_0 -> "portrait 0°"
+                    Surface.ROTATION_90 -> "landscape 90°"
+                    Surface.ROTATION_180 -> "portrait 180°"
+                    Surface.ROTATION_270 -> "landscape 270°"
+                    else -> "unknown"
+                }
+            log("rotateOffset: $label | portrait($dx, $dy) -> ($rx, $ry)")
+            lastLoggedRotation = rotation
+        }
+        return rx to ry
+    }
+
     // Apply calibration: normalize to square, offset for alignment, scale for customization
     private fun RectF.applyCalibration() {
-        val offsetX = PrefsManager.ringOffsetX
-        val offsetY = PrefsManager.ringOffsetY
+        val (offsetX, offsetY) = rotateOffset(PrefsManager.ringOffsetX, PrefsManager.ringOffsetY)
         val scaleX = PrefsManager.ringScaleX
         val scaleY = PrefsManager.ringScaleY
 
