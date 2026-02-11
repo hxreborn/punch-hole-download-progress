@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.serialization)
+    alias(libs.plugins.aboutlibraries)
     alias(libs.plugins.ktlint)
 }
 
@@ -159,6 +160,8 @@ dependencies {
     implementation(libs.navigation3.ui)
     implementation(libs.serialization.json)
     implementation(libs.compose.preference)
+    implementation(libs.aboutlibraries.core)
+    implementation(libs.aboutlibraries.compose)
 }
 
 tasks.named("preBuild").configure {

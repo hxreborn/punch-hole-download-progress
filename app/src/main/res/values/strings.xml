@@ -173,6 +173,13 @@
 
     <!-- System: About -->
     <string name="pref_version_title">Version</string>
+    <string name="pref_version_copied">Version copied</string>
+    <string name="pref_git_repo">Source code</string>
+    <string name="pref_git_repo_summary">Browse the project on GitHub</string>
+    <string name="pref_licenses">Third-party licenses</string>
+    <string name="pref_licenses_summary">Libraries used by this app and their licenses</string>
+    <string name="pref_report_issue">Report an issue</string>
+    <string name="pref_report_issue_summary">Report a bug or suggest a feature on GitHub</string>
 
     <!-- Color Picker -->
     <string name="pick_color">Pick Color</string>

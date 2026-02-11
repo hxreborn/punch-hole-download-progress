@@ -1,16 +1,25 @@
 package eu.hxreborn.phdp.ui.screen
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.BugReport
+import androidx.compose.material.icons.outlined.Gavel
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,6 +42,7 @@ import me.zhanghai.compose.preference.preferenceCategory
 @Composable
 fun SystemScreen(
     viewModel: SettingsViewModel,
+    onNavigateToLicenses: () -> Unit = {},
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
@@ -158,22 +168,99 @@ fun SystemScreen(
             )
 
             item(key = "system_about_section") {
+                val versionString = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
                 SectionCard(
                     items =
                         listOf(
                             {
-                                SelectionContainer {
-                                    Preference(
-                                        onClick = {},
-                                        title = { Text(stringResource(R.string.pref_version_title)) },
-                                        summary = {
-                                            Text(
-                                                "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
-                                            )
-                                        },
-                                        enabled = false,
-                                    )
-                                }
+                                Preference(
+                                    onClick = {
+                                        val clipboard =
+                                            context.getSystemService(ClipboardManager::class.java)
+                                        clipboard.setPrimaryClip(
+                                            ClipData.newPlainText("version", versionString),
+                                        )
+                                        Toast
+                                            .makeText(
+                                                context,
+                                                R.string.pref_version_copied,
+                                                Toast.LENGTH_SHORT,
+                                            ).show()
+                                    },
+                                    icon = {
+                                        Icon(
+                                            Icons.Outlined.Info,
+                                            contentDescription = null,
+                                        )
+                                    },
+                                    title = { Text(stringResource(R.string.pref_version_title)) },
+                                    summary = { Text(versionString) },
+                                )
+                            },
+                            {
+                                Preference(
+                                    onClick = {
+                                        context.startActivity(
+                                            Intent(
+                                                Intent.ACTION_VIEW,
+                                                Uri.parse(
+                                                    "https://github.com/hxreborn/punch-hole-download-progress",
+                                                ),
+                                            ),
+                                        )
+                                    },
+                                    icon = {
+                                        Icon(
+                                            painterResource(R.drawable.ic_github_24),
+                                            contentDescription = null,
+                                        )
+                                    },
+                                    title = { Text(stringResource(R.string.pref_git_repo)) },
+                                    summary = {
+                                        Text(stringResource(R.string.pref_git_repo_summary))
+                                    },
+                                )
+                            },
+                            {
+                                Preference(
+                                    onClick = onNavigateToLicenses,
+                                    icon = {
+                                        Icon(
+                                            Icons.Outlined.Gavel,
+                                            contentDescription = null,
+                                        )
+                                    },
+                                    title = { Text(stringResource(R.string.pref_licenses)) },
+                                    summary = {
+                                        Text(stringResource(R.string.pref_licenses_summary))
+                                    },
+                                )
+                            },
+                            {
+                                Preference(
+                                    onClick = {
+                                        context.startActivity(
+                                            Intent(
+                                                Intent.ACTION_VIEW,
+                                                Uri.parse(
+                                                    "https://github.com/hxreborn/punch-hole-download-progress/issues/new/choose",
+                                                ),
+                                            ),
+                                        )
+                                    },
+                                    icon = {
+                                        Icon(
+                                            Icons.Outlined.BugReport,
+                                            contentDescription = null,
+                                        )
+                                    },
+                                    title = {
+                                        Text(stringResource(R.string.pref_report_issue))
+                                    },
+                                    summary = {
+                                        Text(stringResource(R.string.pref_report_issue_summary))
+                                    },
+                                )
                             },
                         ),
                 )

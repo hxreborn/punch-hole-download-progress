@@ -13,6 +13,7 @@ navigation3 = "1.1.0-alpha02"
 material3 = "1.5.0-alpha13"
 compose-preference = "1.1.1"
 serialization = "1.8.1"
+aboutlibraries = "11.6.3"
 
 [libraries]
 libxposed-api = { group = "io.github.libxposed", name = "api", version.ref = "xposed" }
@@ -34,6 +35,8 @@ navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runt
 navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "navigation3" }
 serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
 compose-preference = { group = "me.zhanghai.compose.preference", name = "library", version.ref = "compose-preference" }
+aboutlibraries-core = { group = "com.mikepenz", name = "aboutlibraries-core", version = "12.1.2" }
+aboutlibraries-compose = { group = "com.mikepenz", name = "aboutlibraries-compose-m3", version = "12.1.2" }
 
 [plugins]
 agp-app = { id = "com.android.application", version.ref = "agp" }
@@ -41,3 +44,4 @@ kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }

@@ -44,6 +44,7 @@ import eu.hxreborn.phdp.ui.screen.BehaviorScreen
 import eu.hxreborn.phdp.ui.screen.CalibrationScreen
 import eu.hxreborn.phdp.ui.screen.CalibrationTarget
 import eu.hxreborn.phdp.ui.screen.LayoutConfig
+import eu.hxreborn.phdp.ui.screen.LicensesScreen
 import eu.hxreborn.phdp.ui.screen.PackageSelectionScreen
 import eu.hxreborn.phdp.ui.screen.SystemScreen
 import eu.hxreborn.phdp.ui.screen.TextCalibrationScreen
@@ -76,6 +77,9 @@ sealed interface Screen : NavKey {
 
     @Serializable
     data object BadgeCalibration : Screen
+
+    @Serializable
+    data object Licenses : Screen
 }
 
 data class BottomNavItem(
@@ -261,9 +265,13 @@ fun MainNavDisplay(
                     ) { contentPadding ->
                         SystemScreen(
                             viewModel = viewModel,
+                            onNavigateToLicenses = { backStack.add(Screen.Licenses) },
                             contentPadding = contentPadding,
                         )
                     }
+                }
+                entry<Screen.Licenses>(metadata = slideTransitionMetadata) {
+                    LicensesScreen(onBack = { backStack.removeLastOrNull() })
                 }
             },
     )
@@ -299,6 +307,8 @@ fun BottomNav(
                 -> Screen.Design
 
                 Screen.BadgeCalibration -> Screen.Motion
+
+                Screen.Licenses -> Screen.System
 
                 else -> currentKey
             }
