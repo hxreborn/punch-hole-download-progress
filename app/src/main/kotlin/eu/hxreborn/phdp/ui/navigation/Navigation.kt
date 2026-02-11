@@ -6,7 +6,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesomeMotion
 import androidx.compose.material.icons.filled.Dashboard
@@ -27,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
@@ -35,8 +35,10 @@ import androidx.navigation3.ui.NavDisplay
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.prefs.bind
+import eu.hxreborn.phdp.ui.MenuAction
 import eu.hxreborn.phdp.ui.SettingsUiState
 import eu.hxreborn.phdp.ui.SettingsViewModel
+import eu.hxreborn.phdp.ui.component.MainTabScaffold
 import eu.hxreborn.phdp.ui.screen.AppearanceScreen
 import eu.hxreborn.phdp.ui.screen.BehaviorScreen
 import eu.hxreborn.phdp.ui.screen.CalibrationScreen
@@ -129,7 +131,8 @@ private val slideTransitionMetadata =
 fun MainNavDisplay(
     backStack: NavBackStack<NavKey>,
     viewModel: SettingsViewModel,
-    contentPadding: PaddingValues,
+    onMenuAction: (MenuAction) -> Unit,
+    bottomNavPadding: Dp,
     modifier: Modifier = Modifier,
 ) {
     NavDisplay(
@@ -139,25 +142,30 @@ fun MainNavDisplay(
         entryProvider =
             entryProvider {
                 entry<Screen.Design> {
-                    AppearanceScreen(
-                        viewModel = viewModel,
-                        onNavigateToCalibration = { target ->
-                            backStack.add(
-                                when (target) {
-                                    CalibrationTarget.RING -> Screen.Calibration
-                                    CalibrationTarget.PERCENT -> Screen.PercentCalibration
-                                    CalibrationTarget.FILENAME -> Screen.FilenameCalibration
-                                },
-                            )
-                        },
-                        contentPadding = contentPadding,
-                    )
+                    MainTabScaffold(
+                        onMenuAction = onMenuAction,
+                        bottomNavPadding = bottomNavPadding,
+                    ) { contentPadding ->
+                        AppearanceScreen(
+                            viewModel = viewModel,
+                            onNavigateToCalibration = { target ->
+                                backStack.add(
+                                    when (target) {
+                                        CalibrationTarget.RING -> Screen.Calibration
+                                        CalibrationTarget.PERCENT -> Screen.PercentCalibration
+                                        CalibrationTarget.FILENAME -> Screen.FilenameCalibration
+                                    },
+                                )
+                            },
+                            contentPadding = contentPadding,
+                        )
+                    }
                 }
                 entry<Screen.Calibration>(metadata = slideTransitionMetadata) {
                     CalibrationScreen(
                         viewModel = viewModel,
                         onNavigateBack = { backStack.removeLastOrNull() },
-                        contentPadding = contentPadding,
+                        bottomNavPadding = bottomNavPadding,
                     )
                 }
                 entry<Screen.PercentCalibration>(metadata = slideTransitionMetadata) {
@@ -169,7 +177,7 @@ fun MainNavDisplay(
                         offsetY = Prefs.percentTextOffsetY bind prefs.percentTextOffsetY,
                         viewModel = viewModel,
                         onNavigateBack = { backStack.removeLastOrNull() },
-                        contentPadding = contentPadding,
+                        bottomNavPadding = bottomNavPadding,
                         typography =
                             TypographyConfig(
                                 fontSize = Prefs.percentTextSize bind prefs.percentTextSize,
@@ -187,7 +195,7 @@ fun MainNavDisplay(
                         offsetY = Prefs.filenameTextOffsetY bind prefs.filenameTextOffsetY,
                         viewModel = viewModel,
                         onNavigateBack = { backStack.removeLastOrNull() },
-                        contentPadding = contentPadding,
+                        bottomNavPadding = bottomNavPadding,
                         typography =
                             TypographyConfig(
                                 fontSize = Prefs.filenameTextSize bind prefs.filenameTextSize,
@@ -214,7 +222,7 @@ fun MainNavDisplay(
                         offsetY = Prefs.badgeOffsetY bind prefs.badgeOffsetY,
                         viewModel = viewModel,
                         onNavigateBack = { backStack.removeLastOrNull() },
-                        contentPadding = contentPadding,
+                        bottomNavPadding = bottomNavPadding,
                         typography =
                             TypographyConfig(
                                 fontSize = Prefs.badgeTextSize bind prefs.badgeTextSize,
@@ -222,25 +230,40 @@ fun MainNavDisplay(
                     )
                 }
                 entry<Screen.Motion> {
-                    BehaviorScreen(
-                        viewModel = viewModel,
-                        onNavigateToBadgeCalibration = {
-                            backStack.add(Screen.BadgeCalibration)
-                        },
-                        contentPadding = contentPadding,
-                    )
+                    MainTabScaffold(
+                        onMenuAction = onMenuAction,
+                        bottomNavPadding = bottomNavPadding,
+                    ) { contentPadding ->
+                        BehaviorScreen(
+                            viewModel = viewModel,
+                            onNavigateToBadgeCalibration = {
+                                backStack.add(Screen.BadgeCalibration)
+                            },
+                            contentPadding = contentPadding,
+                        )
+                    }
                 }
                 entry<Screen.Packages> {
-                    PackageSelectionScreen(
-                        viewModel = viewModel,
-                        contentPadding = contentPadding,
-                    )
+                    MainTabScaffold(
+                        onMenuAction = onMenuAction,
+                        bottomNavPadding = bottomNavPadding,
+                    ) { contentPadding ->
+                        PackageSelectionScreen(
+                            viewModel = viewModel,
+                            contentPadding = contentPadding,
+                        )
+                    }
                 }
                 entry<Screen.System> {
-                    SystemScreen(
-                        viewModel = viewModel,
-                        contentPadding = contentPadding,
-                    )
+                    MainTabScaffold(
+                        onMenuAction = onMenuAction,
+                        bottomNavPadding = bottomNavPadding,
+                    ) { contentPadding ->
+                        SystemScreen(
+                            viewModel = viewModel,
+                            contentPadding = contentPadding,
+                        )
+                    }
                 }
             },
     )

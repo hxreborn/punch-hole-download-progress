@@ -10,6 +10,8 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import eu.hxreborn.phdp.R
@@ -53,8 +55,8 @@ fun TextCalibrationScreen(
     offsetY: BoundPref<Float>,
     viewModel: SettingsViewModel,
     onNavigateBack: () -> Unit,
-    contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
+    bottomNavPadding: Dp = 0.dp,
     typography: TypographyConfig? = null,
     layout: LayoutConfig? = null,
 ) {
@@ -75,6 +77,7 @@ fun TextCalibrationScreen(
     SettingsScaffold(
         title = stringResource(titleRes),
         onNavigateBack = onNavigateBack,
+        bottomPadding = bottomNavPadding,
         modifier = modifier,
     ) { innerPadding ->
         ProvidePreferenceLocals {
@@ -83,7 +86,7 @@ fun TextCalibrationScreen(
                 contentPadding =
                     PaddingValues(
                         top = innerPadding.calculateTopPadding() + Tokens.SpacingLg,
-                        bottom = contentPadding.calculateBottomPadding() + Tokens.SpacingLg,
+                        bottom = innerPadding.calculateBottomPadding() + Tokens.SpacingLg,
                     ),
             ) {
                 if (splitCards) {
@@ -275,7 +278,6 @@ private fun TextCalibrationScreenPreview() {
             offsetY = Prefs.filenameTextOffsetY bind 0f,
             viewModel = PreviewViewModel(),
             onNavigateBack = {},
-            contentPadding = PaddingValues(),
             typography =
                 TypographyConfig(
                     fontSize = Prefs.filenameTextSize bind 7f,

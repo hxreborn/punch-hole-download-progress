@@ -19,6 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.ui.theme.Tokens
 
@@ -26,9 +28,10 @@ import eu.hxreborn.phdp.ui.theme.Tokens
 @Composable
 fun SettingsScaffold(
     title: String,
+    modifier: Modifier = Modifier,
     onNavigateBack: (() -> Unit)? = null,
     summary: String? = null,
-    modifier: Modifier = Modifier,
+    bottomPadding: Dp = 0.dp,
     content: @Composable (PaddingValues) -> Unit,
 ) {
     val scrollBehavior =
@@ -64,6 +67,11 @@ fun SettingsScaffold(
             )
         },
     ) { innerPadding ->
+        val mergedPadding =
+            PaddingValues(
+                top = innerPadding.calculateTopPadding(),
+                bottom = innerPadding.calculateBottomPadding() + bottomPadding,
+            )
         if (summary != null) {
             Column {
                 Text(
@@ -74,14 +82,14 @@ fun SettingsScaffold(
                         Modifier.padding(
                             start = Tokens.ScreenHorizontalPadding,
                             end = Tokens.ScreenHorizontalPadding,
-                            top = innerPadding.calculateTopPadding(),
+                            top = mergedPadding.calculateTopPadding(),
                             bottom = Tokens.SpacingLg,
                         ),
                 )
-                content(PaddingValues(bottom = innerPadding.calculateBottomPadding()))
+                content(PaddingValues(bottom = mergedPadding.calculateBottomPadding()))
             }
         } else {
-            content(innerPadding)
+            content(mergedPadding)
         }
     }
 }
