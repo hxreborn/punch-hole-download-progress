@@ -31,6 +31,7 @@ import eu.hxreborn.phdp.ui.SettingsUiState
 import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.preference.SelectPreference
+import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import eu.hxreborn.phdp.ui.theme.Tokens
@@ -42,16 +43,24 @@ import me.zhanghai.compose.preference.preferenceCategory
 @Composable
 fun SystemScreen(
     viewModel: SettingsViewModel,
-    onNavigateToLicenses: () -> Unit = {},
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
+    onNavigateToLicenses: () -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val prefsState = (uiState as? SettingsUiState.Success)?.prefs ?: return
     val context = LocalContext.current
 
+    val themeEntries = stringArrayResource(R.array.theme_entries).toList()
+    val themeValues = stringArrayResource(R.array.theme_values).toList()
     val powerSaverEntries = stringArrayResource(R.array.power_saver_entries).toList()
     val powerSaverValues = stringArrayResource(R.array.power_saver_values).toList()
+    val currentThemeValue =
+        when (prefsState.darkThemeConfig) {
+            DarkThemeConfig.FOLLOW_SYSTEM -> "follow_system"
+            DarkThemeConfig.LIGHT -> "light"
+            DarkThemeConfig.DARK -> "dark"
+        }
 
     ProvidePreferenceLocals {
         LazyColumn(
@@ -62,6 +71,47 @@ fun SystemScreen(
                     bottom = contentPadding.calculateBottomPadding() + Tokens.SpacingLg,
                 ),
         ) {
+            preferenceCategory(
+                key = "system_app_theme_header",
+                title = { Text(stringResource(R.string.group_app_theme)) },
+            )
+
+            item(key = "system_app_theme_section") {
+                SectionCard(
+                    items =
+                        listOf(
+                            {
+                                SelectPreference(
+                                    value = currentThemeValue,
+                                    onValueChange = { viewModel.savePref(Prefs.darkThemeConfig, it) },
+                                    values = themeValues,
+                                    title = { Text(stringResource(R.string.pref_theme_title)) },
+                                    summary = { Text(stringResource(R.string.pref_theme_summary)) },
+                                    valueToText = {
+                                        labelFromValues(it, themeEntries, themeValues) ?: it
+                                    },
+                                )
+                            },
+                            {
+                                TogglePreferenceWithIcon(
+                                    value = prefsState.useDynamicColor,
+                                    onValueChange = { viewModel.savePref(Prefs.useDynamicColor, it) },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_dynamic_color_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_dynamic_color_summary),
+                                        )
+                                    },
+                                )
+                            },
+                        ),
+                )
+            }
+
             preferenceCategory(
                 key = "system_power_header",
                 title = { Text(stringResource(R.string.group_power)) },

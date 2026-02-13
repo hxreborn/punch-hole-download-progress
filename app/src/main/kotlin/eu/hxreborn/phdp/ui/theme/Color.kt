@@ -1,50 +1,80 @@
 package eu.hxreborn.phdp.ui.theme
 
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
-val Cyan80 = Color(0xFF4DD0E1)
-val Cyan40 = Color(0xFF00ACC1)
-val CyanGrey80 = Color(0xFFB2EBF2)
-val CyanGrey40 = Color(0xFF4DB6AC)
+// Generated from Material Theme Builder
+// Source: Google Blue 500
 
-val LightColorScheme =
-    lightColorScheme(
-        primary = Cyan40,
-        onPrimary = Color.White,
-        primaryContainer = Color(0xFFB2EBF2),
-        onPrimaryContainer = Color(0xFF00363D),
-        secondary = Color(0xFF4A6267),
-        onSecondary = Color.White,
-        secondaryContainer = Color(0xFFCDE7EC),
-        onSecondaryContainer = Color(0xFF051F23),
-        tertiary = Color(0xFF525E7D),
-        onTertiary = Color.White,
-        tertiaryContainer = Color(0xFFDAE2FF),
-        onTertiaryContainer = Color(0xFF0E1B37),
-        error = Color(0xFFBA1A1A),
-        onError = Color.White,
-        errorContainer = Color(0xFFFFDAD6),
-        onErrorContainer = Color(0xFF410002),
-    )
+// Light theme colors
+val primaryLight = Color(0xFF445E91)
+val onPrimaryLight = Color(0xFFFFFFFF)
+val primaryContainerLight = Color(0xFFD8E2FF)
+val onPrimaryContainerLight = Color(0xFF2B4678)
+val secondaryLight = Color(0xFF575E71)
+val onSecondaryLight = Color(0xFFFFFFFF)
+val secondaryContainerLight = Color(0xFFDBE2F9)
+val onSecondaryContainerLight = Color(0xFF3F4759)
+val tertiaryLight = Color(0xFF715573)
+val onTertiaryLight = Color(0xFFFFFFFF)
+val tertiaryContainerLight = Color(0xFFFBD7FC)
+val onTertiaryContainerLight = Color(0xFF583E5B)
+val errorLight = Color(0xFFBA1A1A)
+val onErrorLight = Color(0xFFFFFFFF)
+val errorContainerLight = Color(0xFFFFDAD6)
+val onErrorContainerLight = Color(0xFF93000A)
+val backgroundLight = Color(0xFFF9F9FF)
+val onBackgroundLight = Color(0xFF1A1B20)
+val surfaceLight = Color(0xFFF9F9FF)
+val onSurfaceLight = Color(0xFF1A1B20)
+val surfaceVariantLight = Color(0xFFE1E2EC)
+val onSurfaceVariantLight = Color(0xFF44474F)
+val outlineLight = Color(0xFF74777F)
+val outlineVariantLight = Color(0xFFC4C6D0)
+val scrimLight = Color(0xFF000000)
+val inverseSurfaceLight = Color(0xFF2F3036)
+val inverseOnSurfaceLight = Color(0xFFF0F0F7)
+val inversePrimaryLight = Color(0xFFADC6FF)
+val surfaceDimLight = Color(0xFFD9D9E0)
+val surfaceBrightLight = Color(0xFFF9F9FF)
+val surfaceContainerLowestLight = Color(0xFFFFFFFF)
+val surfaceContainerLowLight = Color(0xFFF3F3FA)
+val surfaceContainerLight = Color(0xFFEDEDF4)
+val surfaceContainerHighLight = Color(0xFFE8E7EE)
+val surfaceContainerHighestLight = Color(0xFFE2E2E9)
 
-val DarkColorScheme =
-    darkColorScheme(
-        primary = Cyan80,
-        onPrimary = Color(0xFF003639),
-        primaryContainer = Color(0xFF004F54),
-        onPrimaryContainer = Color(0xFFB2EBF2),
-        secondary = Color(0xFFB1CBD0),
-        onSecondary = Color(0xFF1C3438),
-        secondaryContainer = Color(0xFF324B4F),
-        onSecondaryContainer = Color(0xFFCDE7EC),
-        tertiary = Color(0xFFBAC6EA),
-        onTertiary = Color(0xFF24304D),
-        tertiaryContainer = Color(0xFF3B4664),
-        onTertiaryContainer = Color(0xFFDAE2FF),
-        error = Color(0xFFFFB4AB),
-        onError = Color(0xFF690005),
-        errorContainer = Color(0xFF93000A),
-        onErrorContainer = Color(0xFFFFDAD6),
-    )
+// Dark theme colors
+val primaryDark = Color(0xFFADC6FF)
+val onPrimaryDark = Color(0xFF102F60)
+val primaryContainerDark = Color(0xFF2B4678)
+val onPrimaryContainerDark = Color(0xFFD8E2FF)
+val secondaryDark = Color(0xFFBFC6DC)
+val onSecondaryDark = Color(0xFF293041)
+val secondaryContainerDark = Color(0xFF3F4759)
+val onSecondaryContainerDark = Color(0xFFDBE2F9)
+val tertiaryDark = Color(0xFFDEBCDF)
+val onTertiaryDark = Color(0xFF402843)
+val tertiaryContainerDark = Color(0xFF583E5B)
+val onTertiaryContainerDark = Color(0xFFFBD7FC)
+val errorDark = Color(0xFFFFB4AB)
+val onErrorDark = Color(0xFF690005)
+val errorContainerDark = Color(0xFF93000A)
+val onErrorContainerDark = Color(0xFFFFDAD6)
+val backgroundDark = Color(0xFF111318)
+val onBackgroundDark = Color(0xFFE2E2E9)
+val surfaceDark = Color(0xFF111318)
+val onSurfaceDark = Color(0xFFE2E2E9)
+val surfaceVariantDark = Color(0xFF44474F)
+val onSurfaceVariantDark = Color(0xFFC4C6D0)
+val outlineDark = Color(0xFF8E9099)
+val outlineVariantDark = Color(0xFF44474F)
+val scrimDark = Color(0xFF000000)
+val inverseSurfaceDark = Color(0xFFE2E2E9)
+val inverseOnSurfaceDark = Color(0xFF2F3036)
+val inversePrimaryDark = Color(0xFF445E91)
+val surfaceDimDark = Color(0xFF111318)
+val surfaceBrightDark = Color(0xFF37393E)
+val surfaceContainerLowestDark = Color(0xFF0C0E13)
+val surfaceContainerLowDark = Color(0xFF1A1B20)
+val surfaceContainerDark = Color(0xFF1E1F25)
+val surfaceContainerHighDark = Color(0xFF282A2F)
+val surfaceContainerHighestDark = Color(0xFF33353A)

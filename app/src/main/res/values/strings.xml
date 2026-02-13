@@ -49,6 +49,7 @@
     <string name="group_animation">Animation</string>
     <string name="group_indicators">Indicators</string>
     <string name="group_feedback">Feedback</string>
+    <string name="group_app_theme">App theme</string>
     <string name="group_power">Power</string>
     <string name="group_diagnostics">Diagnostics</string>
     <string name="group_about">About</string>
@@ -159,6 +160,10 @@
     <string name="counter_clockwise">Counter-clockwise</string>
 
     <!-- System: Power -->
+    <string name="pref_theme_title">Theme</string>
+    <string name="pref_theme_summary">Choose light, dark, or system default</string>
+    <string name="pref_dynamic_color_title">Dynamic color</string>
+    <string name="pref_dynamic_color_summary">Use Material You colors from wallpaper</string>
     <string name="pref_battery_saver_title">Battery saver mode</string>
     <string name="pref_battery_saver_summary">Indicator behavior during battery saver</string>
 
@@ -214,5 +219,17 @@
         <item>normal</item>
         <item>dim</item>
         <item>disable</item>
+    </string-array>
+
+    <!-- Dialog Arrays: App Theme -->
+    <string-array name="theme_entries">
+        <item>System</item>
+        <item>Light</item>
+        <item>Dark</item>
+    </string-array>
+    <string-array name="theme_values">
+        <item>follow_system</item>
+        <item>light</item>
+        <item>dark</item>
     </string-array>
 </resources>
