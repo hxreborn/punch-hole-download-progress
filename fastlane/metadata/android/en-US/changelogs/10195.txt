@@ -1,0 +1,1 @@
+Fixed ring appearing as oval instead of circle on some devices
