@@ -32,6 +32,7 @@ class IndicatorView(
     private var drawCount = 0
     private val density = resources.displayMetrics.density
     private val badgePainter = BadgePainter(density)
+
     // ArcRingRenderer (default) for circles, PathRingRenderer for pills. Toggled via "Path mode" pref.
     private var renderer: RingRenderer = ArcRingRenderer()
 
@@ -249,6 +250,12 @@ class IndicatorView(
                 Typeface.defaultFromStyle(
                     typefaceStyle(PrefsManager.percentTextBold, PrefsManager.percentTextItalic),
                 )
+            setShadowLayer(
+                LABEL_SHADOW_RADIUS_DP * density,
+                0f,
+                LABEL_SHADOW_DY_DP * density,
+                LABEL_SHADOW_COLOR,
+            )
         }
         filenamePaint.apply {
             textSize =
@@ -261,6 +268,12 @@ class IndicatorView(
                 Typeface.defaultFromStyle(
                     typefaceStyle(PrefsManager.filenameTextBold, PrefsManager.filenameTextItalic),
                 )
+            setShadowLayer(
+                LABEL_SHADOW_RADIUS_DP * density,
+                0f,
+                LABEL_SHADOW_DY_DP * density,
+                LABEL_SHADOW_COLOR,
+            )
         }
 
         badgePainter.updateColors(PrefsManager.color, PrefsManager.badgeTextSize)
@@ -817,6 +830,9 @@ class IndicatorView(
         private const val ERROR_STROKE_MULTIPLIER = 1.5f
         private const val BADGE_TOP_PADDING_DP = 4f
         private const val LABEL_PADDING_DP = 4f
+        private const val LABEL_SHADOW_RADIUS_DP = 2f
+        private const val LABEL_SHADOW_DY_DP = 0.5f
+        private const val LABEL_SHADOW_COLOR = 0x80000000.toInt()
         private const val BURN_IN_HIDE_DELAY_MS = 10_000L
 
         fun attach(context: Context): IndicatorView {
