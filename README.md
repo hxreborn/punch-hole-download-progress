@@ -4,7 +4,7 @@ Xposed module that displays download progress as an animated ring around the cam
 
 ![Android CI](https://github.com/hxreborn/punch-hole-download-progress/actions/workflows/android-ci.yml/badge.svg)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.1.21-7F52FF?style=flat&logo=kotlin&logoColor=white)
-![Android](https://img.shields.io/badge/API-31%2B-3DDC84?logo=android&logoColor=white)
+![Android](https://img.shields.io/badge/API-28%2B-3DDC84?logo=android&logoColor=white)
 
 <div align="center">
   <img src=".github/assets/demo-pop.gif" alt="Download progress animation" width="320" />
@@ -13,18 +13,20 @@ Xposed module that displays download progress as an animated ring around the cam
 ## Features
 
 - Progress ring rendered around the camera cutout using the native `DisplayCutout` API
+- Path renderer for pill-shaped cutouts (opt-in)
 - Customizable appearance: colors per state (active/completed/failed), arc thickness, opacity, and direction
 - Completion animations and optional haptic feedback
 - Active download counter badge
 - Battery saver-aware rendering
 - Built-in test mode for simulating states
+- Theme preference: light, dark, or follow system with Material You dynamic colors
 - Material 3 Expressive settings UI with Jetpack Compose
 
 ## Requirements
 
-- Android 12 (API 31) or higher
+- Android 9 (API 28) or higher (experimental on Android 9-11)
 - [LSPosed](https://github.com/JingMatrix/LSPosed) (JingMatrix fork recommended)
-- Pixel or AOSP-based ROM
+- Pixel/AOSP-based ROM (other ROMs may not work as expected)
 - Root access (optional, for `Restart SystemUI` in settings)
 - A phone with a punch-hole display
 

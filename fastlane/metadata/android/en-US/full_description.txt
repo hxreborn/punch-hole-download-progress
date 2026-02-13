@@ -2,4 +2,4 @@
 
 <p>System download notifications are intercepted and visualized with customizable colors, animations, and haptic feedback. Features include an active download counter and battery saver-aware rendering.</p>
 
-<p>Requires Android 12+, LSPosed, and a phone with a punch-hole display.</p>
+<p>Requires Android 9+, LSPosed, and a Pixel/AOSP-based ROM (other ROMs may not work as expected).</p>

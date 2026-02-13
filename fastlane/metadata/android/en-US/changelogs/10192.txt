@@ -1,0 +1,5 @@
+Experimental support for Android 9-11 (API 28-30)
+Added path renderer for pill-shaped cutouts
+Added theme preference with Material You dynamic colors
+Added shadow layer to progress label text
+Splash screen now syncs with system wallpaper palette
