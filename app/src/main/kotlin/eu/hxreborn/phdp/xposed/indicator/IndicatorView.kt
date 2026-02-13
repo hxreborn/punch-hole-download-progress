@@ -761,7 +761,7 @@ class IndicatorView(
             else -> dx to dy
         }
 
-    // Apply calibration: offset for alignment, scale for customization
+    // Apply calibration: normalize base, offset, then scale
     private fun RectF.applyCalibration() {
         val (offsetX, offsetY) = rotateOffset(PrefsManager.ringOffsetX, PrefsManager.ringOffsetY)
         val scaleX = PrefsManager.ringScaleX
@@ -769,11 +769,20 @@ class IndicatorView(
 
         if (width() == 0f && height() == 0f) return
 
+        // Arc mode: normalize to square so drawArc produces a circle as base
+        // Path mode: keep original aspect ratio for pill-shaped cutouts
+        val halfBase =
+            if (!PrefsManager.pathMode) {
+                maxOf(width(), height()) / 2f
+            } else {
+                null
+            }
+
         val centerX = centerX() + offsetX
         val centerY = centerY() + offsetY
 
-        val halfWidth = (width() / 2f) * scaleX
-        val halfHeight = (height() / 2f) * scaleY
+        val halfWidth = (halfBase ?: (width() / 2f)) * scaleX
+        val halfHeight = (halfBase ?: (height() / 2f)) * scaleY
 
         set(
             centerX - halfWidth,
