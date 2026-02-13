@@ -1,7 +1,5 @@
 package eu.hxreborn.phdp.ui.screen
 
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
@@ -224,19 +222,6 @@ fun SystemScreen(
                         listOf(
                             {
                                 Preference(
-                                    onClick = {
-                                        val clipboard =
-                                            context.getSystemService(ClipboardManager::class.java)
-                                        clipboard.setPrimaryClip(
-                                            ClipData.newPlainText("version", versionString),
-                                        )
-                                        Toast
-                                            .makeText(
-                                                context,
-                                                R.string.pref_version_copied,
-                                                Toast.LENGTH_SHORT,
-                                            ).show()
-                                    },
                                     icon = {
                                         Icon(
                                             Icons.Outlined.Info,
