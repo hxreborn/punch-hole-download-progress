@@ -97,6 +97,9 @@
     <string name="pref_ring_scale_x_summary">Horizontal ring stretch</string>
     <string name="pref_ring_scale_y_title">Height scale</string>
     <string name="pref_ring_scale_y_summary">Vertical ring stretch</string>
+    <string name="group_advanced">Advanced</string>
+    <string name="pref_path_mode_title">Path mode</string>
+    <string name="pref_path_mode_summary">Use alternative ring drawing method. Enable if your camera cutout is pill-shaped</string>
 
     <!-- Design: Calibration -->
     <string name="pref_calibrate_ring_title">Calibrate ring</string>

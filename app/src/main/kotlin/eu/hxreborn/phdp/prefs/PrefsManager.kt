@@ -193,6 +193,10 @@ object PrefsManager {
         private set
 
     @Volatile
+    var pathMode = Prefs.pathMode.default
+        private set
+
+    @Volatile
     var strokeCapStyle = Prefs.strokeCapStyle.default
         private set
 
@@ -331,6 +335,7 @@ object PrefsManager {
                 ringScaleLinked = Prefs.ringScaleLinked.read(prefs)
                 ringOffsetX = Prefs.ringOffsetX.read(prefs)
                 ringOffsetY = Prefs.ringOffsetY.read(prefs)
+                pathMode = Prefs.pathMode.read(prefs)
                 strokeCapStyle = Prefs.strokeCapStyle.read(prefs)
                 backgroundRingEnabled = Prefs.backgroundRingEnabled.read(prefs)
                 backgroundRingColor = Prefs.backgroundRingColor.read(prefs)

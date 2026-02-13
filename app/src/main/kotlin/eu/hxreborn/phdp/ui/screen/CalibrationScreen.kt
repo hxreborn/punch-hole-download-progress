@@ -208,6 +208,33 @@ fun CalibrationScreen(
                             ),
                     )
                 }
+
+                preferenceCategory(
+                    key = "calibration_advanced_header",
+                    title = { Text(stringResource(R.string.group_advanced)) },
+                )
+
+                item(key = "calibration_advanced_section") {
+                    SectionCard(
+                        items =
+                            listOf(
+                                {
+                                    TogglePreferenceWithIcon(
+                                        value = prefsState.pathMode,
+                                        onValueChange = {
+                                            viewModel.savePref(Prefs.pathMode, it)
+                                        },
+                                        title = {
+                                            Text(stringResource(R.string.pref_path_mode_title))
+                                        },
+                                        summary = {
+                                            Text(stringResource(R.string.pref_path_mode_summary))
+                                        },
+                                    )
+                                },
+                            ),
+                    )
+                }
             }
         }
     }

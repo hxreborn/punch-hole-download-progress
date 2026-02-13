@@ -32,6 +32,8 @@ class IndicatorView(
     private var drawCount = 0
     private val density = resources.displayMetrics.density
     private val badgePainter = BadgePainter(density)
+    // ArcRingRenderer (default) for circles, PathRingRenderer for pills. Toggled via "Path mode" pref.
+    private var renderer: RingRenderer = ArcRingRenderer()
 
     private val animator = IndicatorAnimator(this)
 
@@ -182,11 +184,13 @@ class IndicatorView(
     init {
         log("IndicatorView: constructor called")
         updatePaintFromPrefs()
+        updateRenderer()
 
         PrefsManager.onPrefsChanged = {
             post {
                 log("IndicatorView: prefs changed, updating...")
                 updatePaintFromPrefs()
+                updateRenderer()
                 recalculateScaledPath()
                 invalidate()
             }
@@ -270,6 +274,10 @@ class IndicatorView(
         invalidate()
     }
 
+    private fun updateRenderer() {
+        renderer = if (PrefsManager.pathMode) PathRingRenderer() else ArcRingRenderer()
+    }
+
     private fun recalculateScaledPath() {
         cutoutPath?.let { path ->
             path.computeBounds(pathBounds, true)
@@ -341,7 +349,7 @@ class IndicatorView(
         val cx = dm.widthPixels / 2f
         val radius = 15f * dm.density
         val cy = radius * 2f
-        log("Cutout source: fake (no cutout), center=($cx, $cy), radius=$radius")
+        log("Cutout source: mock circle, center=($cx, $cy), radius=$radius")
         return Path().apply { addCircle(cx, cy, radius, Path.Direction.CW) }
     }
 
@@ -381,8 +389,9 @@ class IndicatorView(
 
         if (animator.isErrorAnimating) {
             computeCalibratedArcBounds()
+            renderer.updateBounds(arcBounds)
             errorPaint.alpha = (animator.errorAlpha * 255).toInt()
-            canvas.drawArc(arcBounds, 0f, 360f, false, errorPaint)
+            renderer.drawFullRing(canvas, errorPaint)
             return
         }
 
@@ -454,6 +463,7 @@ class IndicatorView(
             if (showBackgroundRing) {
                 scaledPath.computeBounds(arcBounds, true)
                 arcBounds.applyCalibration()
+                renderer.updateBounds(arcBounds)
                 val bgOpacityBase =
                     if (isPowerSaveActive && PrefsManager.powerSaverMode == "dim") {
                         (PrefsManager.backgroundRingOpacity * POWER_SAVER_DIM_FACTOR).toInt()
@@ -462,7 +472,7 @@ class IndicatorView(
                     }
                 backgroundRingPaint.alpha =
                     (bgOpacityBase * 255 / 100 * animator.displayAlpha).toInt()
-                drawArc(arcBounds, 0f, 360f, false, backgroundRingPaint)
+                renderer.drawFullRing(this, backgroundRingPaint)
             }
 
             if (animator.isFinishAnimating) {
@@ -470,9 +480,9 @@ class IndicatorView(
             } else {
                 scaledPath.computeBounds(arcBounds, true)
                 arcBounds.applyCalibration()
-                val sweepAngle = 360f * applyEasing(effectiveProgress, PrefsManager.progressEasing)
-                val actualSweep = if (PrefsManager.clockwise) sweepAngle else -sweepAngle
-                drawArc(arcBounds, -90f, actualSweep, false, animatedPaint)
+                renderer.updateBounds(arcBounds)
+                val sweepFraction = applyEasing(effectiveProgress, PrefsManager.progressEasing)
+                renderer.drawProgress(this, sweepFraction, PrefsManager.clockwise, animatedPaint)
 
                 val showLabels =
                     effectiveProgress in 1..99 || animator.isGeometryPreviewActive
@@ -514,38 +524,20 @@ class IndicatorView(
     ) {
         scaledPath.computeBounds(arcBounds, true)
         arcBounds.applyCalibration()
+        renderer.updateBounds(arcBounds)
         if (PrefsManager.finishStyle == "segmented") {
-            drawSegmented(canvas, paint)
-        } else {
-            canvas.drawArc(arcBounds, 0f, 360f, false, paint)
-        }
-    }
-
-    private fun drawSegmented(
-        canvas: Canvas,
-        paint: Paint,
-    ) {
-        for (i in 0 until IndicatorAnimator.SEGMENT_COUNT) {
-            val startAngle =
-                -90f +
-                    i *
-                    (
-                        IndicatorAnimator.SEGMENT_ARC_DEGREES +
-                            IndicatorAnimator.SEGMENT_GAP_DEGREES
-                    )
-            val segmentPaint =
-                if (i == animator.segmentHighlight || i == animator.segmentHighlight - 1) {
-                    Paint(shinePaint).apply { alpha = (255 * animator.displayAlpha).toInt() }
-                } else {
-                    Paint(paint)
-                }
-            canvas.drawArc(
-                arcBounds,
-                startAngle,
+            renderer.drawSegmented(
+                canvas,
+                IndicatorAnimator.SEGMENT_COUNT,
+                IndicatorAnimator.SEGMENT_GAP_DEGREES,
                 IndicatorAnimator.SEGMENT_ARC_DEGREES,
-                false,
-                segmentPaint,
+                animator.segmentHighlight,
+                paint,
+                shinePaint,
+                animator.displayAlpha,
             )
+        } else {
+            renderer.drawFullRing(canvas, paint)
         }
     }
 
@@ -756,20 +748,19 @@ class IndicatorView(
             else -> dx to dy
         }
 
-    // Apply calibration: normalize to square, offset for alignment, scale for customization
+    // Apply calibration: offset for alignment, scale for customization
     private fun RectF.applyCalibration() {
         val (offsetX, offsetY) = rotateOffset(PrefsManager.ringOffsetX, PrefsManager.ringOffsetY)
         val scaleX = PrefsManager.ringScaleX
         val scaleY = PrefsManager.ringScaleY
 
-        val maxDimension = maxOf(width(), height())
-        val halfBaseSize = maxDimension / 2f
+        if (width() == 0f && height() == 0f) return
 
         val centerX = centerX() + offsetX
         val centerY = centerY() + offsetY
 
-        val halfWidth = halfBaseSize * scaleX
-        val halfHeight = halfBaseSize * scaleY
+        val halfWidth = (width() / 2f) * scaleX
+        val halfHeight = (height() / 2f) * scaleY
 
         set(
             centerX - halfWidth,

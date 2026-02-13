@@ -30,6 +30,7 @@ object Prefs {
     val ringScaleLinked = BoolPref("ring_scale_linked", true)
     val ringOffsetX = FloatPref("ring_offset_x", 0f, -500f..500f)
     val ringOffsetY = FloatPref("ring_offset_y", 0f, -500f..500f)
+    val pathMode = BoolPref("path_mode", false)
 
     // Animation
     val progressEasing = StringPref("progress_easing", "linear")
@@ -158,6 +159,7 @@ object Prefs {
             ringScaleLinked,
             ringOffsetX,
             ringOffsetY,
+            pathMode,
             progressEasing,
             finishStyle,
             finishHoldMs,
@@ -209,6 +211,7 @@ object Prefs {
             ringScaleY.key,
             ringOffsetX.key,
             ringOffsetY.key,
+            pathMode.key,
             percentTextPosition.key,
             percentTextOffsetX.key,
             percentTextOffsetY.key,

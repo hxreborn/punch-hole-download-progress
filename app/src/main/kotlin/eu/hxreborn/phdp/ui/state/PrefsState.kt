@@ -55,6 +55,7 @@ data class PrefsState(
     val ringScaleLinked: Boolean = Prefs.ringScaleLinked.default,
     val ringOffsetX: Float = Prefs.ringOffsetX.default,
     val ringOffsetY: Float = Prefs.ringOffsetY.default,
+    val pathMode: Boolean = Prefs.pathMode.default,
     val selectedPackages: Set<String> = Prefs.selectedPackages.default,
     val showSystemPackages: Boolean = Prefs.showSystemPackages.default,
 )

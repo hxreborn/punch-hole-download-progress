@@ -100,6 +100,7 @@ class PrefsRepositoryImpl(
             ringScaleLinked = Prefs.ringScaleLinked.read(this),
             ringOffsetX = Prefs.ringOffsetX.read(this),
             ringOffsetY = Prefs.ringOffsetY.read(this),
+            pathMode = Prefs.pathMode.read(this),
             selectedPackages = Prefs.selectedPackages.read(this),
             showSystemPackages = Prefs.showSystemPackages.read(this),
         )
