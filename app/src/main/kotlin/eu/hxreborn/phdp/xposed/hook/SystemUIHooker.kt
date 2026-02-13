@@ -9,7 +9,7 @@ import android.os.PowerManager
 import androidx.core.view.HapticFeedbackConstantsCompat
 import androidx.core.view.ViewCompat
 import eu.hxreborn.phdp.prefs.PrefsManager
-import eu.hxreborn.phdp.util.accessibleField
+import eu.hxreborn.phdp.util.accessibleFieldFromHierarchy
 import eu.hxreborn.phdp.xposed.PHDPModule.Companion.log
 import eu.hxreborn.phdp.xposed.indicator.IndicatorView
 import eu.hxreborn.phdp.xposed.module
@@ -19,6 +19,7 @@ import io.github.libxposed.api.annotations.AfterInvocation
 import io.github.libxposed.api.annotations.XposedHooker
 
 private const val CENTRAL_SURFACES_IMPL = "com.android.systemui.statusbar.phone.CentralSurfacesImpl"
+private const val STATUS_BAR = "com.android.systemui.statusbar.phone.StatusBar"
 private const val NOTIF_COLLECTION =
     "com.android.systemui.statusbar.notification.collection.NotifCollection"
 private const val NOTIFICATION_LISTENER = "com.android.systemui.statusbar.NotificationListener"
@@ -40,7 +41,7 @@ object SystemUIHooker {
 
     fun hook(classLoader: ClassLoader) {
         wireCallbacks()
-        hookCentralSurfaces(classLoader)
+        hookSystemUIEntry(classLoader)
         hookNotificationListener(classLoader)
         hookNotifications(classLoader)
     }
@@ -64,21 +65,19 @@ object SystemUIHooker {
         }
     }
 
-    // Earliest reliable SystemUI context for overlay attach is CentralSurfacesImpl.start
-    private fun hookCentralSurfaces(classLoader: ClassLoader) {
+    // Earliest reliable SystemUI context for overlay attach
+    // CentralSurfacesImpl (13+), StatusBar (9-12L)
+    private fun hookSystemUIEntry(classLoader: ClassLoader) {
         val targetClass =
             runCatching { classLoader.loadClass(CENTRAL_SURFACES_IMPL) }
-                .onFailure {
-                    log(
-                        "Failed to load $CENTRAL_SURFACES_IMPL",
-                        it,
-                    )
-                }.getOrNull() ?: return
+                .recoverCatching { classLoader.loadClass(STATUS_BAR) }
+                .onFailure { log("Failed to load CentralSurfaces/StatusBar", it) }
+                .getOrNull() ?: return
 
         val startMethod =
             targetClass.declaredMethods.find { it.name == "start" && it.parameterCount == 0 }
         if (startMethod == null) {
-            log("start() not found in $CENTRAL_SURFACES_IMPL")
+            log("start() not found in ${targetClass.name}")
             return
         }
 
@@ -87,7 +86,7 @@ object SystemUIHooker {
                 startMethod,
                 StartHooker::class.java,
             )
-        }.onSuccess { log("Hooked CentralSurfacesImpl.start()") }
+        }.onSuccess { log("Hooked ${targetClass.simpleName}.start()") }
             .onFailure { log("Hook failed", it) }
     }
 
@@ -267,11 +266,14 @@ class StartHooker : XposedInterface.Hooker {
             val instance = callback.thisObject ?: return
             val context =
                 runCatching {
-                    instance.javaClass.accessibleField("mContext").get(instance) as? Context
+                    instance.javaClass
+                        .accessibleFieldFromHierarchy(
+                            "mContext",
+                        )?.get(instance) as? Context
                 }.getOrNull()
 
             if (context == null) {
-                log("Failed to extract Context from CentralSurfacesImpl")
+                log("Failed to extract Context from ${instance.javaClass.simpleName}")
                 return
             }
 

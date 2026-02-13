@@ -10,6 +10,7 @@ import android.graphics.PixelFormat
 import android.graphics.RectF
 import android.graphics.Typeface
 import android.text.TextPaint
+import android.view.DisplayCutout
 import android.view.Surface
 import android.view.View
 import android.view.WindowInsets
@@ -305,17 +306,12 @@ class IndicatorView(
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
         val displayCutout = insets.displayCutout
-        if (displayCutout == null) {
-            log("WARNING: No display cutout available!")
-            cutoutPath = null
-            return super.onApplyWindowInsets(insets)
-        }
-
-        cutoutPath = displayCutout.cutoutPath
-        if (cutoutPath == null) {
-            log("WARNING: cutoutPath is null (device may not support cutoutPath API)")
-            return super.onApplyWindowInsets(insets)
-        }
+        cutoutPath =
+            // cutoutPath is API 31+, falls through to buildFallbackPath on older
+            @Suppress("NewApi")
+            displayCutout?.cutoutPath?.also { log("Cutout source: native") }
+                ?: buildFallbackPath(displayCutout)
+                ?: buildMockCutoutPath()
 
         cutoutPath?.let { path ->
             path.computeBounds(pathBounds, true)
@@ -327,6 +323,26 @@ class IndicatorView(
 
         invalidate()
         return super.onApplyWindowInsets(insets)
+    }
+
+    // Fallback for API < 31. Manually build path since API doesn't provide it
+    private fun buildFallbackPath(displayCutout: DisplayCutout?): Path? {
+        val rect = displayCutout?.boundingRects?.firstOrNull() ?: return null
+        val cx = rect.exactCenterX()
+        val cy = rect.exactCenterY()
+        val radius = minOf(rect.width(), rect.height()) / 2f
+        log("Cutout source: boundingRects fallback, center=($cx, $cy), radius=$radius")
+        return Path().apply { addCircle(cx, cy, radius, Path.Direction.CW) }
+    }
+
+    // Mock cutout for emulators/flat displays
+    private fun buildMockCutoutPath(): Path {
+        val dm = resources.displayMetrics
+        val cx = dm.widthPixels / 2f
+        val radius = 15f * dm.density
+        val cy = radius * 2f
+        log("Cutout source: fake (no cutout), center=($cx, $cy), radius=$radius")
+        return Path().apply { addCircle(cx, cy, radius, Path.Direction.CW) }
     }
 
     private fun startFinishAnimation() {

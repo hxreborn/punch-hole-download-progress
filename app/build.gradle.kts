@@ -43,7 +43,7 @@ android {
 
     defaultConfig {
         applicationId = namespace
-        minSdk = 31
+        minSdk = 28
         targetSdk = 36
         versionCode = project.findProperty("version.code")?.toString()?.toInt()
             ?: (versionMajor * 10000 + gitCommitCount)
