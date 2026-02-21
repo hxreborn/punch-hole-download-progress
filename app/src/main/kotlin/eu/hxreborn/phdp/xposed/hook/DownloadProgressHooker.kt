@@ -19,6 +19,8 @@ object DownloadProgressHooker {
     private const val STALE_AGE_MS = 5 * 60 * 1000L
     private const val SIGNIFICANT_DROP_PERCENT = 25
     private const val LOW_PROGRESS_THRESHOLD = 5
+    private const val REASON_APP_CANCEL = 8
+    private const val REASON_APP_CANCEL_ALL = 9
 
     data class DownloadState(
         val packageName: String,
@@ -182,9 +184,12 @@ object DownloadProgressHooker {
         return "$pkg:$id"
     }
 
-    fun onNotificationRemoved(sbn: Any) {
+    fun onNotificationRemoved(
+        sbn: Any,
+        reason: Int = -1,
+    ) {
         val id = getNotificationId(sbn) ?: return
-        debug { "Notification removed: $id" }
+        debug { "Notification removed: $id (reason=$reason)" }
 
         val wasTracking = activeDownloads.remove(id)
         if (wasTracking != null) {
@@ -193,6 +198,12 @@ object DownloadProgressHooker {
             when {
                 wasTracking.progress >= 100 -> {
                     log("Download complete")
+                    onProgressChanged?.invoke(100)
+                    onDownloadComplete?.invoke()
+                }
+
+                reason == REASON_APP_CANCEL || reason == REASON_APP_CANCEL_ALL -> {
+                    log("Download completed (app removed at ${wasTracking.progress}%)")
                     onProgressChanged?.invoke(100)
                     onDownloadComplete?.invoke()
                 }
@@ -250,13 +261,40 @@ class NotificationRemoveHooker : XposedInterface.Hooker {
         @JvmStatic
         @AfterInvocation
         fun after(callback: AfterHookCallback) {
-            if (BuildConfig.DEBUG) log("NotificationRemoveHooker: ${callback.args.size} args")
-            callback.args.forEach {
-                DownloadProgressHooker.processNotificationArg(
-                    it,
-                    DownloadProgressHooker::onNotificationRemoved,
-                )
+            val args = callback.args
+            if (BuildConfig.DEBUG) log("NotificationRemoveHooker: ${args.size} args")
+            val reason = extractRemovalReason(args)
+
+            args.forEach { arg ->
+                if (arg == null) return@forEach
+                when {
+                    DownloadProgressHooker.isStatusBarNotification(arg) -> {
+                        DownloadProgressHooker.onNotificationRemoved(arg, reason)
+                    }
+
+                    arg.javaClass.name.contains("NotificationEntry") -> {
+                        runCatching { arg.javaClass.accessibleField("mSbn").get(arg) }
+                            .getOrNull()
+                            ?.let { DownloadProgressHooker.onNotificationRemoved(it, reason) }
+                    }
+                }
             }
+        }
+
+        private fun extractRemovalReason(args: Array<Any?>): Int {
+            // Android 12-15: onNotificationRemoved(sbn, ranking, int_reason)
+            if (args.size >= 3) {
+                (args[2] as? Int)?.let { return it }
+            }
+            // Android 16+: tryRemoveNotification(NotificationEntry) — read mCancellationReason
+            args.firstOrNull()?.let { entry ->
+                if (entry.javaClass.name.contains("NotificationEntry")) {
+                    runCatching {
+                        entry.javaClass.accessibleField("mCancellationReason").getInt(entry)
+                    }.getOrNull()?.let { return it }
+                }
+            }
+            return -1
         }
     }
 }
