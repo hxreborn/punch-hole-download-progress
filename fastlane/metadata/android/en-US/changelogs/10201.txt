@@ -1,0 +1,1 @@
+Fixed error animation showing on completed downloads from app stores
