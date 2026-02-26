@@ -203,6 +203,7 @@
     <string name="reset_confirm">Reset all settings to defaults?</string>
     <string name="reset_done">Settings reset</string>
     <string name="reset">Reset</string>
+    <string name="character_count">Character count: %d</string>
     <string name="increase">Increase</string>
     <string name="decrease">Decrease</string>
 

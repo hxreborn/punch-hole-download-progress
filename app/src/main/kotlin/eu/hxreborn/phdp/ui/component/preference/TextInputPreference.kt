@@ -1,29 +1,33 @@
 package eu.hxreborn.phdp.ui.component.preference
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.ui.theme.Tokens
 
@@ -34,62 +38,113 @@ fun TextInputPreference(
     title: @Composable () -> Unit,
     defaultValue: String,
     modifier: Modifier = Modifier,
-    placeholder: @Composable (() -> Unit)? = null,
 ) {
-    var editableValue by remember(value) { mutableStateOf(value) }
-    val focusManager = LocalFocusManager.current
-    val isDefault = editableValue == defaultValue
-    val iconTint = MaterialTheme.colorScheme.onSurfaceVariant
+    var showDialog by remember { mutableStateOf(false) }
 
-    Column(
+    if (showDialog) {
+        TextInputDialog(
+            title = title,
+            current = value,
+            defaultValue = defaultValue,
+            onConfirm = {
+                onValueChange(it)
+                showDialog = false
+            },
+            onDismiss = { showDialog = false },
+        )
+    }
+
+    Row(
         modifier =
             modifier
                 .fillMaxWidth()
+                .clickable { showDialog = true }
                 .padding(Tokens.PreferencePadding),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        ProvideTextStyle(MaterialTheme.typography.bodyLarge) {
-            title()
-        }
-
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = Tokens.SpacingSm),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            OutlinedTextField(
-                value = editableValue,
-                onValueChange = {
-                    editableValue = it
-                    onValueChange(it)
-                },
-                modifier = Modifier.weight(1f),
-                placeholder = placeholder,
-                singleLine = true,
-                textStyle = MaterialTheme.typography.bodyMedium,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-                supportingText = {
-                    Text(
-                        "${editableValue.length}",
-                        style = MaterialTheme.typography.bodySmall,
-                    )
-                },
-            )
-
-            IconButton(
-                onClick = {
-                    editableValue = defaultValue
-                    onValueChange(defaultValue)
-                },
-                enabled = !isDefault,
+        Column(modifier = Modifier.weight(1f)) {
+            ProvideTextStyle(MaterialTheme.typography.bodyLarge) {
+                title()
+            }
+            CompositionLocalProvider(
+                LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant,
             ) {
-                Icon(
-                    imageVector = Icons.Default.Refresh,
-                    contentDescription = stringResource(R.string.reset),
-                    tint = if (!isDefault) iconTint else iconTint.copy(alpha = Tokens.DISABLED_ALPHA),
+                ProvideTextStyle(MaterialTheme.typography.bodyMedium) {
+                    Text(
+                        text = value,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+                ProvideTextStyle(MaterialTheme.typography.bodySmall) {
+                    Text(stringResource(R.string.character_count, value.length))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TextInputDialog(
+    title: @Composable () -> Unit,
+    current: String,
+    defaultValue: String,
+    onConfirm: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val textFieldState = remember { TextFieldState(current) }
+    val isDefault = textFieldState.text.toString() == defaultValue
+
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = MaterialTheme.shapes.extraLarge,
+            color = MaterialTheme.colorScheme.surfaceContainerHigh,
+            tonalElevation = 6.dp,
+        ) {
+            Column(modifier = Modifier.padding(24.dp)) {
+                CompositionLocalProvider(
+                    LocalContentColor provides MaterialTheme.colorScheme.onSurface,
+                ) {
+                    ProvideTextStyle(MaterialTheme.typography.headlineSmall) {
+                        title()
+                    }
+                }
+
+                OutlinedTextField(
+                    state = textFieldState,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                    lineLimits = TextFieldLineLimits.SingleLine,
                 )
+
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 24.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    TextButton(
+                        onClick = {
+                            textFieldState.edit {
+                                replace(0, length, defaultValue)
+                            }
+                        },
+                        enabled = !isDefault,
+                    ) {
+                        Text(stringResource(R.string.reset))
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                    TextButton(onClick = onDismiss) {
+                        Text(stringResource(android.R.string.cancel))
+                    }
+                    TextButton(onClick = { onConfirm(textFieldState.text.toString()) }) {
+                        Text(stringResource(android.R.string.ok))
+                    }
+                }
             }
         }
     }
