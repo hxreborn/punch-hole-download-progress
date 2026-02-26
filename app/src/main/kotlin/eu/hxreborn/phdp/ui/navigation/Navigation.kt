@@ -33,7 +33,9 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import eu.hxreborn.phdp.R
+import eu.hxreborn.phdp.prefs.OffsetPx
 import eu.hxreborn.phdp.prefs.Prefs
+import eu.hxreborn.phdp.prefs.RotationSlot
 import eu.hxreborn.phdp.prefs.bind
 import eu.hxreborn.phdp.ui.MenuAction
 import eu.hxreborn.phdp.ui.SettingsUiState
@@ -49,6 +51,7 @@ import eu.hxreborn.phdp.ui.screen.PackageSelectionScreen
 import eu.hxreborn.phdp.ui.screen.SystemScreen
 import eu.hxreborn.phdp.ui.screen.TextCalibrationScreen
 import eu.hxreborn.phdp.ui.screen.TypographyConfig
+import eu.hxreborn.phdp.ui.screen.rememberDisplayRotation
 import eu.hxreborn.phdp.ui.theme.Tokens
 import kotlinx.serialization.Serializable
 
@@ -175,10 +178,25 @@ fun MainNavDisplay(
                 entry<Screen.PercentCalibration>(metadata = slideTransitionMetadata) {
                     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                     val prefs = (uiState as? SettingsUiState.Success)?.prefs ?: return@entry
+                    val rotation = rememberDisplayRotation()
+                    val slot = RotationSlot.fromSurfaceRotation(rotation)
+                    val current = prefs.percentTextOffsets[slot]
                     TextCalibrationScreen(
                         titleRes = R.string.pref_calibrate_percent_title,
-                        offsetX = Prefs.percentTextOffsetX bind prefs.percentTextOffsetX,
-                        offsetY = Prefs.percentTextOffsetY bind prefs.percentTextOffsetY,
+                        offsetX = current.x,
+                        offsetY = current.y,
+                        onOffsetXChange = { newX ->
+                            val updated = prefs.percentTextOffsets.with(slot, OffsetPx(newX, current.y))
+                            viewModel.savePref(Prefs.percentTextOffsets, updated)
+                        },
+                        onOffsetYChange = { newY ->
+                            val updated = prefs.percentTextOffsets.with(slot, OffsetPx(current.x, newY))
+                            viewModel.savePref(Prefs.percentTextOffsets, updated)
+                        },
+                        onOffsetReset = {
+                            val updated = prefs.percentTextOffsets.with(slot, OffsetPx())
+                            viewModel.savePref(Prefs.percentTextOffsets, updated)
+                        },
                         viewModel = viewModel,
                         onNavigateBack = { backStack.removeLastOrNull() },
                         bottomNavPadding = bottomNavPadding,
@@ -193,10 +211,25 @@ fun MainNavDisplay(
                 entry<Screen.FilenameCalibration>(metadata = slideTransitionMetadata) {
                     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                     val prefs = (uiState as? SettingsUiState.Success)?.prefs ?: return@entry
+                    val rotation = rememberDisplayRotation()
+                    val slot = RotationSlot.fromSurfaceRotation(rotation)
+                    val current = prefs.filenameTextOffsets[slot]
                     TextCalibrationScreen(
                         titleRes = R.string.pref_calibrate_filename_title,
-                        offsetX = Prefs.filenameTextOffsetX bind prefs.filenameTextOffsetX,
-                        offsetY = Prefs.filenameTextOffsetY bind prefs.filenameTextOffsetY,
+                        offsetX = current.x,
+                        offsetY = current.y,
+                        onOffsetXChange = { newX ->
+                            val updated = prefs.filenameTextOffsets.with(slot, OffsetPx(newX, current.y))
+                            viewModel.savePref(Prefs.filenameTextOffsets, updated)
+                        },
+                        onOffsetYChange = { newY ->
+                            val updated = prefs.filenameTextOffsets.with(slot, OffsetPx(current.x, newY))
+                            viewModel.savePref(Prefs.filenameTextOffsets, updated)
+                        },
+                        onOffsetReset = {
+                            val updated = prefs.filenameTextOffsets.with(slot, OffsetPx())
+                            viewModel.savePref(Prefs.filenameTextOffsets, updated)
+                        },
                         viewModel = viewModel,
                         onNavigateBack = { backStack.removeLastOrNull() },
                         bottomNavPadding = bottomNavPadding,
@@ -214,16 +247,32 @@ fun MainNavDisplay(
                                 ellipsize = Prefs.filenameEllipsize bind prefs.filenameEllipsize,
                                 ellipsizeValues = listOf("start", "middle", "end"),
                                 previewText = Prefs.previewFilenameText bind prefs.previewFilenameText,
+                                verticalText = Prefs.filenameVerticalText bind prefs.filenameVerticalText,
                             ),
                     )
                 }
                 entry<Screen.BadgeCalibration>(metadata = slideTransitionMetadata) {
                     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                     val prefs = (uiState as? SettingsUiState.Success)?.prefs ?: return@entry
+                    val rotation = rememberDisplayRotation()
+                    val slot = RotationSlot.fromSurfaceRotation(rotation)
+                    val current = prefs.badgeOffsets[slot]
                     TextCalibrationScreen(
                         titleRes = R.string.pref_calibrate_badge_title,
-                        offsetX = Prefs.badgeOffsetX bind prefs.badgeOffsetX,
-                        offsetY = Prefs.badgeOffsetY bind prefs.badgeOffsetY,
+                        offsetX = current.x,
+                        offsetY = current.y,
+                        onOffsetXChange = { newX ->
+                            val updated = prefs.badgeOffsets.with(slot, OffsetPx(newX, current.y))
+                            viewModel.savePref(Prefs.badgeOffsets, updated)
+                        },
+                        onOffsetYChange = { newY ->
+                            val updated = prefs.badgeOffsets.with(slot, OffsetPx(current.x, newY))
+                            viewModel.savePref(Prefs.badgeOffsets, updated)
+                        },
+                        onOffsetReset = {
+                            val updated = prefs.badgeOffsets.with(slot, OffsetPx())
+                            viewModel.savePref(Prefs.badgeOffsets, updated)
+                        },
                         viewModel = viewModel,
                         onNavigateBack = { backStack.removeLastOrNull() },
                         bottomNavPadding = bottomNavPadding,

@@ -1,6 +1,7 @@
 package eu.hxreborn.phdp.prefs
 
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import eu.hxreborn.phdp.xposed.PHDPModule.Companion.log
 
 object PrefsManager {
@@ -57,11 +58,7 @@ object PrefsManager {
         private set
 
     @Volatile
-    var badgeOffsetX = Prefs.badgeOffsetX.default
-        private set
-
-    @Volatile
-    var badgeOffsetY = Prefs.badgeOffsetY.default
+    var badgeOffsets = RotationOffsets.EMPTY
         private set
 
     @Volatile
@@ -109,11 +106,7 @@ object PrefsManager {
         private set
 
     @Volatile
-    var percentTextOffsetX = Prefs.percentTextOffsetX.default
-        private set
-
-    @Volatile
-    var percentTextOffsetY = Prefs.percentTextOffsetY.default
+    var percentTextOffsets = RotationOffsets.EMPTY
         private set
 
     @Volatile
@@ -129,11 +122,7 @@ object PrefsManager {
         private set
 
     @Volatile
-    var filenameTextOffsetX = Prefs.filenameTextOffsetX.default
-        private set
-
-    @Volatile
-    var filenameTextOffsetY = Prefs.filenameTextOffsetY.default
+    var filenameTextOffsets = RotationOffsets.EMPTY
         private set
 
     @Volatile
@@ -166,6 +155,10 @@ object PrefsManager {
 
     @Volatile
     var filenameEllipsize = Prefs.filenameEllipsize.default
+        private set
+
+    @Volatile
+    var filenameVerticalText = Prefs.filenameVerticalText.default
         private set
 
     @Volatile
@@ -301,8 +294,13 @@ object PrefsManager {
                 errorColor = Prefs.errorColor.read(prefs)
                 powerSaverMode = Prefs.powerSaverMode.read(prefs)
                 showDownloadCount = Prefs.showDownloadCount.read(prefs)
-                badgeOffsetX = Prefs.badgeOffsetX.read(prefs)
-                badgeOffsetY = Prefs.badgeOffsetY.read(prefs)
+                badgeOffsets =
+                    bootstrapOrRead(
+                        prefs,
+                        Prefs.badgeOffsets,
+                        Prefs.badgeOffsetX,
+                        Prefs.badgeOffsetY,
+                    )
                 badgeTextSize = Prefs.badgeTextSize.read(prefs)
                 finishStyle = Prefs.finishStyle.read(prefs)
                 finishHoldMs = Prefs.finishHoldMs.read(prefs)
@@ -314,13 +312,23 @@ object PrefsManager {
                 completionPulseEnabled = Prefs.completionPulseEnabled.read(prefs)
                 percentTextEnabled = Prefs.percentTextEnabled.read(prefs)
                 percentTextPosition = Prefs.percentTextPosition.read(prefs)
-                percentTextOffsetX = Prefs.percentTextOffsetX.read(prefs)
-                percentTextOffsetY = Prefs.percentTextOffsetY.read(prefs)
+                percentTextOffsets =
+                    bootstrapOrRead(
+                        prefs,
+                        Prefs.percentTextOffsets,
+                        Prefs.percentTextOffsetX,
+                        Prefs.percentTextOffsetY,
+                    )
                 percentTextSize = Prefs.percentTextSize.read(prefs)
                 filenameTextEnabled = Prefs.filenameTextEnabled.read(prefs)
                 filenameTextPosition = Prefs.filenameTextPosition.read(prefs)
-                filenameTextOffsetX = Prefs.filenameTextOffsetX.read(prefs)
-                filenameTextOffsetY = Prefs.filenameTextOffsetY.read(prefs)
+                filenameTextOffsets =
+                    bootstrapOrRead(
+                        prefs,
+                        Prefs.filenameTextOffsets,
+                        Prefs.filenameTextOffsetX,
+                        Prefs.filenameTextOffsetY,
+                    )
                 filenameTextSize = Prefs.filenameTextSize.read(prefs)
                 filenameMaxChars = Prefs.filenameMaxChars.read(prefs)
                 filenameTruncateEnabled = Prefs.filenameTruncateEnabled.read(prefs)
@@ -329,6 +337,7 @@ object PrefsManager {
                 filenameTextBold = Prefs.filenameTextBold.read(prefs)
                 filenameTextItalic = Prefs.filenameTextItalic.read(prefs)
                 filenameEllipsize = Prefs.filenameEllipsize.read(prefs)
+                filenameVerticalText = Prefs.filenameVerticalText.read(prefs)
                 previewFilenameText = Prefs.previewFilenameText.read(prefs)
                 ringScaleX = Prefs.ringScaleX.read(prefs)
                 ringScaleY = Prefs.ringScaleY.read(prefs)
@@ -343,5 +352,22 @@ object PrefsManager {
                 selectedPackages = Prefs.selectedPackages.read(prefs)
             }
         }.onFailure { log("refreshCache() failed", it) }
+    }
+
+    // TODO(#34): Remove legacy offset bootstrap after structured rotation prefs ship
+    private fun bootstrapOrRead(
+        prefs: SharedPreferences,
+        structuredPref: RotationOffsetsPref,
+        legacyX: FloatPref,
+        legacyY: FloatPref,
+    ): RotationOffsets {
+        if (prefs.contains(structuredPref.key)) {
+            return structuredPref.read(prefs)
+        }
+        val baseOffset = OffsetPx(legacyX.read(prefs), legacyY.read(prefs))
+        val seeded = RotationOffsets(r0 = baseOffset, r90 = baseOffset)
+        prefs.edit { structuredPref.write(this, seeded) }
+        log("Bootstrapped ${structuredPref.key} from legacy offsets: ${seeded.serialize()}")
+        return seeded
     }
 }

@@ -59,6 +59,13 @@ object Prefs {
     val filenameTextBold = BoolPref("filename_text_bold", false)
     val filenameTextItalic = BoolPref("filename_text_italic", false)
     val filenameEllipsize = StringPref("filename_ellipsize", "middle")
+    val filenameVerticalText =
+        BoolPref("filename_vertical_text", false)
+
+    // Per-rotation offset profiles: x,y|x,y|x,y|x,y for R0|R90|R180|R270
+    val percentTextOffsets = RotationOffsetsPref("percent_text_offsets_by_rotation")
+    val filenameTextOffsets = RotationOffsetsPref("filename_text_offsets_by_rotation")
+    val badgeOffsets = RotationOffsetsPref("badge_offsets_by_rotation")
     val previewFilenameText =
         StringPref(
             "preview_filename_text",
@@ -169,13 +176,11 @@ object Prefs {
             completionPulseEnabled,
             percentTextEnabled,
             percentTextPosition,
-            percentTextOffsetX,
-            percentTextOffsetY,
+            percentTextOffsets,
             percentTextSize,
             filenameTextEnabled,
             filenameTextPosition,
-            filenameTextOffsetX,
-            filenameTextOffsetY,
+            filenameTextOffsets,
             filenameTextSize,
             filenameMaxChars,
             filenameTruncateEnabled,
@@ -184,12 +189,12 @@ object Prefs {
             filenameTextBold,
             filenameTextItalic,
             filenameEllipsize,
+            filenameVerticalText,
             previewFilenameText,
             minVisibilityEnabled,
             minVisibilityMs,
             showDownloadCount,
-            badgeOffsetX,
-            badgeOffsetY,
+            badgeOffsets,
             badgeTextSize,
             powerSaverMode,
             hooksFeedback,
@@ -213,12 +218,10 @@ object Prefs {
             ringOffsetY.key,
             pathMode.key,
             percentTextPosition.key,
-            percentTextOffsetX.key,
-            percentTextOffsetY.key,
+            percentTextOffsets.key,
             percentTextSize.key,
             filenameTextPosition.key,
-            filenameTextOffsetX.key,
-            filenameTextOffsetY.key,
+            filenameTextOffsets.key,
             filenameTextSize.key,
             filenameMaxChars.key,
             filenameTruncateEnabled.key,
@@ -227,9 +230,9 @@ object Prefs {
             filenameTextBold.key,
             filenameTextItalic.key,
             filenameEllipsize.key,
+            filenameVerticalText.key,
             previewFilenameText.key,
-            badgeOffsetX.key,
-            badgeOffsetY.key,
+            badgeOffsets.key,
             badgeTextSize.key,
         )
 }

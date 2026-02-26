@@ -95,6 +95,22 @@ class SetPref(
     }
 }
 
+class RotationOffsetsPref(
+    key: String,
+) : PrefSpec<RotationOffsets>(key, RotationOffsets.EMPTY) {
+    override fun read(prefs: SharedPreferences): RotationOffsets {
+        val raw = prefs.getString(key, null) ?: return default
+        return RotationOffsets.deserialize(raw)
+    }
+
+    override fun write(
+        editor: SharedPreferences.Editor,
+        value: RotationOffsets,
+    ) {
+        editor.putString(key, value.serialize())
+    }
+}
+
 data class BoundPref<T : Any>(
     val value: T,
     val spec: PrefSpec<T>,

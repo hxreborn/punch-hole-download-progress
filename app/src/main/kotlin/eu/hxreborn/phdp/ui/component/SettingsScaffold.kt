@@ -4,6 +4,7 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -30,6 +31,7 @@ fun SettingsScaffold(
     title: String,
     modifier: Modifier = Modifier,
     onNavigateBack: (() -> Unit)? = null,
+    actions: @Composable RowScope.() -> Unit = {},
     summary: String? = null,
     bottomPadding: Dp = 0.dp,
     content: @Composable (PaddingValues) -> Unit,
@@ -62,6 +64,7 @@ fun SettingsScaffold(
                         }
                     }
                 },
+                actions = actions,
                 expandedHeight = Tokens.LargeAppBarExpandedHeight,
                 scrollBehavior = scrollBehavior,
             )

@@ -1,6 +1,7 @@
 package eu.hxreborn.phdp.ui.state
 
 import eu.hxreborn.phdp.prefs.Prefs
+import eu.hxreborn.phdp.prefs.RotationOffsets
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 
 data class PrefsState(
@@ -19,8 +20,7 @@ data class PrefsState(
     val backgroundRingOpacity: Int = Prefs.backgroundRingOpacity.default,
     val powerSaverMode: String = Prefs.powerSaverMode.default,
     val showDownloadCount: Boolean = Prefs.showDownloadCount.default,
-    val badgeOffsetX: Float = Prefs.badgeOffsetX.default,
-    val badgeOffsetY: Float = Prefs.badgeOffsetY.default,
+    val badgeOffsets: RotationOffsets = RotationOffsets.EMPTY,
     val badgeTextSize: Float = Prefs.badgeTextSize.default,
     val finishStyle: String = Prefs.finishStyle.default,
     val finishHoldMs: Int = Prefs.finishHoldMs.default,
@@ -32,13 +32,11 @@ data class PrefsState(
     val completionPulseEnabled: Boolean = Prefs.completionPulseEnabled.default,
     val percentTextEnabled: Boolean = Prefs.percentTextEnabled.default,
     val percentTextPosition: String = Prefs.percentTextPosition.default,
-    val percentTextOffsetX: Float = Prefs.percentTextOffsetX.default,
-    val percentTextOffsetY: Float = Prefs.percentTextOffsetY.default,
+    val percentTextOffsets: RotationOffsets = RotationOffsets.EMPTY,
     val percentTextSize: Float = Prefs.percentTextSize.default,
     val filenameTextEnabled: Boolean = Prefs.filenameTextEnabled.default,
     val filenameTextPosition: String = Prefs.filenameTextPosition.default,
-    val filenameTextOffsetX: Float = Prefs.filenameTextOffsetX.default,
-    val filenameTextOffsetY: Float = Prefs.filenameTextOffsetY.default,
+    val filenameTextOffsets: RotationOffsets = RotationOffsets.EMPTY,
     val filenameTextSize: Float = Prefs.filenameTextSize.default,
     val filenameMaxChars: Int = Prefs.filenameMaxChars.default,
     val filenameTruncateEnabled: Boolean = Prefs.filenameTruncateEnabled.default,
@@ -47,6 +45,7 @@ data class PrefsState(
     val filenameTextBold: Boolean = Prefs.filenameTextBold.default,
     val filenameTextItalic: Boolean = Prefs.filenameTextItalic.default,
     val filenameEllipsize: String = Prefs.filenameEllipsize.default,
+    val filenameVerticalText: Boolean = Prefs.filenameVerticalText.default,
     val previewFilenameText: String = Prefs.previewFilenameText.default,
     val darkThemeConfig: DarkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
     val useDynamicColor: Boolean = Prefs.useDynamicColor.default,

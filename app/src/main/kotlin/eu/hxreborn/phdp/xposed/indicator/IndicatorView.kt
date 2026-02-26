@@ -17,6 +17,7 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.core.graphics.withSave
 import eu.hxreborn.phdp.prefs.PrefsManager
+import eu.hxreborn.phdp.prefs.RotationSlot
 import eu.hxreborn.phdp.xposed.PHDPModule.Companion.log
 import eu.hxreborn.phdp.xposed.hook.SystemUIHooker
 import kotlin.math.pow
@@ -509,11 +510,14 @@ class IndicatorView(
             if (showBadge) {
                 scaledPath.computeBounds(arcBounds, true)
                 val viewDensity = this@IndicatorView.density
+                val badgeRotation = display?.rotation ?: Surface.ROTATION_0
+                val badgeSlot = RotationSlot.fromSurfaceRotation(badgeRotation)
+                val badgeOffset = PrefsManager.badgeOffsets[badgeSlot]
                 val badgeCenterX =
-                    arcBounds.centerX() + PrefsManager.badgeOffsetX * viewDensity
+                    arcBounds.centerX() + badgeOffset.x * viewDensity
                 val badgeTop =
                     arcBounds.bottom + BADGE_TOP_PADDING_DP * viewDensity +
-                        PrefsManager.badgeOffsetY * viewDensity
+                        badgeOffset.y * viewDensity
                 val badgeCount =
                     if (animator.isGeometryPreviewActive) 3 else activeDownloadCount
                 badgePainter.draw(
@@ -569,19 +573,22 @@ class IndicatorView(
         val alpha = effectiveOpacity * 255 / 100
         val padding = LABEL_PADDING_DP * density
         val specs = mutableListOf<TextSpec>()
+        val rotation = display?.rotation ?: Surface.ROTATION_0
+        val slot = RotationSlot.fromSurfaceRotation(rotation)
 
         if (PrefsManager.percentTextEnabled) {
             val text = "$progressVal%"
             val textWidth = percentPaint.measureText(text)
             val (baseX, baseY, align) =
                 computeLabelPosition(
-                    PrefsManager.percentTextPosition,
+                    rotatePosition(PrefsManager.percentTextPosition, rotation),
                     padding,
                     percentPaint.textSize,
                     textWidth,
                 )
-            val x = baseX + PrefsManager.percentTextOffsetX * density
-            val y = baseY + PrefsManager.percentTextOffsetY * density
+            val pctOffset = PrefsManager.percentTextOffsets[slot]
+            val x = baseX + pctOffset.x * density
+            val y = baseY + pctOffset.y * density
             specs += TextSpec(text, percentPaint, x, y, align)
         }
 
@@ -603,16 +610,49 @@ class IndicatorView(
                 } else {
                     filenameToShow
                 }
-            val (baseX, baseY, align) =
-                computeLabelPosition(
-                    PrefsManager.filenameTextPosition,
-                    padding,
-                    filenamePaint.textSize,
-                    textWidth = null,
-                )
-            val x = baseX + PrefsManager.filenameTextOffsetX * density
-            val y = baseY + PrefsManager.filenameTextOffsetY * density
-            specs += TextSpec(truncated, filenamePaint, x, y, align)
+            val isLandscape = rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270
+            val isVertical = PrefsManager.filenameVerticalText && isLandscape
+            if (isVertical && truncated.isNotEmpty()) {
+                filenamePaint.color = PrefsManager.color
+                filenamePaint.alpha = alpha
+                val fnOffset = PrefsManager.filenameTextOffsets[slot]
+                val fm = filenamePaint.fontMetrics
+                val charHeight = fm.descent - fm.ascent
+                val totalHeight = truncated.length * charHeight
+                val startY = arcBounds.centerY() - totalHeight / 2 + fnOffset.y * density
+                // Place on whichever side of the ring faces the screen center
+                val screenCenterX = width / 2f
+                val x =
+                    (
+                        if (arcBounds.centerX() < screenCenterX) {
+                            arcBounds.right + padding
+                        } else {
+                            arcBounds.left - padding
+                        }
+                    ) + fnOffset.x * density
+                for (i in truncated.indices) {
+                    canvas.drawText(
+                        truncated,
+                        i,
+                        i + 1,
+                        x,
+                        startY + i * charHeight - fm.ascent,
+                        filenamePaint,
+                    )
+                }
+            } else {
+                val (baseX, baseY, align) =
+                    computeLabelPosition(
+                        rotatePosition(PrefsManager.filenameTextPosition, rotation),
+                        padding,
+                        filenamePaint.textSize,
+                        textWidth = null,
+                    )
+                val fnOffset = PrefsManager.filenameTextOffsets[slot]
+                val x = baseX + fnOffset.x * density
+                val y = baseY + fnOffset.y * density
+                specs += TextSpec(truncated, filenamePaint, x, y, align)
+            }
         }
 
         for (spec in specs) {
@@ -759,6 +799,59 @@ class IndicatorView(
             Surface.ROTATION_180 -> -dx to -dy
             Surface.ROTATION_270 -> -dy to dx
             else -> dx to dy
+        }
+
+    // Transform portrait-calibrated position string to match current display rotation
+    private fun rotatePosition(
+        position: String,
+        rotation: Int,
+    ): String =
+        when (rotation) {
+            Surface.ROTATION_90 -> {
+                when (position) {
+                    "right" -> "bottom"
+                    "left" -> "top"
+                    "top" -> "right"
+                    "bottom" -> "left"
+                    "top_right" -> "bottom_right"
+                    "top_left" -> "top_right"
+                    "bottom_left" -> "top_left"
+                    "bottom_right" -> "bottom_left"
+                    else -> position
+                }
+            }
+
+            Surface.ROTATION_270 -> {
+                when (position) {
+                    "right" -> "top"
+                    "left" -> "bottom"
+                    "top" -> "left"
+                    "bottom" -> "right"
+                    "top_right" -> "top_left"
+                    "top_left" -> "bottom_left"
+                    "bottom_left" -> "bottom_right"
+                    "bottom_right" -> "top_right"
+                    else -> position
+                }
+            }
+
+            Surface.ROTATION_180 -> {
+                when (position) {
+                    "right" -> "left"
+                    "left" -> "right"
+                    "top" -> "bottom"
+                    "bottom" -> "top"
+                    "top_right" -> "bottom_left"
+                    "top_left" -> "bottom_right"
+                    "bottom_left" -> "top_right"
+                    "bottom_right" -> "top_left"
+                    else -> position
+                }
+            }
+
+            else -> {
+                position
+            }
         }
 
     // Apply calibration: normalize base, offset, then scale

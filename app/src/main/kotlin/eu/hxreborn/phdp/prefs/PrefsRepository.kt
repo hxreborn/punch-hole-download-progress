@@ -64,8 +64,12 @@ class PrefsRepositoryImpl(
             backgroundRingOpacity = Prefs.backgroundRingOpacity.read(this),
             powerSaverMode = Prefs.powerSaverMode.read(this),
             showDownloadCount = Prefs.showDownloadCount.read(this),
-            badgeOffsetX = Prefs.badgeOffsetX.read(this),
-            badgeOffsetY = Prefs.badgeOffsetY.read(this),
+            badgeOffsets =
+                bootstrapOrRead(
+                    Prefs.badgeOffsets,
+                    Prefs.badgeOffsetX,
+                    Prefs.badgeOffsetY,
+                ),
             badgeTextSize = Prefs.badgeTextSize.read(this),
             finishStyle = Prefs.finishStyle.read(this),
             finishHoldMs = Prefs.finishHoldMs.read(this),
@@ -77,13 +81,21 @@ class PrefsRepositoryImpl(
             completionPulseEnabled = Prefs.completionPulseEnabled.read(this),
             percentTextEnabled = Prefs.percentTextEnabled.read(this),
             percentTextPosition = Prefs.percentTextPosition.read(this),
-            percentTextOffsetX = Prefs.percentTextOffsetX.read(this),
-            percentTextOffsetY = Prefs.percentTextOffsetY.read(this),
+            percentTextOffsets =
+                bootstrapOrRead(
+                    Prefs.percentTextOffsets,
+                    Prefs.percentTextOffsetX,
+                    Prefs.percentTextOffsetY,
+                ),
             percentTextSize = Prefs.percentTextSize.read(this),
             filenameTextEnabled = Prefs.filenameTextEnabled.read(this),
             filenameTextPosition = Prefs.filenameTextPosition.read(this),
-            filenameTextOffsetX = Prefs.filenameTextOffsetX.read(this),
-            filenameTextOffsetY = Prefs.filenameTextOffsetY.read(this),
+            filenameTextOffsets =
+                bootstrapOrRead(
+                    Prefs.filenameTextOffsets,
+                    Prefs.filenameTextOffsetX,
+                    Prefs.filenameTextOffsetY,
+                ),
             filenameTextSize = Prefs.filenameTextSize.read(this),
             filenameMaxChars = Prefs.filenameMaxChars.read(this),
             filenameTruncateEnabled = Prefs.filenameTruncateEnabled.read(this),
@@ -92,6 +104,7 @@ class PrefsRepositoryImpl(
             filenameTextBold = Prefs.filenameTextBold.read(this),
             filenameTextItalic = Prefs.filenameTextItalic.read(this),
             filenameEllipsize = Prefs.filenameEllipsize.read(this),
+            filenameVerticalText = Prefs.filenameVerticalText.read(this),
             previewFilenameText = Prefs.previewFilenameText.read(this),
             darkThemeConfig = readDarkThemeConfig(),
             useDynamicColor = Prefs.useDynamicColor.read(this),
@@ -104,6 +117,22 @@ class PrefsRepositoryImpl(
             selectedPackages = Prefs.selectedPackages.read(this),
             showSystemPackages = Prefs.showSystemPackages.read(this),
         )
+
+    // TODO(#34): Remove legacy offset bootstrap after structured rotation prefs ship
+    private fun SharedPreferences.bootstrapOrRead(
+        structuredPref: RotationOffsetsPref,
+        legacyX: FloatPref,
+        legacyY: FloatPref,
+    ): RotationOffsets {
+        if (contains(structuredPref.key)) {
+            return structuredPref.read(this)
+        }
+        val baseOffset = OffsetPx(legacyX.read(this), legacyY.read(this))
+        val seeded = RotationOffsets(r0 = baseOffset, r90 = baseOffset)
+        edit { structuredPref.write(this, seeded) }
+        remotePrefsProvider()?.edit(commit = true) { structuredPref.write(this, seeded) }
+        return seeded
+    }
 
     private fun SharedPreferences.readDarkThemeConfig(): DarkThemeConfig {
         val value = Prefs.darkThemeConfig.read(this)

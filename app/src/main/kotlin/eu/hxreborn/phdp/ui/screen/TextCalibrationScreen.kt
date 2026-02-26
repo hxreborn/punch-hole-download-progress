@@ -1,13 +1,32 @@
 package eu.hxreborn.phdp.ui.screen
 
+import android.content.Context
 import android.content.res.Configuration
+import android.hardware.display.DisplayManager
+import android.view.Display
+import android.view.Surface
+import android.view.WindowManager
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ScreenRotation
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -46,17 +65,22 @@ data class LayoutConfig(
     val ellipsize: BoundPref<String>? = null,
     val ellipsizeValues: List<String>? = null,
     val previewText: BoundPref<String>? = null,
+    val verticalText: BoundPref<Boolean>? = null,
 )
 
 @Composable
 fun TextCalibrationScreen(
     titleRes: Int,
-    offsetX: BoundPref<Float>,
-    offsetY: BoundPref<Float>,
+    offsetX: Float,
+    offsetY: Float,
+    onOffsetXChange: (Float) -> Unit,
+    onOffsetYChange: (Float) -> Unit,
+    onOffsetReset: () -> Unit,
     viewModel: SettingsViewModel,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     bottomNavPadding: Dp = 0.dp,
+    offsetRange: ClosedFloatingPointRange<Float> = -200f..200f,
     typography: TypographyConfig? = null,
     layout: LayoutConfig? = null,
 ) {
@@ -77,6 +101,7 @@ fun TextCalibrationScreen(
     SettingsScaffold(
         title = stringResource(titleRes),
         onNavigateBack = onNavigateBack,
+        actions = { OrientationIndicator() },
         bottomPadding = bottomNavPadding,
         modifier = modifier,
     ) { innerPadding ->
@@ -110,7 +135,14 @@ fun TextCalibrationScreen(
                         SectionCard(
                             items =
                                 buildList {
-                                    offsetItems(offsetX, offsetY, viewModel)
+                                    offsetItems(
+                                        offsetX,
+                                        offsetY,
+                                        onOffsetXChange,
+                                        onOffsetYChange,
+                                        onOffsetReset,
+                                        offsetRange,
+                                    )
                                     layoutItems(layout, viewModel)
                                 },
                         )
@@ -122,13 +154,82 @@ fun TextCalibrationScreen(
                             items =
                                 buildList {
                                     typographyItems(typography, viewModel)
-                                    offsetItems(offsetX, offsetY, viewModel)
+                                    offsetItems(
+                                        offsetX,
+                                        offsetY,
+                                        onOffsetXChange,
+                                        onOffsetYChange,
+                                        onOffsetReset,
+                                        offsetRange,
+                                    )
                                 },
                         )
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun rememberDisplayRotation(): Int {
+    val context = LocalContext.current
+
+    @Suppress("DEPRECATION")
+    fun currentRotation(): Int = (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.rotation
+
+    var rotation by remember { mutableIntStateOf(currentRotation()) }
+
+    DisposableEffect(Unit) {
+        val dm = context.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
+        val listener =
+            object : DisplayManager.DisplayListener {
+                override fun onDisplayChanged(displayId: Int) {
+                    if (displayId == Display.DEFAULT_DISPLAY) {
+                        rotation = currentRotation()
+                    }
+                }
+
+                override fun onDisplayAdded(displayId: Int) = Unit
+
+                override fun onDisplayRemoved(displayId: Int) = Unit
+            }
+        dm.registerDisplayListener(listener, null)
+        onDispose { dm.unregisterDisplayListener(listener) }
+    }
+
+    return rotation
+}
+
+@Composable
+private fun OrientationIndicator() {
+    val rotation = rememberDisplayRotation()
+    val label =
+        stringResource(
+            when (rotation) {
+                Surface.ROTATION_90 -> R.string.orientation_r90
+                Surface.ROTATION_180 -> R.string.orientation_r180
+                Surface.ROTATION_270 -> R.string.orientation_r270
+                else -> R.string.orientation_r0
+            },
+        )
+
+    Row(
+        modifier = Modifier.padding(end = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.ScreenRotation,
+            contentDescription = null,
+            modifier = Modifier.size(16.dp),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 
@@ -173,20 +274,21 @@ private fun MutableList<@Composable () -> Unit>.typographyItems(
 }
 
 private fun MutableList<@Composable () -> Unit>.offsetItems(
-    offsetX: BoundPref<Float>,
-    offsetY: BoundPref<Float>,
-    viewModel: SettingsViewModel,
+    offsetX: Float,
+    offsetY: Float,
+    onOffsetXChange: (Float) -> Unit,
+    onOffsetYChange: (Float) -> Unit,
+    onOffsetReset: () -> Unit,
+    offsetRange: ClosedFloatingPointRange<Float>,
 ) {
-    val xSpec = offsetX.spec as eu.hxreborn.phdp.prefs.FloatPref
-    val ySpec = offsetY.spec as eu.hxreborn.phdp.prefs.FloatPref
     add {
         SliderPreferenceWithStepper(
-            value = offsetX.value,
-            onValueChange = { viewModel.savePref(xSpec, it) },
+            value = offsetX,
+            onValueChange = onOffsetXChange,
             title = { Text(stringResource(R.string.pref_ring_offset_x_title)) },
-            valueRange = xSpec.range!!,
-            defaultValue = xSpec.default,
-            onReset = { viewModel.savePref(xSpec, xSpec.default) },
+            valueRange = offsetRange,
+            defaultValue = 0f,
+            onReset = onOffsetReset,
             stepSize = 1f,
             decimalPlaces = 0,
             suffix = "px",
@@ -194,12 +296,12 @@ private fun MutableList<@Composable () -> Unit>.offsetItems(
     }
     add {
         SliderPreferenceWithStepper(
-            value = offsetY.value,
-            onValueChange = { viewModel.savePref(ySpec, it) },
+            value = offsetY,
+            onValueChange = onOffsetYChange,
             title = { Text(stringResource(R.string.pref_ring_offset_y_title)) },
-            valueRange = ySpec.range!!,
-            defaultValue = ySpec.default,
-            onReset = { viewModel.savePref(ySpec, ySpec.default) },
+            valueRange = offsetRange,
+            defaultValue = 0f,
+            onReset = onOffsetReset,
             stepSize = 1f,
             decimalPlaces = 0,
             suffix = "px",
@@ -265,6 +367,17 @@ private fun MutableList<@Composable () -> Unit>.layoutItems(
             )
         }
     }
+    val verticalText = layout.verticalText
+    if (verticalText != null) {
+        add {
+            TogglePreferenceWithIcon(
+                value = verticalText.value,
+                onValueChange = { viewModel.savePref(verticalText.spec, it) },
+                title = { Text(stringResource(R.string.pref_filename_vertical_title)) },
+                summary = { Text(stringResource(R.string.pref_filename_vertical_summary)) },
+            )
+        }
+    }
 }
 
 @Suppress("ViewModelConstructorInComposable")
@@ -274,8 +387,11 @@ private fun TextCalibrationScreenPreview() {
     AppTheme(darkThemeConfig = DarkThemeConfig.DARK) {
         TextCalibrationScreen(
             titleRes = R.string.pref_calibrate_filename_title,
-            offsetX = Prefs.filenameTextOffsetX bind 0f,
-            offsetY = Prefs.filenameTextOffsetY bind 0f,
+            offsetX = 0f,
+            offsetY = 0f,
+            onOffsetXChange = {},
+            onOffsetYChange = {},
+            onOffsetReset = {},
             viewModel = PreviewViewModel(),
             onNavigateBack = {},
             typography =

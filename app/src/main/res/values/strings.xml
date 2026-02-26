@@ -5,6 +5,10 @@
 
     <!-- Navigation -->
     <string name="back">Back</string>
+    <string name="orientation_r0">Portrait (0°)</string>
+    <string name="orientation_r90">Landscape Right (90°)</string>
+    <string name="orientation_r180">Reverse Portrait (180°)</string>
+    <string name="orientation_r270">Landscape Left (270°)</string>
 
     <!-- Restart SystemUI -->
     <string name="restart_systemui">Restart SystemUI</string>
@@ -157,6 +161,8 @@
     <string name="ellipsize_end">End</string>
     <string name="pref_filename_truncate_title">Character limit</string>
     <string name="pref_filename_max_chars_title">Max characters</string>
+    <string name="pref_filename_vertical_title">Vertical text</string>
+    <string name="pref_filename_vertical_summary">Draw each character in a vertical line when in landscape orientation</string>
     <string name="pref_preview_text_title">Preview text</string>
     <string name="pref_invert_rotation_title">Progress direction</string>
     <string name="clockwise">Clockwise</string>
