@@ -16,6 +16,9 @@ Xposed module that displays download progress as an animated ring around the cam
 - Path renderer for pill-shaped cutouts (opt-in)
 - Customizable appearance: colors per state (active/completed/failed), arc thickness, opacity, and direction
 - Completion animations and optional haptic feedback
+- Per-rotation calibration for percentage text, filename text, and badge offsets (0° / 90° / 180° / 270°)
+- Calibration screens show the current rotation slot while tuning offsets
+- Optional vertical filename text layout in landscape
 - Active download counter badge
 - Battery saver-aware rendering
 - Built-in test mode for simulating states
