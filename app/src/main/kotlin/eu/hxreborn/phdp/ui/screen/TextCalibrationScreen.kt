@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ScreenRotation
+import androidx.compose.material.icons.outlined.PhoneAndroid
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -205,31 +205,35 @@ fun rememberDisplayRotation(): Int {
 private fun OrientationIndicator() {
     val rotation = rememberDisplayRotation()
     val label =
-        stringResource(
-            when (rotation) {
-                Surface.ROTATION_90 -> R.string.orientation_r90
-                Surface.ROTATION_180 -> R.string.orientation_r180
-                Surface.ROTATION_270 -> R.string.orientation_r270
-                else -> R.string.orientation_r0
-            },
-        )
+        when (rotation) {
+            Surface.ROTATION_90 -> "Landscape 270°"
+            Surface.ROTATION_180 -> "Portrait 180°"
+            Surface.ROTATION_270 -> "Landscape 90°"
+            else -> "Portrait"
+        }
 
-    Row(
-        modifier = Modifier.padding(end = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    androidx.compose.material3.Surface(
+        shape = MaterialTheme.shapes.large,
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        modifier = Modifier.padding(end = Tokens.ScreenHorizontalPadding),
     ) {
-        Icon(
-            imageVector = Icons.Outlined.ScreenRotation,
-            contentDescription = null,
-            modifier = Modifier.size(16.dp),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.PhoneAndroid,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
     }
 }
 

@@ -1,0 +1,3 @@
+Per-rotation calibration: each screen orientation now saves its own offsets.
+Added vertical filename text option.
+Text input fields now use a cleaner dialog interface.
