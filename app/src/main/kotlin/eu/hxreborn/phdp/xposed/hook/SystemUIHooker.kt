@@ -10,7 +10,7 @@ import androidx.core.view.HapticFeedbackConstantsCompat
 import androidx.core.view.ViewCompat
 import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.util.accessibleFieldFromHierarchy
-import eu.hxreborn.phdp.xposed.PHDPModule.Companion.log
+import eu.hxreborn.phdp.util.log
 import eu.hxreborn.phdp.xposed.indicator.IndicatorView
 import eu.hxreborn.phdp.xposed.module
 import io.github.libxposed.api.XposedInterface

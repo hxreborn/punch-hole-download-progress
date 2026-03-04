@@ -1,10 +1,10 @@
 package eu.hxreborn.phdp.xposed.hook
 
 import android.app.Notification
-import eu.hxreborn.phdp.BuildConfig
 import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.util.accessibleField
-import eu.hxreborn.phdp.xposed.PHDPModule.Companion.log
+import eu.hxreborn.phdp.util.log
+import eu.hxreborn.phdp.util.logDebug
 import io.github.libxposed.api.XposedInterface
 import io.github.libxposed.api.XposedInterface.AfterHookCallback
 import io.github.libxposed.api.annotations.AfterInvocation
@@ -28,10 +28,6 @@ object DownloadProgressHooker {
         val progress: Int,
         val lastUpdate: Long,
     )
-
-    private inline fun debug(msg: () -> String) {
-        if (BuildConfig.DEBUG) log(msg())
-    }
 
     @Volatile
     private var getPackageNameMethod: Method? = null
@@ -68,13 +64,13 @@ object DownloadProgressHooker {
             .filter { now - it.value.lastUpdate > STALE_AGE_MS }
             .forEach { (staleId, state) ->
                 activeDownloads.remove(staleId)
-                log("Removed stale: $staleId at ${state.progress}%")
+                logDebug { "Removed stale: $staleId at ${state.progress}%" }
             }
     }
 
     fun processNotification(sbn: Any) {
         val pkg = getPackageName(sbn) ?: return
-        debug { "Notification from: $pkg" }
+        logDebug { "Notification from: $pkg" }
 
         if (pkg !in PrefsManager.selectedPackages) return
 
@@ -85,12 +81,12 @@ object DownloadProgressHooker {
         val progress = extras.getInt(EXTRA_PROGRESS, -1)
         val max = extras.getInt(EXTRA_PROGRESS_MAX, -1)
         val title = extras.getCharSequence(EXTRA_TITLE)?.toString()
-        debug { "Progress: $progress/$max, title: $title" }
+        logDebug { "Progress: $progress/$max, title: $title" }
 
         // Browsers signal completion via max=0 update, not notification removal
         if (progress < 0 || max <= 0) {
             activeDownloads.remove(id)?.let {
-                log("Download ${it.packageName}: 100% (max=0)")
+                logDebug { "Download ${it.packageName}: 100% (max=0)" }
                 onActiveCountChanged?.invoke(activeDownloads.size)
                 onDownloadComplete?.invoke()
                 updateProgress()
@@ -117,7 +113,7 @@ object DownloadProgressHooker {
 
         if (oldState?.progress != percent || wasNew) {
             activeDownloads[id] = newState
-            log("Download $pkg: $percent%")
+            logDebug { "Download $pkg: $percent%" }
             updateProgress()
             if (wasNew) onActiveCountChanged?.invoke(activeDownloads.size)
         }
@@ -140,7 +136,7 @@ object DownloadProgressHooker {
                     .average()
                     .toInt()
             }
-        debug { "Progress: $avg% avg (${activeDownloads.size} active)" }
+        logDebug { "Progress: $avg% avg (${activeDownloads.size} active)" }
         onProgressChanged?.invoke(avg)
         updateFilename()
     }
@@ -189,7 +185,7 @@ object DownloadProgressHooker {
         reason: Int = -1,
     ) {
         val id = getNotificationId(sbn) ?: return
-        debug { "Notification removed: $id (reason=$reason)" }
+        logDebug { "Notification removed: $id (reason=$reason)" }
 
         val wasTracking = activeDownloads.remove(id)
         if (wasTracking != null) {
@@ -197,19 +193,19 @@ object DownloadProgressHooker {
             updateProgress()
             when {
                 wasTracking.progress >= 100 -> {
-                    log("Download complete")
+                    logDebug { "Download complete" }
                     onProgressChanged?.invoke(100)
                     onDownloadComplete?.invoke()
                 }
 
                 reason == REASON_APP_CANCEL || reason == REASON_APP_CANCEL_ALL -> {
-                    log("Download completed (app removed at ${wasTracking.progress}%)")
+                    logDebug { "Download completed (app removed at ${wasTracking.progress}%)" }
                     onProgressChanged?.invoke(100)
                     onDownloadComplete?.invoke()
                 }
 
                 wasTracking.progress >= LOW_PROGRESS_THRESHOLD -> {
-                    log("Download cancelled at ${wasTracking.progress}%")
+                    logDebug { "Download cancelled at ${wasTracking.progress}%" }
                     onDownloadCancelled?.invoke()
                 }
             }
@@ -244,7 +240,7 @@ class NotificationAddHooker : XposedInterface.Hooker {
         @JvmStatic
         @AfterInvocation
         fun after(callback: AfterHookCallback) {
-            if (BuildConfig.DEBUG) log("NotificationAddHooker: ${callback.args.size} args")
+            logDebug { "NotificationAddHooker: ${callback.args.size} args" }
             callback.args.forEach {
                 DownloadProgressHooker.processNotificationArg(
                     it,
@@ -262,7 +258,7 @@ class NotificationRemoveHooker : XposedInterface.Hooker {
         @AfterInvocation
         fun after(callback: AfterHookCallback) {
             val args = callback.args
-            if (BuildConfig.DEBUG) log("NotificationRemoveHooker: ${args.size} args")
+            logDebug { "NotificationRemoveHooker: ${args.size} args" }
             val reason = extractRemovalReason(args)
 
             args.forEach { arg ->

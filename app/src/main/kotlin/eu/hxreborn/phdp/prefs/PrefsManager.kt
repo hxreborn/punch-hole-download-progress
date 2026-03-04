@@ -2,7 +2,7 @@ package eu.hxreborn.phdp.prefs
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import eu.hxreborn.phdp.xposed.PHDPModule.Companion.log
+import eu.hxreborn.phdp.util.log
 
 object PrefsManager {
     @Volatile

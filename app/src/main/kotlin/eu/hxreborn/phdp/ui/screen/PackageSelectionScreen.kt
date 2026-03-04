@@ -3,7 +3,6 @@ package eu.hxreborn.phdp.ui.screen
 import android.annotation.SuppressLint
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -78,7 +77,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import eu.hxreborn.phdp.BuildConfig
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.ui.SettingsUiState
@@ -131,7 +129,6 @@ private fun rememberInstalledApps(): AppLoadState {
 
     return produceState(initialValue = AppLoadState(emptyList(), isLoading = true)) {
         val apps = loadApps(pm)
-        if (BuildConfig.DEBUG) Log.d("PHDP", "Package list loaded: ${apps.size}")
         value = AppLoadState(apps, isLoading = false)
     }.value
 }

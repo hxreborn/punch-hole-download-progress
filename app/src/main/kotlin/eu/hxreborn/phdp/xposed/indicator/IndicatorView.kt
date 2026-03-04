@@ -18,7 +18,8 @@ import android.view.WindowManager
 import androidx.core.graphics.withSave
 import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.prefs.RotationSlot
-import eu.hxreborn.phdp.xposed.PHDPModule.Companion.log
+import eu.hxreborn.phdp.util.log
+import eu.hxreborn.phdp.util.logDebug
 import eu.hxreborn.phdp.xposed.hook.SystemUIHooker
 import kotlin.math.pow
 
@@ -88,7 +89,7 @@ class IndicatorView(
                 if (newValue in 1..99) {
                     postDelayed(burnInHideRunnable, BURN_IN_HIDE_DELAY_MS)
                 }
-                log("IndicatorView: progress = $newValue")
+                logDebug { "IndicatorView: progress = $newValue" }
 
                 if (oldValue == 0 && newValue > 0) {
                     downloadStartTime = System.currentTimeMillis()
@@ -101,7 +102,9 @@ class IndicatorView(
                         val elapsed = System.currentTimeMillis() - downloadStartTime
                         val remaining = minVisibilityMs - elapsed
                         if (remaining > 0 && downloadStartTime > 0) {
-                            log("IndicatorView: fast download, delaying finish by ${remaining}ms")
+                            logDebug {
+                                "IndicatorView: fast download, delaying finish by ${remaining}ms"
+                            }
                             pendingFinishRunnable =
                                 Runnable {
                                     pendingFinishRunnable = null
@@ -132,7 +135,7 @@ class IndicatorView(
         set(value) {
             if (field != value) {
                 field = value
-                log("IndicatorView: appVisible = $value")
+                logDebug { "IndicatorView: appVisible = $value" }
                 post { invalidate() }
             }
         }
@@ -190,7 +193,7 @@ class IndicatorView(
 
         PrefsManager.onPrefsChanged = {
             post {
-                log("IndicatorView: prefs changed, updating...")
+                logDebug { "IndicatorView: prefs changed, updating..." }
                 updatePaintFromPrefs()
                 updateRenderer()
                 recalculateScaledPath()
@@ -200,7 +203,7 @@ class IndicatorView(
 
         PrefsManager.onTestProgressChanged = { testProgress ->
             post {
-                log("IndicatorView: test progress = $testProgress")
+                logDebug { "IndicatorView: test progress = $testProgress" }
                 progress = testProgress
             }
         }
@@ -279,12 +282,12 @@ class IndicatorView(
 
         badgePainter.updateColors(PrefsManager.color, PrefsManager.badgeTextSize)
 
-        log(
+        logDebug {
             "Paint updated: color=${Integer.toHexString(PrefsManager.color)}, " +
                 "opacity=$effectiveOpacity, stroke=${PrefsManager.strokeWidth}, " +
                 "gap=${PrefsManager.ringGap}, scaleX=${PrefsManager.ringScaleX}, " +
-                "scaleY=${PrefsManager.ringScaleY}",
-        )
+                "scaleY=${PrefsManager.ringScaleY}"
+        }
         invalidate()
     }
 

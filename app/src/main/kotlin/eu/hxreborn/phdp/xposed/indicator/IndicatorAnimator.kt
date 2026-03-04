@@ -8,7 +8,7 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.view.animation.OvershootInterpolator
-import eu.hxreborn.phdp.xposed.PHDPModule.Companion.log
+import eu.hxreborn.phdp.util.logDebug
 
 class IndicatorAnimator(
     private val view: View,
@@ -139,7 +139,7 @@ class IndicatorAnimator(
         isFinishAnimating = true
 
         val intensity = FINISH_INTENSITY
-        log("Starting finish animation: style=$style, hold=${holdMs}ms, exit=${exitMs}ms")
+        logDebug { "Starting finish animation: style=$style, hold=${holdMs}ms, exit=${exitMs}ms" }
 
         displayAlpha = 1f
         displayScale = 1f
@@ -283,7 +283,7 @@ class IndicatorAnimator(
     fun startError(onComplete: () -> Unit) {
         if (isFinishAnimating || isErrorAnimating) return
         isErrorAnimating = true
-        log("IndicatorAnimator: startError()")
+        logDebug { "IndicatorAnimator: startError()" }
 
         errorAnimator?.cancel()
         errorAnimator =
@@ -314,7 +314,7 @@ class IndicatorAnimator(
         exitMs: Int,
         pulseEnabled: Boolean,
     ) {
-        log("IndicatorAnimator: startDynamicPreviewAnim() - debouncing")
+        logDebug { "IndicatorAnimator: startDynamicPreviewAnim() - debouncing" }
 
         previewDebounceRunnable?.let { view.removeCallbacks(it) }
         previewDebounceRunnable =
@@ -330,7 +330,7 @@ class IndicatorAnimator(
         exitMs: Int,
         pulseEnabled: Boolean,
     ) {
-        log("IndicatorAnimator: startDynamicPreviewAnimInternal()")
+        logDebug { "IndicatorAnimator: startDynamicPreviewAnimInternal()" }
         cancelDynamicPreviewAnim()
         previewMode = PreviewMode.ANIMATING
         previewProgress = 0
@@ -368,7 +368,7 @@ class IndicatorAnimator(
     }
 
     fun showStaticPreviewAnim(autoHide: Boolean = true) {
-        log("IndicatorAnimator: showStaticPreviewAnim(autoHide=$autoHide)")
+        logDebug { "IndicatorAnimator: showStaticPreviewAnim(autoHide=$autoHide)" }
 
         geometryPreviewRunnable?.let { view.removeCallbacks(it) }
         geometryPreviewRunnable = null
