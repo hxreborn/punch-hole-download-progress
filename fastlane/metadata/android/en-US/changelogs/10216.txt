@@ -1,0 +1,4 @@
+Material You color mapping screen.
+Configurable segment count and gap.
+Glow effect toggle.
+Fixed preference editing on read-only remote prefs.
