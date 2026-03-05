@@ -1,7 +1,6 @@
 package eu.hxreborn.phdp.prefs
 
 import android.content.SharedPreferences
-import androidx.core.content.edit
 import eu.hxreborn.phdp.util.log
 
 object PrefsManager {
@@ -421,7 +420,6 @@ object PrefsManager {
         }
         val baseOffset = OffsetPx(legacyX.read(prefs), legacyY.read(prefs))
         val seeded = RotationOffsets(r0 = baseOffset, r90 = baseOffset)
-        prefs.edit { structuredPref.write(this, seeded) }
         log("Bootstrapped ${structuredPref.key} from legacy offsets: ${seeded.serialize()}")
         return seeded
     }
