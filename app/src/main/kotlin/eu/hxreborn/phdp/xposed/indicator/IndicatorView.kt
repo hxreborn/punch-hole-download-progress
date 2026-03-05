@@ -205,12 +205,6 @@ class IndicatorView(
             }
         }
 
-        PrefsManager.onTestProgressChanged = { testProgress ->
-            post {
-                logDebug { "IndicatorView: test progress = $testProgress" }
-                progress = testProgress
-            }
-        }
     }
 
     @SuppressLint("DiscouragedApi")
