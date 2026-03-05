@@ -83,6 +83,13 @@ class PrefsRepositoryImpl(
             completionPulseEnabled = Prefs.completionPulseEnabled.read(this),
             segmentCount = Prefs.segmentCount.read(this),
             segmentGapDegrees = Prefs.segmentGapDegrees.read(this),
+            materialYouEnabled = Prefs.materialYouEnabled.read(this),
+            materialYouProgressPalette = Prefs.materialYouProgressPalette.read(this),
+            materialYouProgressShade = Prefs.materialYouProgressShade.read(this),
+            materialYouSuccessPalette = Prefs.materialYouSuccessPalette.read(this),
+            materialYouSuccessShade = Prefs.materialYouSuccessShade.read(this),
+            materialYouErrorPalette = Prefs.materialYouErrorPalette.read(this),
+            materialYouErrorShade = Prefs.materialYouErrorShade.read(this),
             percentTextEnabled = Prefs.percentTextEnabled.read(this),
             percentTextPosition = Prefs.percentTextPosition.read(this),
             percentTextOffsets =

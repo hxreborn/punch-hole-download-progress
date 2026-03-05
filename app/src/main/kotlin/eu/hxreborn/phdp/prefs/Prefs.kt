@@ -49,6 +49,15 @@ object Prefs {
     val segmentCount = IntPref("segment_count", 12, 4..24)
     val segmentGapDegrees = FloatPref("segment_gap_degrees", 6f, 1f..15f)
 
+    // Material You
+    val materialYouEnabled = BoolPref("material_you_enabled", false)
+    val materialYouProgressPalette = StringPref("material_you_progress_palette", "accent1")
+    val materialYouProgressShade = IntPref("material_you_progress_shade", 500)
+    val materialYouSuccessPalette = StringPref("material_you_success_palette", "accent2")
+    val materialYouSuccessShade = IntPref("material_you_success_shade", 500)
+    val materialYouErrorPalette = StringPref("material_you_error_palette", "accent3")
+    val materialYouErrorShade = IntPref("material_you_error_shade", 500)
+
     // Text overlays
     val percentTextEnabled = BoolPref("percent_text_enabled", false)
     val percentTextPosition = StringPref("percent_text_position", "right")
@@ -203,6 +212,13 @@ object Prefs {
             filenameEllipsize,
             filenameVerticalText,
             previewFilenameText,
+            materialYouEnabled,
+            materialYouProgressPalette,
+            materialYouProgressShade,
+            materialYouSuccessPalette,
+            materialYouSuccessShade,
+            materialYouErrorPalette,
+            materialYouErrorShade,
             minVisibilityEnabled,
             minVisibilityMs,
             showDownloadCount,
@@ -248,5 +264,12 @@ object Prefs {
             previewFilenameText.key,
             badgeOffsets.key,
             badgeTextSize.key,
+            materialYouEnabled.key,
+            materialYouProgressPalette.key,
+            materialYouProgressShade.key,
+            materialYouSuccessPalette.key,
+            materialYouSuccessShade.key,
+            materialYouErrorPalette.key,
+            materialYouErrorShade.key,
         )
 }

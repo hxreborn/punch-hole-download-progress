@@ -47,6 +47,7 @@ import eu.hxreborn.phdp.ui.screen.CalibrationScreen
 import eu.hxreborn.phdp.ui.screen.CalibrationTarget
 import eu.hxreborn.phdp.ui.screen.LayoutConfig
 import eu.hxreborn.phdp.ui.screen.LicensesScreen
+import eu.hxreborn.phdp.ui.screen.MaterialYouScreen
 import eu.hxreborn.phdp.ui.screen.PackageSelectionScreen
 import eu.hxreborn.phdp.ui.screen.SystemScreen
 import eu.hxreborn.phdp.ui.screen.TextCalibrationScreen
@@ -80,6 +81,9 @@ sealed interface Screen : NavKey {
 
     @Serializable
     data object BadgeCalibration : Screen
+
+    @Serializable
+    data object MaterialYou : Screen
 
     @Serializable
     data object Licenses : Screen
@@ -163,6 +167,9 @@ fun MainNavDisplay(
                                         CalibrationTarget.FILENAME -> Screen.FilenameCalibration
                                     },
                                 )
+                            },
+                            onNavigateToMaterialYou = {
+                                backStack.add(Screen.MaterialYou)
                             },
                             contentPadding = contentPadding,
                         )
@@ -249,6 +256,13 @@ fun MainNavDisplay(
                                 previewText = Prefs.previewFilenameText bind prefs.previewFilenameText,
                                 verticalText = Prefs.filenameVerticalText bind prefs.filenameVerticalText,
                             ),
+                    )
+                }
+                entry<Screen.MaterialYou>(metadata = slideTransitionMetadata) {
+                    MaterialYouScreen(
+                        viewModel = viewModel,
+                        onNavigateBack = { backStack.removeLastOrNull() },
+                        bottomNavPadding = bottomNavPadding,
                     )
                 }
                 entry<Screen.BadgeCalibration>(metadata = slideTransitionMetadata) {
@@ -353,6 +367,7 @@ fun BottomNav(
                 Screen.Calibration,
                 Screen.PercentCalibration,
                 Screen.FilenameCalibration,
+                Screen.MaterialYou,
                 -> Screen.Design
 
                 Screen.BadgeCalibration -> Screen.Motion

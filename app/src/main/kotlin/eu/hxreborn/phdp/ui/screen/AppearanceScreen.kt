@@ -1,6 +1,7 @@
 package eu.hxreborn.phdp.ui.screen
 
 import android.content.res.Configuration
+import android.os.Build
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,6 +41,7 @@ enum class CalibrationTarget { RING, PERCENT, FILENAME }
 fun AppearanceScreen(
     viewModel: SettingsViewModel,
     onNavigateToCalibration: (CalibrationTarget) -> Unit,
+    onNavigateToMaterialYou: () -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
@@ -62,12 +64,14 @@ fun AppearanceScreen(
 
             item(key = "design_colors_section") {
                 SectionCard(
+                    modifier = Modifier.animateContentSize(),
                     items =
-                        listOf(
-                            {
+                        buildList {
+                            add {
                                 ColorPreference(
                                     value = prefsState.color,
                                     onValueChange = { viewModel.savePref(Prefs.color, it) },
+                                    enabled = !prefsState.materialYouEnabled,
                                     title = {
                                         Text(
                                             stringResource(R.string.pref_progress_color_title),
@@ -79,11 +83,12 @@ fun AppearanceScreen(
                                         )
                                     },
                                 )
-                            },
-                            {
+                            }
+                            add {
                                 ColorPreference(
                                     value = prefsState.finishFlashColor,
                                     onValueChange = { viewModel.savePref(Prefs.finishFlashColor, it) },
+                                    enabled = !prefsState.materialYouEnabled,
                                     title = {
                                         Text(
                                             stringResource(R.string.pref_success_color_title),
@@ -95,11 +100,12 @@ fun AppearanceScreen(
                                         )
                                     },
                                 )
-                            },
-                            {
+                            }
+                            add {
                                 ColorPreference(
                                     value = prefsState.errorColor,
                                     onValueChange = { viewModel.savePref(Prefs.errorColor, it) },
+                                    enabled = !prefsState.materialYouEnabled,
                                     title = { Text(stringResource(R.string.pref_error_color_title)) },
                                     summary = {
                                         Text(
@@ -107,8 +113,45 @@ fun AppearanceScreen(
                                         )
                                     },
                                 )
-                            },
-                        ),
+                            }
+                            if (Build.VERSION.SDK_INT >= 31) {
+                                add {
+                                    TogglePreferenceWithIcon(
+                                        value = prefsState.materialYouEnabled,
+                                        onValueChange = {
+                                            viewModel.savePref(Prefs.materialYouEnabled, it)
+                                        },
+                                        title = {
+                                            Text(
+                                                stringResource(R.string.pref_material_you_title),
+                                            )
+                                        },
+                                        summary = {
+                                            Text(
+                                                stringResource(R.string.pref_material_you_summary),
+                                            )
+                                        },
+                                    )
+                                }
+                                if (prefsState.materialYouEnabled) {
+                                    add {
+                                        NavigationPreference(
+                                            onClick = onNavigateToMaterialYou,
+                                            title = {
+                                                Text(
+                                                    stringResource(R.string.pref_material_you_configure_title),
+                                                )
+                                            },
+                                            summary = {
+                                                Text(
+                                                    stringResource(R.string.pref_material_you_configure_summary),
+                                                )
+                                            },
+                                        )
+                                    }
+                                }
+                            }
+                        },
                 )
             }
 
@@ -462,6 +505,7 @@ private fun AppearanceScreenPreview() {
         AppearanceScreen(
             viewModel = PreviewViewModel(),
             onNavigateToCalibration = {},
+            onNavigateToMaterialYou = {},
             contentPadding = PaddingValues(),
         )
     }

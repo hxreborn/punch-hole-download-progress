@@ -178,6 +178,25 @@
     <string name="clockwise">Clockwise</string>
     <string name="counter_clockwise">Counter-clockwise</string>
 
+    <!-- Material You -->
+    <string name="pref_material_you_title">Material You</string>
+    <string name="pref_material_you_summary">Map ring colors from your wallpaper palette</string>
+    <string name="pref_material_you_configure_title">Color mapping</string>
+    <string name="pref_material_you_configure_summary">Assign system palette colors to each indicator role</string>
+    <string name="group_material_you_progress">Progress</string>
+    <string name="group_material_you_success">Completion</string>
+    <string name="group_material_you_error">Error</string>
+    <string name="material_you_row_primary">Primary</string>
+    <string name="material_you_row_secondary">Secondary</string>
+    <string name="material_you_row_tertiary">Tertiary</string>
+    <string name="material_you_row_neutral">Neutral</string>
+    <string name="material_you_row_neutral_variant">Neutral V.</string>
+    <string name="material_you_preset_default">Default</string>
+    <string name="material_you_preset_primary">Primary</string>
+    <string name="material_you_preset_muted">Muted</string>
+    <string name="material_you_preset_mono">Mono</string>
+    <string name="material_you_preset_custom">Custom</string>
+
     <!-- System: Power -->
     <string name="pref_theme_title">Theme</string>
     <string name="pref_theme_summary">Choose light, dark, or system default</string>

@@ -222,6 +222,34 @@ object PrefsManager {
         private set
 
     @Volatile
+    var materialYouEnabled = Prefs.materialYouEnabled.default
+        private set
+
+    @Volatile
+    var materialYouProgressPalette = Prefs.materialYouProgressPalette.default
+        private set
+
+    @Volatile
+    var materialYouProgressShade = Prefs.materialYouProgressShade.default
+        private set
+
+    @Volatile
+    var materialYouSuccessPalette = Prefs.materialYouSuccessPalette.default
+        private set
+
+    @Volatile
+    var materialYouSuccessShade = Prefs.materialYouSuccessShade.default
+        private set
+
+    @Volatile
+    var materialYouErrorPalette = Prefs.materialYouErrorPalette.default
+        private set
+
+    @Volatile
+    var materialYouErrorShade = Prefs.materialYouErrorShade.default
+        private set
+
+    @Volatile
     var selectedPackages = Prefs.selectedPackages.default
         private set
 
@@ -369,6 +397,13 @@ object PrefsManager {
                 backgroundRingOpacity = Prefs.backgroundRingOpacity.read(prefs)
                 glowEnabled = Prefs.glowEnabled.read(prefs)
                 glowRadius = Prefs.glowRadius.read(prefs)
+                materialYouEnabled = Prefs.materialYouEnabled.read(prefs)
+                materialYouProgressPalette = Prefs.materialYouProgressPalette.read(prefs)
+                materialYouProgressShade = Prefs.materialYouProgressShade.read(prefs)
+                materialYouSuccessPalette = Prefs.materialYouSuccessPalette.read(prefs)
+                materialYouSuccessShade = Prefs.materialYouSuccessShade.read(prefs)
+                materialYouErrorPalette = Prefs.materialYouErrorPalette.read(prefs)
+                materialYouErrorShade = Prefs.materialYouErrorShade.read(prefs)
                 selectedPackages = Prefs.selectedPackages.read(prefs)
             }
         }.onFailure { log("refreshCache() failed", it) }

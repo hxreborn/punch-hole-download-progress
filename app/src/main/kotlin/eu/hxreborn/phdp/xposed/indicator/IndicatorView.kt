@@ -1,5 +1,6 @@
 package eu.hxreborn.phdp.xposed.indicator
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -9,6 +10,7 @@ import android.graphics.Path
 import android.graphics.PixelFormat
 import android.graphics.RectF
 import android.graphics.Typeface
+import android.os.Build
 import android.text.TextPaint
 import android.view.DisplayCutout
 import android.view.Surface
@@ -140,6 +142,8 @@ class IndicatorView(
             }
         }
 
+    private var resolvedRingColor = PrefsManager.color
+
     private val glowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private val shinePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private val errorPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
@@ -209,7 +213,19 @@ class IndicatorView(
         }
     }
 
+    @SuppressLint("DiscouragedApi")
+    private fun resolveSystemAccent(
+        palette: String,
+        shade: Int,
+    ): Int? {
+        val resId =
+            context.resources.getIdentifier("system_${palette}_$shade", "color", "android")
+        return if (resId != 0) context.getColor(resId) else null
+    }
+
     private fun updatePaintFromPrefs() {
+        resolvedRingColor = PrefsManager.color
+
         glowPaint.apply {
             color = PrefsManager.color
             alpha = effectiveOpacity * 255 / 100
@@ -239,6 +255,35 @@ class IndicatorView(
             color = PrefsManager.errorColor
             strokeWidth = PrefsManager.strokeWidth * density * ERROR_STROKE_MULTIPLIER
             this.strokeCap = strokeCap
+        }
+
+        if (PrefsManager.materialYouEnabled && Build.VERSION.SDK_INT >= 31) {
+            resolveSystemAccent(
+                PrefsManager.materialYouProgressPalette,
+                PrefsManager.materialYouProgressShade,
+            )?.let { c ->
+                resolvedRingColor = c
+                glowPaint.color = c
+                glowPaint.alpha = effectiveOpacity * 255 / 100
+                glowPaint.setShadowLayer(
+                    if (PrefsManager.glowEnabled) PrefsManager.glowRadius * density else 0f,
+                    0f,
+                    0f,
+                    c,
+                )
+            }
+            resolveSystemAccent(
+                PrefsManager.materialYouSuccessPalette,
+                PrefsManager.materialYouSuccessShade,
+            )?.let { c ->
+                shinePaint.color = c
+            }
+            resolveSystemAccent(
+                PrefsManager.materialYouErrorPalette,
+                PrefsManager.materialYouErrorShade,
+            )?.let { c ->
+                errorPaint.color = c
+            }
         }
 
         backgroundRingPaint.apply {
@@ -285,10 +330,10 @@ class IndicatorView(
             )
         }
 
-        badgePainter.updateColors(PrefsManager.color, PrefsManager.badgeTextSize)
+        badgePainter.updateColors(resolvedRingColor, PrefsManager.badgeTextSize)
 
         logDebug {
-            "Paint updated: color=${Integer.toHexString(PrefsManager.color)}, " +
+            "Paint updated: color=${Integer.toHexString(resolvedRingColor)}, " +
                 "opacity=$effectiveOpacity, stroke=${PrefsManager.strokeWidth}, " +
                 "gap=${PrefsManager.ringGap}, scaleX=${PrefsManager.ringScaleX}, " +
                 "scaleY=${PrefsManager.ringScaleY}"
@@ -462,14 +507,15 @@ class IndicatorView(
                 ).toInt()
             animatedPaint.strokeCap = strokeCap
             if (animator.successColorBlend > 0f) {
+                val baseColor = resolvedRingColor
                 val successColor =
                     if (PrefsManager.finishUseFlashColor) {
-                        PrefsManager.finishFlashColor
+                        shinePaint.color
                     } else {
-                        brightenColor(PrefsManager.color, animator.successColorBlend)
+                        brightenColor(baseColor, animator.successColorBlend)
                     }
                 animatedPaint.color =
-                    blendColors(PrefsManager.color, successColor, animator.successColorBlend)
+                    blendColors(baseColor, successColor, animator.successColorBlend)
             }
 
             val isActiveProgress =
@@ -624,7 +670,7 @@ class IndicatorView(
             val isLandscape = rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270
             val isVertical = PrefsManager.filenameVerticalText && isLandscape
             if (isVertical && truncated.isNotEmpty()) {
-                filenamePaint.color = PrefsManager.color
+                filenamePaint.color = resolvedRingColor
                 filenamePaint.alpha = alpha
                 val fnOffset = PrefsManager.filenameTextOffsets[slot]
                 val fm = filenamePaint.fontMetrics
@@ -667,7 +713,7 @@ class IndicatorView(
         }
 
         for (spec in specs) {
-            spec.paint.color = PrefsManager.color
+            spec.paint.color = resolvedRingColor
             spec.paint.alpha = alpha
             spec.align?.let { (spec.paint as? TextPaint)?.textAlign = it }
             canvas.drawText(spec.text, spec.x, spec.y, spec.paint)
