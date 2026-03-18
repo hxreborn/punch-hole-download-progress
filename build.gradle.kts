@@ -31,8 +31,6 @@ tasks.register<Exec>("buildLibxposedApi") {
     commandLine(
         "./gradlew",
         ":api:publishApiPublicationToMavenLocal",
-        "-x",
-        ":checks:compileKotlin",
         "--no-daemon",
     )
 }

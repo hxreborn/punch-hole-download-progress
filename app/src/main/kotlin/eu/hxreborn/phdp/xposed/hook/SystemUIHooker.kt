@@ -9,14 +9,13 @@ import android.os.PowerManager
 import androidx.core.view.HapticFeedbackConstantsCompat
 import androidx.core.view.ViewCompat
 import eu.hxreborn.phdp.prefs.PrefsManager
+import eu.hxreborn.phdp.util.accessibleField
 import eu.hxreborn.phdp.util.accessibleFieldFromHierarchy
 import eu.hxreborn.phdp.util.log
+import eu.hxreborn.phdp.util.logDebug
 import eu.hxreborn.phdp.xposed.indicator.IndicatorView
 import eu.hxreborn.phdp.xposed.module
 import io.github.libxposed.api.XposedInterface
-import io.github.libxposed.api.XposedInterface.AfterHookCallback
-import io.github.libxposed.api.annotations.AfterInvocation
-import io.github.libxposed.api.annotations.XposedHooker
 
 private const val CENTRAL_SURFACES_IMPL = "com.android.systemui.statusbar.phone.CentralSurfacesImpl"
 private const val STATUS_BAR = "com.android.systemui.statusbar.phone.StatusBar"
@@ -51,18 +50,16 @@ object SystemUIHooker {
     private fun hookNotificationListener(classLoader: ClassLoader) {
         val targetClass =
             runCatching { classLoader.loadClass(NOTIFICATION_LISTENER) }
-                .onFailure {
-                    log(
-                        "Failed to load $NOTIFICATION_LISTENER",
-                        it,
-                    )
-                }.getOrNull() ?: return
+                .onFailure { log("Failed to load $NOTIFICATION_LISTENER", it) }
+                .getOrNull() ?: return
 
-        targetClass.declaredMethods.filter { it.name == "onNotificationPosted" }.forEach { method ->
-            runCatching {
-                module.hook(method, NotificationAddHooker::class.java)
-            }.onSuccess { log("Hooked NotificationListener.onNotificationPosted") }
-        }
+        targetClass.declaredMethods
+            .filter { it.name == "onNotificationPosted" }
+            .forEach { method ->
+                runCatching {
+                    module.hook(method).intercept(notificationAddHooker)
+                }.onSuccess { log("Hooked NotificationListener.onNotificationPosted") }
+            }
     }
 
     // Earliest reliable SystemUI context for overlay attach
@@ -82,10 +79,27 @@ object SystemUIHooker {
         }
 
         runCatching {
-            module.hook(
-                startMethod,
-                StartHooker::class.java,
-            )
+            module.hook(startMethod).intercept { chain ->
+                val result = chain.proceed()
+                if (isAttached()) return@intercept result
+                val instance = chain.thisObject ?: return@intercept result
+                val context =
+                    runCatching {
+                        instance.javaClass
+                            .accessibleFieldFromHierarchy("mContext")
+                            ?.get(instance) as? Context
+                    }.getOrNull()
+                if (context == null) {
+                    log("Failed to extract Context from ${instance.javaClass.simpleName}")
+                    return@intercept result
+                }
+                runCatching {
+                    val view = IndicatorView.attach(context)
+                    markAttached(view, context)
+                    log("IndicatorView attached")
+                }.onFailure { log("Failed to attach IndicatorView", it) }
+                result
+            }
         }.onSuccess { log("Hooked ${targetClass.simpleName}.start()") }
             .onFailure { log("Hook failed", it) }
     }
@@ -93,22 +107,17 @@ object SystemUIHooker {
     private fun hookNotifications(classLoader: ClassLoader) {
         val targetClass =
             runCatching { classLoader.loadClass(NOTIF_COLLECTION) }
-                .onFailure {
-                    log(
-                        "Failed to load $NOTIF_COLLECTION",
-                        it,
-                    )
-                }.getOrNull() ?: return
+                .onFailure { log("Failed to load $NOTIF_COLLECTION", it) }
+                .getOrNull() ?: return
 
         // postNotification entry point for new notifications on Android 12 and later
-        targetClass.declaredMethods.filter { it.name == "postNotification" }.forEach { method ->
-            runCatching {
-                module.hook(
-                    method,
-                    NotificationAddHooker::class.java,
-                )
-            }.onSuccess { log("Hooked NotifCollection.postNotification") }
-        }
+        targetClass.declaredMethods
+            .filter { it.name == "postNotification" }
+            .forEach { method ->
+                runCatching {
+                    module.hook(method).intercept(notificationAddHooker)
+                }.onSuccess { log("Hooked NotifCollection.postNotification") }
+            }
 
         // Hook notification removal - method name varies by Android version
         // Android 16+: tryRemoveNotification(NotificationEntry)
@@ -119,10 +128,7 @@ object SystemUIHooker {
                     it.name == "onNotificationRemoved"
             }.forEach { method ->
                 runCatching {
-                    module.hook(
-                        method,
-                        NotificationRemoveHooker::class.java,
-                    )
+                    module.hook(method).intercept(notificationRemoveHooker)
                 }.onSuccess { log("Hooked NotifCollection.${method.name}") }
             }
     }
@@ -226,12 +232,9 @@ object SystemUIHooker {
 
     fun detach() {
         powerSaveReceiver?.let { receiver ->
-            runCatching { indicatorView?.context?.unregisterReceiver(receiver) }.onFailure {
-                log(
-                    "Failed to unregister power save receiver",
-                    it,
-                )
-            }
+            runCatching {
+                indicatorView?.context?.unregisterReceiver(receiver)
+            }.onFailure { log("Failed to unregister power save receiver", it) }
         }
         powerSaveReceiver = null
         indicatorView = null
@@ -253,35 +256,55 @@ object SystemUIHooker {
 
         attached = false
     }
-}
 
-@XposedHooker
-class StartHooker : XposedInterface.Hooker {
-    companion object {
-        @JvmStatic
-        @AfterInvocation
-        fun after(callback: AfterHookCallback) {
-            if (SystemUIHooker.isAttached()) return
-
-            val instance = callback.thisObject ?: return
-            val context =
-                runCatching {
-                    instance.javaClass
-                        .accessibleFieldFromHierarchy(
-                            "mContext",
-                        )?.get(instance) as? Context
-                }.getOrNull()
-
-            if (context == null) {
-                log("Failed to extract Context from ${instance.javaClass.simpleName}")
-                return
+    private val notificationAddHooker =
+        XposedInterface.Hooker { chain ->
+            val result = chain.proceed()
+            logDebug { "NotificationAdd: ${chain.args.size} args" }
+            chain.args.forEach {
+                DownloadProgressHooker.processNotificationArg(
+                    it,
+                    DownloadProgressHooker::processNotification,
+                )
             }
-
-            runCatching {
-                val view = IndicatorView.attach(context)
-                SystemUIHooker.markAttached(view, context)
-                log("IndicatorView attached")
-            }.onFailure { log("Failed to attach IndicatorView", it) }
+            result
         }
+
+    private val notificationRemoveHooker =
+        XposedInterface.Hooker { chain ->
+            val result = chain.proceed()
+            val args = chain.args
+            logDebug { "NotificationRemove: ${args.size} args" }
+            val reason = extractRemovalReason(args)
+            args.forEach { arg ->
+                if (arg == null) return@forEach
+                when {
+                    DownloadProgressHooker.isStatusBarNotification(arg) -> {
+                        DownloadProgressHooker.onNotificationRemoved(arg, reason)
+                    }
+
+                    arg.javaClass.name.contains("NotificationEntry") -> {
+                        runCatching {
+                            arg.javaClass.accessibleField("mSbn").get(arg)
+                        }.getOrNull()
+                            ?.let { DownloadProgressHooker.onNotificationRemoved(it, reason) }
+                    }
+                }
+            }
+            result
+        }
+
+    private fun extractRemovalReason(args: List<Any?>): Int {
+        // Android 12-15: onNotificationRemoved(sbn, ranking, int_reason)
+        if (args.size >= 3) (args[2] as? Int)?.let { return it }
+        // Android 16+: tryRemoveNotification(NotificationEntry)
+        args.firstOrNull()?.let { entry ->
+            if (entry.javaClass.name.contains("NotificationEntry")) {
+                runCatching {
+                    entry.javaClass.accessibleField("mCancellationReason").getInt(entry)
+                }.getOrNull()?.let { return it }
+            }
+        }
+        return -1
     }
 }

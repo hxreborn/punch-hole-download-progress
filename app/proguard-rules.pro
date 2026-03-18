@@ -1,27 +1,18 @@
 # Keep LSPosed module entry point
 -keep class eu.hxreborn.phdp.xposed.PHDPModule { *; }
 
-# Keep all hooker classes and their methods
--keep @io.github.libxposed.api.annotations.XposedHooker class * { *; }
-
-# Keep libxposed API annotations
--keep class io.github.libxposed.api.annotations.** { *; }
--keepattributes *Annotation*
--keepattributes RuntimeVisibleAnnotations
-
-# Prevent R8 from removing hook methods
--keepclassmembers class * {
-    @io.github.libxposed.api.annotations.BeforeInvocation <methods>;
-    @io.github.libxposed.api.annotations.AfterInvocation <methods>;
-}
-
 # Xposed module class pattern
+-keepattributes RuntimeVisibleAnnotations
 -adaptresourcefilecontents META-INF/xposed/java_init.list
 -keep,allowobfuscation,allowoptimization public class * extends io.github.libxposed.api.XposedModule {
-    public <init>(...);
+    public <init>();
     public void onPackageLoaded(...);
-    public void onSystemServerLoaded(...);
+    public void onPackageReady(...);
+    public void onSystemServerStarting(...);
 }
+
+# Prevent R8 from merging hook classes into app process code (compileOnly API)
+-keep,allowobfuscation class eu.hxreborn.phdp.xposed.hook.** { *; }
 
 # Keep PrefsManager for remote preferences
 -keep class eu.hxreborn.phdp.prefs.PrefsManager { *; }
