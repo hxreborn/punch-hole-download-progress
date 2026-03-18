@@ -41,7 +41,9 @@ jobs:
           TAG="${{ inputs.tag || github.ref_name }}"
           VERSION_NAME="${TAG#v}"
           IFS='.' read -r MAJOR MINOR PATCH _ <<< "$VERSION_NAME"
-          VERSION_CODE=$((MAJOR * 10000 + MINOR * 1000 + PATCH))
+          CALCULATED=$((MAJOR * 10000 + MINOR * 1000 + PATCH))
+          PROPS=$(grep '^version\.code=' gradle.properties | cut -d= -f2)
+          VERSION_CODE=$(( CALCULATED > PROPS ? CALCULATED : PROPS ))
           echo "name=$VERSION_NAME" >> $GITHUB_OUTPUT
           echo "code=$VERSION_CODE" >> $GITHUB_OUTPUT
           if [[ "$VERSION_NAME" =~ (rc|alpha|beta) ]]; then
