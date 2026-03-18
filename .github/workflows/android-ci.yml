@@ -11,21 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
           cache: gradle
-
-      - name: Build libxposed to mavenLocal
-        uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 10
-          max_attempts: 3
-          command: ./gradlew buildLibxposed
 
       - name: Build
         run: ./gradlew assembleDebug assembleRelease

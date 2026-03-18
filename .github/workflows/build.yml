@@ -25,7 +25,6 @@ jobs:
         with:
           ref: ${{ inputs.tag || github.ref }}
           fetch-depth: 0
-          submodules: recursive
 
       - uses: actions/setup-java@v4
         with:
@@ -51,13 +50,6 @@ jobs:
           else
             echo "prerelease=false" >> $GITHUB_OUTPUT
           fi
-
-      - name: Build libxposed to mavenLocal
-        uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 10
-          max_attempts: 3
-          command: ./gradlew buildLibxposed
 
       - name: Build APKs
         run: |

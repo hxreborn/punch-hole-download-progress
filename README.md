@@ -50,9 +50,8 @@ The app includes a built-in `Restart SystemUI` option in the overflow menu. Magi
 ## Build
 
 ```bash
-git clone --recurse-submodules https://github.com/hxreborn/punch-hole-download-progress.git
+git clone https://github.com/hxreborn/punch-hole-download-progress.git
 cd punch-hole-download-progress
-./gradlew buildLibxposed
 ./gradlew assembleRelease
 ```
 
