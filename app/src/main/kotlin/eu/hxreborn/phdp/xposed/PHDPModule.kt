@@ -6,24 +6,20 @@ import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.util.Logger
 import eu.hxreborn.phdp.util.log
 import eu.hxreborn.phdp.xposed.hook.SystemUIHooker
-import io.github.libxposed.api.XposedInterface
 import io.github.libxposed.api.XposedModule
 import io.github.libxposed.api.XposedModuleInterface.ModuleLoadedParam
-import io.github.libxposed.api.XposedModuleInterface.PackageLoadedParam
+import io.github.libxposed.api.XposedModuleInterface.PackageReadyParam
 
 internal lateinit var module: PHDPModule
 
-class PHDPModule(
-    base: XposedInterface,
-    param: ModuleLoadedParam,
-) : XposedModule(base, param) {
-    init {
+class PHDPModule : XposedModule() {
+    override fun onModuleLoaded(param: ModuleLoadedParam) {
         module = this
         Logger.attach(this)
-        log("Module v${BuildConfig.VERSION_NAME} on ${base.frameworkName} ${base.frameworkVersion}")
+        log("Module v${BuildConfig.VERSION_NAME} on $frameworkName $frameworkVersion")
     }
 
-    override fun onPackageLoaded(param: PackageLoadedParam) {
+    override fun onPackageReady(param: PackageReadyParam) {
         if (param.packageName != SYSTEMUI_PACKAGE || !param.isFirstPackage) return
 
         log("Device: ${Build.MANUFACTURER} ${Build.MODEL} (SDK ${Build.VERSION.SDK_INT})")

@@ -96,7 +96,7 @@ private val darkScheme =
 @Composable
 fun AppTheme(
     darkThemeConfig: DarkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
-    useDynamicColor: Boolean = true,
+    useDynamicColor: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val darkTheme =

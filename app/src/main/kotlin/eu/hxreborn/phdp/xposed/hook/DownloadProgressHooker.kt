@@ -5,10 +5,6 @@ import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.util.accessibleField
 import eu.hxreborn.phdp.util.log
 import eu.hxreborn.phdp.util.logDebug
-import io.github.libxposed.api.XposedInterface
-import io.github.libxposed.api.XposedInterface.AfterHookCallback
-import io.github.libxposed.api.annotations.AfterInvocation
-import io.github.libxposed.api.annotations.XposedHooker
 import java.lang.reflect.Method
 import java.util.concurrent.ConcurrentHashMap
 
@@ -230,67 +226,6 @@ object DownloadProgressHooker {
                     .getOrNull()
                     ?.let(action)
             }
-        }
-    }
-}
-
-@XposedHooker
-class NotificationAddHooker : XposedInterface.Hooker {
-    companion object {
-        @JvmStatic
-        @AfterInvocation
-        fun after(callback: AfterHookCallback) {
-            logDebug { "NotificationAddHooker: ${callback.args.size} args" }
-            callback.args.forEach {
-                DownloadProgressHooker.processNotificationArg(
-                    it,
-                    DownloadProgressHooker::processNotification,
-                )
-            }
-        }
-    }
-}
-
-@XposedHooker
-class NotificationRemoveHooker : XposedInterface.Hooker {
-    companion object {
-        @JvmStatic
-        @AfterInvocation
-        fun after(callback: AfterHookCallback) {
-            val args = callback.args
-            logDebug { "NotificationRemoveHooker: ${args.size} args" }
-            val reason = extractRemovalReason(args)
-
-            args.forEach { arg ->
-                if (arg == null) return@forEach
-                when {
-                    DownloadProgressHooker.isStatusBarNotification(arg) -> {
-                        DownloadProgressHooker.onNotificationRemoved(arg, reason)
-                    }
-
-                    arg.javaClass.name.contains("NotificationEntry") -> {
-                        runCatching { arg.javaClass.accessibleField("mSbn").get(arg) }
-                            .getOrNull()
-                            ?.let { DownloadProgressHooker.onNotificationRemoved(it, reason) }
-                    }
-                }
-            }
-        }
-
-        private fun extractRemovalReason(args: Array<Any?>): Int {
-            // Android 12-15: onNotificationRemoved(sbn, ranking, int_reason)
-            if (args.size >= 3) {
-                (args[2] as? Int)?.let { return it }
-            }
-            // Android 16+: tryRemoveNotification(NotificationEntry) — read mCancellationReason
-            args.firstOrNull()?.let { entry ->
-                if (entry.javaClass.name.contains("NotificationEntry")) {
-                    runCatching {
-                        entry.javaClass.accessibleField("mCancellationReason").getInt(entry)
-                    }.getOrNull()?.let { return it }
-                }
-            }
-            return -1
         }
     }
 }

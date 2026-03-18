@@ -6,7 +6,7 @@ import io.github.libxposed.api.XposedModule
 
 object Logger {
     @PublishedApi
-    internal val tag = BuildConfig.APPLICATION_ID
+    internal const val TAG = "PHDP"
 
     @Volatile
     @PublishedApi
@@ -21,14 +21,18 @@ object Logger {
         throwable: Throwable? = null,
     ) {
         val m = module ?: return
-        throwable?.let { m.log(message, it) } ?: m.log(message)
+        if (throwable != null) {
+            m.log(Log.ERROR, TAG, message, throwable)
+        } else {
+            m.log(Log.INFO, TAG, message)
+        }
     }
 
     inline fun logDebug(message: () -> String) {
         if (!BuildConfig.DEBUG) return
         val msg = message()
-        module?.log(msg)
-        Log.d(tag, msg)
+        module?.log(Log.DEBUG, TAG, msg)
+        Log.d(TAG, msg)
     }
 }
 

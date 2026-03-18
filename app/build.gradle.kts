@@ -1,41 +1,20 @@
-import java.io.ByteArrayOutputStream
-
 plugins {
     alias(libs.plugins.agp.app)
-    alias(libs.plugins.kotlin)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.serialization)
     alias(libs.plugins.aboutlibraries)
-    alias(libs.plugins.ktlint)
 }
 
-val gitCommitCount: Int by lazy {
-    ByteArrayOutputStream()
-        .also { stdout ->
-            exec {
-                commandLine("git", "rev-list", "--count", "HEAD")
-                standardOutput = stdout
-            }
-        }.toString()
-        .trim()
-        .toIntOrNull() ?: 0
-}
+val gitCommitCount: Provider<String> = providers.exec {
+    commandLine("git", "rev-list", "--count", "HEAD")
+}.standardOutput.asText.map { it.trim() }
 
-val gitDescribe: String by lazy {
-    ByteArrayOutputStream()
-        .also { stdout ->
-            exec {
-                commandLine("git", "describe", "--tags", "--always")
-                standardOutput = stdout
-            }
-        }.toString()
-        .trim()
-        .removePrefix("v")
-}
+val gitDescribe: Provider<String> = providers.exec {
+    commandLine("git", "describe", "--tags", "--always")
+}.standardOutput.asText.map { it.trim().removePrefix("v") }
 
-val versionMajor: Int by lazy {
-    gitDescribe.removePrefix("v").substringBefore(".").toIntOrNull() ?: 0
-}
+val versionMajor: Provider<Int> =
+    gitDescribe.map { it.substringBefore(".").toIntOrNull() ?: 0 }
 
 android {
     namespace = "eu.hxreborn.phdp"
@@ -46,9 +25,9 @@ android {
         minSdk = 28
         targetSdk = 36
         versionCode = project.findProperty("version.code")?.toString()?.toInt()
-            ?: (versionMajor * 10000 + gitCommitCount)
+            ?: (versionMajor.get() * 10000 + gitCommitCount.get().toInt())
         versionName = project.findProperty("version.name")?.toString()
-            ?: gitDescribe
+            ?: gitDescribe.get()
     }
 
     androidResources {
@@ -109,7 +88,7 @@ android {
 
     packaging {
         resources {
-            pickFirsts += "META-INF/xposed/*"
+            merges += "META-INF/xposed/*"
         }
     }
 
@@ -121,25 +100,18 @@ android {
     }
 }
 
-android.applicationVariants.all {
-    outputs.forEach { output ->
-        if (output is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
-            output.outputFileName = "phdp-v$versionName-$name.apk"
-        }
-    }
-}
+base.archivesName = "phdp-v${
+    project.findProperty("version.name")?.toString() ?: gitDescribe.get()
+}"
 
 kotlin {
     jvmToolchain(21)
 }
 
-ktlint {
-    version.set("1.8.0")
-    android.set(true)
-    ignoreFailures.set(false)
-}
+val ktlintClasspath by configurations.creating
 
 dependencies {
+    ktlintClasspath("com.pinterest.ktlint:ktlint-cli:1.8.0")
     compileOnly(libs.libxposed.api)
     implementation(libs.libxposed.service)
     implementation(libs.libsu.core)
@@ -162,6 +134,22 @@ dependencies {
     implementation(libs.compose.preference)
     implementation(libs.aboutlibraries.core)
     implementation(libs.aboutlibraries.compose)
+}
+
+tasks.register<JavaExec>("ktlintCheck") {
+    group = "verification"
+    description = "Check Kotlin code style"
+    mainClass.set("com.pinterest.ktlint.Main")
+    classpath = ktlintClasspath
+    args("src/**/*.kt")
+}
+
+tasks.register<JavaExec>("ktlintFormat") {
+    group = "formatting"
+    description = "Format Kotlin code style"
+    mainClass.set("com.pinterest.ktlint.Main")
+    classpath = ktlintClasspath
+    args("-F", "src/**/*.kt")
 }
 
 tasks.named("preBuild").configure {

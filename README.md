@@ -3,8 +3,9 @@
 Xposed module that displays download progress as an animated ring around the camera cutout.
 
 ![Android CI](https://github.com/hxreborn/punch-hole-download-progress/actions/workflows/android-ci.yml/badge.svg)
-![Kotlin](https://img.shields.io/badge/Kotlin-2.1.21-7F52FF?style=flat&logo=kotlin&logoColor=white)
+![Kotlin](https://img.shields.io/badge/Kotlin-2.3.10-7F52FF?style=flat&logo=kotlin&logoColor=white)
 ![Android](https://img.shields.io/badge/API-28%2B-3DDC84?logo=android&logoColor=white)
+![Xposed Repo](https://img.shields.io/github/downloads/Xposed-Modules-Repo/eu.hxreborn.phdp/total?label=Xposed%20Repo&logo=android&logoColor=white&color=3DDC84)
 
 <div align="center">
   <img src=".github/assets/demo-pop.gif" alt="Download progress animation" width="320" />
@@ -17,18 +18,16 @@ Xposed module that displays download progress as an animated ring around the cam
 - Customizable appearance: colors per state (active/completed/failed), arc thickness, opacity, and direction
 - Completion animations and optional haptic feedback
 - Per-rotation calibration for percentage text, filename text, and badge offsets (0° / 90° / 180° / 270°)
-- Calibration screens show the current rotation slot while tuning offsets
 - Optional vertical filename text layout in landscape
 - Active download counter badge
 - Battery saver-aware rendering
 - Built-in test mode for simulating states
-- Theme preference: light, dark, or follow system with Material You dynamic colors
 - Material 3 Expressive settings UI with Jetpack Compose
 
 ## Requirements
 
 - Android 9 (API 28) or higher (experimental on Android 9-11)
-- [LSPosed](https://github.com/JingMatrix/LSPosed) (JingMatrix fork recommended)
+- [LSPosed](https://github.com/JingMatrix/LSPosed) Manager 2.0.0+ (JingMatrix fork recommended)
 - Pixel/AOSP-based ROM (other ROMs may not work as expected)
 - Root access (optional, for `Restart SystemUI` in settings)
 - A phone with a punch-hole display
