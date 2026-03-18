@@ -40,9 +40,8 @@ jobs:
         run: |
           TAG="${{ inputs.tag || github.ref_name }}"
           VERSION_NAME="${TAG#v}"
-          MAJOR=${VERSION_NAME%%.*}
-          COMMITS=$(git rev-list --count HEAD)
-          VERSION_CODE=$((MAJOR * 10000 + COMMITS))
+          IFS='.' read -r MAJOR MINOR PATCH _ <<< "$VERSION_NAME"
+          VERSION_CODE=$((MAJOR * 10000 + MINOR * 1000 + PATCH))
           echo "name=$VERSION_NAME" >> $GITHUB_OUTPUT
           echo "code=$VERSION_CODE" >> $GITHUB_OUTPUT
           if [[ "$VERSION_NAME" =~ (rc|alpha|beta) ]]; then
