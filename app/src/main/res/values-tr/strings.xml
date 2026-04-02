@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kamera Deliği İndirme İlerlemesi</string>
+    <string name="app_desc">Kamera deliği etrafında etkinlik gösterge halkası</string>
+
+    <!-- Navigation -->
+    <string name="back">Geri</string>
+    <string name="orientation_r0">Dikey (0°)</string>
+    <string name="orientation_r90">Yatay Sağ (90°)</string>
+    <string name="orientation_r180">Ters Dikey (180°)</string>
+    <string name="orientation_r270">Yatay Sol (270°)</string>
+
+    <!-- Restart SystemUI -->
+    <string name="restart_systemui">SystemUI\'ı Yeniden Başlat</string>
+    <string name="restart_systemui_confirm">Bu işlem değişiklikleri uygulamak için SystemUI\'ı yeniden başlatacak. Devam edilsin mi?</string>
+    <string name="restart">Yeniden Başlat</string>
+    <string name="restart_failed_detail">SystemUI yeniden başlatılamadı: %1$s</string>
+    <string name="root_not_granted">Kök (Root) izni verilmedi. Lütfen Punch-hole Download Progress uygulamasına kök erişimi verin.</string>
+
+    <!-- Value Formats -->
+    <string name="color_selected">Seçilen</string>
+    <string name="more_options">Daha fazla seçenek</string>
+
+    <!-- Tab Titles -->
+    <string name="tab_design">Görünüm</string>
+    <string name="tab_motion">Davranış</string>
+    <string name="tab_system">Sistem</string>
+    <string name="tab_packages">Uygulamalar</string>
+
+    <!-- Packages -->
+    <string name="packages_search_hint">Uygulamalarda ara…</string>
+    <string name="packages_filter_system">Sistem</string>
+    <string name="packages_selected_count">%1$d seçildi</string>
+    <string name="packages_empty_search">¯\\_(ツ)_/¯</string>
+    <string name="clear_search">Aramayı temizle</string>
+    <string name="clear">Temizle</string>
+    <string name="clear_selection">Tüm seçimleri kaldır</string>
+    <string name="clear_selection_count">Tüm seçimleri kaldır (%1$d)</string>
+    <string name="clear_selection_confirm">Seçilen %1$d uygulama temizlensin mi?</string>
+    <string name="selection_cleared">Seçim temizlendi</string>
+    <string name="apply_defaults">Önerilenleri seç</string>
+    <string name="defaults_applied">%1$d uygulama eklendi</string>
+    <string name="defaults_none_added">Tüm varsayılan uygulamalar zaten seçili</string>
+    <string name="undo">Geri al</string>
+    <string name="help">Sorun Giderme</string>
+    <string name="packages_help">Bu modül, indirmeleri uygulamanın bildirimlerini okuyarak algılar.\n\nİlerleme halkasını görmek için uygulamanın etkin bir şekilde ilerleme çubuğu içeren bir bildirim göstermesi gerekir. Bildirimler devre dışı bırakılır veya gizlenirse halka görünmez.</string>
+
+    <!-- Group Headers -->
+    <string name="group_colors">Renkler</string>
+    <string name="group_geometry">Geometri</string>
+    <string name="group_percent_text">Yüzde Metni</string>
+    <string name="group_filename_text">Dosya Adı Metni</string>
+    <string name="group_app_icon">Kaynak Uygulama</string>
+    <string name="group_animation">Animasyon</string>
+    <string name="group_indicators">Göstergeler</string>
+    <string name="group_feedback">Geri Bildirim</string>
+    <string name="group_app_theme">Uygulama Teması</string>
+    <string name="group_power">Güç</string>
+    <string name="group_diagnostics">Teşhis</string>
+    <string name="group_about">Hakkında</string>
+
+    <!-- Design: Colors -->
+    <string name="pref_progress_color_title">İlerleme rengi</string>
+    <string name="pref_progress_color_summary">Etkin indirmeler sırasında halkanın dolgu rengi</string>
+    <string name="pref_success_color_title">Tamamlanma rengi</string>
+    <string name="pref_success_color_summary">İndirme bittiğinde uygulanan halka rengi</string>
+    <string name="pref_error_color_title">Hata rengi</string>
+    <string name="pref_error_color_summary">İndirme başarısız olduğunda uygulanan halka rengi</string>
+
+    <!-- Design: Stroke Style -->
+    <string name="pref_stroke_cap_style_title">Halka kenar stili</string>
+    <string name="pref_stroke_cap_style_summary">Halka kenarlarının şekli</string>
+    <string-array name="stroke_cap_entries">
+        <item>Düz</item>
+        <item>Yarım Daire</item>
+        <item>Kare</item>
+    </string-array>
+    <string-array name="stroke_cap_values">
+        <item>flat</item>
+        <item>round</item>
+        <item>square</item>
+    </string-array>
+
+    <!-- Design: Background Ring -->
+    <string name="group_background_ring">Arka Plan Halkası</string>
+    <string name="pref_background_ring_enabled_title">Arka plan halkasını göster</string>
+    <string name="pref_background_ring_enabled_summary">İlerleme halkasının arkasındaki soluk halka</string>
+    <string name="pref_background_ring_color_title">Arka plan halkası rengi</string>
+    <string name="pref_background_ring_color_summary">Arka plan halkasının rengi</string>
+    <string name="pref_background_ring_opacity_title">Arka plan halkası opaklığı</string>
+
+    <!-- Design: Glow -->
+    <string name="pref_glow_enabled_title">Parlama efekti</string>
+    <string name="pref_glow_enabled_summary">İlerleme halkasının etrafındaki hale</string>
+    <string name="pref_glow_radius_title">Parlama yarıçapı</string>
+    <string name="pref_glow_radius_summary">Parlama halesinin boyutu</string>
+
+    <!-- Design: Geometry -->
+    <string name="pref_stroke_width_title">Kalınlık</string>
+    <string name="pref_stroke_width_summary">İlerleme yayı genişliği</string>
+    <string name="pref_cutout_padding_title">Kamera deliği boşluğu</string>
+    <string name="pref_cutout_padding_summary">Kamera kenarından mesafe çarpanı</string>
+    <string name="pref_opacity_title">Opaklık</string>
+    <string name="pref_opacity_summary">İlerleme göstergesinin şeffaflık seviyesi</string>
+    <string name="pref_ring_scale_linked_title">Ölçeği bağla</string>
+    <string name="pref_ring_scale_linked_summary">Genişliği ve yüksekliği birlikte ayarla</string>
+    <string name="pref_ring_scale_x_title">Genişlik ölçeği</string>
+    <string name="pref_ring_scale_x_summary">Yatay halka esnetme</string>
+    <string name="pref_ring_scale_y_title">Yükseklik ölçeği</string>
+    <string name="pref_ring_scale_y_summary">Dikey halka esnetme</string>
+    <string name="group_advanced">Gelişmiş</string>
+    <string name="pref_path_mode_title">Yol modu</string>
+    <string name="pref_path_mode_summary">Alternatif halka çizim yöntemini kullanın. Kamera deliğiniz hap şeklindeyse etkinleştirin</string>
+
+    <!-- Design: Calibration -->
+    <string name="pref_calibrate_ring_title">Halkayı kalibre et</string>
+    <string name="pref_calibrate_ring_summary">Halka konumunu ve boyutunu ayarla</string>
+    <string name="group_calibration">Halka Kalibrasyonu</string>
+    <string name="group_position">Konum</string>
+    <string name="group_size">Boyut</string>
+    <string name="pref_ring_offset_x_title">Yatay kaydırma</string>
+    <string name="pref_ring_offset_x_summary">Halkayı sola veya sağa taşı</string>
+    <string name="pref_ring_offset_y_title">Dikey kaydırma</string>
+    <string name="pref_ring_offset_y_summary">Halkayı yukarı veya aşağı taşı</string>
+
+    <!-- Design: Percentage Text -->
+    <string name="pref_show_percentage_title">Yüzde etiketi</string>
+    <string name="pref_show_percentage_summary">Mevcut ilerlemeyi sayısal metin olarak göster</string>
+    <string name="pref_calibrate_percent_title">Yüzdeyi kalibre et</string>
+    <string name="pref_calibrate_percent_summary">Yüzde etiketinin yerleşimini ayarla</string>
+
+    <!-- Design: Filename Text -->
+    <string name="pref_show_filename_title">Dosya adı etiketi</string>
+    <string name="pref_show_filename_summary">İndirilen dosyanın adını göster</string>
+    <string name="pref_calibrate_filename_title">Dosya adını kalibre et</string>
+    <string name="pref_calibrate_filename_summary">Dosya adı etiketinin yerleşimini ayarla</string>
+
+    <!-- Design: App Icon -->
+    <string name="pref_app_icon_enabled_title">Kaynak uygulama simgesi</string>
+    <string name="pref_app_icon_enabled_summary">İndirmeyi hangi uygulamanın başlattığını göster</string>
+    <string name="pref_app_icon_monochrome_title">Tek renkli simge</string>
+    <string name="pref_app_icon_monochrome_summary">Temalı simge silüetini kullanarak halka rengine tonla</string>
+    <string name="pref_app_icon_size_title">Simge boyutu</string>
+    <string name="pref_app_icon_size_summary">Kaynak uygulama simgesinin boyutunu ayarla</string>
+    <string name="pref_calibrate_app_icon_title">Kaynak simgeyi kalibre et</string>
+    <string name="pref_calibrate_app_icon_summary">Kaynak uygulama simgesinin yerleşimini ayarla</string>
+
+    <!-- Motion: Animation -->
+    <string name="pref_completion_style_title">Tamamlanma stili</string>
+    <string name="pref_completion_style_summary">İndirmeler bittiğinde gösterilecek görsel efekt</string>
+    <string name="pref_segment_count_title">Parça sayısı</string>
+    <string name="pref_segment_count_summary">Tamamlanma animasyonundaki parça sayısı</string>
+    <string name="pref_segment_gap_title">Parça boşluğu</string>
+    <string name="pref_segment_gap_summary">Derece cinsinden parçalar arası boşluk</string>
+
+    <!-- Motion: Timing -->
+
+    <!-- Motion: Feedback -->
+    <string name="pref_haptic_feedback_title">Dokunsal geri bildirim</string>
+    <string name="pref_haptic_feedback_summary">İndirme tamamlandığında titreş</string>
+    <string name="pref_pulse_flash_title">Tamamlanma atımı</string>
+    <string name="pref_pulse_flash_summary">Tamamlanma animasyonundan önce kısa süreli kararma</string>
+
+    <!-- Motion: Fast Downloads -->
+
+    <!-- System: Service -->
+
+    <!-- System: Visibility -->
+    <string name="pref_show_queue_count_title">Kuyruk sayacı</string>
+    <string name="pref_show_queue_count_summary">Aynı anda devam eden etkin indirmelerin sayısını göster</string>
+    <string name="pref_calibrate_badge_title">Sayacı kalibre et</string>
+    <string name="pref_calibrate_badge_summary">Kuyruk sayacının yerleşimini ayarla</string>
+    <string name="pref_font_size_title">Yazı tipi boyutu</string>
+    <string name="pref_bold_title">Kalın</string>
+    <string name="pref_italic_title">İtalik</string>
+    <string name="pref_text_style_title">Metin stili</string>
+    <string name="group_typography">Tipografi</string>
+    <string name="group_layout">Düzen</string>
+    <string name="pref_ellipsize_title">Metin kısaltma</string>
+    <string name="ellipsize_start">Başlangıç</string>
+    <string name="ellipsize_middle">Orta</string>
+    <string name="ellipsize_end">Son</string>
+    <string name="pref_filename_truncate_title">Karakter sınırı</string>
+    <string name="pref_filename_max_chars_title">Maksimum karakter</string>
+    <string name="pref_filename_vertical_title">Dikey metin</string>
+    <string name="pref_filename_vertical_summary">Yatay yöndeyken her karakteri dikey bir çizgi halinde çiz</string>
+    <string name="pref_preview_text_title">Önizleme metni</string>
+    <string name="pref_invert_rotation_title">İlerleme yönü</string>
+    <string name="clockwise">Saat yönü</string>
+    <string name="counter_clockwise">Saat yönünün tersi</string>
+
+    <!-- Material You -->
+    <string name="pref_material_you_title">Material You</string>
+    <string name="pref_material_you_summary">Halka renklerini duvar kağıdı paletinizle eşleştirin</string>
+    <string name="pref_material_you_configure_title">Renk eşleştirme</string>
+    <string name="pref_material_you_configure_summary">Her gösterge rolüne sistem paleti renkleri atayın</string>
+    <string name="group_material_you_progress">İlerleme</string>
+    <string name="group_material_you_success">Tamamlanma</string>
+    <string name="group_material_you_error">Hata</string>
+    <string name="material_you_row_primary">Birincil</string>
+    <string name="material_you_row_secondary">İkincil</string>
+    <string name="material_you_row_tertiary">Üçüncül</string>
+    <string name="material_you_row_neutral">Nötr</string>
+    <string name="material_you_row_neutral_variant">Nötr Var.</string>
+    <string name="material_you_preset_default">Varsayılan</string>
+    <string name="material_you_preset_primary">Birincil</string>
+    <string name="material_you_preset_muted">Soluk</string>
+    <string name="material_you_preset_mono">Mono</string>
+    <string name="material_you_preset_custom">Özel</string>
+
+    <!-- System: Power -->
+    <string name="pref_theme_title">Tema</string>
+    <string name="pref_theme_summary">Açık, koyu veya sistem varsayılanını seçin</string>
+    <string name="pref_dynamic_color_title">Dinamik renk</string>
+    <string name="pref_dynamic_color_summary">Duvar kağıdından Material You renklerini kullanın</string>
+    <string name="pref_battery_saver_title">Pil tasarrufu modu</string>
+    <string name="pref_battery_saver_summary">Pil tasarrufu sırasında gösterge davranışı</string>
+
+    <!-- System: Diagnostics -->
+    <string name="pref_debug_completion_title">Tamamlanmayı simüle et</string>
+    <string name="pref_debug_completion_summary">Test için bir tamamlanma animasyonu tetikle</string>
+    <string name="pref_test_failure_title">Hatayı simüle et</string>
+    <string name="pref_test_failure_summary">Test için bir hata animasyonu tetikle</string>
+    <string name="pref_clear_downloads_title">İndirmeleri temizle</string>
+    <string name="pref_clear_downloads_summary">Takılı kalan indirme göstergelerini sıfırla</string>
+    <string name="clear_downloads_done">İndirmeler temizlendi</string>
+
+    <!-- System: About -->
+    <string name="pref_version_title">Sürüm</string>
+    <string name="pref_version_copied">Sürüm kopyalandı</string>
+    <string name="pref_git_repo">Kaynak kodu</string>
+    <string name="pref_git_repo_summary">Projeyi GitHub\'da inceleyin</string>
+    <string name="pref_licenses">Üçüncü taraf lisansları</string>
+    <string name="pref_licenses_summary">Bu uygulama tarafından kullanılan kütüphaneler ve lisansları</string>
+    <string name="pref_report_issue">Sorun bildir</string>
+    <string name="pref_report_issue_summary">GitHub\'da bir hata bildirin veya özellik önerin</string>
+
+    <!-- Color Picker -->
+    <string name="pick_color">Renk Seç</string>
+
+    <!-- Reset -->
+    <string name="reset_defaults">Varsayılanlara Sıfırla</string>
+    <string name="reset_confirm">Tüm ayarlar varsayılanlara sıfırlansın mı?</string>
+    <string name="reset_done">Ayarlar sıfırlandı</string>
+    <string name="reset">Sıfırla</string>
+    <string name="character_count">Karakter sayısı: %d</string>
+    <string name="increase">Artır</string>
+    <string name="decrease">Azalt</string>
+
+    <!-- Dialog Arrays: Completion Style -->
+    <string-array name="finish_style_entries">
+        <item>Anında</item>
+        <item>Sıçrama</item>
+        <item>Parçalı</item>
+    </string-array>
+    <string-array name="finish_style_values">
+        <item>snap</item>
+        <item>pop</item>
+        <item>segmented</item>
+    </string-array>
+
+    <!-- Dialog Arrays: Power Saver -->
+    <string-array name="power_saver_entries">
+        <item>Normal</item>
+        <item>Soluk Halka</item>
+        <item>Animasyonları Kapat</item>
+    </string-array>
+    <string-array name="power_saver_values">
+        <item>normal</item>
+        <item>dim</item>
+        <item>disable</item>
+    </string-array>
+
+    <!-- Dialog Arrays: App Theme -->
+    <string-array name="theme_entries">
+        <item>Sistem</item>
+        <item>Açık</item>
+        <item>Koyu</item>
+    </string-array>
+    <string-array name="theme_values">
+        <item>follow_system</item>
+        <item>light</item>
+        <item>dark</item>
+    </string-array>
+</resources>
