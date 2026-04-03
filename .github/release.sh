@@ -59,9 +59,8 @@ git cliff --config .github/cliff.toml --tag "$TAG" --unreleased
 echo ""
 
 # Check fastlane changelog exists
-MAJOR="${VERSION%%.*}"
-COMMIT_COUNT=$(($(git rev-list --count HEAD) + 1))
-VERSION_CODE=$((MAJOR * 10000 + COMMIT_COUNT))
+IFS='.' read -r MAJOR MINOR PATCH _ <<< "$VERSION"
+VERSION_CODE=$((MAJOR * 10000 + MINOR * 1000 + PATCH))
 CHANGELOG_FILE="fastlane/metadata/android/en-US/changelogs/${VERSION_CODE}.txt"
 
 if [[ ! -f "$CHANGELOG_FILE" ]]; then
