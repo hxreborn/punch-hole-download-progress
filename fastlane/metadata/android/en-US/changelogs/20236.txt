@@ -1,0 +1,2 @@
+Show source app icon next to the download progress ring
+Add Turkish translation
