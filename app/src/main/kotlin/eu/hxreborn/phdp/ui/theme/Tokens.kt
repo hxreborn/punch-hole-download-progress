@@ -44,7 +44,6 @@ object Tokens {
     // App specific settings layout ColorBlendr style
     // Each row is its own surface with small gap between
     val GroupSpacing: Dp = 6.dp
-    val RowGap: Dp = 2.dp
     val RowCornerRadius: Dp = 24.dp
     val SectionHorizontalMargin: Dp = 12.dp
 
@@ -66,10 +65,6 @@ object Tokens {
     const val SHIMMER_PLACEHOLDER_COUNT: Int = 6
     const val EMPTY_STATE_FADE_MS: Int = 500
     val EmptyStatePadding: Dp = 48.dp
-
-    // App specific section header
-    // Indented from screen edge to align with group content
-    val SectionHeaderStartPadding: Dp = 32.dp
 
     // App specific color picker
     // Custom sizes for color selection UI
