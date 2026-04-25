@@ -11,7 +11,7 @@ activity-compose = "1.13.0"
 navigation3 = "1.2.0-alpha02"
 material3 = "1.5.0-alpha16"
 compose-preference = "1.1.1"
-serialization = "1.8.1"
+serialization = "1.11.0"
 aboutlibraries = "12.2.4"
 ktlint = "1.8.0"
 
