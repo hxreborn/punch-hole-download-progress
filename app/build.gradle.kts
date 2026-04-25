@@ -5,13 +5,19 @@ plugins {
     alias(libs.plugins.aboutlibraries)
 }
 
-val gitCommitCount: Provider<String> = providers.exec {
-    commandLine("git", "rev-list", "--count", "HEAD")
-}.standardOutput.asText.map { it.trim() }
+val gitCommitCount: Provider<String> =
+    providers
+        .exec {
+            commandLine("git", "rev-list", "--count", "HEAD")
+        }.standardOutput.asText
+        .map { it.trim() }
 
-val gitDescribe: Provider<String> = providers.exec {
-    commandLine("git", "describe", "--tags", "--always")
-}.standardOutput.asText.map { it.trim().removePrefix("v") }
+val gitDescribe: Provider<String> =
+    providers
+        .exec {
+            commandLine("git", "describe", "--tags", "--always")
+        }.standardOutput.asText
+        .map { it.trim().removePrefix("v") }
 
 val versionMajor: Provider<Int> =
     gitDescribe.map { it.substringBefore(".").toIntOrNull() ?: 0 }
@@ -158,7 +164,9 @@ val copyAboutLibraries by tasks.registering(Copy::class) {
     into("build/generated/aboutLibrariesRes/raw")
 }
 
-android.sourceSets["main"].res.directories.add("build/generated/aboutLibrariesRes")
+android.sourceSets["main"]
+    .res.directories
+    .add("build/generated/aboutLibrariesRes")
 
 tasks.named("preBuild").configure {
     dependsOn("ktlintCheck", copyAboutLibraries)
