@@ -49,7 +49,11 @@ class MainActivity :
 
         prefs = getSharedPreferences(Prefs.GROUP, MODE_PRIVATE)
         val repository = PrefsRepositoryImpl(prefs) { remotePrefs }
-        viewModel = ViewModelProvider(this, SettingsViewModelFactory(repository))[SettingsViewModelImpl::class.java]
+        viewModel =
+            ViewModelProvider(
+                this,
+                SettingsViewModelFactory(repository, applicationContext),
+            )[SettingsViewModelImpl::class.java]
 
         PHDPApp.addServiceListener(this)
 

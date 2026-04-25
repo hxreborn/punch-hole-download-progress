@@ -625,4 +625,6 @@ internal class PreviewViewModel : SettingsViewModel() {
     override fun simulateFailure() {}
 
     override fun clearDownloads() {}
+
+    override fun setLauncherIconHidden(hidden: Boolean) {}
 }

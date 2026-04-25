@@ -20,6 +20,8 @@ abstract class SettingsViewModel : ViewModel() {
     abstract fun simulateFailure()
 
     abstract fun clearDownloads()
+
+    abstract fun setLauncherIconHidden(hidden: Boolean)
 }
 
 sealed interface SettingsUiState {
@@ -27,5 +29,6 @@ sealed interface SettingsUiState {
 
     data class Success(
         val prefs: PrefsState,
+        val isLauncherIconHidden: Boolean = false,
     ) : SettingsUiState
 }

@@ -224,6 +224,8 @@
     <string name="pref_clear_downloads_title">Clear downloads</string>
     <string name="pref_clear_downloads_summary">Reset stuck download indicators</string>
     <string name="clear_downloads_done">Downloads cleared</string>
+    <string name="pref_hide_launcher_icon_title">Hide Launcher Icon</string>
+    <string name="pref_hide_launcher_icon_summary">Hides app from launcher</string>
 
     <!-- System: About -->
     <string name="pref_version_title">Version</string>

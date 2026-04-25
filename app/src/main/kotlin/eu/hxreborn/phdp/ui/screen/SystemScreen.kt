@@ -46,7 +46,8 @@ fun SystemScreen(
     onNavigateToLicenses: () -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val prefsState = (uiState as? SettingsUiState.Success)?.prefs ?: return
+    val success = uiState as? SettingsUiState.Success ?: return
+    val prefsState = success.prefs
     val context = LocalContext.current
 
     val themeEntries = stringArrayResource(R.array.theme_entries).toList()
@@ -202,6 +203,22 @@ fun SystemScreen(
                                     summary = {
                                         Text(
                                             stringResource(R.string.pref_clear_downloads_summary),
+                                        )
+                                    },
+                                )
+                            },
+                            {
+                                TogglePreferenceWithIcon(
+                                    value = success.isLauncherIconHidden,
+                                    onValueChange = { viewModel.setLauncherIconHidden(it) },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_hide_launcher_icon_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_hide_launcher_icon_summary),
                                         )
                                     },
                                 )
