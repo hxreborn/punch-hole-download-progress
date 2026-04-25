@@ -59,7 +59,7 @@ jobs:
           [ "$apk_count" -gt 0 ] || { echo "::error::No release APK found"; exit 1; }
 
       - name: Create mirror release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           repository: Xposed-Modules-Repo/eu.hxreborn.phdp
           token: ${{ secrets.XPOSED_REPO_PAT }}
