@@ -1,11 +1,10 @@
 # Punch-hole Download Progress
 
-Xposed module that displays download progress as an animated ring around the camera cutout.
+Xposed module that renders download progress as an animated ring around the camera cutout.
 
 ![Android CI](https://github.com/hxreborn/punch-hole-download-progress/actions/workflows/android-ci.yml/badge.svg)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.3.21-7F52FF?style=flat&logo=kotlin&logoColor=white)
 ![Android](https://img.shields.io/badge/API-28%2B-3DDC84?logo=android&logoColor=white)
-![Xposed Repo](https://img.shields.io/github/downloads/Xposed-Modules-Repo/eu.hxreborn.phdp/total?label=Xposed%20Repo&logo=android&logoColor=white&color=3DDC84)
 
 <div align="center">
   <img src=".github/assets/demo-pop.gif" alt="Download progress animation" width="320" />
@@ -15,7 +14,7 @@ Xposed module that displays download progress as an animated ring around the cam
 
 - Progress ring rendered around the camera cutout using the native `DisplayCutout` API
 - Path renderer for pill-shaped cutouts (opt-in)
-- Customizable appearance: colors per state (active/completed/failed), arc thickness, opacity, and direction
+- Configurable colors per state (active/completed/failed), arc thickness, opacity, and direction
 - Completion animations and optional haptic feedback
 - Per-rotation calibration for percentage text, filename text, and badge offsets (0° / 90° / 180° / 270°)
 - Optional vertical filename text layout in landscape
@@ -79,4 +78,4 @@ Pull requests welcome. [Open an issue](https://github.com/hxreborn/punch-hole-do
 
 <a href="LICENSE"><img src=".github/assets/gplv3.svg" height="90" alt="GPLv3"></a>
 
-This project is licensed under the GNU General Public License v3.0 – see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU General Public License v3.0. See [LICENSE](LICENSE) for details.
