@@ -117,7 +117,7 @@ kotlin {
 val ktlintClasspath by configurations.creating
 
 dependencies {
-    ktlintClasspath("com.pinterest.ktlint:ktlint-cli:1.8.0")
+    ktlintClasspath(libs.ktlint.cli)
     compileOnly(libs.libxposed.api)
     implementation(libs.libxposed.service)
     implementation(libs.libsu.core)

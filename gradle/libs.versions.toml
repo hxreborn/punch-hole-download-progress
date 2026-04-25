@@ -13,6 +13,7 @@ material3 = "1.5.0-alpha16"
 compose-preference = "1.1.1"
 serialization = "1.8.1"
 aboutlibraries = "12.2.4"
+ktlint = "1.8.0"
 
 [libraries]
 libxposed-api = { group = "io.github.libxposed", name = "api", version.ref = "xposed" }
@@ -36,6 +37,7 @@ serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serializ
 compose-preference = { group = "me.zhanghai.compose.preference", name = "library", version.ref = "compose-preference" }
 aboutlibraries-core = { group = "com.mikepenz", name = "aboutlibraries-core", version.ref = "aboutlibraries" }
 aboutlibraries-compose = { group = "com.mikepenz", name = "aboutlibraries-compose-m3", version.ref = "aboutlibraries" }
+ktlint-cli = { group = "com.pinterest.ktlint", name = "ktlint-cli", version.ref = "ktlint" }
 
 [plugins]
 agp-app = { id = "com.android.application", version.ref = "agp" }
