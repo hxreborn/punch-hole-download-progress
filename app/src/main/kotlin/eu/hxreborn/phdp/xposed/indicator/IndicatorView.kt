@@ -772,20 +772,17 @@ class IndicatorView(
         when (position) {
             "left" -> {
                 Triple(
-                    textWidth?.let { arcBounds.left - it / 2 - padding }
-                        ?: (arcBounds.left - padding),
+                    if (textWidth != null) arcBounds.left - textWidth / 2 - padding else arcBounds.left - padding,
                     arcBounds.centerY() + textSize / 3,
-                    textWidth?.let { null } ?: Paint.Align.RIGHT,
+                    if (textWidth != null) null else Paint.Align.RIGHT,
                 )
             }
 
             "right" -> {
                 Triple(
-                    textWidth?.let {
-                        arcBounds.right + it / 2 + padding
-                    } ?: (arcBounds.right + padding),
+                    if (textWidth != null) arcBounds.right + textWidth / 2 + padding else arcBounds.right + padding,
                     arcBounds.centerY() + textSize / 3,
-                    textWidth?.let { null } ?: Paint.Align.LEFT,
+                    if (textWidth != null) null else Paint.Align.LEFT,
                 )
             }
 
@@ -839,12 +836,9 @@ class IndicatorView(
 
             else -> {
                 Triple(
-                    textWidth?.let {
-                        arcBounds.right + it / 2 + padding
-                    } ?: (arcBounds.right + padding),
-                    textWidth?.let { arcBounds.centerY() + textSize / 3 }
-                        ?: (arcBounds.top - padding),
-                    textWidth?.let { null } ?: Paint.Align.LEFT,
+                    if (textWidth != null) arcBounds.right + textWidth / 2 + padding else arcBounds.right + padding,
+                    if (textWidth != null) arcBounds.centerY() + textSize / 3 else arcBounds.top - padding,
+                    if (textWidth != null) null else Paint.Align.LEFT,
                 )
             }
         }
@@ -1037,6 +1031,7 @@ class IndicatorView(
         internal const val LABEL_SHADOW_COLOR = 0x80000000.toInt()
         private const val BURN_IN_HIDE_DELAY_MS = 10_000L
 
+        @SuppressLint("InlinedApi")
         fun attach(context: Context): IndicatorView {
             val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
             val view = IndicatorView(context)
