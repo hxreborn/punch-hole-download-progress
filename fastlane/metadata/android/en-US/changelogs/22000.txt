@@ -1,0 +1,6 @@
+Add toggle to hide app icon from launcher
+Restore backup rules on Android 11 and lower
+Gate splash screen attributes to API 31+
+Trim unused string resources and theme tokens
+Drop redundant progress update on stale notifications
+Internal cleanups: ktx migrations, AGP 9.2, Kotlin 2.3.21
