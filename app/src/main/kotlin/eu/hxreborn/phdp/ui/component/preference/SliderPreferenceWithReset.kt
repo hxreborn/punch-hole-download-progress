@@ -174,12 +174,13 @@ private fun SliderPreferencePreview() {
 @Composable
 private fun SliderPreferenceModifiedPreview() {
     AppTheme {
+        val range = Prefs.strokeWidth.range!!
         SliderPreferenceWithReset(
-            value = Prefs.strokeWidth.range!!.endInclusive,
+            value = range.endInclusive,
             onValueChange = {},
             title = { Text(stringResource(R.string.pref_stroke_width_title)) },
             summary = { Text(stringResource(R.string.pref_stroke_width_summary)) },
-            valueRange = Prefs.strokeWidth.range!!,
+            valueRange = range,
             defaultValue = Prefs.strokeWidth.default,
             onReset = {},
             valueText = { Text("%.1fdp".format(it)) },

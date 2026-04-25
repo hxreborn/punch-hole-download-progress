@@ -184,7 +184,7 @@ class IndicatorAnimator(
     ) {
         val totalMs = (holdMs + exitMs).coerceAtMost(MAX_ANIMATION_MS)
         val scalePhaseMs = (totalMs * 0.4f).toLong()
-        val fadePhaseMs = (totalMs - scalePhaseMs).toLong()
+        val fadePhaseMs = totalMs - scalePhaseMs
 
         finishAnimator =
             play(
@@ -219,7 +219,7 @@ class IndicatorAnimator(
     ) {
         val totalMs = (holdMs + exitMs).coerceAtMost(MAX_ANIMATION_MS)
         val cascadePhaseMs = (totalMs * 0.6f).toLong()
-        val fadePhaseMs = (totalMs - cascadePhaseMs).toLong()
+        val fadePhaseMs = totalMs - cascadePhaseMs
 
         finishAnimator =
             playInt(
