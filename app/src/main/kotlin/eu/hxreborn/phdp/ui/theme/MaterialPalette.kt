@@ -1,6 +1,7 @@
 package eu.hxreborn.phdp.ui.theme
 
 // Material Design 2 color palette for user-selectable preferences
+// Note: const omitted to keep PascalCase names without colliding with ktlint property-naming rule
 object MaterialPalette {
     // Primary colors (500 variants)
     val Red500 = 0xFFF44336.toInt()
