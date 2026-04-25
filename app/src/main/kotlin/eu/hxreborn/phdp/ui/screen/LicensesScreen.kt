@@ -12,8 +12,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.mikepenz.aboutlibraries.ui.compose.android.rememberLibraries
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import eu.hxreborn.phdp.R
 
@@ -36,7 +38,9 @@ fun LicensesScreen(onBack: () -> Unit = {}) {
         },
         contentWindowInsets = WindowInsets(0),
     ) { innerPadding ->
+        val libraries by rememberLibraries(R.raw.aboutlibraries)
         LibrariesContainer(
+            libraries = libraries,
             modifier = Modifier.fillMaxSize().padding(innerPadding),
         )
     }
