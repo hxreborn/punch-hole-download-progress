@@ -10,6 +10,7 @@ import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.annotation.ColorInt
+import androidx.core.graphics.createBitmap
 import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.util.log
 
@@ -105,7 +106,7 @@ class IconPainter(
     }
 
     private fun Drawable.toBitmap(sizePx: Int): Bitmap =
-        Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888).also {
+        createBitmap(sizePx, sizePx).also {
             setBounds(0, 0, sizePx, sizePx)
             draw(Canvas(it))
         }
@@ -114,7 +115,7 @@ class IconPainter(
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return null
         val mono = (this as? AdaptiveIconDrawable)?.monochrome ?: return null
         val insetPx = (sizePx * AdaptiveIconDrawable.getExtraInsetFraction()).toInt()
-        return Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888).also {
+        return createBitmap(sizePx, sizePx).also {
             mono.setBounds(-insetPx, -insetPx, sizePx + insetPx, sizePx + insetPx)
             mono.draw(Canvas(it))
         }
