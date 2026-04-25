@@ -62,7 +62,6 @@ class IndicatorAnimator(
 
         const val SEGMENT_COUNT = 12
         const val SEGMENT_GAP_DEGREES = 6f
-        const val SEGMENT_ARC_DEGREES = (360f - SEGMENT_COUNT * SEGMENT_GAP_DEGREES) / SEGMENT_COUNT
     }
 
     private fun play(
@@ -98,7 +97,6 @@ class IndicatorAnimator(
     }
 
     private fun playInt(
-        from: Int,
         to: Int,
         durationMs: Long,
         interpolator: TimeInterpolator = LinearInterpolator(),
@@ -111,7 +109,7 @@ class IndicatorAnimator(
             onEnd?.invoke()
             return ValueAnimator()
         }
-        return ValueAnimator.ofInt(from, to).apply {
+        return ValueAnimator.ofInt(0, to).apply {
             duration = durationMs
             this.interpolator = interpolator
             addUpdateListener {
@@ -139,7 +137,6 @@ class IndicatorAnimator(
         cancelFinish()
         isFinishAnimating = true
 
-        val intensity = FINISH_INTENSITY
         logDebug { "Starting finish animation: style=$style, hold=${holdMs}ms, exit=${exitMs}ms" }
 
         displayAlpha = 1f
@@ -156,15 +153,15 @@ class IndicatorAnimator(
                 }
 
                 "pop" -> {
-                    animatePop(holdMs, exitMs, intensity, onComplete)
+                    animatePop(holdMs, exitMs, onComplete)
                 }
 
                 "segmented" -> {
-                    animateSegmented(holdMs, exitMs, intensity, onComplete)
+                    animateSegmented(holdMs, exitMs, onComplete)
                 }
 
                 else -> {
-                    animatePop(holdMs, exitMs, intensity, onComplete)
+                    animatePop(holdMs, exitMs, onComplete)
                 }
             }
         }
@@ -179,7 +176,6 @@ class IndicatorAnimator(
     private fun animatePop(
         holdMs: Int,
         exitMs: Int,
-        intensity: Float,
         onComplete: () -> Unit,
     ) {
         val totalMs = (holdMs + exitMs).coerceAtMost(MAX_ANIMATION_MS)
@@ -190,10 +186,10 @@ class IndicatorAnimator(
             play(
                 values = floatArrayOf(0f, 1f),
                 durationMs = scalePhaseMs,
-                interpolator = OvershootInterpolator(2f * intensity),
+                interpolator = OvershootInterpolator(2f * FINISH_INTENSITY),
                 onUpdate = { fraction ->
                     displayScale =
-                        1f + (POP_SCALE_FACTOR * intensity * fraction)
+                        1f + (POP_SCALE_FACTOR * FINISH_INTENSITY * fraction)
                 },
                 onEnd = {
                     finishAnimator =
@@ -201,8 +197,8 @@ class IndicatorAnimator(
                             values = floatArrayOf(0f, 1f),
                             durationMs = fadePhaseMs,
                             onUpdate = { fraction ->
-                                displayScale =
-                                    1f + (POP_SCALE_FACTOR * intensity * (1f - fraction * 0.5f))
+                                val scaleFactor = POP_SCALE_FACTOR * FINISH_INTENSITY
+                                displayScale = 1f + (scaleFactor * (1f - fraction * 0.5f))
                                 displayAlpha = 1f - fraction
                             },
                             onEnd = { finishEnd(onComplete) },
@@ -214,7 +210,6 @@ class IndicatorAnimator(
     private fun animateSegmented(
         holdMs: Int,
         exitMs: Int,
-        intensity: Float,
         onComplete: () -> Unit,
     ) {
         val totalMs = (holdMs + exitMs).coerceAtMost(MAX_ANIMATION_MS)
@@ -223,12 +218,11 @@ class IndicatorAnimator(
 
         finishAnimator =
             playInt(
-                from = 0,
                 to = PrefsManager.segmentCount + 2,
                 durationMs = cascadePhaseMs,
                 onUpdate = { segment ->
                     segmentHighlight = segment
-                    successColorBlend = intensity * SEGMENT_COLOR_BLEND_FACTOR
+                    successColorBlend = FINISH_INTENSITY * SEGMENT_COLOR_BLEND_FACTOR
                 },
                 onEnd = {
                     segmentHighlight = -1
@@ -338,7 +332,6 @@ class IndicatorAnimator(
 
         previewAnimator =
             playInt(
-                from = 0,
                 to = 100,
                 durationMs = 800,
                 interpolator = AccelerateDecelerateInterpolator(),

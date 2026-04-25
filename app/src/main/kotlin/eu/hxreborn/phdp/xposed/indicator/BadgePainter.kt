@@ -33,12 +33,12 @@ class BadgePainter(
         textSizeSp: Float = TEXT_SIZE_SP,
     ) {
         val luminance = ColorUtils.calculateLuminance(baseColor)
-        bgPaint.color = darkenColor(baseColor, DARKEN_FACTOR)
+        bgPaint.color = darkenColor(baseColor)
         textPaint.color =
             if (luminance > LUMINANCE_THRESHOLD) {
                 Color.WHITE
             } else {
-                brightenColor(baseColor, BRIGHTEN_FACTOR)
+                brightenColor(baseColor)
             }
         textPaint.textSize = textSizeSp * density
     }
@@ -76,21 +76,19 @@ class BadgePainter(
 
     private fun darkenColor(
         @ColorInt color: Int,
-        factor: Float,
     ): Int {
         val hsl = FloatArray(3)
         ColorUtils.colorToHSL(color, hsl)
-        hsl[2] *= (1f - factor)
+        hsl[2] *= (1f - DARKEN_FACTOR)
         return ColorUtils.HSLToColor(hsl)
     }
 
     private fun brightenColor(
         @ColorInt color: Int,
-        factor: Float,
     ): Int {
         val hsl = FloatArray(3)
         ColorUtils.colorToHSL(color, hsl)
-        hsl[2] += (1f - hsl[2]) * factor
+        hsl[2] += (1f - hsl[2]) * BRIGHTEN_FACTOR
         return ColorUtils.HSLToColor(hsl)
     }
 
