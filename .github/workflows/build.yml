@@ -82,7 +82,7 @@ jobs:
           GITHUB_REPO: ${{ github.repository }}
 
       - name: Create release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ inputs.tag || github.ref_name }}
           prerelease: ${{ steps.version.outputs.prerelease }}
@@ -90,7 +90,7 @@ jobs:
           files: app/build/outputs/apk/release/*.apk
 
       - name: Mirror to Xposed-Modules-Repo
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           repository: Xposed-Modules-Repo/eu.hxreborn.phdp
           token: ${{ secrets.XPOSED_REPO_PAT }}
