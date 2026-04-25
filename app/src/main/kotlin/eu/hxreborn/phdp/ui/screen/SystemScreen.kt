@@ -2,7 +2,6 @@ package eu.hxreborn.phdp.ui.screen
 
 import android.content.Intent
 import android.content.res.Configuration
-import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.hxreborn.phdp.BuildConfig
 import eu.hxreborn.phdp.R
@@ -238,9 +238,7 @@ fun SystemScreen(
                                         context.startActivity(
                                             Intent(
                                                 Intent.ACTION_VIEW,
-                                                Uri.parse(
-                                                    "https://github.com/hxreborn/punch-hole-download-progress",
-                                                ),
+                                                "https://github.com/hxreborn/punch-hole-download-progress".toUri(),
                                             ),
                                         )
                                     },
@@ -277,9 +275,7 @@ fun SystemScreen(
                                         context.startActivity(
                                             Intent(
                                                 Intent.ACTION_VIEW,
-                                                Uri.parse(
-                                                    "https://github.com/hxreborn/punch-hole-download-progress/issues/new/choose",
-                                                ),
+                                                "https://github.com/hxreborn/punch-hole-download-progress/issues/new/choose".toUri(),
                                             ),
                                         )
                                     },
