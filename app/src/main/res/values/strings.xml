@@ -5,10 +5,6 @@
 
     <!-- Navigation -->
     <string name="back">Back</string>
-    <string name="orientation_r0">Portrait (0°)</string>
-    <string name="orientation_r90">Landscape Right (90°)</string>
-    <string name="orientation_r180">Reverse Portrait (180°)</string>
-    <string name="orientation_r270">Landscape Left (270°)</string>
 
     <!-- Restart SystemUI -->
     <string name="restart_systemui">Restart SystemUI</string>
@@ -30,7 +26,6 @@
     <!-- Packages -->
     <string name="packages_search_hint">Search apps…</string>
     <string name="packages_filter_system">System</string>
-    <string name="packages_selected_count">%1$d selected</string>
     <string name="packages_empty_search">¯\\_(ツ)_/¯</string>
     <string name="clear_search">Clear search</string>
     <string name="clear">Clear</string>
@@ -70,16 +65,6 @@
     <!-- Design: Stroke Style -->
     <string name="pref_stroke_cap_style_title">Ring edge style</string>
     <string name="pref_stroke_cap_style_summary">Shape of ring edges</string>
-    <string-array name="stroke_cap_entries">
-        <item>Flat</item>
-        <item>Semicircle</item>
-        <item>Square</item>
-    </string-array>
-    <string-array name="stroke_cap_values">
-        <item>flat</item>
-        <item>round</item>
-        <item>square</item>
-    </string-array>
 
     <!-- Design: Background Ring -->
     <string name="group_background_ring">Background Ring</string>
@@ -105,9 +90,7 @@
     <string name="pref_ring_scale_linked_title">Link scale</string>
     <string name="pref_ring_scale_linked_summary">Adjust width and height together</string>
     <string name="pref_ring_scale_x_title">Width scale</string>
-    <string name="pref_ring_scale_x_summary">Horizontal ring stretch</string>
     <string name="pref_ring_scale_y_title">Height scale</string>
-    <string name="pref_ring_scale_y_summary">Vertical ring stretch</string>
     <string name="group_advanced">Advanced</string>
     <string name="pref_path_mode_title">Path mode</string>
     <string name="pref_path_mode_summary">Use alternative ring drawing method. Enable if your camera cutout is pill-shaped</string>
@@ -115,13 +98,10 @@
     <!-- Design: Calibration -->
     <string name="pref_calibrate_ring_title">Calibrate ring</string>
     <string name="pref_calibrate_ring_summary">Adjust ring position and size</string>
-    <string name="group_calibration">Ring Calibration</string>
     <string name="group_position">Position</string>
     <string name="group_size">Size</string>
     <string name="pref_ring_offset_x_title">Horizontal offset</string>
-    <string name="pref_ring_offset_x_summary">Move ring left or right</string>
     <string name="pref_ring_offset_y_title">Vertical offset</string>
-    <string name="pref_ring_offset_y_summary">Move ring up or down</string>
 
     <!-- Design: Percentage Text -->
     <string name="pref_show_percentage_title">Percentage label</string>
@@ -177,9 +157,6 @@
     <string name="group_typography">Typography</string>
     <string name="group_layout">Layout</string>
     <string name="pref_ellipsize_title">Ellipsize</string>
-    <string name="ellipsize_start">Start</string>
-    <string name="ellipsize_middle">Middle</string>
-    <string name="ellipsize_end">End</string>
     <string name="pref_filename_truncate_title">Character limit</string>
     <string name="pref_filename_max_chars_title">Max characters</string>
     <string name="pref_filename_vertical_title">Vertical text</string>
@@ -229,7 +206,6 @@
 
     <!-- System: About -->
     <string name="pref_version_title">Version</string>
-    <string name="pref_version_copied">Version copied</string>
     <string name="pref_git_repo">Source code</string>
     <string name="pref_git_repo_summary">Browse the project on GitHub</string>
     <string name="pref_licenses">Third-party licenses</string>

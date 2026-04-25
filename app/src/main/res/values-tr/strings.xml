@@ -5,10 +5,6 @@
 
     <!-- Navigation -->
     <string name="back">Geri</string>
-    <string name="orientation_r0">Dikey (0°)</string>
-    <string name="orientation_r90">Yatay Sağ (90°)</string>
-    <string name="orientation_r180">Ters Dikey (180°)</string>
-    <string name="orientation_r270">Yatay Sol (270°)</string>
 
     <!-- Restart SystemUI -->
     <string name="restart_systemui">SystemUI\'ı Yeniden Başlat</string>
@@ -30,7 +26,6 @@
     <!-- Packages -->
     <string name="packages_search_hint">Uygulamalarda ara…</string>
     <string name="packages_filter_system">Sistem</string>
-    <string name="packages_selected_count">%1$d seçildi</string>
     <string name="packages_empty_search">¯\\_(ツ)_/¯</string>
     <string name="clear_search">Aramayı temizle</string>
     <string name="clear">Temizle</string>
@@ -70,16 +65,6 @@
     <!-- Design: Stroke Style -->
     <string name="pref_stroke_cap_style_title">Halka kenar stili</string>
     <string name="pref_stroke_cap_style_summary">Halka kenarlarının şekli</string>
-    <string-array name="stroke_cap_entries">
-        <item>Düz</item>
-        <item>Yarım Daire</item>
-        <item>Kare</item>
-    </string-array>
-    <string-array name="stroke_cap_values">
-        <item>flat</item>
-        <item>round</item>
-        <item>square</item>
-    </string-array>
 
     <!-- Design: Background Ring -->
     <string name="group_background_ring">Arka Plan Halkası</string>
@@ -105,9 +90,7 @@
     <string name="pref_ring_scale_linked_title">Ölçeği bağla</string>
     <string name="pref_ring_scale_linked_summary">Genişliği ve yüksekliği birlikte ayarla</string>
     <string name="pref_ring_scale_x_title">Genişlik ölçeği</string>
-    <string name="pref_ring_scale_x_summary">Yatay halka esnetme</string>
     <string name="pref_ring_scale_y_title">Yükseklik ölçeği</string>
-    <string name="pref_ring_scale_y_summary">Dikey halka esnetme</string>
     <string name="group_advanced">Gelişmiş</string>
     <string name="pref_path_mode_title">Yol modu</string>
     <string name="pref_path_mode_summary">Alternatif halka çizim yöntemini kullanın. Kamera deliğiniz hap şeklindeyse etkinleştirin</string>
@@ -115,13 +98,10 @@
     <!-- Design: Calibration -->
     <string name="pref_calibrate_ring_title">Halkayı kalibre et</string>
     <string name="pref_calibrate_ring_summary">Halka konumunu ve boyutunu ayarla</string>
-    <string name="group_calibration">Halka Kalibrasyonu</string>
     <string name="group_position">Konum</string>
     <string name="group_size">Boyut</string>
     <string name="pref_ring_offset_x_title">Yatay kaydırma</string>
-    <string name="pref_ring_offset_x_summary">Halkayı sola veya sağa taşı</string>
     <string name="pref_ring_offset_y_title">Dikey kaydırma</string>
-    <string name="pref_ring_offset_y_summary">Halkayı yukarı veya aşağı taşı</string>
 
     <!-- Design: Percentage Text -->
     <string name="pref_show_percentage_title">Yüzde etiketi</string>
@@ -177,9 +157,6 @@
     <string name="group_typography">Tipografi</string>
     <string name="group_layout">Düzen</string>
     <string name="pref_ellipsize_title">Metin kısaltma</string>
-    <string name="ellipsize_start">Başlangıç</string>
-    <string name="ellipsize_middle">Orta</string>
-    <string name="ellipsize_end">Son</string>
     <string name="pref_filename_truncate_title">Karakter sınırı</string>
     <string name="pref_filename_max_chars_title">Maksimum karakter</string>
     <string name="pref_filename_vertical_title">Dikey metin</string>
@@ -224,10 +201,11 @@
     <string name="pref_clear_downloads_title">İndirmeleri temizle</string>
     <string name="pref_clear_downloads_summary">Takılı kalan indirme göstergelerini sıfırla</string>
     <string name="clear_downloads_done">İndirmeler temizlendi</string>
+    <string name="pref_hide_launcher_icon_title">Başlatıcı simgesini gizle</string>
+    <string name="pref_hide_launcher_icon_summary">Uygulamayı başlatıcıdan gizler</string>
 
     <!-- System: About -->
     <string name="pref_version_title">Sürüm</string>
-    <string name="pref_version_copied">Sürüm kopyalandı</string>
     <string name="pref_git_repo">Kaynak kodu</string>
     <string name="pref_git_repo_summary">Projeyi GitHub\'da inceleyin</string>
     <string name="pref_licenses">Üçüncü taraf lisansları</string>
