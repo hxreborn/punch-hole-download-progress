@@ -1,5 +1,6 @@
 package eu.hxreborn.phdp.ui.screen
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -189,6 +190,7 @@ private const val RING_SIZE_DP = 120
 private const val RING_STROKE_DP = 8
 private const val LEGEND_DOT_SIZE_DP = 12
 
+@SuppressLint("DiscouragedApi", "LocalContextResourcesRead", "LocalContextGetResourceValueCall")
 @Composable
 private fun resolveSystemColor(
     palette: String,
