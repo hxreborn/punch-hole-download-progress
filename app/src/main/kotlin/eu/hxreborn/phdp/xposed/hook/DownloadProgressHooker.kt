@@ -109,7 +109,7 @@ object DownloadProgressHooker {
                 lastUpdate = System.currentTimeMillis(),
             )
 
-        if (oldState?.progress != percent || wasNew) {
+        if (oldState?.progress != percent) {
             activeDownloads[id] = newState
             logDebug { "Download $pkg: $percent%" }
             updateProgress()
