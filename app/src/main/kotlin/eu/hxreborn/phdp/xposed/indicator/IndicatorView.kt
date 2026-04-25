@@ -771,16 +771,28 @@ class IndicatorView(
     ): Triple<Float, Float, Paint.Align?> =
         when (position) {
             "left" -> {
+                val x =
+                    if (textWidth != null) {
+                        arcBounds.left - textWidth / 2 - padding
+                    } else {
+                        arcBounds.left - padding
+                    }
                 Triple(
-                    if (textWidth != null) arcBounds.left - textWidth / 2 - padding else arcBounds.left - padding,
+                    x,
                     arcBounds.centerY() + textSize / 3,
                     if (textWidth != null) null else Paint.Align.RIGHT,
                 )
             }
 
             "right" -> {
+                val x =
+                    if (textWidth != null) {
+                        arcBounds.right + textWidth / 2 + padding
+                    } else {
+                        arcBounds.right + padding
+                    }
                 Triple(
-                    if (textWidth != null) arcBounds.right + textWidth / 2 + padding else arcBounds.right + padding,
+                    x,
                     arcBounds.centerY() + textSize / 3,
                     if (textWidth != null) null else Paint.Align.LEFT,
                 )
@@ -835,9 +847,21 @@ class IndicatorView(
             }
 
             else -> {
+                val x =
+                    if (textWidth != null) {
+                        arcBounds.right + textWidth / 2 + padding
+                    } else {
+                        arcBounds.right + padding
+                    }
+                val y =
+                    if (textWidth != null) {
+                        arcBounds.centerY() + textSize / 3
+                    } else {
+                        arcBounds.top - padding
+                    }
                 Triple(
-                    if (textWidth != null) arcBounds.right + textWidth / 2 + padding else arcBounds.right + padding,
-                    if (textWidth != null) arcBounds.centerY() + textSize / 3 else arcBounds.top - padding,
+                    x,
+                    y,
                     if (textWidth != null) null else Paint.Align.LEFT,
                 )
             }
