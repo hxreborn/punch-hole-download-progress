@@ -92,12 +92,7 @@ fun BehaviorScreen(
                                         )
                                     },
                                     summary = {
-                                        val text =
-                                            if (prefsState.clockwise) {
-                                                R.string.clockwise
-                                            } else {
-                                                R.string.counter_clockwise
-                                            }
+                                        val text = if (prefsState.clockwise) R.string.clockwise else R.string.counter_clockwise
                                         Text(stringResource(text))
                                     },
                                 )
