@@ -3,7 +3,7 @@
 Xposed module that displays download progress as an animated ring around the camera cutout.
 
 ![Android CI](https://github.com/hxreborn/punch-hole-download-progress/actions/workflows/android-ci.yml/badge.svg)
-![Kotlin](https://img.shields.io/badge/Kotlin-2.3.10-7F52FF?style=flat&logo=kotlin&logoColor=white)
+![Kotlin](https://img.shields.io/badge/Kotlin-2.3.21-7F52FF?style=flat&logo=kotlin&logoColor=white)
 ![Android](https://img.shields.io/badge/API-28%2B-3DDC84?logo=android&logoColor=white)
 ![Xposed Repo](https://img.shields.io/github/downloads/Xposed-Modules-Repo/eu.hxreborn.phdp/total?label=Xposed%20Repo&logo=android&logoColor=white&color=3DDC84)
 
