@@ -1,6 +1,6 @@
 package eu.hxreborn.phdp.ui
 
-import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
@@ -47,7 +47,7 @@ class MainActivity :
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        prefs = getSharedPreferences(Prefs.GROUP, Context.MODE_PRIVATE)
+        prefs = getSharedPreferences(Prefs.GROUP, MODE_PRIVATE)
         val repository = PrefsRepositoryImpl(prefs) { remotePrefs }
         viewModel = ViewModelProvider(this, SettingsViewModelFactory(repository))[SettingsViewModelImpl::class.java]
 
