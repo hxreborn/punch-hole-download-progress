@@ -13,7 +13,7 @@ https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}
 {%- endmacro -%}
 
 {%- macro commit(commit) -%}
-- [`{{ commit.id | truncate(length=7, end="") }}`]({{ self::remote_url() }}/commit/{{ commit.id }}) - \
+- [`{{ commit.id | truncate(length=7, end="") }}`]({{ self::remote_url() }}/commit/{{ commit.id }}) \
   {% if commit.scope %}*({{ commit.scope }})* {% endif %}\
   {{ commit.message | upper_first | trim }}\
   {% if commit.breaking %} [**breaking**]{% endif %}\
@@ -49,13 +49,6 @@ No user-facing changes in this release.
 {% endfor %}
 {%- endif %}
 
-{%- if github.contributors | filter(attribute="is_first_time", value=true) | length != 0 %}
-### New Contributors
-{% for contributor in github.contributors | filter(attribute="is_first_time", value=true) %}
-* @{{ contributor.username }} made their first contribution\
-{%- if contributor.pr_number %} in [#{{ contributor.pr_number }}]({{ self::remote_url() }}/pull/{{ contributor.pr_number }}){% endif %}
-{% endfor %}
-{%- endif %}
 """
 footer = ""
 trim = false
@@ -66,32 +59,32 @@ postprocessors = [
 [git]
 conventional_commits = true
 filter_unconventional = true
+protect_breaking_commits = true
 commit_preprocessors = [
   { pattern = '\((\w+\s)?#([0-9]+)\)', replace = "" },
 ]
 commit_parsers = [
-  { message = "^feat", group = "<!-- 00 -->Added" },
-  { message = "^[fF]ix", group = "<!-- 01 -->Fixed" },
+  { message = "^feat", group = "<!-- 00 -->Features" },
+  { message = "^[fF]ix", group = "<!-- 01 -->Bug Fixes" },
   { message = "^perf", group = "<!-- 02 -->Performance Improvements" },
+  { message = "^security", group = "<!-- 03 -->Security" },
   { body = ".*[Ss]ecurity", group = "<!-- 03 -->Security" },
-  { message = "^refactor", group = "<!-- 04 -->Changed" },
-  { message = "^revert", group = "<!-- 05 -->Reverted" },
-  # Skip dev-only
-  { message = "^doc", skip = true },
-  { message = "^test", skip = true },
-  { message = "^build", skip = true },
-  { message = "^ci", skip = true },
-  { message = "^style", skip = true },
-  # Skip low-context chore commits
-  { message = "^chore:.*[Cc]leanup|^misc:.*[Cc]leanup", skip = true },
-  { message = "^chore:.*[Ii]mprovement", skip = true },
-  { message = "^chore:.*[Dd]ependenc", skip = true },
-  { message = "^chore\\(release\\)|^chore\\(deps\\)|^chore\\(changelog\\)", skip = true },
+  { message = "^refactor", group = "<!-- 04 -->Refactor" },
+  { message = "^[Rr]evert", group = "<!-- 05 -->Reverts" },
+  { message = '^(build|chore)\(deps(-dev)?\)', group = "<!-- 06 -->Dependencies" },
+  { message = "^doc", group = "<!-- 07 -->Documentation" },
+  { message = "^style", group = "<!-- 08 -->Styling" },
+  { message = "^build", group = "<!-- 09 -->Build" },
+  { message = "^ci", group = "<!-- 10 -->CI" },
+  { message = "^test", group = "<!-- 11 -->Tests" },
+  # Mute release/changelog noise only
+  { message = '^chore(\(release\))?:\s*(prepare|bump|align|v?\d+\.\d+)', skip = true },
+  { message = '^release:\s*(bump|prepare|v?\d+\.\d+)', skip = true },
+  { message = '^chore\(changelog\)', skip = true },
   # Catch-all
-  { message = ".*", group = "<!-- 99 -->Other" },
+  { message = ".*", group = "<!-- 99 -->Miscellaneous" },
 ]
 filter_commits = false
 tag_pattern = "v[0-9]*"
-# skip_tags = "beta|alpha"
 topo_order = false
 sort_commits = "newest"
