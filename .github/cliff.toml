@@ -71,10 +71,10 @@ commit_parsers = [
   { body = ".*[Ss]ecurity", group = "<!-- 03 -->Security" },
   { message = "^refactor", group = "<!-- 04 -->Refactor" },
   { message = "^[Rr]evert", group = "<!-- 05 -->Reverts" },
-  { message = '^(build|chore)\(deps(-dev)?\)', group = "<!-- 06 -->Dependencies" },
-  { message = "^doc", group = "<!-- 07 -->Documentation" },
+  { message = '^(build|chore)\(deps(-dev)?\)', skip = true },
+  { message = "^doc", skip = true },
   { message = "^style", group = "<!-- 08 -->Styling" },
-  { message = "^build", group = "<!-- 09 -->Build" },
+  { message = "^build", skip = true },
   { message = "^ci", group = "<!-- 10 -->CI" },
   { message = "^test", group = "<!-- 11 -->Tests" },
   # Mute release/changelog noise only
