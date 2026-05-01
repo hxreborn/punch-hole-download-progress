@@ -30,6 +30,7 @@ Xposed module that renders download progress as an animated ring around the came
 - Pixel/AOSP-based ROM (other ROMs may not work as expected)
 - Root access (optional, for `Restart SystemUI` in settings)
 - A phone with a punch-hole display
+- Notifications enabled for any app you want to track downloads from
 
 ## Installation
 
