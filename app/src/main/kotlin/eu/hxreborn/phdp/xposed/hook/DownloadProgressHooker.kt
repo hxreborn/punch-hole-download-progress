@@ -3,6 +3,7 @@ package eu.hxreborn.phdp.xposed.hook
 import android.app.Notification
 import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.util.accessibleField
+import eu.hxreborn.phdp.util.accessibleFieldFromHierarchy
 import eu.hxreborn.phdp.util.log
 import eu.hxreborn.phdp.util.logDebug
 import java.lang.reflect.Method
@@ -17,6 +18,9 @@ object DownloadProgressHooker {
     private const val LOW_PROGRESS_THRESHOLD = 5
     private const val REASON_APP_CANCEL = 8
     private const val REASON_APP_CANCEL_ALL = 9
+    private const val RV_ACTIONS_FIELD = "mActions"
+    private const val RV_SET_PROGRESS = "setProgress"
+    private const val RV_SET_MAX = "setMax"
 
     data class DownloadState(
         val packageName: String,
@@ -76,22 +80,24 @@ object DownloadProgressHooker {
         val notification = getNotification(sbn) ?: return
         val extras = notification.extras ?: return
 
-        val progress = extras.getInt(EXTRA_PROGRESS, -1)
-        val max = extras.getInt(EXTRA_PROGRESS_MAX, -1)
         val title = extras.getCharSequence(EXTRA_TITLE)?.toString()
-        logDebug { "Progress: $progress/$max, title: $title" }
 
-        // Browsers signal completion via max=0 update, not notification removal
-        if (progress < 0 || max <= 0) {
-            activeDownloads.remove(id)?.let {
-                logDebug { "Download ${it.packageName}: 100% (max=0)" }
-                onActiveCountChanged?.invoke(activeDownloads.size)
-                onDownloadComplete?.invoke()
-                updateProgress()
-                updateFilename()
+        val (progress, max) =
+            resolveProgress(
+                extras.getInt(EXTRA_PROGRESS, -1),
+                extras.getInt(EXTRA_PROGRESS_MAX, -1),
+                notification,
+            ) ?: run {
+                // some browsers use max=0 as a completion signal rather than removing the notification
+                activeDownloads.remove(id)?.let {
+                    logDebug { "Download ${it.packageName}: 100% (max=0)" }
+                    onActiveCountChanged?.invoke(activeDownloads.size)
+                    onDownloadComplete?.invoke()
+                    updateProgress()
+                    updateFilename()
+                }
+                return
             }
-            return
-        }
 
         val percent = (progress * 100 / max).coerceIn(0, 100)
         val oldState = activeDownloads[id]
@@ -147,6 +153,80 @@ object DownloadProgressHooker {
             }
         onFilenameChanged?.invoke(filename)
         onPackageChanged?.invoke(leadingEntry?.value?.packageName)
+    }
+
+    private val Notification.isOngoing: Boolean
+        get() = flags and Notification.FLAG_ONGOING_EVENT != 0
+
+    private fun resolveProgress(
+        progress: Int,
+        max: Int,
+        notification: Notification,
+    ): Pair<Int, Int>? {
+        if (progress >= 0 && max > 0) {
+            return progress to max
+        }
+
+        logDebug { "flags=${notification.flags} ongoing=${notification.isOngoing}" }
+
+        if (!notification.isOngoing) {
+            return null
+        }
+
+        // some apps skip standard extras and encode progress in RemoteViews actions like Opera
+        return extractRemoteViewsProgress(notification)
+            ?.also { (remoteProgress, remoteMax) ->
+                logDebug { "RemoteViews progress: $remoteProgress/$remoteMax" }
+            }
+    }
+
+    private fun remoteViewsActions(views: Any): ArrayList<*>? =
+        runCatching {
+            views.javaClass
+                .accessibleFieldFromHierarchy(
+                    RV_ACTIONS_FIELD,
+                )?.get(views) as? ArrayList<*>
+        }.getOrNull()
+
+    private fun actionMethodName(action: Any): String? =
+        (
+            action.javaClass.accessibleFieldFromHierarchy("mMethodName") // API 35+
+                ?: action.javaClass.accessibleFieldFromHierarchy("methodName")
+        )?.get(action) as? String
+
+    private fun actionIntValue(action: Any): Int? =
+        (
+            action.javaClass.accessibleFieldFromHierarchy("mValue") // API 35+
+                ?: action.javaClass.accessibleFieldFromHierarchy("value")
+        )?.get(action) as? Int
+
+    private fun extractRemoteViewsProgress(notification: Notification): Pair<Int, Int>? {
+        logDebug {
+            "contentView=${notification.contentView} bigContentView=${notification.bigContentView}"
+        }
+        val views = notification.contentView ?: notification.bigContentView ?: return null
+        val actions =
+            remoteViewsActions(views) ?: run {
+                logDebug { "mActions not found" }
+                return null
+            }
+        logDebug {
+            "actions count=${actions.size} types=${actions.filterNotNull().map {
+                it.javaClass.simpleName
+            }.distinct()}"
+        }
+        val byMethod =
+            actions
+                .filterNotNull()
+                .mapNotNull { action ->
+                    val method = actionMethodName(action) ?: return@mapNotNull null
+                    val value = actionIntValue(action) ?: return@mapNotNull null
+                    method to value
+                }.toMap()
+        logDebug { "byMethod keys=${byMethod.keys}" }
+        val p = byMethod[RV_SET_PROGRESS] ?: return null
+        val m = byMethod[RV_SET_MAX]?.takeIf { it > 0 } ?: return null
+        return p to m
     }
 
     private fun getPackageName(sbn: Any): String? =

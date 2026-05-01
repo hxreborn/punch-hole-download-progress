@@ -1,0 +1,1 @@
+Fix progress ring not showing for Opera and other apps that encode progress in RemoteViews
