@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Punch-hole Download Progress</string>
-    <string name="app_desc">摄像头周围的进度指示器</string>
+    <string name="app_desc">摄像头边缘的下载进度指示器</string>
     <string name="back">返回</string>
     <string name="restart_systemui">重启系统界面</string>
     <string name="restart_systemui_confirm">即将重启系统界面以应用修改，是否继续？</string>
     <string name="restart">重启</string>
     <string name="restart_failed_detail">重启系统界面失败：%1$s</string>
-    <string name="root_not_granted">未授予 Root 权限。请授予Punch-hole Download Progress Root权限。</string>
-    <string name="color_selected">已选</string>
+    <string name="root_not_granted">未授予 Root 权限。请先授予Punch-hole Download Progress Root权限。</string>
+    <string name="color_selected">已选择</string>
     <string name="more_options">更多选项</string>
     <string name="tab_design">外观</string>
     <string name="tab_motion">通知</string>
@@ -31,7 +31,7 @@
     <string name="packages_help">此模块通过读取应用的通知来检测下载。要显示进度环，应用必须主动显示带有进度条的通知。如果通知被禁用或隐藏，则进度环不会显示。</string>
     <string name="group_colors">颜色</string>
     <string name="group_geometry">尺寸缩放</string>
-    <string name="group_percent_text">文本百分比</string>
+    <string name="group_percent_text">进度百分比</string>
     <string name="group_filename_text">文件名</string>
     <string name="group_app_icon">来源应用</string>
     <string name="group_animation">动画</string>
@@ -41,11 +41,11 @@
     <string name="group_power">电源</string>
     <string name="group_diagnostics">诊断</string>
     <string name="group_about">关于</string>
-    <string name="pref_progress_color_title">加载颜色</string>
+    <string name="pref_progress_color_title">加载</string>
     <string name="pref_progress_color_summary">下载过程中进度环的颜色</string>
-    <string name="pref_success_color_title">完成颜色</string>
+    <string name="pref_success_color_title">完成</string>
     <string name="pref_success_color_summary">下载完成后进度环的颜色</string>
-    <string name="pref_error_color_title">错误颜色</string>
+    <string name="pref_error_color_title">错误</string>
     <string name="pref_error_color_summary">下载失败时进度环的颜色</string>
     <string name="pref_stroke_cap_style_title">边缘样式</string>
     <string name="pref_stroke_cap_style_summary">进度环边缘的形状</string>
@@ -54,7 +54,7 @@
     <string name="pref_background_ring_enabled_summary">自定义进度环背景颜色</string>
     <string name="pref_background_ring_color_title">背景颜色</string>
     <string name="pref_background_ring_color_summary">进度环背景颜色</string>
-    <string name="pref_background_ring_opacity_title">背景色透明度</string>
+    <string name="pref_background_ring_opacity_title">背景色不透明度</string>
     <string name="pref_glow_enabled_title">发光特效</string>
     <string name="pref_glow_enabled_summary">进度环周围的发光效果</string>
     <string name="pref_glow_radius_title">光晕半径</string>
@@ -78,17 +78,17 @@
     <string name="group_size">大小</string>
     <string name="pref_ring_offset_x_title">水平偏移</string>
     <string name="pref_ring_offset_y_title">垂直偏移</string>
-    <string name="pref_show_percentage_title">百分比标签</string>
+    <string name="pref_show_percentage_title">显示文本百分比</string>
     <string name="pref_show_percentage_summary">以数字文本形式显示当前进度</string>
     <string name="pref_calibrate_percent_title">校准</string>
     <string name="pref_calibrate_percent_summary">调整百分比标签位置</string>
-    <string name="pref_show_filename_title">文件名标签</string>
+    <string name="pref_show_filename_title">显示文件名</string>
     <string name="pref_show_filename_summary">显示正在下载的文件名</string>
     <string name="pref_calibrate_filename_title">校准</string>
     <string name="pref_calibrate_filename_summary">调整文件名标签位置</string>
     <string name="pref_app_icon_enabled_title">来源图标</string>
     <string name="pref_app_icon_enabled_summary">显示什么应用启动的下载</string>
-    <string name="pref_app_icon_monochrome_title">同色系配色</string>
+    <string name="pref_app_icon_monochrome_title">色系风格</string>
     <string name="pref_app_icon_monochrome_summary">按主题图标相同色系的颜色为进度环着色</string>
     <string name="pref_app_icon_size_title">图标大小</string>
     <string name="pref_app_icon_size_summary">调整来源应用图标大小</string>
@@ -127,9 +127,9 @@
     <string name="pref_material_you_summary">从您的壁纸中选择进度环颜色</string>
     <string name="pref_material_you_configure_title">色彩分配</string>
     <string name="pref_material_you_configure_summary">按系统主题色分别设置指示器</string>
-    <string name="group_material_you_progress">加载颜色</string>
-    <string name="group_material_you_success">完成颜色</string>
-    <string name="group_material_you_error">错误颜色</string>
+    <string name="group_material_you_progress">加载</string>
+    <string name="group_material_you_success">完成</string>
+    <string name="group_material_you_error">错误</string>
     <string name="material_you_row_primary">主要色</string>
     <string name="material_you_row_secondary">次要色</string>
     <string name="material_you_row_tertiary">第三</string>
@@ -142,7 +142,7 @@
     <string name="material_you_preset_custom">自定义</string>
     <string name="pref_theme_title">主题</string>
     <string name="pref_theme_summary">可设置浅色、深色或系统默认主题</string>
-    <string name="pref_dynamic_color_title">动态颜色</string>
+    <string name="pref_dynamic_color_title">动态取色</string>
     <string name="pref_dynamic_color_summary">根据壁纸自动生成主题颜色</string>
     <string name="pref_battery_saver_title">省电模式</string>
     <string name="pref_battery_saver_summary">可设置省电模式下进度环表现</string>
