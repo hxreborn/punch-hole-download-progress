@@ -89,7 +89,7 @@
     <string name="pref_app_icon_enabled_title">来源图标</string>
     <string name="pref_app_icon_enabled_summary">显示什么应用启动的下载</string>
     <string name="pref_app_icon_monochrome_title">色系风格</string>
-    <string name="pref_app_icon_monochrome_summary">按主题图标相同色系的颜色为进度环着色</string>
+    <string name="pref_app_icon_monochrome_summary">提取图标主体轮廓，着色为进度环颜色</string>
     <string name="pref_app_icon_size_title">图标大小</string>
     <string name="pref_app_icon_size_summary">调整来源应用图标大小</string>
     <string name="pref_calibrate_app_icon_title">校准</string>
