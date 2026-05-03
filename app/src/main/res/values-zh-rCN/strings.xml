@@ -59,12 +59,12 @@
     <string name="pref_glow_enabled_summary">进度环周围的发光效果</string>
     <string name="pref_glow_radius_title">光晕半径</string>
     <string name="pref_glow_radius_summary">发光光晕的大小</string>
-    <string name="pref_stroke_width_title">粗细</string>
+    <string name="pref_stroke_width_title">宽度</string>
     <string name="pref_stroke_width_summary">进度环的弧宽</string>
     <string name="pref_cutout_padding_title">间距</string>
     <string name="pref_cutout_padding_summary">进度环递增时的间距</string>
     <string name="pref_opacity_title">不透明度</string>
-    <string name="pref_opacity_summary">进度环的透明度</string>
+    <string name="pref_opacity_summary">进度环的不透明度</string>
     <string name="pref_ring_scale_linked_title">缩放</string>
     <string name="pref_ring_scale_linked_summary">调整缩放大小</string>
     <string name="pref_ring_scale_x_title">宽度缩放</string>
