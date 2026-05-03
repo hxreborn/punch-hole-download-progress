@@ -501,6 +501,8 @@ class IndicatorView(
         canvas.withSave {
             if (animator.displayScale != 1f) {
                 scaledPath.computeBounds(arcBounds, true)
+                // Use the calibrated bounds so the pivot reflects ring offsets/scales
+                arcBounds.applyCalibration()
                 scale(
                     animator.displayScale,
                     animator.displayScale,
