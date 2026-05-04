@@ -150,6 +150,10 @@
     <string name="pref_show_queue_count_summary">Aynı anda devam eden etkin indirmelerin sayısını göster</string>
     <string name="pref_calibrate_badge_title">Sayacı kalibre et</string>
     <string name="pref_calibrate_badge_summary">Kuyruk sayacının yerleşimini ayarla</string>
+    <string name="pref_burn_in_hide_title">Hareketsizlikte gizle</string>
+    <string name="pref_burn_in_hide_summary">Etkinlik veya ilerleme olmadan halkayı gizlemeden önceki süre</string>
+    <string name="pref_progress_anim_title">İlerleme yumuşatma</string>
+    <string name="pref_progress_anim_summary">İlerleme değiştiğinde yayın geçiş süresi. Uygulamanın SystemUI\'ye ilerleme bildirme sıklığına bağlı.</string>
     <string name="pref_font_size_title">Yazı tipi boyutu</string>
     <string name="pref_bold_title">Kalın</string>
     <string name="pref_italic_title">İtalik</string>
@@ -203,6 +207,8 @@
     <string name="clear_downloads_done">İndirmeler temizlendi</string>
     <string name="pref_hide_launcher_icon_title">Başlatıcı simgesini gizle</string>
     <string name="pref_hide_launcher_icon_summary">Uygulamayı başlatıcıdan gizler</string>
+    <string name="pref_verbose_logging_title">Hata ayıklama günlükleri</string>
+    <string name="pref_verbose_logging_summary">Hata ayıklama için ayrıntılı günlük</string>
 
     <!-- System: About -->
     <string name="pref_version_title">Sürüm</string>
@@ -215,6 +221,7 @@
 
     <!-- Color Picker -->
     <string name="pick_color">Renk Seç</string>
+    <string name="presets">Ön ayarlar</string>
 
     <!-- Reset -->
     <string name="reset_defaults">Varsayılanlara Sıfırla</string>
@@ -247,6 +254,16 @@
         <item>normal</item>
         <item>dim</item>
         <item>disable</item>
+    </string-array>
+
+    <!-- Dialog Arrays: Burn-in hide timeout -->
+    <string-array name="burn_in_hide_entries">
+        <item>10s</item>
+        <item>15s</item>
+        <item>30s</item>
+        <item>60s</item>
+        <item>120s</item>
+        <item>Hiçbir zaman</item>
     </string-array>
 
     <!-- Dialog Arrays: App Theme -->
