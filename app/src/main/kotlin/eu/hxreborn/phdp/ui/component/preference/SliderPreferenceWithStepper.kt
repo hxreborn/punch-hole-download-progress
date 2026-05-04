@@ -1,3 +1,5 @@
+@file:Suppress("AssignedValueIsNeverRead")
+
 package eu.hxreborn.phdp.ui.component.preference
 
 import androidx.compose.foundation.layout.Box
@@ -91,8 +93,7 @@ fun SliderPreferenceWithStepper(
             // Title (takes remaining space, pushes stepper to end)
             Box(modifier = Modifier.weight(1f)) {
                 CompositionLocalProvider(
-                    LocalContentColor provides
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
+                    LocalContentColor provides MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
                 ) {
                     ProvideTextStyle(MaterialTheme.typography.bodyLarge) {
                         title()
@@ -116,7 +117,7 @@ fun SliderPreferenceWithStepper(
                     Icon(
                         imageVector = Icons.Default.Remove,
                         contentDescription = stringResource(R.string.decrease),
-                        tint = if (enabled && !isAtMin) iconTint else iconTint.copy(alpha = Tokens.DISABLED_ALPHA),
+                        tint = iconTint.copy(alpha = if (enabled && !isAtMin) 1f else Tokens.DISABLED_ALPHA),
                     )
                 }
 
@@ -141,7 +142,7 @@ fun SliderPreferenceWithStepper(
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = stringResource(R.string.increase),
-                        tint = if (enabled && !isAtMax) iconTint else iconTint.copy(alpha = Tokens.DISABLED_ALPHA),
+                        tint = iconTint.copy(alpha = if (enabled && !isAtMax) 1f else Tokens.DISABLED_ALPHA),
                     )
                 }
             }
@@ -175,7 +176,7 @@ fun SliderPreferenceWithStepper(
                 Icon(
                     imageVector = Icons.Default.Refresh,
                     contentDescription = stringResource(R.string.reset),
-                    tint = if (enabled && !isDefault) iconTint else iconTint.copy(alpha = Tokens.DISABLED_ALPHA),
+                    tint = iconTint.copy(alpha = if (enabled && !isDefault) 1f else Tokens.DISABLED_ALPHA),
                 )
             }
         }

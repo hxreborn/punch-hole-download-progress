@@ -1,3 +1,5 @@
+@file:Suppress("AssignedValueIsNeverRead")
+
 package eu.hxreborn.phdp.ui.screen
 
 import android.annotation.SuppressLint
@@ -239,20 +241,16 @@ private fun AppIcon(
         shape = RoundedCornerShape(Tokens.AppIconCornerRadius),
         color = icon?.let { Color.Transparent } ?: MaterialTheme.colorScheme.surfaceContainerHighest,
     ) {
-        when (icon) {
-            null -> {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(Tokens.LoadingIndicatorSize),
-                        strokeWidth = 2.dp,
-                        color = MaterialTheme.colorScheme.primary,
-                        trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                    )
-                }
-            }
-
-            else -> {
-                Image(icon, contentDescription = null, modifier = Modifier.fillMaxSize())
+        if (icon != null) {
+            Image(icon, contentDescription = null, modifier = Modifier.fillMaxSize())
+        } else {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(Tokens.LoadingIndicatorSize),
+                    strokeWidth = 2.dp,
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                )
             }
         }
     }
@@ -284,11 +282,7 @@ private fun AppListItem(
         color = MaterialTheme.colorScheme.surfaceContainerHigh,
     ) {
         Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .clickable { onCheckedChange(!isChecked) }
-                    .padding(Tokens.PreferencePadding),
+            modifier = Modifier.fillMaxWidth().clickable { onCheckedChange(!isChecked) }.padding(Tokens.PreferencePadding),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             AppIcon(icon = icon, modifier = Modifier.size(Tokens.AppIconSize))
@@ -348,17 +342,11 @@ private fun ShimmerListItem(modifier: Modifier = Modifier) {
         color = MaterialTheme.colorScheme.surfaceContainerHigh,
     ) {
         Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(Tokens.PreferencePadding),
+            modifier = Modifier.fillMaxWidth().padding(Tokens.PreferencePadding),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(
-                modifier =
-                    Modifier
-                        .size(Tokens.AppIconSize)
-                        .background(shimmerBrush, RoundedCornerShape(Tokens.AppIconCornerRadius)),
+                modifier = Modifier.size(Tokens.AppIconSize).background(shimmerBrush, RoundedCornerShape(Tokens.AppIconCornerRadius)),
             )
             Spacer(modifier = Modifier.width(Tokens.PreferenceHorizontalSpacing))
             Column(modifier = Modifier.weight(1f)) {
@@ -380,10 +368,7 @@ private fun ShimmerListItem(modifier: Modifier = Modifier) {
             }
             Spacer(modifier = Modifier.width(Tokens.PreferenceHorizontalSpacing))
             Box(
-                modifier =
-                    Modifier
-                        .size(Tokens.CheckboxSize)
-                        .background(shimmerBrush, RoundedCornerShape(Tokens.SmallCornerRadius)),
+                modifier = Modifier.size(Tokens.CheckboxSize).background(shimmerBrush, RoundedCornerShape(Tokens.SmallCornerRadius)),
             )
         }
     }
@@ -454,19 +439,14 @@ fun PackageSelectionScreen(
     Box(modifier = modifier.fillMaxSize()) {
         Box(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(
-                        top = contentPadding.calculateTopPadding() + Tokens.SpacingLg,
-                        bottom = contentPadding.calculateBottomPadding() + Tokens.SpacingLg,
-                    ),
+                Modifier.fillMaxSize().padding(
+                    top = contentPadding.calculateTopPadding() + Tokens.SpacingLg,
+                    bottom = contentPadding.calculateBottomPadding() + Tokens.SpacingLg,
+                ),
         ) {
             LazyColumn(
                 state = listState,
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .drawVerticalScrollbar(listState),
+                modifier = Modifier.fillMaxSize().drawVerticalScrollbar(listState),
             ) {
                 item(key = "search") {
                     SearchField(
@@ -515,10 +495,7 @@ fun PackageSelectionScreen(
                             LaunchedEffect(Unit) { visible = true }
 
                             Box(
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(Tokens.SpacingLg),
+                                modifier = Modifier.fillMaxWidth().padding(Tokens.SpacingLg),
                                 contentAlignment = Alignment.Center,
                             ) {
                                 AnimatedVisibility(
@@ -554,12 +531,8 @@ fun PackageSelectionScreen(
                                 app = app,
                                 isChecked = isSelected,
                                 onCheckedChange = { checked ->
-                                    val newSelection =
-                                        if (checked) {
-                                            prefsState.selectedPackages + app.packageName
-                                        } else {
-                                            prefsState.selectedPackages - app.packageName
-                                        }
+                                    val pkgs = prefsState.selectedPackages
+                                    val newSelection = if (checked) pkgs + app.packageName else pkgs - app.packageName
                                     saveSelection(newSelection)
                                 },
                                 modifier =
@@ -576,10 +549,7 @@ fun PackageSelectionScreen(
 
         SnackbarHost(
             hostState = snackbarHostState,
-            modifier =
-                Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = contentPadding.calculateBottomPadding()),
+            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = contentPadding.calculateBottomPadding()),
         )
     }
 

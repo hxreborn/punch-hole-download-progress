@@ -1,3 +1,5 @@
+@file:Suppress("AssignedValueIsNeverRead")
+
 package eu.hxreborn.phdp.ui.component.preference
 
 import androidx.compose.foundation.layout.Box
@@ -68,10 +70,7 @@ fun SliderPreferenceWithReset(
     val contentAlpha = if (enabled) 1f else Tokens.DISABLED_ALPHA
 
     Column(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(Tokens.PreferencePadding),
+        modifier = modifier.fillMaxWidth().padding(Tokens.PreferencePadding),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -79,8 +78,7 @@ fun SliderPreferenceWithReset(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 CompositionLocalProvider(
-                    LocalContentColor provides
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
+                    LocalContentColor provides MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
                 ) {
                     ProvideTextStyle(MaterialTheme.typography.bodyLarge) {
                         title()
@@ -140,13 +138,9 @@ fun SliderPreferenceWithReset(
                     imageVector = Icons.Default.Refresh,
                     contentDescription = stringResource(R.string.reset),
                     tint =
-                        if (enabled && !isDefault) {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                                alpha = Tokens.DISABLED_ALPHA,
-                            )
-                        },
+                        MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                            alpha = if (enabled && !isDefault) 1f else Tokens.DISABLED_ALPHA,
+                        ),
                 )
             }
         }

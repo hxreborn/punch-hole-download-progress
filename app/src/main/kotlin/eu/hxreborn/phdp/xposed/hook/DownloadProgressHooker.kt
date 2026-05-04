@@ -192,6 +192,8 @@ object DownloadProgressHooker {
                 ?: action.javaClass.accessibleFieldFromHierarchy("value")
         )?.get(action) as? Int
 
+    // contentView/bigContentView are deprecated for producers but remain the only way to read RemoteViews from received notifications
+    @Suppress("DEPRECATION")
     private fun extractRemoteViewsProgress(notification: Notification): Pair<Int, Int>? {
         logDebug {
             "contentView=${notification.contentView} bigContentView=${notification.bigContentView}"

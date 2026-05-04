@@ -1,3 +1,5 @@
+@file:Suppress("MayBeConstant")
+
 package eu.hxreborn.phdp.ui.theme
 
 // Material Design 2 color palette for user-selectable preferences

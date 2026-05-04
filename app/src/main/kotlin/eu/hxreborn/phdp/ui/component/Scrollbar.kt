@@ -1,6 +1,8 @@
 // MIT License - Copyright (c) 2022 Albert Chang
 // https://gist.github.com/mxalbert1996/33a360fcab2105a31e5355af98216f5a
 
+@file:Suppress("unused", "UNUSED_PARAMETER", "SameParameterValue")
+
 package eu.hxreborn.phdp.ui.component
 
 import android.view.ViewConfiguration
@@ -158,17 +160,14 @@ private fun Modifier.drawScrollbar(
 
         val color = barColor
 
-        Modifier
-            .nestedScroll(nestedScrollConnection)
-            .drawWithContent {
-                drawContent()
-                onDraw(reverseDirection, atEnd, color, alpha::value)
-            }
+        Modifier.nestedScroll(nestedScrollConnection).drawWithContent {
+            drawContent()
+            onDraw(reverseDirection, atEnd, color, alpha::value)
+        }
     }
 
 private val barColor: Color
     @Composable get() = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
 
 private val THICKNESS = 4.dp
-private val FADE_OUT_ANIMATION_SPEC =
-    tween<Float>(durationMillis = ViewConfiguration.getScrollBarFadeDuration())
+private val FADE_OUT_ANIMATION_SPEC = tween<Float>(durationMillis = ViewConfiguration.getScrollBarFadeDuration())

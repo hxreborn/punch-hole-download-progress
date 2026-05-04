@@ -1,3 +1,5 @@
+@file:Suppress("AssignedValueIsNeverRead")
+
 package eu.hxreborn.phdp.ui.component.preference
 
 import androidx.compose.foundation.clickable
@@ -61,17 +63,12 @@ fun <T> SelectPreference(
     }
 
     Row(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .clickable(enabled = enabled) { showDialog = true }
-                .padding(Tokens.PreferencePadding),
+        modifier = modifier.fillMaxWidth().clickable(enabled = enabled) { showDialog = true }.padding(Tokens.PreferencePadding),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
             CompositionLocalProvider(
-                LocalContentColor provides
-                    MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
+                LocalContentColor provides MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
             ) {
                 ProvideTextStyle(MaterialTheme.typography.bodyLarge) {
                     title()
@@ -79,8 +76,7 @@ fun <T> SelectPreference(
             }
             summary?.let {
                 CompositionLocalProvider(
-                    LocalContentColor provides
-                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
+                    LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
                 ) {
                     ProvideTextStyle(MaterialTheme.typography.bodyMedium) {
                         it()
@@ -89,8 +85,7 @@ fun <T> SelectPreference(
             }
         }
         CompositionLocalProvider(
-            LocalContentColor provides
-                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
+            LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
         ) {
             ProvideTextStyle(MaterialTheme.typography.bodyMedium) {
                 Text(valueToText(value))

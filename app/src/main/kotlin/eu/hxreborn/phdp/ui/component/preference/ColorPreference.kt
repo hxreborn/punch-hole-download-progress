@@ -1,3 +1,5 @@
+@file:Suppress("AssignedValueIsNeverRead")
+
 package eu.hxreborn.phdp.ui.component.preference
 
 import android.content.res.Configuration
@@ -73,17 +75,12 @@ fun ColorPreference(
     }
 
     Row(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .clickable(enabled = enabled) { showDialog = true }
-                .padding(Tokens.PreferencePadding),
+        modifier = modifier.fillMaxWidth().clickable(enabled = enabled) { showDialog = true }.padding(Tokens.PreferencePadding),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
             CompositionLocalProvider(
-                LocalContentColor provides
-                    MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
+                LocalContentColor provides MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
             ) {
                 ProvideTextStyle(MaterialTheme.typography.bodyLarge) {
                     title()
@@ -91,8 +88,7 @@ fun ColorPreference(
             }
             summary?.let {
                 CompositionLocalProvider(
-                    LocalContentColor provides
-                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
+                    LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
                 ) {
                     ProvideTextStyle(MaterialTheme.typography.bodyMedium) {
                         it()
@@ -172,15 +168,11 @@ private fun ColorPickerDialog(
 
                 Box(
                     modifier =
-                        Modifier
-                            .size(Tokens.ColorPreviewSizeLarge)
-                            .clip(CircleShape)
-                            .background(Color(selectedColor))
-                            .border(
-                                width = Tokens.ColorBorderWidth,
-                                color = MaterialTheme.colorScheme.outline,
-                                shape = CircleShape,
-                            ),
+                        Modifier.size(Tokens.ColorPreviewSizeLarge).clip(CircleShape).background(Color(selectedColor)).border(
+                            width = Tokens.ColorBorderWidth,
+                            color = MaterialTheme.colorScheme.outline,
+                            shape = CircleShape,
+                        ),
                 )
 
                 Spacer(modifier = Modifier.height(Tokens.DialogActionsSpacing))

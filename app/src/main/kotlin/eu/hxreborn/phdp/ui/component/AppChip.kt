@@ -24,24 +24,12 @@ fun AppTypeChip(
     isSystem: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val containerColor =
-        if (isSystem) {
-            MaterialTheme.colorScheme.tertiaryContainer
-        } else {
-            MaterialTheme.colorScheme.primaryContainer
-        }
-    val contentColor =
-        if (isSystem) {
-            MaterialTheme.colorScheme.onTertiaryContainer
-        } else {
-            MaterialTheme.colorScheme.onPrimaryContainer
-        }
+    val scheme = MaterialTheme.colorScheme
+    val containerColor = if (isSystem) scheme.tertiaryContainer else scheme.primaryContainer
+    val contentColor = if (isSystem) scheme.onTertiaryContainer else scheme.onPrimaryContainer
 
     Box(
-        modifier =
-            modifier
-                .background(containerColor, RoundedCornerShape(4.dp))
-                .padding(horizontal = 6.dp, vertical = 2.dp),
+        modifier = modifier.background(containerColor, RoundedCornerShape(4.dp)).padding(horizontal = 6.dp, vertical = 2.dp),
         contentAlignment = Alignment.Center,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {

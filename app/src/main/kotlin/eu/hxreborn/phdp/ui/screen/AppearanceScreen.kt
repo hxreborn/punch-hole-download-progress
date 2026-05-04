@@ -610,21 +610,32 @@ private fun AppearanceScreenPreview() {
 }
 
 internal class PreviewViewModel : SettingsViewModel() {
-    override val uiState: StateFlow<SettingsUiState> =
-        MutableStateFlow(SettingsUiState.Success(PrefsState())).asStateFlow()
+    override val uiState: StateFlow<SettingsUiState> = MutableStateFlow(SettingsUiState.Success(PrefsState())).asStateFlow()
 
     override fun <T : Any> savePref(
         pref: PrefSpec<T>,
         value: T,
-    ) {}
+    ) {
+        // no-op preview stub
+    }
 
-    override fun resetDefaults() {}
+    override fun resetDefaults() {
+        // no-op preview stub
+    }
 
-    override fun simulateSuccess() {}
+    override fun simulateSuccess() {
+        // no-op preview stub
+    }
 
-    override fun simulateFailure() {}
+    override fun simulateFailure() {
+        // no-op preview stub
+    }
 
-    override fun clearDownloads() {}
+    override fun clearDownloads() {
+        // no-op preview stub
+    }
 
-    override fun setLauncherIconHidden(hidden: Boolean) {}
+    override fun setLauncherIconHidden(hidden: Boolean) {
+        // no-op preview stub
+    }
 }

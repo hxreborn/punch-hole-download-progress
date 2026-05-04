@@ -1,6 +1,5 @@
 package eu.hxreborn.phdp.ui
 
-import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
@@ -175,21 +174,21 @@ class MainActivity :
                     ).show()
                 return@launch
             }
-            RootUtils
-                .restartSystemUI()
-                .onFailure { e ->
-                    Toast
-                        .makeText(
-                            this@MainActivity,
-                            getString(R.string.restart_failed_detail, e.message),
-                            Toast.LENGTH_LONG,
-                        ).show()
-                }
+            RootUtils.restartSystemUI().onFailure { e ->
+                Toast
+                    .makeText(
+                        this@MainActivity,
+                        getString(R.string.restart_failed_detail, e.message),
+                        Toast.LENGTH_LONG,
+                    ).show()
+            }
         }
     }
 
     companion object {
+        // Xposed hook target. Module replaces return value at runtime to signal active state
         @JvmStatic
+        @Suppress("SameReturnValue")
         fun isXposedEnabled(): Boolean = false
     }
 }
