@@ -70,10 +70,14 @@ object Tokens {
     // Custom sizes for color selection UI
     val ColorPreviewSize: Dp = 40.dp
     val ColorPreviewSizeLarge: Dp = 56.dp
-    val ColorSwatchSize: Dp = 48.dp
+    val ColorSwatchSize: Dp = 40.dp
     val ColorGridSpacing: Dp = 12.dp
-    const val COLOR_GRID_COLUMNS: Int = 4
-    val ColorCheckIconSize: Dp = 24.dp
+    const val COLOR_GRID_COLUMNS: Int = 5
+    const val COLOR_GRID_MAX_VISIBLE_ROWS: Int = 5
+    val ColorGridMaxHeight: Dp =
+        ColorSwatchSize * COLOR_GRID_MAX_VISIBLE_ROWS +
+            ColorGridSpacing * (COLOR_GRID_MAX_VISIBLE_ROWS - 1)
+    val ColorCheckIconSize: Dp = 20.dp
     val ColorBorderWidth: Dp = 2.dp
     val ColorBorderWidthSelected: Dp = 3.dp
 

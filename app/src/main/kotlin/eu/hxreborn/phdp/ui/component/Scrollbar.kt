@@ -8,8 +8,10 @@ package eu.hxreborn.phdp.ui.component
 import android.view.ViewConfiguration
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -58,6 +60,72 @@ fun Modifier.drawVerticalScrollbar(
                         (estimatedItemSize * index - offset) / totalSize * canvasSize
                     }
                 }
+            drawScrollbar(
+                Orientation.Vertical,
+                reverseDirection,
+                atEnd,
+                color,
+                alpha,
+                thumbSize,
+                startOffset,
+            )
+        }
+    }
+
+fun Modifier.drawVerticalScrollbar(
+    state: LazyGridState,
+    reverseScrolling: Boolean = false,
+): Modifier =
+    drawScrollbar(
+        Orientation.Vertical,
+        reverseScrolling,
+    ) { reverseDirection, atEnd, color, alpha ->
+        val layoutInfo = state.layoutInfo
+        val viewportSize = layoutInfo.viewportEndOffset - layoutInfo.viewportStartOffset
+        val items = layoutInfo.visibleItemsInfo
+        if (items.isNotEmpty()) {
+            val columns = (items.maxOfOrNull { it.column } ?: 0) + 1
+            val totalRows = (layoutInfo.totalItemsCount + columns - 1) / columns
+            val rowsInfo = items.distinctBy { it.row }
+            val rowHeight =
+                if (rowsInfo.size >= 2) {
+                    (rowsInfo[1].offset.y - rowsInfo[0].offset.y).toFloat()
+                } else {
+                    rowsInfo[0].size.height.toFloat()
+                }
+            val totalSize = rowHeight * totalRows
+            if (totalSize > viewportSize) {
+                val canvasSize = size.height
+                val thumbSize = viewportSize / totalSize * canvasSize
+                val firstRow = rowsInfo[0]
+                val startOffset = (firstRow.row * rowHeight - firstRow.offset.y) / totalSize * canvasSize
+                drawScrollbar(
+                    Orientation.Vertical,
+                    reverseDirection,
+                    atEnd,
+                    color,
+                    alpha,
+                    thumbSize,
+                    startOffset,
+                )
+            }
+        }
+    }
+
+fun Modifier.drawVerticalScrollbar(
+    state: ScrollState,
+    reverseScrolling: Boolean = false,
+): Modifier =
+    drawScrollbar(
+        Orientation.Vertical,
+        reverseScrolling,
+    ) { reverseDirection, atEnd, color, alpha ->
+        val maxValue = state.maxValue
+        if (maxValue > 0) {
+            val canvasSize = size.height
+            val totalSize = canvasSize + maxValue
+            val thumbSize = canvasSize / totalSize * canvasSize
+            val startOffset = state.value.toFloat() / totalSize * canvasSize
             drawScrollbar(
                 Orientation.Vertical,
                 reverseDirection,

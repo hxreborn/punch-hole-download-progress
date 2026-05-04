@@ -221,6 +221,7 @@
 
     <!-- Color Picker -->
     <string name="pick_color">Pick Color</string>
+    <string name="presets">Presets</string>
 
     <!-- Reset -->
     <string name="reset_defaults">Reset to Defaults</string>

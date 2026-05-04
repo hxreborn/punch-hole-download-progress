@@ -169,6 +169,7 @@
     <string name="pref_report_issue">报告问题</string>
     <string name="pref_report_issue_summary">在GitHub上报告错误或提出功能建议</string>
     <string name="pick_color">选色板</string>
+    <string name="presets">预设</string>
     <string name="reset_defaults">恢复默认设置</string>
     <string name="reset_confirm">所有设置将重置为默认值？</string>
     <string name="reset_done">重置设置</string>

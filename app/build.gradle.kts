@@ -140,6 +140,7 @@ dependencies {
     implementation(libs.compose.preference)
     implementation(libs.aboutlibraries.core)
     implementation(libs.aboutlibraries.compose)
+    implementation(libs.colorpicker.compose)
 }
 
 tasks.register<JavaExec>("ktlintCheck") {
