@@ -57,7 +57,7 @@ fun ExpressiveCheckbox(
             ),
         shape = checkboxShape,
         color = backgroundColor.value,
-        border = BorderStroke(2.dp, borderColor.value),
+        border = BorderStroke(Tokens.CheckboxBorderWidth, borderColor.value),
     ) {
         Box(contentAlignment = Alignment.Center) {
             AnimatedVisibility(

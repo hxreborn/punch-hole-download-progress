@@ -13,15 +13,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.Tokens
 
 private enum class RowPosition { SINGLE, FIRST, MIDDLE, LAST }
 
 private fun RowPosition.shape(): Shape {
-    val large = 24.dp
-    val small = 4.dp
+    val large = Tokens.RowCornerRadius
+    val small = Tokens.SmallCornerRadius
     return when (this) {
         RowPosition.SINGLE -> RoundedCornerShape(large)
         RowPosition.FIRST -> RoundedCornerShape(large, large, small, small)
@@ -47,8 +46,8 @@ fun SectionCard(
     items: List<@Composable () -> Unit>,
 ) {
     Column(
-        modifier = modifier.padding(horizontal = 12.dp).alpha(if (enabled) 1f else Tokens.DISABLED_ALPHA),
-        verticalArrangement = Arrangement.spacedBy(2.dp),
+        modifier = modifier.padding(horizontal = Tokens.SectionHorizontalMargin).alpha(if (enabled) 1f else Tokens.DISABLED_ALPHA),
+        verticalArrangement = Arrangement.spacedBy(Tokens.SectionItemSpacing),
     ) {
         items.forEachIndexed { index, item ->
             Surface(

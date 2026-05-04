@@ -1,7 +1,5 @@
 package eu.hxreborn.phdp.ui.component
 
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -11,9 +9,11 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -32,7 +32,7 @@ import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.ui.MenuAction
 import eu.hxreborn.phdp.ui.theme.Tokens
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun MainTabScaffold(
     onMenuAction: (MenuAction) -> Unit,
@@ -42,11 +42,7 @@ fun MainTabScaffold(
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-            snapAnimationSpec =
-                spring(
-                    dampingRatio = Spring.DampingRatioNoBouncy,
-                    stiffness = Spring.StiffnessLow,
-                ),
+            snapAnimationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
         )
     var menuExpanded by remember { mutableStateOf(false) }
     val isCollapsed by remember {

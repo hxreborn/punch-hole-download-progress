@@ -2,7 +2,10 @@ package eu.hxreborn.phdp.ui.navigation
 
 import android.provider.Settings
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
@@ -18,15 +21,21 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
@@ -127,16 +136,37 @@ val bottomNavItems =
         ),
     )
 
+private val springSpec =
+    spring<IntOffset>(
+        dampingRatio = Tokens.TRANSITION_DAMPING_RATIO,
+        stiffness = Tokens.TRANSITION_STIFFNESS,
+    )
+
 private val slideTransitionMetadata =
     NavDisplay.transitionSpec {
-        slideInHorizontally(initialOffsetX = { it }) togetherWith slideOutHorizontally(targetOffsetX = { -it })
+        slideInHorizontally(animationSpec = springSpec, initialOffsetX = { it }) togetherWith
+            slideOutHorizontally(animationSpec = springSpec, targetOffsetX = { -it })
     } +
         NavDisplay.popTransitionSpec {
-            slideInHorizontally(initialOffsetX = { -it }) togetherWith slideOutHorizontally(targetOffsetX = { it })
+            slideInHorizontally(animationSpec = springSpec, initialOffsetX = { -it }) togetherWith
+                slideOutHorizontally(animationSpec = springSpec, targetOffsetX = { it })
         } +
         NavDisplay.predictivePopTransitionSpec {
-            slideInHorizontally(initialOffsetX = { -it }) togetherWith slideOutHorizontally(targetOffsetX = { it })
+            slideInHorizontally(animationSpec = springSpec, initialOffsetX = { -it }) togetherWith
+                slideOutHorizontally(animationSpec = springSpec, targetOffsetX = { it })
         }
+
+@Composable
+private fun rememberScaledAnimDuration(): Int {
+    val context = LocalContext.current
+    return remember {
+        val scale =
+            runCatching {
+                Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f)
+            }.getOrDefault(1f)
+        (Tokens.ANIMATION_DURATION_MS * scale).toInt().coerceAtLeast(0)
+    }
+}
 
 @Composable
 fun MainNavDisplay(
@@ -146,13 +176,28 @@ fun MainNavDisplay(
     bottomNavPadding: Dp,
     modifier: Modifier = Modifier,
 ) {
+    val animDuration = rememberScaledAnimDuration()
+    val tabTransitionMetadata =
+        remember(animDuration) {
+            val tabMs = (animDuration * Tokens.TAB_DURATION_FACTOR).toInt()
+            NavDisplay.transitionSpec {
+                fadeIn(tween(tabMs)) togetherWith fadeOut(tween(tabMs))
+            } +
+                NavDisplay.popTransitionSpec {
+                    fadeIn(tween(tabMs)) togetherWith fadeOut(tween(tabMs))
+                } +
+                NavDisplay.predictivePopTransitionSpec {
+                    fadeIn(tween(tabMs)) togetherWith fadeOut(tween(tabMs))
+                }
+        }
+
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
         modifier = modifier,
         entryProvider =
             entryProvider {
-                entry<Screen.Design> {
+                entry<Screen.Design>(metadata = tabTransitionMetadata) {
                     MainTabScaffold(
                         onMenuAction = onMenuAction,
                         bottomNavPadding = bottomNavPadding,
@@ -324,7 +369,7 @@ fun MainNavDisplay(
                             ),
                     )
                 }
-                entry<Screen.Motion> {
+                entry<Screen.Motion>(metadata = tabTransitionMetadata) {
                     MainTabScaffold(
                         onMenuAction = onMenuAction,
                         bottomNavPadding = bottomNavPadding,
@@ -338,7 +383,7 @@ fun MainNavDisplay(
                         )
                     }
                 }
-                entry<Screen.Packages> {
+                entry<Screen.Packages>(metadata = tabTransitionMetadata) {
                     MainTabScaffold(
                         onMenuAction = onMenuAction,
                         bottomNavPadding = bottomNavPadding,
@@ -349,7 +394,7 @@ fun MainNavDisplay(
                         )
                     }
                 }
-                entry<Screen.System> {
+                entry<Screen.System>(metadata = tabTransitionMetadata) {
                     MainTabScaffold(
                         onMenuAction = onMenuAction,
                         bottomNavPadding = bottomNavPadding,
@@ -377,64 +422,68 @@ fun BottomNav(
     currentKey: NavKey?,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
+    val haptics = LocalHapticFeedback.current
+    val animDuration = rememberScaledAnimDuration()
 
-    val animDuration =
-        remember {
-            val scale =
-                runCatching {
-                    Settings.Global.getFloat(
-                        context.contentResolver,
-                        Settings.Global.ANIMATOR_DURATION_SCALE,
-                        1f,
-                    )
-                }.getOrDefault(1f)
-            (Tokens.ANIMATION_DURATION_MS * scale).toInt().coerceAtLeast(0)
+    val effectiveKey =
+        when (currentKey) {
+            Screen.Calibration,
+            Screen.PercentCalibration,
+            Screen.FilenameCalibration,
+            Screen.AppIconCalibration,
+            Screen.MaterialYou,
+            -> Screen.Design
+
+            Screen.BadgeCalibration -> Screen.Motion
+
+            Screen.Licenses -> Screen.System
+
+            else -> currentKey
         }
 
-    NavigationBar(modifier = modifier) {
-        val effectiveKey =
-            when (currentKey) {
-                Screen.Calibration,
-                Screen.PercentCalibration,
-                Screen.FilenameCalibration,
-                Screen.AppIconCalibration,
-                Screen.MaterialYou,
-                -> Screen.Design
+    val selectedIndex =
+        bottomNavItems
+            .indexOfFirst { it.key == effectiveKey }
+            .coerceAtLeast(0)
 
-                Screen.BadgeCalibration -> Screen.Motion
+    val transparentIndicatorColors =
+        NavigationBarItemDefaults.colors(indicatorColor = Color.Transparent)
 
-                Screen.Licenses -> Screen.System
-
-                else -> currentKey
-            }
-        bottomNavItems.forEach { item ->
-            val selected = effectiveKey == item.key
-            NavigationBarItem(
-                selected = selected,
-                onClick = {
-                    if (!selected) {
-                        backStack.removeAll { it != Screen.Design }
-                        if (item.key != Screen.Design) {
-                            backStack.add(item.key)
+    CompositionLocalProvider(
+        LocalNavigationBarSelectedIndex provides selectedIndex,
+        LocalNavigationBarItemCount provides bottomNavItems.size,
+    ) {
+        NavigationBar(modifier = modifier) {
+            bottomNavItems.forEach { item ->
+                val selected = effectiveKey == item.key
+                NavigationBarItem(
+                    selected = selected,
+                    onClick = {
+                        if (!selected) {
+                            haptics.performHapticFeedback(HapticFeedbackType.ContextClick)
+                            backStack.removeAll { it != Screen.Design }
+                            if (item.key != Screen.Design) {
+                                backStack.add(item.key)
+                            }
                         }
-                    }
-                },
-                icon = {
-                    Crossfade(
-                        targetState = selected,
-                        animationSpec = tween(durationMillis = animDuration),
-                        label = "iconCrossfade",
-                    ) { isSelected ->
-                        Icon(
-                            imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
-                            contentDescription = stringResource(item.titleRes),
-                        )
-                    }
-                },
-                label = { Text(stringResource(item.titleRes)) },
-                alwaysShowLabel = false,
-            )
+                    },
+                    icon = {
+                        Crossfade(
+                            targetState = selected,
+                            animationSpec = tween(durationMillis = animDuration),
+                            label = "iconCrossfade",
+                        ) { isSelected ->
+                            Icon(
+                                imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
+                                contentDescription = stringResource(item.titleRes),
+                            )
+                        }
+                    },
+                    label = { Text(stringResource(item.titleRes)) },
+                    alwaysShowLabel = false,
+                    colors = transparentIndicatorColors,
+                )
+            }
         }
     }
 }

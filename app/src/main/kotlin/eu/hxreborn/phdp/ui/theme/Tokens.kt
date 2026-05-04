@@ -1,5 +1,6 @@
 package eu.hxreborn.phdp.ui.theme
 
+import androidx.compose.animation.core.Spring
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
@@ -44,6 +45,7 @@ object Tokens {
     // App specific settings layout ColorBlendr style
     // Each row is its own surface with small gap between
     val GroupSpacing: Dp = 6.dp
+    val SectionItemSpacing: Dp = 2.dp
     val RowCornerRadius: Dp = 24.dp
     val SectionHorizontalMargin: Dp = 12.dp
 
@@ -92,4 +94,17 @@ object Tokens {
     // Expressive checkbox
     val CheckboxCornerRadius: Dp = 8.dp
     val CheckboxIconSize: Dp = 18.dp
+    val CheckboxBorderWidth: Dp = 2.dp
+
+    // Navigation bar stretching pill (StretchingPillNavigationBarOverride)
+    val NavBarHeight: Dp = 80.dp
+    val NavBarItemSpacing: Dp = 8.dp
+    val NavBarPillWidth: Dp = 56.dp
+    val NavBarPillHeight: Dp = 32.dp
+    val NavBarPillTopOffset: Dp = 14.dp
+
+    const val TRANSITION_DAMPING_RATIO: Float = Spring.DampingRatioMediumBouncy
+    const val TRANSITION_STIFFNESS: Float = 800f
+
+    const val TAB_DURATION_FACTOR: Float = 1.5f
 }

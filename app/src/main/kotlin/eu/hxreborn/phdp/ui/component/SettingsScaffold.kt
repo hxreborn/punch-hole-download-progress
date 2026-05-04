@@ -1,7 +1,5 @@
 package eu.hxreborn.phdp.ui.component
 
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
@@ -9,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeTopAppBar
@@ -25,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.ui.theme.Tokens
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SettingsScaffold(
     title: String,
@@ -38,7 +37,7 @@ fun SettingsScaffold(
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-            snapAnimationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing),
+            snapAnimationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
         )
 
     Scaffold(
