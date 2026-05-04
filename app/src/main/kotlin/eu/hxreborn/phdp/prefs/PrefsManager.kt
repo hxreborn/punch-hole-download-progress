@@ -1,6 +1,7 @@
 package eu.hxreborn.phdp.prefs
 
 import android.content.SharedPreferences
+import eu.hxreborn.phdp.util.Logger
 import eu.hxreborn.phdp.util.log
 
 object PrefsManager {
@@ -273,6 +274,10 @@ object PrefsManager {
         private set
 
     @Volatile
+    var verboseLogging = Prefs.verboseLogging.default
+        private set
+
+    @Volatile
     var persistentPreviewActive = false
         private set
 
@@ -429,6 +434,8 @@ object PrefsManager {
                 materialYouErrorPalette = Prefs.materialYouErrorPalette.read(prefs)
                 materialYouErrorShade = Prefs.materialYouErrorShade.read(prefs)
                 selectedPackages = Prefs.selectedPackages.read(prefs)
+                verboseLogging = Prefs.verboseLogging.read(prefs)
+                Logger.verboseEnabled = verboseLogging
             }
         }.onFailure { log("refreshCache() failed", it) }
     }

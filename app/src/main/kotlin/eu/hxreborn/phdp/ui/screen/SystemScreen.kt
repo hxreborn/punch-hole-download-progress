@@ -136,8 +136,7 @@ fun SystemScreen(
                                         )
                                     },
                                     valueToText = {
-                                        labelFromValues(it, powerSaverEntries, powerSaverValues)
-                                            ?: it
+                                        labelFromValues(it, powerSaverEntries, powerSaverValues) ?: it
                                     },
                                 )
                             },
@@ -220,6 +219,18 @@ fun SystemScreen(
                                         Text(
                                             stringResource(R.string.pref_hide_launcher_icon_summary),
                                         )
+                                    },
+                                )
+                            },
+                            {
+                                TogglePreferenceWithIcon(
+                                    value = prefsState.verboseLogging,
+                                    onValueChange = { viewModel.savePref(Prefs.verboseLogging, it) },
+                                    title = {
+                                        Text(stringResource(R.string.pref_verbose_logging_title))
+                                    },
+                                    summary = {
+                                        Text(stringResource(R.string.pref_verbose_logging_summary))
                                     },
                                 )
                             },

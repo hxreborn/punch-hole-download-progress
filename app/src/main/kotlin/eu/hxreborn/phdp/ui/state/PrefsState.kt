@@ -73,4 +73,5 @@ data class PrefsState(
     val pathMode: Boolean = Prefs.pathMode.default,
     val selectedPackages: Set<String> = Prefs.selectedPackages.default,
     val showSystemPackages: Boolean = Prefs.showSystemPackages.default,
+    val verboseLogging: Boolean = Prefs.verboseLogging.default,
 )

@@ -155,6 +155,8 @@
     <string name="clear_downloads_done">指示器已重置</string>
     <string name="pref_hide_launcher_icon_title">隐藏桌面图标</string>
     <string name="pref_hide_launcher_icon_summary">隐藏桌面应用图标</string>
+    <string name="pref_verbose_logging_title">调试日志</string>
+    <string name="pref_verbose_logging_summary">用于调试的详细日志</string>
     <string name="pref_version_title">版本</string>
     <string name="pref_git_repo">源代码</string>
     <string name="pref_git_repo_summary">在GitHub上浏览该项目</string>

@@ -76,8 +76,7 @@ object Prefs {
     val filenameTextBold = BoolPref("filename_text_bold", false)
     val filenameTextItalic = BoolPref("filename_text_italic", false)
     val filenameEllipsize = StringPref("filename_ellipsize", "middle")
-    val filenameVerticalText =
-        BoolPref("filename_vertical_text", false)
+    val filenameVerticalText = BoolPref("filename_vertical_text", false)
 
     // App icon overlay
     val appIconEnabled = BoolPref("app_icon_enabled", false)
@@ -110,6 +109,9 @@ object Prefs {
     // UI-only
     val darkThemeConfig = StringPref("dark_theme_config", "follow_system")
     val useDynamicColor = BoolPref("use_dynamic_color", true)
+
+    // Diagnostics
+    val verboseLogging = BoolPref("verbose_logging", false)
 
     val defaultSupportedPackages: Set<String> =
         setOf(

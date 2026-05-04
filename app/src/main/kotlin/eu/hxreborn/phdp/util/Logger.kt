@@ -1,7 +1,6 @@
 package eu.hxreborn.phdp.util
 
 import android.util.Log
-import eu.hxreborn.phdp.BuildConfig
 import io.github.libxposed.api.XposedModule
 
 object Logger {
@@ -12,6 +11,10 @@ object Logger {
     @PublishedApi
     internal var module: XposedModule? = null
 
+    @Volatile
+    @PublishedApi
+    internal var verboseEnabled = false
+
     fun attach(module: XposedModule) {
         this.module = module
     }
@@ -20,19 +23,19 @@ object Logger {
         message: String,
         throwable: Throwable? = null,
     ) {
-        val m = module ?: return
-        if (throwable != null) {
-            m.log(Log.ERROR, TAG, message, throwable)
-        } else {
-            m.log(Log.INFO, TAG, message)
+        val module = module ?: return
+
+        throwable?.let {
+            module.log(Log.ERROR, TAG, message, it)
+            return
         }
+
+        module.log(Log.INFO, TAG, message)
     }
 
     inline fun logDebug(message: () -> String) {
-        if (!BuildConfig.DEBUG) return
-        val msg = message()
-        module?.log(Log.DEBUG, TAG, msg)
-        Log.d(TAG, msg)
+        if (!verboseEnabled) return
+        module?.log(Log.DEBUG, TAG, message())
     }
 }
 

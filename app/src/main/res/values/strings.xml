@@ -203,6 +203,8 @@
     <string name="clear_downloads_done">Downloads cleared</string>
     <string name="pref_hide_launcher_icon_title">Hide Launcher Icon</string>
     <string name="pref_hide_launcher_icon_summary">Hides app from launcher</string>
+    <string name="pref_verbose_logging_title">Debug logs</string>
+    <string name="pref_verbose_logging_summary">Detailed log for debugging</string>
 
     <!-- System: About -->
     <string name="pref_version_title">Version</string>
