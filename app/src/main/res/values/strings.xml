@@ -152,6 +152,8 @@
     <string name="pref_calibrate_badge_summary">Adjust queue counter placement</string>
     <string name="pref_burn_in_hide_title">Hide after inactivity</string>
     <string name="pref_burn_in_hide_summary">Time before the ring hides without activity or progress</string>
+    <string name="pref_progress_anim_title">Progress smoothness</string>
+    <string name="pref_progress_anim_summary">How long the arc takes when progress changes. Depends on how often the app reports progress to SystemUI.</string>
     <string name="pref_font_size_title">Font size</string>
     <string name="pref_bold_title">Bold</string>
     <string name="pref_italic_title">Italic</string>
@@ -270,6 +272,8 @@
         <item>120000</item>
         <item>0</item>
     </string-array>
+
+
 
     <!-- Dialog Arrays: App Theme -->
     <string-array name="theme_entries">

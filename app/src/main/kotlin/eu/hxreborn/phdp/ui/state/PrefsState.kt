@@ -75,4 +75,5 @@ data class PrefsState(
     val showSystemPackages: Boolean = Prefs.showSystemPackages.default,
     val verboseLogging: Boolean = Prefs.verboseLogging.default,
     val burnInHideMs: Int = Prefs.burnInHideMs.default,
+    val progressAnimMs: Int = Prefs.progressAnimMs.default,
 )

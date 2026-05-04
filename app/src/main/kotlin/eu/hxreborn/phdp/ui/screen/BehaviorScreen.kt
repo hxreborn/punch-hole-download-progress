@@ -21,6 +21,7 @@ import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.preference.NavigationPreference
 import eu.hxreborn.phdp.ui.component.preference.SelectPreference
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithReset
+import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithStepper
 import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
@@ -222,6 +223,30 @@ fun BehaviorScreen(
                                     valueToText = { raw ->
                                         labelFromValues(raw, burnInHideEntries, burnInHideValues)
                                             ?: "${(raw.toIntOrNull() ?: 0) / 1000}s"
+                                    },
+                                )
+                            },
+                            {
+                                SliderPreferenceWithStepper(
+                                    value = prefsState.progressAnimMs.toFloat(),
+                                    onValueChange = {
+                                        viewModel.savePref(Prefs.progressAnimMs, it.toInt())
+                                    },
+                                    title = {
+                                        Text(stringResource(R.string.pref_progress_anim_title))
+                                    },
+                                    valueRange = 0f..750f,
+                                    defaultValue = Prefs.progressAnimMs.default.toFloat(),
+                                    onReset = {
+                                        viewModel.savePref(
+                                            Prefs.progressAnimMs,
+                                            Prefs.progressAnimMs.default,
+                                        )
+                                    },
+                                    stepSize = 50f,
+                                    suffix = "ms",
+                                    summary = {
+                                        Text(stringResource(R.string.pref_progress_anim_summary))
                                     },
                                 )
                             },

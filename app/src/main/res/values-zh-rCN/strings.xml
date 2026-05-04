@@ -110,6 +110,8 @@
     <string name="pref_calibrate_badge_summary">调整下载数角标的位置</string>
     <string name="pref_burn_in_hide_title">无活动时隐藏</string>
     <string name="pref_burn_in_hide_summary">无活动或进度更新时指示器隐藏前的等待时长</string>
+    <string name="pref_progress_anim_title">进度平滑度</string>
+    <string name="pref_progress_anim_summary">进度变化时弧形过渡的时长。取决于应用向 SystemUI 上报进度的频率。</string>
     <string name="pref_font_size_title">字体大小</string>
     <string name="pref_bold_title">加粗</string>
     <string name="pref_italic_title">斜体</string>

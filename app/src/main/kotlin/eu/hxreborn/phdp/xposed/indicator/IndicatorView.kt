@@ -1,5 +1,6 @@
 package eu.hxreborn.phdp.xposed.indicator
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
@@ -47,6 +48,8 @@ class IndicatorView(
     private var pendingFinishRunnable: Runnable? = null
     private var lastActivityTime = 0L
     private val burnInHideRunnable = Runnable { invalidate() }
+    private var smoothProgress: Float = 0f
+    private var progressAnim: ValueAnimator? = null
 
     fun touchActivity() {
         lastActivityTime = System.currentTimeMillis()
@@ -55,6 +58,34 @@ class IndicatorView(
         if (progress in 1..99 && hideDelay > 0L) {
             postDelayed(burnInHideRunnable, hideDelay)
         }
+    }
+
+    // Easing-pref drives previews directly; their internal animations already smooth the sweep
+    private fun smoothProgressFor(effectiveProgress: Int): Float =
+        if (animator.isGeometryPreviewActive || animator.isPreviewAnimating) {
+            applyEasing(effectiveProgress, PrefsManager.progressEasing)
+        } else {
+            smoothProgress
+        }
+
+    private fun animateProgressTo(target: Int) {
+        val targetFraction = applyEasing(target, PrefsManager.progressEasing)
+        progressAnim?.cancel()
+        val durationMs = PrefsManager.progressAnimMs.toLong()
+        if (durationMs <= 0L) {
+            smoothProgress = targetFraction
+            invalidate()
+            return
+        }
+        progressAnim =
+            ValueAnimator.ofFloat(smoothProgress, targetFraction).apply {
+                duration = durationMs
+                addUpdateListener {
+                    smoothProgress = it.animatedValue as Float
+                    invalidate()
+                }
+                start()
+            }
     }
 
     private val minVisibilityMs: Long
@@ -108,6 +139,7 @@ class IndicatorView(
                 val oldValue = field
                 field = newValue
                 touchActivity()
+                animateProgressTo(newValue)
                 logDebug { "IndicatorView: progress = $newValue" }
 
                 if (oldValue == 0 && newValue > 0) {
@@ -221,6 +253,7 @@ class IndicatorView(
                 updatePaintFromPrefs()
                 updateRenderer()
                 recalculateScaledPath()
+                smoothProgress = applyEasing(progress, PrefsManager.progressEasing)
                 invalidate()
             }
         }
@@ -381,6 +414,8 @@ class IndicatorView(
         super.onDetachedFromWindow()
         log("IndicatorView: onDetachedFromWindow()")
         animator.cancelAll()
+        progressAnim?.cancel()
+        progressAnim = null
         pendingFinishRunnable?.let { removeCallbacks(it) }
         pendingFinishRunnable = null
         removeCallbacks(burnInHideRunnable)
@@ -563,8 +598,8 @@ class IndicatorView(
                 scaledPath.computeBounds(arcBounds, true)
                 arcBounds.applyCalibration()
                 renderer.updateBounds(arcBounds)
-                val sweepFraction = applyEasing(effectiveProgress, PrefsManager.progressEasing)
-                renderer.drawProgress(this, sweepFraction, PrefsManager.clockwise, animatedPaint)
+                val fraction = smoothProgressFor(effectiveProgress)
+                renderer.drawProgress(this, fraction, PrefsManager.clockwise, animatedPaint)
 
                 val showLabels = effectiveProgress in 1..99 || animator.isGeometryPreviewActive
                 if (showLabels) {

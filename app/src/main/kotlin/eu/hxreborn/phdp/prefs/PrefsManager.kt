@@ -282,6 +282,10 @@ object PrefsManager {
         private set
 
     @Volatile
+    var progressAnimMs = Prefs.progressAnimMs.default
+        private set
+
+    @Volatile
     var persistentPreviewActive = false
         private set
 
@@ -441,6 +445,7 @@ object PrefsManager {
                 verboseLogging = Prefs.verboseLogging.read(prefs)
                 Logger.verboseEnabled = verboseLogging
                 burnInHideMs = Prefs.burnInHideMs.read(prefs)
+                progressAnimMs = Prefs.progressAnimMs.read(prefs)
             }
         }.onFailure { log("refreshCache() failed", it) }
     }

@@ -112,7 +112,8 @@ object Prefs {
 
     // Diagnostics
     val verboseLogging = BoolPref("verbose_logging", false)
-    val burnInHideMs = IntPref("burn_in_hide_ms", 15000, 0..600000)
+    val burnInHideMs = IntPref("burn_in_hide_ms", 15000, 0..120000)
+    val progressAnimMs = IntPref("progress_anim_ms", 250, 0..750)
 
     val defaultSupportedPackages: Set<String> =
         setOf(
