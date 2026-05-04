@@ -50,16 +50,18 @@ object SystemUIHooker {
     private fun hookNotificationListener(classLoader: ClassLoader) {
         val targetClass =
             runCatching { classLoader.loadClass(NOTIFICATION_LISTENER) }
-                .onFailure { log("Failed to load $NOTIFICATION_LISTENER", it) }
-                .getOrNull() ?: return
+                .onFailure {
+                    log(
+                        "Failed to load $NOTIFICATION_LISTENER",
+                        it,
+                    )
+                }.getOrNull() ?: return
 
-        targetClass.declaredMethods
-            .filter { it.name == "onNotificationPosted" }
-            .forEach { method ->
-                runCatching {
-                    module.hook(method).intercept(notificationAddHooker)
-                }.onSuccess { log("Hooked NotificationListener.onNotificationPosted") }
-            }
+        targetClass.declaredMethods.filter { it.name == "onNotificationPosted" }.forEach { method ->
+            runCatching {
+                module.hook(method).intercept(notificationAddHooker)
+            }.onSuccess { log("Hooked NotificationListener.onNotificationPosted") }
+        }
     }
 
     // Earliest reliable SystemUI context for overlay attach
@@ -67,9 +69,11 @@ object SystemUIHooker {
     private fun hookSystemUIEntry(classLoader: ClassLoader) {
         val targetClass =
             runCatching { classLoader.loadClass(CENTRAL_SURFACES_IMPL) }
-                .recoverCatching { classLoader.loadClass(STATUS_BAR) }
-                .onFailure { log("Failed to load CentralSurfaces/StatusBar", it) }
-                .getOrNull() ?: return
+                .recoverCatching {
+                    classLoader.loadClass(STATUS_BAR)
+                }.onFailure { log("Failed to load CentralSurfaces/StatusBar", it) }
+                .getOrNull()
+                ?: return
 
         val startMethod =
             targetClass.declaredMethods.find { it.name == "start" && it.parameterCount == 0 }
@@ -107,25 +111,26 @@ object SystemUIHooker {
     private fun hookNotifications(classLoader: ClassLoader) {
         val targetClass =
             runCatching { classLoader.loadClass(NOTIF_COLLECTION) }
-                .onFailure { log("Failed to load $NOTIF_COLLECTION", it) }
-                .getOrNull() ?: return
+                .onFailure {
+                    log(
+                        "Failed to load $NOTIF_COLLECTION",
+                        it,
+                    )
+                }.getOrNull() ?: return
 
         // postNotification entry point for new notifications on Android 12 and later
-        targetClass.declaredMethods
-            .filter { it.name == "postNotification" }
-            .forEach { method ->
-                runCatching {
-                    module.hook(method).intercept(notificationAddHooker)
-                }.onSuccess { log("Hooked NotifCollection.postNotification") }
-            }
+        targetClass.declaredMethods.filter { it.name == "postNotification" }.forEach { method ->
+            runCatching {
+                module.hook(method).intercept(notificationAddHooker)
+            }.onSuccess { log("Hooked NotifCollection.postNotification") }
+        }
 
         // Hook notification removal - method name varies by Android version
         // Android 16+: tryRemoveNotification(NotificationEntry)
         // Android 12-15: onNotificationRemoved(StatusBarNotification, RankingMap, int)
         targetClass.declaredMethods
             .filter {
-                it.name == "tryRemoveNotification" ||
-                    it.name == "onNotificationRemoved"
+                it.name == "tryRemoveNotification" || it.name == "onNotificationRemoved"
             }.forEach { method ->
                 runCatching {
                     module.hook(method).intercept(notificationRemoveHooker)
@@ -290,8 +295,12 @@ object SystemUIHooker {
                     arg.javaClass.name.contains("NotificationEntry") -> {
                         runCatching {
                             arg.javaClass.accessibleField("mSbn").get(arg)
-                        }.getOrNull()
-                            ?.let { DownloadProgressHooker.onNotificationRemoved(it, reason) }
+                        }.getOrNull()?.let {
+                            DownloadProgressHooker.onNotificationRemoved(
+                                it,
+                                reason,
+                            )
+                        }
                     }
                 }
             }

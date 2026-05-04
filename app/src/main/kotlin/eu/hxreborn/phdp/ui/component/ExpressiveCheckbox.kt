@@ -48,15 +48,13 @@ fun ExpressiveCheckbox(
 
     Surface(
         modifier =
-            modifier
-                .size(Tokens.CheckboxSize)
-                .toggleable(
-                    value = checked,
-                    onValueChange = onCheckedChange,
-                    role = Role.Checkbox,
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = ripple(bounded = false, radius = 20.dp),
-                ),
+            modifier.size(Tokens.CheckboxSize).toggleable(
+                value = checked,
+                onValueChange = onCheckedChange,
+                role = Role.Checkbox,
+                interactionSource = remember { MutableInteractionSource() },
+                indication = ripple(bounded = false, radius = 20.dp),
+            ),
         shape = checkboxShape,
         color = backgroundColor.value,
         border = BorderStroke(2.dp, borderColor.value),

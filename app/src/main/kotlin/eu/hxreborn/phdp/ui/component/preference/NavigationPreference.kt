@@ -37,8 +37,7 @@ fun NavigationPreference(
     ) {
         Column(modifier = Modifier.weight(1f)) {
             CompositionLocalProvider(
-                LocalContentColor provides
-                    MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
+                LocalContentColor provides MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
             ) {
                 ProvideTextStyle(MaterialTheme.typography.bodyLarge) {
                     title()
@@ -46,8 +45,7 @@ fun NavigationPreference(
             }
             summary?.let {
                 CompositionLocalProvider(
-                    LocalContentColor provides
-                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
+                    LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
                 ) {
                     ProvideTextStyle(MaterialTheme.typography.bodyMedium) {
                         it()

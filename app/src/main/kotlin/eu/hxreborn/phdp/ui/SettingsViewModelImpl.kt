@@ -21,8 +21,7 @@ class SettingsViewModelImpl(
     private val repository: PrefsRepository,
     private val applicationContext: Context,
 ) : SettingsViewModel() {
-    private val launcherIconHidden =
-        MutableStateFlow(!LauncherIconHelper.isLauncherIconVisible(applicationContext))
+    private val launcherIconHidden = MutableStateFlow(!LauncherIconHelper.isLauncherIconVisible(applicationContext))
 
     override val uiState: StateFlow<SettingsUiState> =
         combine(repository.state, launcherIconHidden) { prefs, hidden ->

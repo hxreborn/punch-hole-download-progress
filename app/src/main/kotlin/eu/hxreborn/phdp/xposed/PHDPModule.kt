@@ -26,8 +26,7 @@ class PHDPModule : XposedModule() {
         PrefsManager.init(this)
         runCatching {
             SystemUIHooker.hook(param.classLoader)
-        }.onSuccess { log("Hooks registered") }
-            .onFailure { log("Hook failed", it) }
+        }.onSuccess { log("Hooks registered") }.onFailure { log("Hook failed", it) }
     }
 
     companion object {

@@ -165,8 +165,7 @@ class IndicatorView(
     private val animatedPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private val backgroundRingPaint =
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            style =
-                Paint.Style.STROKE
+            style = Paint.Style.STROKE
         }
     private val percentPaint =
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -226,8 +225,7 @@ class IndicatorView(
         palette: String,
         shade: Int,
     ): Int? {
-        val resId =
-            context.resources.getIdentifier("system_${palette}_$shade", "color", "android")
+        val resId = context.resources.getIdentifier("system_${palette}_$shade", "color", "android")
         return if (resId != 0) context.getColor(resId) else null
     }
 
@@ -395,8 +393,7 @@ class IndicatorView(
             // cutoutPath is API 31+, falls through to buildFallbackPath on older
             @Suppress("NewApi")
             displayCutout?.cutoutPath?.also { log("Cutout source: native") }
-                ?: buildFallbackPath(displayCutout)
-                ?: buildMockCutoutPath()
+                ?: buildFallbackPath(displayCutout) ?: buildMockCutoutPath()
 
         cutoutPath?.let { path ->
             path.computeBounds(pathBounds, true)
@@ -480,8 +477,7 @@ class IndicatorView(
             }
 
         val isBurnInHidden =
-            effectiveProgress in 1..99 &&
-                lastProgressChangeTime > 0 &&
+            effectiveProgress in 1..99 && lastProgressChangeTime > 0 &&
                 System.currentTimeMillis() - lastProgressChangeTime >= BURN_IN_HIDE_DELAY_MS
 
         val shouldDraw =
@@ -531,12 +527,10 @@ class IndicatorView(
             }
 
             val isActiveProgress =
-                effectiveProgress in 1..99 ||
-                    animator.isGeometryPreviewActive ||
+                effectiveProgress in 1..99 || animator.isGeometryPreviewActive ||
                     animator.isPreviewAnimating
             val showBackgroundRing =
-                PrefsManager.backgroundRingEnabled &&
-                    !animator.isFinishAnimating &&
+                PrefsManager.backgroundRingEnabled && !animator.isFinishAnimating &&
                     !animator.isErrorAnimating &&
                     isActiveProgress
 
@@ -564,8 +558,7 @@ class IndicatorView(
                 val sweepFraction = applyEasing(effectiveProgress, PrefsManager.progressEasing)
                 renderer.drawProgress(this, sweepFraction, PrefsManager.clockwise, animatedPaint)
 
-                val showLabels =
-                    effectiveProgress in 1..99 || animator.isGeometryPreviewActive
+                val showLabels = effectiveProgress in 1..99 || animator.isGeometryPreviewActive
                 if (showLabels) {
                     drawLabels(this, effectiveProgress)
                     drawAppIcon(this)
@@ -582,13 +575,11 @@ class IndicatorView(
                 val badgeRotation = display?.rotation ?: Surface.ROTATION_0
                 val badgeSlot = RotationSlot.fromSurfaceRotation(badgeRotation)
                 val badgeOffset = PrefsManager.badgeOffsets[badgeSlot]
-                val badgeCenterX =
-                    arcBounds.centerX() + badgeOffset.x * viewDensity
+                val badgeCenterX = arcBounds.centerX() + badgeOffset.x * viewDensity
                 val badgeTop =
                     arcBounds.bottom + BADGE_TOP_PADDING_DP * viewDensity +
                         badgeOffset.y * viewDensity
-                val badgeCount =
-                    if (animator.isGeometryPreviewActive) 3 else activeDownloadCount
+                val badgeCount = if (animator.isGeometryPreviewActive) 3 else activeDownloadCount
                 badgePainter.draw(
                     this,
                     badgeCenterX,
@@ -666,8 +657,7 @@ class IndicatorView(
 
         val isGeometryPreview = animator.isGeometryPreviewActive
         val filenameToShow =
-            currentFilename
-                ?: if (isGeometryPreview) PrefsManager.previewFilenameText else null
+            currentFilename ?: if (isGeometryPreview) PrefsManager.previewFilenameText else null
 
         if (PrefsManager.filenameTextEnabled && filenameToShow != null &&
             (activeDownloadCount <= 1 || isGeometryPreview)
@@ -740,8 +730,7 @@ class IndicatorView(
 
         val isGeometryPreview = animator.isGeometryPreviewActive
         val packageName =
-            currentPackageName
-                ?: if (isGeometryPreview) context.packageName else return
+            currentPackageName ?: if (isGeometryPreview) context.packageName else return
 
         if (activeDownloadCount > 1 && !isGeometryPreview) return
 
@@ -984,12 +973,7 @@ class IndicatorView(
 
         // Arc mode: normalize to square so drawArc produces a circle as base
         // Path mode: keep original aspect ratio for pill-shaped cutouts
-        val halfBase =
-            if (!PrefsManager.pathMode) {
-                maxOf(width(), height()) / 2f
-            } else {
-                null
-            }
+        val halfBase = if (!PrefsManager.pathMode) maxOf(width(), height()) / 2f else null
 
         val centerX = centerX() + offsetX
         val centerY = centerY() + offsetY

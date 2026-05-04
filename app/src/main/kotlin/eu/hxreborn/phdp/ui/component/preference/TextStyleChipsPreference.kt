@@ -36,10 +36,7 @@ fun TextStyleChipsPreference(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(Tokens.PreferencePadding),
+        modifier = modifier.fillMaxWidth().padding(Tokens.PreferencePadding),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         CompositionLocalProvider(

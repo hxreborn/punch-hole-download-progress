@@ -15,8 +15,8 @@
         android:name=".PHDPApp"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
         android:description="@string/app_desc"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -35,8 +35,8 @@
 
         <activity-alias
             android:name=".LauncherAlias"
-            android:exported="true"
             android:enabled="true"
+            android:exported="true"
             android:targetActivity=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

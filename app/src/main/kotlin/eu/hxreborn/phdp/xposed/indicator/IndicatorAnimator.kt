@@ -59,9 +59,6 @@ class IndicatorAnimator(
         private const val SEGMENT_COLOR_BLEND_FACTOR = 0.4f
         private const val PULSE_MIN_ALPHA = 0.7f
         private const val PULSE_DURATION_MS = 400L
-
-        const val SEGMENT_COUNT = 12
-        const val SEGMENT_GAP_DEGREES = 6f
     }
 
     private fun play(
@@ -188,8 +185,7 @@ class IndicatorAnimator(
                 durationMs = scalePhaseMs,
                 interpolator = OvershootInterpolator(2f * FINISH_INTENSITY),
                 onUpdate = { fraction ->
-                    displayScale =
-                        1f + (POP_SCALE_FACTOR * FINISH_INTENSITY * fraction)
+                    displayScale = 1f + (POP_SCALE_FACTOR * FINISH_INTENSITY * fraction)
                 },
                 onEnd = {
                     finishAnimator =

@@ -77,8 +77,7 @@ fun BehaviorScreen(
                                         )
                                     },
                                     valueToText = {
-                                        labelFromValues(it, finishStyleEntries, finishStyleValues)
-                                            ?: it
+                                        labelFromValues(it, finishStyleEntries, finishStyleValues) ?: it
                                     },
                                 )
                             }
