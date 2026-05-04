@@ -129,16 +129,13 @@ val bottomNavItems =
 
 private val slideTransitionMetadata =
     NavDisplay.transitionSpec {
-        slideInHorizontally(initialOffsetX = { it }) togetherWith
-            slideOutHorizontally(targetOffsetX = { -it })
+        slideInHorizontally(initialOffsetX = { it }) togetherWith slideOutHorizontally(targetOffsetX = { -it })
     } +
         NavDisplay.popTransitionSpec {
-            slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                slideOutHorizontally(targetOffsetX = { it })
+            slideInHorizontally(initialOffsetX = { -it }) togetherWith slideOutHorizontally(targetOffsetX = { it })
         } +
         NavDisplay.predictivePopTransitionSpec {
-            slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                slideOutHorizontally(targetOffsetX = { it })
+            slideInHorizontally(initialOffsetX = { -it }) togetherWith slideOutHorizontally(targetOffsetX = { it })
         }
 
 @Composable
@@ -365,7 +362,10 @@ fun MainNavDisplay(
                     }
                 }
                 entry<Screen.Licenses>(metadata = slideTransitionMetadata) {
-                    LicensesScreen(onBack = { backStack.removeLastOrNull() })
+                    LicensesScreen(
+                        onBack = { backStack.removeLastOrNull() },
+                        bottomNavPadding = bottomNavPadding,
+                    )
                 }
             },
     )
