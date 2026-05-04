@@ -131,16 +131,9 @@ object DownloadProgressHooker {
     }
 
     private fun updateProgress() {
-        val avg =
-            if (activeDownloads.isEmpty()) {
-                0
-            } else {
-                activeDownloads.values
-                    .map { it.progress }
-                    .average()
-                    .toInt()
-            }
-        logDebug { "Progress: $avg% avg (${activeDownloads.size} active)" }
+        val size = activeDownloads.size
+        val avg = if (size == 0) 0 else activeDownloads.values.sumOf { it.progress } / size
+        logDebug { "Progress: $avg% avg ($size active)" }
         onProgressChanged?.invoke(avg)
         updateFilename()
     }
@@ -174,10 +167,9 @@ object DownloadProgressHooker {
         }
 
         // some apps skip standard extras and encode progress in RemoteViews actions like Opera
-        return extractRemoteViewsProgress(notification)
-            ?.also { (remoteProgress, remoteMax) ->
-                logDebug { "RemoteViews progress: $remoteProgress/$remoteMax" }
-            }
+        return extractRemoteViewsProgress(notification)?.also { (remoteProgress, remoteMax) ->
+            logDebug { "RemoteViews progress: $remoteProgress/$remoteMax" }
+        }
     }
 
     private fun remoteViewsActions(views: Any): ArrayList<*>? =
@@ -211,9 +203,11 @@ object DownloadProgressHooker {
                 return null
             }
         logDebug {
-            "actions count=${actions.size} types=${actions.filterNotNull().map {
-                it.javaClass.simpleName
-            }.distinct()}"
+            "actions count=${actions.size} types=${
+                actions.filterNotNull().map {
+                    it.javaClass.simpleName
+                }.distinct()
+            }"
         }
         val byMethod =
             actions

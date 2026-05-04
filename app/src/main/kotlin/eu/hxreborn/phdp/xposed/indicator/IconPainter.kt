@@ -54,6 +54,7 @@ class IconPainter(
         iconTintColor = color
         alphaPercent = opacity.coerceIn(0, 100)
         monoColorFilter = PorterDuffColorFilter(iconTintColor, PorterDuff.Mode.SRC_IN)
+        iconPaint.alpha = alphaPercent * 255 / 100
     }
 
     fun draw(
@@ -70,7 +71,6 @@ class IconPainter(
         val bitmap = if (useMonochrome) monoBitmap else cached.bitmap
 
         iconPaint.colorFilter = if (useMonochrome) monoColorFilter else null
-        iconPaint.alpha = alphaPercent * 255 / 100
         canvas.drawBitmap(bitmap, x, y, iconPaint)
     }
 
@@ -89,8 +89,12 @@ class IconPainter(
 
         val drawable =
             runCatching { context.packageManager.getApplicationIcon(packageName) }
-                .onFailure { log("Failed to load icon for $packageName", it) }
-                .getOrNull() ?: return null
+                .onFailure {
+                    log(
+                        "Failed to load icon for $packageName",
+                        it,
+                    )
+                }.getOrNull() ?: return null
 
         val newCache =
             CachedIcon(
