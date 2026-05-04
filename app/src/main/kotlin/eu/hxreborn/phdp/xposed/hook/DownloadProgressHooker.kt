@@ -46,6 +46,7 @@ object DownloadProgressHooker {
     var onActiveCountChanged: ((Int) -> Unit)? = null
     var onFilenameChanged: ((String?) -> Unit)? = null
     var onPackageChanged: ((String?) -> Unit)? = null
+    var onActivity: (() -> Unit)? = null
 
     fun clearActiveDownloads() {
         activeDownloads.clear()
@@ -100,6 +101,7 @@ object DownloadProgressHooker {
             }
 
         val percent = (progress * 100 / max).coerceIn(0, 100)
+        onActivity?.invoke()
         val oldState = activeDownloads[id]
         val reset = oldState != null && oldState.progress - percent >= SIGNIFICANT_DROP_PERCENT
         if (reset) activeDownloads.remove(id)

@@ -150,6 +150,8 @@
     <string name="pref_show_queue_count_summary">Display number of concurrent active downloads</string>
     <string name="pref_calibrate_badge_title">Calibrate counter</string>
     <string name="pref_calibrate_badge_summary">Adjust queue counter placement</string>
+    <string name="pref_burn_in_hide_title">Hide after inactivity</string>
+    <string name="pref_burn_in_hide_summary">Time before the ring hides without activity or progress</string>
     <string name="pref_font_size_title">Font size</string>
     <string name="pref_bold_title">Bold</string>
     <string name="pref_italic_title">Italic</string>
@@ -249,6 +251,24 @@
         <item>normal</item>
         <item>dim</item>
         <item>disable</item>
+    </string-array>
+
+    <!-- Dialog Arrays: Burn-in hide timeout -->
+    <string-array name="burn_in_hide_entries">
+        <item>10s</item>
+        <item>15s</item>
+        <item>30s</item>
+        <item>60s</item>
+        <item>120s</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="burn_in_hide_values">
+        <item>10000</item>
+        <item>15000</item>
+        <item>30000</item>
+        <item>60000</item>
+        <item>120000</item>
+        <item>0</item>
     </string-array>
 
     <!-- Dialog Arrays: App Theme -->

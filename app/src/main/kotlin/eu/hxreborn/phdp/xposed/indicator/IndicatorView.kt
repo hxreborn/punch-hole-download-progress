@@ -45,8 +45,18 @@ class IndicatorView(
 
     private var downloadStartTime = 0L
     private var pendingFinishRunnable: Runnable? = null
-    private var lastProgressChangeTime = 0L
+    private var lastActivityTime = 0L
     private val burnInHideRunnable = Runnable { invalidate() }
+
+    fun touchActivity() {
+        lastActivityTime = System.currentTimeMillis()
+        removeCallbacks(burnInHideRunnable)
+        val hideDelay = PrefsManager.burnInHideMs.toLong()
+        if (progress in 1..99 && hideDelay > 0L) {
+            postDelayed(burnInHideRunnable, hideDelay)
+        }
+    }
+
     private val minVisibilityMs: Long
         get() = if (PrefsManager.minVisibilityEnabled) PrefsManager.minVisibilityMs.toLong() else 0L
 
@@ -97,11 +107,7 @@ class IndicatorView(
             if (field != newValue) {
                 val oldValue = field
                 field = newValue
-                lastProgressChangeTime = System.currentTimeMillis()
-                removeCallbacks(burnInHideRunnable)
-                if (newValue in 1..99) {
-                    postDelayed(burnInHideRunnable, BURN_IN_HIDE_DELAY_MS)
-                }
+                touchActivity()
                 logDebug { "IndicatorView: progress = $newValue" }
 
                 if (oldValue == 0 && newValue > 0) {
@@ -476,9 +482,11 @@ class IndicatorView(
                 else -> progress
             }
 
+        val hideDelay = PrefsManager.burnInHideMs
         val isBurnInHidden =
-            effectiveProgress in 1..99 && lastProgressChangeTime > 0 &&
-                System.currentTimeMillis() - lastProgressChangeTime >= BURN_IN_HIDE_DELAY_MS
+            hideDelay > 0 &&
+                effectiveProgress in 1..99 && lastActivityTime > 0 &&
+                System.currentTimeMillis() - lastActivityTime >= hideDelay
 
         val shouldDraw =
             when {
@@ -1039,7 +1047,6 @@ class IndicatorView(
         internal const val LABEL_SHADOW_RADIUS_DP = 2f
         internal const val LABEL_SHADOW_DY_DP = 0.5f
         internal const val LABEL_SHADOW_COLOR = 0x80000000.toInt()
-        private const val BURN_IN_HIDE_DELAY_MS = 10_000L
 
         @SuppressLint("InlinedApi")
         fun attach(context: Context): IndicatorView {

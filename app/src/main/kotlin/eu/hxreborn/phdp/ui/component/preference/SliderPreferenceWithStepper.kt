@@ -64,6 +64,7 @@ fun SliderPreferenceWithStepper(
     stepSize: Float = 1f,
     decimalPlaces: Int = 0,
     suffix: String = "",
+    summary: @Composable (() -> Unit)? = null,
 ) {
     var isDragging by remember { mutableStateOf(false) }
     var sliderValue by remember { mutableFloatStateOf(value) }
@@ -144,6 +145,17 @@ fun SliderPreferenceWithStepper(
                         contentDescription = stringResource(R.string.increase),
                         tint = iconTint.copy(alpha = if (enabled && !isAtMax) 1f else Tokens.DISABLED_ALPHA),
                     )
+                }
+            }
+        }
+
+        summary?.let {
+            CompositionLocalProvider(
+                LocalContentColor provides
+                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
+            ) {
+                ProvideTextStyle(MaterialTheme.typography.bodyMedium) {
+                    it()
                 }
             }
         }

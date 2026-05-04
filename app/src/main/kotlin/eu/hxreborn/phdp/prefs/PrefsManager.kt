@@ -278,6 +278,10 @@ object PrefsManager {
         private set
 
     @Volatile
+    var burnInHideMs = Prefs.burnInHideMs.default
+        private set
+
+    @Volatile
     var persistentPreviewActive = false
         private set
 
@@ -436,6 +440,7 @@ object PrefsManager {
                 selectedPackages = Prefs.selectedPackages.read(prefs)
                 verboseLogging = Prefs.verboseLogging.read(prefs)
                 Logger.verboseEnabled = verboseLogging
+                burnInHideMs = Prefs.burnInHideMs.read(prefs)
             }
         }.onFailure { log("refreshCache() failed", it) }
     }

@@ -64,7 +64,7 @@ fun <T> SelectPreference(
 
     Row(
         modifier = modifier.fillMaxWidth().clickable(enabled = enabled) { showDialog = true }.padding(Tokens.PreferencePadding),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Top,
     ) {
         Column(modifier = Modifier.weight(1f)) {
             CompositionLocalProvider(

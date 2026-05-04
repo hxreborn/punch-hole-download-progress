@@ -108,6 +108,8 @@
     <string name="pref_show_queue_count_summary">显示同时进行的下载数量</string>
     <string name="pref_calibrate_badge_title">校准</string>
     <string name="pref_calibrate_badge_summary">调整下载数角标的位置</string>
+    <string name="pref_burn_in_hide_title">无活动时隐藏</string>
+    <string name="pref_burn_in_hide_summary">无活动或进度更新时指示器隐藏前的等待时长</string>
     <string name="pref_font_size_title">字体大小</string>
     <string name="pref_bold_title">加粗</string>
     <string name="pref_italic_title">斜体</string>

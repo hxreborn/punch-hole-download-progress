@@ -41,6 +41,8 @@ fun BehaviorScreen(
 
     val finishStyleEntries = stringArrayResource(R.array.finish_style_entries).toList()
     val finishStyleValues = stringArrayResource(R.array.finish_style_values).toList()
+    val burnInHideEntries = stringArrayResource(R.array.burn_in_hide_entries).toList()
+    val burnInHideValues = stringArrayResource(R.array.burn_in_hide_values).toList()
 
     ProvidePreferenceLocals {
         LazyColumn(
@@ -201,6 +203,25 @@ fun BehaviorScreen(
                                                 R.string.pref_calibrate_badge_summary,
                                             ),
                                         )
+                                    },
+                                )
+                            },
+                            {
+                                SelectPreference(
+                                    value = prefsState.burnInHideMs.toString(),
+                                    onValueChange = {
+                                        viewModel.savePref(Prefs.burnInHideMs, it.toInt())
+                                    },
+                                    values = burnInHideValues,
+                                    title = {
+                                        Text(stringResource(R.string.pref_burn_in_hide_title))
+                                    },
+                                    summary = {
+                                        Text(stringResource(R.string.pref_burn_in_hide_summary))
+                                    },
+                                    valueToText = { raw ->
+                                        labelFromValues(raw, burnInHideEntries, burnInHideValues)
+                                            ?: "${(raw.toIntOrNull() ?: 0) / 1000}s"
                                     },
                                 )
                             },

@@ -133,6 +133,7 @@ class PrefsRepositoryImpl(
             selectedPackages = Prefs.selectedPackages.read(this),
             showSystemPackages = Prefs.showSystemPackages.read(this),
             verboseLogging = Prefs.verboseLogging.read(this),
+            burnInHideMs = Prefs.burnInHideMs.read(this),
         )
 
     // TODO(#34): Remove legacy offset bootstrap after structured rotation prefs ship
