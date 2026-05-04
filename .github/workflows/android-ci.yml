@@ -19,10 +19,16 @@ jobs:
           cache: gradle
 
       - name: Decode keystore
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
         run: echo "${{ secrets.RELEASE_KEYSTORE }}" | base64 -d > ${{ github.workspace }}/release.keystore
 
       - name: Build
-        run: ./gradlew assembleDebug assembleRelease
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] || [ "${{ github.event.pull_request.head.repo.full_name }}" = "${{ github.repository }}" ]; then
+            ./gradlew assembleDebug assembleRelease
+          else
+            ./gradlew assembleDebug
+          fi
         env:
           RELEASE_STORE_FILE: ${{ github.workspace }}/release.keystore
           RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
