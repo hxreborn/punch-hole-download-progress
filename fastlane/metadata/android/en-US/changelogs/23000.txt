@@ -1,0 +1,7 @@
+Add progress smoothness preference
+Add hide after inactivity preference
+Add debug logs toggle in settings
+Add expressive motion to settings
+Add HSV color picker with HEX input
+Fix calibrated pivot for pop animation
+Add Chinese translations

@@ -38,7 +38,6 @@ jobs:
           gh release view "$TAG_NAME" --repo "$REPO" --json name,body,isPrerelease \
             --jq '"name=\(.name)\nprerelease=\(.isPrerelease)"' >> "$GITHUB_OUTPUT"
 
-          # Body needs special handling for multiline
           echo "body<<BODY_EOF" >> "$GITHUB_OUTPUT"
           gh release view "$TAG_NAME" --repo "$REPO" --json body --jq '.body' >> "$GITHUB_OUTPUT"
           echo "BODY_EOF" >> "$GITHUB_OUTPUT"

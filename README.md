@@ -1,10 +1,16 @@
 # Punch-hole Download Progress
 
+**[English](README.md) | [简体中文](README.zh-CN.md)**
+
 Xposed module that renders download progress as an animated ring around the camera cutout.
+
+<div align="center">
 
 ![Android CI](https://github.com/hxreborn/punch-hole-download-progress/actions/workflows/android-ci.yml/badge.svg)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.3.21-7F52FF?style=flat&logo=kotlin&logoColor=white)
 ![Android](https://img.shields.io/badge/API-28%2B-3DDC84?logo=android&logoColor=white)
+
+</div>
 
 <div align="center">
   <img src=".github/assets/demo-pop.gif" alt="Download progress animation" width="320" />
@@ -12,25 +18,18 @@ Xposed module that renders download progress as an animated ring around the came
 
 ## Features
 
-- Progress ring rendered around the camera cutout using the native `DisplayCutout` API
-- Path renderer for pill-shaped cutouts (opt-in)
-- Configurable colors per state (active/completed/failed), arc thickness, opacity, and direction
-- Completion animations and optional haptic feedback
-- Per-rotation calibration for percentage text, filename text, and badge offsets (0° / 90° / 180° / 270°)
-- Optional vertical filename text layout in landscape
-- Active download counter badge
-- Battery saver-aware rendering
-- Built-in test mode for simulating states
-- Material 3 Expressive settings UI with Jetpack Compose
+- Progress ring around the camera cutout (via native `DisplayCutout` API) with per-state color, thickness, opacity, and direction (active/completed/failed)
+- Completion animations with optional haptic feedback
+- Download counter badge
+- Per-rotation calibration for text and badge offsets
+- Material 3 Expressive settings UI
+- Test mode, battery saver rendering, and pill-cutout path support
 
 ## Requirements
 
-- Android 9 (API 28) or higher (experimental on Android 9-11)
-- An LSPosed Manager version with API 101 support (required for now)
-- Pixel/AOSP-based ROM (other ROMs may not work as expected)
-- Root access (optional, for `Restart SystemUI` in settings)
-- A phone with a punch-hole display
-- Notifications enabled for any app you want to track downloads from
+- Android 9+ (API 28)
+- Xposed Manager with API 101 support (official LSPosed recommended)
+- Root optional (only needed for `Restart SystemUI`)
 
 ## Installation
 
