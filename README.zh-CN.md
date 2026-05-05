@@ -1,6 +1,6 @@
 # Punch-hole Download Progress
 
-**[English](README.md) | [简体中文](README.zh-CN.md)**
+[English](README.md) | **简体中文**
 
 在摄像头镂空处以动态进度环显示下载进度的 Xposed 模块。
 

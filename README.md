@@ -1,6 +1,6 @@
 # Punch-hole Download Progress
 
-**[English](README.md) | [简体中文](README.zh-CN.md)**
+**English** | [简体中文](README.zh-CN.md)
 
 Xposed module that renders download progress as an animated ring around the camera cutout.
 
