@@ -1,3 +1,4 @@
+# build.yml mirrors automatically, use this for manual re-runs
 name: Mirror to Xposed-Modules-Repo
 
 on:
