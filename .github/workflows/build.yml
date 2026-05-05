@@ -32,6 +32,15 @@ jobs:
           java-version: 21
           cache: gradle
 
+      - name: Verify version properties
+        run: |
+          TAG="${{ inputs.tag || github.ref_name }}"
+          PROPS_NAME=$(grep '^version\.name=' gradle.properties | cut -d= -f2)
+          if [[ "$PROPS_NAME" != "${TAG#v}" ]]; then
+            echo "::error::gradle.properties has $PROPS_NAME but tag is $TAG. Run: .github/release.sh $TAG"
+            exit 1
+          fi
+
       - name: Decode keystore
         run: echo "${{ secrets.RELEASE_KEYSTORE }}" | base64 -d > ${{ github.workspace }}/release.keystore
 
