@@ -92,6 +92,9 @@ import eu.hxreborn.phdp.ui.component.drawVerticalScrollbar
 import eu.hxreborn.phdp.ui.theme.Tokens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -112,17 +115,26 @@ private data class AppLoadState(
 @SuppressLint("QueryPermissionsNeeded")
 private suspend fun loadApps(pm: PackageManager): List<AppItem> =
     withContext(Dispatchers.IO) {
-        pm.getInstalledPackages(PackageManager.GET_META_DATA).mapNotNull { pkg ->
-            val appInfo = pkg.applicationInfo ?: return@mapNotNull null
-            AppItem(
-                applicationInfo = appInfo,
-                label = appInfo.loadLabel(pm).toString(),
-                packageName = pkg.packageName,
-                lastUpdateTime = pkg.lastUpdateTime,
-                isSystem = (appInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0,
-            )
+        val packages = pm.getInstalledPackages(PackageManager.GET_META_DATA)
+
+        coroutineScope {
+            packages
+                .mapNotNull { pkg ->
+                    val appInfo = pkg.applicationInfo ?: return@mapNotNull null
+                    async {
+                        AppItem(
+                            applicationInfo = appInfo,
+                            label = appInfo.loadLabel(pm).toString(),
+                            packageName = pkg.packageName,
+                            lastUpdateTime = pkg.lastUpdateTime,
+                            isSystem = (appInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0,
+                        )
+                    }
+                }.awaitAll()
         }
     }
+
+private val iconCache = android.util.LruCache<String, ImageBitmap>(200)
 
 @Composable
 private fun rememberInstalledApps(): AppLoadState {
@@ -264,7 +276,8 @@ private fun AppListItem(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val icon by produceState<ImageBitmap?>(initialValue = null, key1 = app.packageName) {
+    val icon by produceState<ImageBitmap?>(initialValue = iconCache.get(app.packageName), key1 = app.packageName) {
+        if (value != null) return@produceState
         value =
             withContext(Dispatchers.IO) {
                 runCatching {
@@ -273,6 +286,7 @@ private fun AppListItem(
                         .toBitmap()
                         .asImageBitmap()
                 }.getOrNull()
+                    ?.also { iconCache.put(app.packageName, it) }
             }
     }
 
