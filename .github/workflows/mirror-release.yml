@@ -30,6 +30,17 @@ jobs:
             exit 1
           fi
 
+      - name: Derive mirror tag
+        id: mirror_tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          name=${TAG_NAME#v}
+          code=$(gh api "repos/$REPO/contents/gradle.properties" --jq '.content' | base64 -d \
+            | grep '^version\.code=' | cut -d= -f2)
+          echo "mirror_tag=${code}-${name}" >> "$GITHUB_OUTPUT"
+
       - name: Fetch release info
         id: release
         env:
@@ -63,7 +74,7 @@ jobs:
         with:
           repository: Xposed-Modules-Repo/eu.hxreborn.phdp
           token: ${{ secrets.XPOSED_REPO_PAT }}
-          tag_name: ${{ env.TAG_NAME }}
+          tag_name: ${{ steps.mirror_tag.outputs.mirror_tag }}
           name: ${{ steps.release.outputs.name }}
           body: ${{ steps.release.outputs.body }}
           prerelease: ${{ steps.release.outputs.prerelease }}
