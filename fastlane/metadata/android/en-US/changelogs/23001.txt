@@ -1,0 +1,2 @@
+Fix settings reset when clearing selected apps
+Smoother app selection list
