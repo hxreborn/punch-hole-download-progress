@@ -59,6 +59,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -99,6 +100,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@Immutable
 private data class AppItem(
     val applicationInfo: ApplicationInfo,
     val label: String,
@@ -450,6 +452,15 @@ fun PackageSelectionScreen(
 
     val listState = rememberLazyListState()
 
+    val onToggle: (String, Boolean) -> Unit =
+        remember(viewModel) {
+            { pkg, checked ->
+                val current =
+                    (viewModel.uiState.value as? SettingsUiState.Success)?.prefs?.selectedPackages.orEmpty()
+                viewModel.savePref(Prefs.selectedPackages, if (checked) current + pkg else current - pkg)
+            }
+        }
+
     Box(modifier = modifier.fillMaxSize()) {
         Box(
             modifier =
@@ -540,15 +551,10 @@ fun PackageSelectionScreen(
                             items = sortedApps,
                             key = { it.packageName },
                         ) { app ->
-                            val isSelected = app.packageName in prefsState.selectedPackages
                             AppListItem(
                                 app = app,
-                                isChecked = isSelected,
-                                onCheckedChange = { checked ->
-                                    val pkgs = prefsState.selectedPackages
-                                    val newSelection = if (checked) pkgs + app.packageName else pkgs - app.packageName
-                                    saveSelection(newSelection)
-                                },
+                                isChecked = app.packageName in prefsState.selectedPackages,
+                                onCheckedChange = { onToggle(app.packageName, it) },
                                 modifier =
                                     Modifier.padding(
                                         horizontal = Tokens.SectionHorizontalMargin,
