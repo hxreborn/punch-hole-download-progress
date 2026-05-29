@@ -35,9 +35,6 @@ object SystemUIHooker {
     @Volatile
     private var powerSaveReceiver: BroadcastReceiver? = null
 
-    @Volatile
-    private var systemUIContext: Context? = null
-
     fun hook(classLoader: ClassLoader) {
         wireCallbacks()
         hookSystemUIEntry(classLoader)
@@ -138,59 +135,46 @@ object SystemUIHooker {
             }
     }
 
+    // hops to the view UI thread and no-ops until the overlay attaches
+    private fun onView(block: IndicatorView.() -> Unit) {
+        indicatorView?.let { view -> view.post { view.block() } }
+    }
+
     private fun wireCallbacks() {
-        DownloadProgressHooker.onProgressChanged = { progress ->
-            indicatorView?.let { it.post { it.progress = progress } }
-        }
+        DownloadProgressHooker.onProgressChanged =
+            { progress -> onView { this.progress = progress } }
         DownloadProgressHooker.onDownloadComplete = {
             triggerHapticFeedback()
-            indicatorView?.let { it.post { it.progress = 100 } }
+            onView { progress = 100 }
         }
-        DownloadProgressHooker.onDownloadCancelled = {
-            indicatorView?.let { it.post { it.showError() } }
-        }
-        DownloadProgressHooker.onActiveCountChanged = { count ->
-            indicatorView?.let { it.post { it.activeDownloadCount = count } }
-        }
-        DownloadProgressHooker.onFilenameChanged = { filename ->
-            indicatorView?.let { it.post { it.currentFilename = filename } }
-        }
-        DownloadProgressHooker.onPackageChanged = { packageName ->
-            indicatorView?.let { it.post { it.currentPackageName = packageName } }
-        }
-        DownloadProgressHooker.onActivity = {
-            indicatorView?.let { it.post { it.touchActivity() } }
-        }
+        DownloadProgressHooker.onDownloadCancelled = { onView { showError() } }
+        DownloadProgressHooker.onActiveCountChanged =
+            { count -> onView { activeDownloadCount = count } }
+        DownloadProgressHooker.onFilenameChanged =
+            { filename -> onView { currentFilename = filename } }
+        DownloadProgressHooker.onPackageChanged =
+            { packageName -> onView { currentPackageName = packageName } }
+        DownloadProgressHooker.onActivity = { onView { touchActivity() } }
 
-        PrefsManager.onAppVisibilityChanged = { visible ->
-            indicatorView?.let { it.post { it.appVisible = visible } }
-        }
-        PrefsManager.onTestProgressChanged = { progress ->
-            indicatorView?.let { it.post { it.progress = progress } }
-        }
-        PrefsManager.onPreviewTriggered = {
-            indicatorView?.let { it.post { it.startDynamicPreviewAnim() } }
-        }
+        PrefsManager.onAppVisibilityChanged = { visible -> onView { appVisible = visible } }
+        PrefsManager.onTestProgressChanged = { progress -> onView { this.progress = progress } }
+        PrefsManager.onPreviewTriggered = { onView { startDynamicPreviewAnim() } }
         PrefsManager.onGeometryPreviewTriggered = {
             // Keep preview persistent if calibration screen is open
             val autoHide = !PrefsManager.persistentPreviewActive
-            indicatorView?.let { it.post { it.showStaticPreviewAnim(autoHide) } }
+            onView { showStaticPreviewAnim(autoHide) }
         }
         PrefsManager.onDownloadComplete = { triggerHapticFeedback() }
-        PrefsManager.onTestErrorChanged = { isError ->
-            if (isError) indicatorView?.let { it.post { it.showError() } }
-        }
-        PrefsManager.onClearDownloadsTriggered = {
-            DownloadProgressHooker.clearActiveDownloads()
-        }
+        PrefsManager.onTestErrorChanged = { isError -> if (isError) onView { showError() } }
+        PrefsManager.onClearDownloadsTriggered = { DownloadProgressHooker.clearActiveDownloads() }
         PrefsManager.onPersistentPreviewChanged = { enabled ->
-            indicatorView?.let { view ->
-                view.post {
-                    if (enabled) {
-                        view.showStaticPreviewAnim(autoHide = false)
-                    } else {
-                        view.cancelStaticPreviewAnim()
-                    }
+            onView {
+                if (enabled) {
+                    showStaticPreviewAnim(
+                        autoHide = false,
+                    )
+                } else {
+                    cancelStaticPreviewAnim()
                 }
             }
         }
@@ -202,7 +186,6 @@ object SystemUIHooker {
     ) {
         attached = true
         indicatorView = view
-        systemUIContext = context
         registerPowerSaveReceiver(context)
     }
 
@@ -233,10 +216,7 @@ object SystemUIHooker {
 
     private fun triggerHapticFeedback() {
         if (!PrefsManager.hooksFeedback) return
-        val view = indicatorView ?: return
-        view.post {
-            ViewCompat.performHapticFeedback(view, HapticFeedbackConstantsCompat.CONFIRM)
-        }
+        onView { ViewCompat.performHapticFeedback(this, HapticFeedbackConstantsCompat.CONFIRM) }
     }
 
     fun isAttached(): Boolean = attached

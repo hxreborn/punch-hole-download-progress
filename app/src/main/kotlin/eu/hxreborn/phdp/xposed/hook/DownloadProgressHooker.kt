@@ -77,7 +77,8 @@ object DownloadProgressHooker {
 
         if (pkg !in PrefsManager.selectedPackages) return
 
-        val id = getNotificationId(sbn) ?: return
+        val rawId = getRawId(sbn) ?: return
+        val id = "$pkg:$rawId"
         val notification = getNotification(sbn) ?: return
         val extras = notification.extras ?: return
 
@@ -246,15 +247,16 @@ object DownloadProgressHooker {
             method.invoke(sbn) as? Notification
         }.getOrNull()
 
+    private fun getRawId(sbn: Any): Int? =
+        runCatching {
+            val method = getIdMethod ?: sbn.javaClass.getMethod("getId").also { getIdMethod = it }
+            method.invoke(sbn) as? Int
+        }.getOrNull()
+
     private fun getNotificationId(sbn: Any): String? {
         val pkg = getPackageName(sbn) ?: return null
-        val id =
-            runCatching {
-                val method =
-                    getIdMethod ?: sbn.javaClass.getMethod("getId").also { getIdMethod = it }
-                method.invoke(sbn) as? Int
-            }.getOrNull() ?: return null
-        return "$pkg:$id"
+        val rawId = getRawId(sbn) ?: return null
+        return "$pkg:$rawId"
     }
 
     fun onNotificationRemoved(
