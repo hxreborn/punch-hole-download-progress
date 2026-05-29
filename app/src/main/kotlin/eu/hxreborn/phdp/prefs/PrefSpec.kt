@@ -91,7 +91,7 @@ class SetPref(
         editor: SharedPreferences.Editor,
         value: Set<String>,
     ) {
-        editor.putStringSet(key, value)
+        editor.putStringSet(key, HashSet(value))
     }
 }
 
