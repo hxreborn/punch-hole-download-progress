@@ -75,6 +75,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -278,6 +279,7 @@ private fun AppListItem(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    val iconSizePx = with(LocalDensity.current) { Tokens.AppIconSize.roundToPx() * 2 }
     val icon by produceState<ImageBitmap?>(initialValue = iconCache.get(app.packageName), key1 = app.packageName) {
         if (value != null) return@produceState
         value =
@@ -285,7 +287,7 @@ private fun AppListItem(
                 runCatching {
                     app.applicationInfo
                         .loadIcon(context.packageManager)
-                        .toBitmap()
+                        .toBitmap(iconSizePx, iconSizePx)
                         .asImageBitmap()
                 }.getOrNull()
                     ?.also { iconCache.put(app.packageName, it) }
