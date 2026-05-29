@@ -1,2 +1,3 @@
+Faster app list loading with cached icons
+Smoother app selection when toggling
 Fix settings reset when clearing selected apps
-Smoother app selection list
