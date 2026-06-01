@@ -1,0 +1,4 @@
+Fix crash opening settings on ColorOS devices
+Reset X and Y calibration offsets independently
+Smoother transitions in settings
+Less overhead per download notification
