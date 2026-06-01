@@ -6,6 +6,7 @@ import eu.hxreborn.phdp.util.accessibleField
 import eu.hxreborn.phdp.util.accessibleFieldFromHierarchy
 import eu.hxreborn.phdp.util.log
 import eu.hxreborn.phdp.util.logDebug
+import java.lang.reflect.Field
 import java.lang.reflect.Method
 import java.util.concurrent.ConcurrentHashMap
 
@@ -37,6 +38,9 @@ object DownloadProgressHooker {
 
     @Volatile
     private var getIdMethod: Method? = null
+
+    @Volatile
+    private var sbnField: Field? = null
 
     private val activeDownloads = ConcurrentHashMap<String, DownloadState>()
 
@@ -253,6 +257,13 @@ object DownloadProgressHooker {
             method.invoke(sbn) as? Int
         }.getOrNull()
 
+    // NotificationEntry.mSbn handle resolved once like the StatusBarNotification accessors
+    internal fun sbnFromEntry(entry: Any): Any? =
+        runCatching {
+            val field = sbnField ?: entry.javaClass.accessibleField("mSbn").also { sbnField = it }
+            field.get(entry)
+        }.getOrNull()
+
     private fun getNotificationId(sbn: Any): String? {
         val pkg = getPackageName(sbn) ?: return null
         val rawId = getRawId(sbn) ?: return null
@@ -305,9 +316,7 @@ object DownloadProgressHooker {
             }
 
             arg.javaClass.name.contains("NotificationEntry") -> {
-                runCatching { arg.javaClass.accessibleField("mSbn").get(arg) }
-                    .getOrNull()
-                    ?.let(action)
+                sbnFromEntry(arg)?.let(action)
             }
         }
     }
