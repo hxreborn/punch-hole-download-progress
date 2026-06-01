@@ -253,10 +253,12 @@ object SystemUIHooker {
     private val notificationAddHooker =
         XposedInterface.Hooker { chain ->
             val result = chain.proceed()
-            logDebug { "NotificationAdd: ${chain.args.size} args" }
-            chain.args.forEach {
+            val args = chain.args
+            logDebug { "NotificationAdd: ${args.size} args" }
+            // indexed loop avoids an iterator alloc on every posted notification
+            for (i in args.indices) {
                 DownloadProgressHooker.processNotificationArg(
-                    it,
+                    args[i],
                     DownloadProgressHooker::processNotification,
                 )
             }
@@ -269,21 +271,17 @@ object SystemUIHooker {
             val args = chain.args
             logDebug { "NotificationRemove: ${args.size} args" }
             val reason = extractRemovalReason(args)
-            args.forEach { arg ->
-                if (arg == null) return@forEach
+            // indexed loop avoids an iterator alloc on every removed notification
+            for (i in args.indices) {
+                val arg = args[i] ?: continue
                 when {
                     DownloadProgressHooker.isStatusBarNotification(arg) -> {
                         DownloadProgressHooker.onNotificationRemoved(arg, reason)
                     }
 
                     arg.javaClass.name.contains("NotificationEntry") -> {
-                        runCatching {
-                            arg.javaClass.accessibleField("mSbn").get(arg)
-                        }.getOrNull()?.let {
-                            DownloadProgressHooker.onNotificationRemoved(
-                                it,
-                                reason,
-                            )
+                        DownloadProgressHooker.sbnFromEntry(arg)?.let {
+                            DownloadProgressHooker.onNotificationRemoved(it, reason)
                         }
                     }
                 }
