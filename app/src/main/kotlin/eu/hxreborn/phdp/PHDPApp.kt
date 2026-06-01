@@ -28,6 +28,7 @@ class PHDPApp : Application() {
         lateinit var instance: PHDPApp
             private set
 
+        @Volatile
         var service: XposedService? = null
             private set
 
