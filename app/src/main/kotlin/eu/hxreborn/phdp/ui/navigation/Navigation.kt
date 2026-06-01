@@ -246,8 +246,12 @@ fun MainNavDisplay(
                             val updated = prefs.percentTextOffsets.with(slot, OffsetPx(current.x, newY))
                             viewModel.savePref(Prefs.percentTextOffsets, updated)
                         },
-                        onOffsetReset = {
-                            val updated = prefs.percentTextOffsets.with(slot, OffsetPx())
+                        onOffsetXReset = {
+                            val updated = prefs.percentTextOffsets.with(slot, OffsetPx(0f, current.y))
+                            viewModel.savePref(Prefs.percentTextOffsets, updated)
+                        },
+                        onOffsetYReset = {
+                            val updated = prefs.percentTextOffsets.with(slot, OffsetPx(current.x, 0f))
                             viewModel.savePref(Prefs.percentTextOffsets, updated)
                         },
                         viewModel = viewModel,
@@ -279,8 +283,12 @@ fun MainNavDisplay(
                             val updated = prefs.filenameTextOffsets.with(slot, OffsetPx(current.x, newY))
                             viewModel.savePref(Prefs.filenameTextOffsets, updated)
                         },
-                        onOffsetReset = {
-                            val updated = prefs.filenameTextOffsets.with(slot, OffsetPx())
+                        onOffsetXReset = {
+                            val updated = prefs.filenameTextOffsets.with(slot, OffsetPx(0f, current.y))
+                            viewModel.savePref(Prefs.filenameTextOffsets, updated)
+                        },
+                        onOffsetYReset = {
+                            val updated = prefs.filenameTextOffsets.with(slot, OffsetPx(current.x, 0f))
                             viewModel.savePref(Prefs.filenameTextOffsets, updated)
                         },
                         viewModel = viewModel,
@@ -322,8 +330,12 @@ fun MainNavDisplay(
                             val updated = prefs.appIconOffsets.with(slot, OffsetPx(current.x, newY))
                             viewModel.savePref(Prefs.appIconOffsets, updated)
                         },
-                        onOffsetReset = {
-                            val updated = prefs.appIconOffsets.with(slot, OffsetPx())
+                        onOffsetXReset = {
+                            val updated = prefs.appIconOffsets.with(slot, OffsetPx(0f, current.y))
+                            viewModel.savePref(Prefs.appIconOffsets, updated)
+                        },
+                        onOffsetYReset = {
+                            val updated = prefs.appIconOffsets.with(slot, OffsetPx(current.x, 0f))
                             viewModel.savePref(Prefs.appIconOffsets, updated)
                         },
                         viewModel = viewModel,
@@ -356,8 +368,12 @@ fun MainNavDisplay(
                             val updated = prefs.badgeOffsets.with(slot, OffsetPx(current.x, newY))
                             viewModel.savePref(Prefs.badgeOffsets, updated)
                         },
-                        onOffsetReset = {
-                            val updated = prefs.badgeOffsets.with(slot, OffsetPx())
+                        onOffsetXReset = {
+                            val updated = prefs.badgeOffsets.with(slot, OffsetPx(0f, current.y))
+                            viewModel.savePref(Prefs.badgeOffsets, updated)
+                        },
+                        onOffsetYReset = {
+                            val updated = prefs.badgeOffsets.with(slot, OffsetPx(current.x, 0f))
                             viewModel.savePref(Prefs.badgeOffsets, updated)
                         },
                         viewModel = viewModel,

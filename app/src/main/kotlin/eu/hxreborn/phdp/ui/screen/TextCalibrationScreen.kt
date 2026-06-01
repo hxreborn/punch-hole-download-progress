@@ -75,7 +75,8 @@ fun TextCalibrationScreen(
     offsetY: Float,
     onOffsetXChange: (Float) -> Unit,
     onOffsetYChange: (Float) -> Unit,
-    onOffsetReset: () -> Unit,
+    onOffsetXReset: () -> Unit,
+    onOffsetYReset: () -> Unit,
     viewModel: SettingsViewModel,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
@@ -140,7 +141,8 @@ fun TextCalibrationScreen(
                                         offsetY,
                                         onOffsetXChange,
                                         onOffsetYChange,
-                                        onOffsetReset,
+                                        onOffsetXReset,
+                                        onOffsetYReset,
                                         offsetRange,
                                     )
                                     layoutItems(layout, viewModel)
@@ -159,7 +161,8 @@ fun TextCalibrationScreen(
                                         offsetY,
                                         onOffsetXChange,
                                         onOffsetYChange,
-                                        onOffsetReset,
+                                        onOffsetXReset,
+                                        onOffsetYReset,
                                         offsetRange,
                                     )
                                 },
@@ -282,7 +285,8 @@ private fun MutableList<@Composable () -> Unit>.offsetItems(
     offsetY: Float,
     onOffsetXChange: (Float) -> Unit,
     onOffsetYChange: (Float) -> Unit,
-    onOffsetReset: () -> Unit,
+    onOffsetXReset: () -> Unit,
+    onOffsetYReset: () -> Unit,
     offsetRange: ClosedFloatingPointRange<Float>,
 ) {
     add {
@@ -292,7 +296,7 @@ private fun MutableList<@Composable () -> Unit>.offsetItems(
             title = { Text(stringResource(R.string.pref_ring_offset_x_title)) },
             valueRange = offsetRange,
             defaultValue = 0f,
-            onReset = onOffsetReset,
+            onReset = onOffsetXReset,
             stepSize = 1f,
             decimalPlaces = 0,
             suffix = "px",
@@ -305,7 +309,7 @@ private fun MutableList<@Composable () -> Unit>.offsetItems(
             title = { Text(stringResource(R.string.pref_ring_offset_y_title)) },
             valueRange = offsetRange,
             defaultValue = 0f,
-            onReset = onOffsetReset,
+            onReset = onOffsetYReset,
             stepSize = 1f,
             decimalPlaces = 0,
             suffix = "px",
@@ -395,7 +399,8 @@ private fun TextCalibrationScreenPreview() {
             offsetY = 0f,
             onOffsetXChange = {},
             onOffsetYChange = {},
-            onOffsetReset = {},
+            onOffsetXReset = {},
+            onOffsetYReset = {},
             viewModel = PreviewViewModel(),
             onNavigateBack = {},
             typography =
