@@ -2,10 +2,7 @@ package eu.hxreborn.phdp.ui.navigation
 
 import android.provider.Settings
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
@@ -35,7 +32,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
@@ -136,26 +132,6 @@ val bottomNavItems =
         ),
     )
 
-private val springSpec =
-    spring<IntOffset>(
-        dampingRatio = Tokens.TRANSITION_DAMPING_RATIO,
-        stiffness = Tokens.TRANSITION_STIFFNESS,
-    )
-
-private val slideTransitionMetadata =
-    NavDisplay.transitionSpec {
-        slideInHorizontally(animationSpec = springSpec, initialOffsetX = { it }) togetherWith
-            slideOutHorizontally(animationSpec = springSpec, targetOffsetX = { -it })
-    } +
-        NavDisplay.popTransitionSpec {
-            slideInHorizontally(animationSpec = springSpec, initialOffsetX = { -it }) togetherWith
-                slideOutHorizontally(animationSpec = springSpec, targetOffsetX = { it })
-        } +
-        NavDisplay.predictivePopTransitionSpec {
-            slideInHorizontally(animationSpec = springSpec, initialOffsetX = { -it }) togetherWith
-                slideOutHorizontally(animationSpec = springSpec, targetOffsetX = { it })
-        }
-
 @Composable
 private fun rememberScaledAnimDuration(): Int {
     val context = LocalContext.current
@@ -176,28 +152,25 @@ fun MainNavDisplay(
     bottomNavPadding: Dp,
     modifier: Modifier = Modifier,
 ) {
-    val animDuration = rememberScaledAnimDuration()
-    val tabTransitionMetadata =
-        remember(animDuration) {
-            val tabMs = (animDuration * Tokens.TAB_DURATION_FACTOR).toInt()
-            NavDisplay.transitionSpec {
-                fadeIn(tween(tabMs)) togetherWith fadeOut(tween(tabMs))
-            } +
-                NavDisplay.popTransitionSpec {
-                    fadeIn(tween(tabMs)) togetherWith fadeOut(tween(tabMs))
-                } +
-                NavDisplay.predictivePopTransitionSpec {
-                    fadeIn(tween(tabMs)) togetherWith fadeOut(tween(tabMs))
-                }
-        }
-
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
         modifier = modifier,
+        transitionSpec = {
+            slideInHorizontally(initialOffsetX = { it }) togetherWith
+                slideOutHorizontally(targetOffsetX = { -it })
+        },
+        popTransitionSpec = {
+            slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                slideOutHorizontally(targetOffsetX = { it })
+        },
+        predictivePopTransitionSpec = {
+            slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                slideOutHorizontally(targetOffsetX = { it })
+        },
         entryProvider =
             entryProvider {
-                entry<Screen.Design>(metadata = tabTransitionMetadata) {
+                entry<Screen.Design> {
                     MainTabScaffold(
                         onMenuAction = onMenuAction,
                         bottomNavPadding = bottomNavPadding,
@@ -221,14 +194,14 @@ fun MainNavDisplay(
                         )
                     }
                 }
-                entry<Screen.Calibration>(metadata = slideTransitionMetadata) {
+                entry<Screen.Calibration> {
                     CalibrationScreen(
                         viewModel = viewModel,
                         onNavigateBack = { backStack.removeLastOrNull() },
                         bottomNavPadding = bottomNavPadding,
                     )
                 }
-                entry<Screen.PercentCalibration>(metadata = slideTransitionMetadata) {
+                entry<Screen.PercentCalibration> {
                     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                     val prefs = (uiState as? SettingsUiState.Success)?.prefs ?: return@entry
                     val rotation = rememberDisplayRotation()
@@ -265,7 +238,7 @@ fun MainNavDisplay(
                             ),
                     )
                 }
-                entry<Screen.FilenameCalibration>(metadata = slideTransitionMetadata) {
+                entry<Screen.FilenameCalibration> {
                     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                     val prefs = (uiState as? SettingsUiState.Success)?.prefs ?: return@entry
                     val rotation = rememberDisplayRotation()
@@ -312,7 +285,7 @@ fun MainNavDisplay(
                             ),
                     )
                 }
-                entry<Screen.AppIconCalibration>(metadata = slideTransitionMetadata) {
+                entry<Screen.AppIconCalibration> {
                     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                     val prefs = (uiState as? SettingsUiState.Success)?.prefs ?: return@entry
                     val rotation = rememberDisplayRotation()
@@ -343,14 +316,14 @@ fun MainNavDisplay(
                         bottomNavPadding = bottomNavPadding,
                     )
                 }
-                entry<Screen.MaterialYou>(metadata = slideTransitionMetadata) {
+                entry<Screen.MaterialYou> {
                     MaterialYouScreen(
                         viewModel = viewModel,
                         onNavigateBack = { backStack.removeLastOrNull() },
                         bottomNavPadding = bottomNavPadding,
                     )
                 }
-                entry<Screen.BadgeCalibration>(metadata = slideTransitionMetadata) {
+                entry<Screen.BadgeCalibration> {
                     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                     val prefs = (uiState as? SettingsUiState.Success)?.prefs ?: return@entry
                     val rotation = rememberDisplayRotation()
@@ -385,7 +358,7 @@ fun MainNavDisplay(
                             ),
                     )
                 }
-                entry<Screen.Motion>(metadata = tabTransitionMetadata) {
+                entry<Screen.Motion> {
                     MainTabScaffold(
                         onMenuAction = onMenuAction,
                         bottomNavPadding = bottomNavPadding,
@@ -399,7 +372,7 @@ fun MainNavDisplay(
                         )
                     }
                 }
-                entry<Screen.Packages>(metadata = tabTransitionMetadata) {
+                entry<Screen.Packages> {
                     MainTabScaffold(
                         onMenuAction = onMenuAction,
                         bottomNavPadding = bottomNavPadding,
@@ -410,7 +383,7 @@ fun MainNavDisplay(
                         )
                     }
                 }
-                entry<Screen.System>(metadata = tabTransitionMetadata) {
+                entry<Screen.System> {
                     MainTabScaffold(
                         onMenuAction = onMenuAction,
                         bottomNavPadding = bottomNavPadding,
@@ -422,7 +395,7 @@ fun MainNavDisplay(
                         )
                     }
                 }
-                entry<Screen.Licenses>(metadata = slideTransitionMetadata) {
+                entry<Screen.Licenses> {
                     LicensesScreen(
                         onBack = { backStack.removeLastOrNull() },
                         bottomNavPadding = bottomNavPadding,

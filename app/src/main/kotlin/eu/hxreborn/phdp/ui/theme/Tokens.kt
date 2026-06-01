@@ -1,6 +1,5 @@
 package eu.hxreborn.phdp.ui.theme
 
-import androidx.compose.animation.core.Spring
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
@@ -102,9 +101,4 @@ object Tokens {
     val NavBarPillWidth: Dp = 56.dp
     val NavBarPillHeight: Dp = 32.dp
     val NavBarPillTopOffset: Dp = 14.dp
-
-    const val TRANSITION_DAMPING_RATIO: Float = Spring.DampingRatioMediumBouncy
-    const val TRANSITION_STIFFNESS: Float = 800f
-
-    const val TAB_DURATION_FACTOR: Float = 1.5f
 }
