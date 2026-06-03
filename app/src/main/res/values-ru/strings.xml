@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Punch-hole Download Progress</string>
+    <string name="app_desc">Кольцо индикатора активности вокруг выреза камеры</string>
+
+    <!-- Navigation -->
+    <string name="back">Назад</string>
+
+    <!-- Restart SystemUI -->
+    <string name="restart_systemui">Перезапустить системный интерфейс</string>
+    <string name="restart_systemui_confirm">Это приведет к перезапуску SystemUI для применения изменений. Продолжить?</string>
+    <string name="restart">Перезапуск</string>
+    <string name="restart_failed_detail">Не удалось перезапустить SystemUI: %1$s</string>
+    <string name="root_not_granted">Root не предоставлен. Пожалуйста, предоставьте root для Punch-hole Download Progress.</string>
+
+    <!-- Value Formats -->
+    <string name="color_selected">Выбрано</string>
+    <string name="more_options">Дополнительные опции</string>
+
+    <!-- Tab Titles -->
+    <string name="tab_design">Интерфейс</string>
+    <string name="tab_motion">Поведение</string>
+    <string name="tab_system">Система</string>
+    <string name="tab_packages">Приложения</string>
+
+    <!-- Packages -->
+    <string name="packages_search_hint">Поиск приложений…</string>
+    <string name="packages_filter_system">Система</string>
+    <string name="packages_empty_search">¯\\_(ツ)_/¯</string>
+    <string name="clear_search">Очистить поиск</string>
+    <string name="clear">Очистить</string>
+    <string name="clear_selection">Отменить выбор всех</string>
+    <string name="clear_selection_count">Отменить выбор всех (%1$d)</string>
+    <string name="clear_selection_confirm">Удалить %1$d выбранных приложений?</string>
+    <string name="selection_cleared">Выбор очищен</string>
+    <string name="apply_defaults">Выбрать рекомендуемые</string>
+    <string name="defaults_applied">Добавлено %1$d приложений</string>
+    <string name="defaults_none_added">Все приложения по умолчанию уже выбраны</string>
+    <string name="undo">Отменить</string>
+    <string name="help">Устранение неполадок</string>
+    <string name="packages_help">Этот модуль обнаруживает загрузки путем считывания уведомлений приложения.\n\nДля отображения индикатора прогресса приложение должно активно показывать уведомление с индикатором прогресса. Если уведомления отключены или скрыты, индикатор не будет отображаться.</string>
+
+    <!-- Group Headers -->
+    <string name="group_colors">Цвета</string>
+    <string name="group_geometry">Геометрия</string>
+    <string name="group_percent_text">Текст процента</string>
+    <string name="group_filename_text">Текст имени файла</string>
+    <string name="group_app_icon">Исходное приложение</string>
+    <string name="group_animation">Анимация</string>
+    <string name="group_indicators">Индикаторы</string>
+    <string name="group_feedback">Обратная связь</string>
+    <string name="group_app_theme">Тема приложения</string>
+    <string name="group_power">Мощность</string>
+    <string name="group_diagnostics">Диагностика</string>
+    <string name="group_about">О нас</string>
+
+    <!-- Design: Colors -->
+    <string name="pref_progress_color_title">Цвет прогресса</string>
+    <string name="pref_progress_color_summary">Цвет заполнения кольца во время активных загрузок</string>
+    <string name="pref_success_color_title">Цвет завершения</string>
+    <string name="pref_success_color_summary">Цвет кольца, применяемый по окончании загрузки</string>
+    <string name="pref_error_color_title">Ошибка цвета</string>
+    <string name="pref_error_color_summary">Цвет кольца, применяемый при сбое загрузки</string>
+
+    <!-- Design: Stroke Style -->
+    <string name="pref_stroke_cap_style_title">Стиль края кольца</string>
+    <string name="pref_stroke_cap_style_summary">Форма краев кольца</string>
+
+    <!-- Design: Background Ring -->
+    <string name="group_background_ring">Фон кольца</string>
+    <string name="pref_background_ring_enabled_title">Показать фон кольца</string>
+    <string name="pref_background_ring_enabled_summary">Затемненное кольцо за кольцом прогресса</string>
+    <string name="pref_background_ring_color_title">Цвет фона кольца</string>
+    <string name="pref_background_ring_color_summary">Цвет фона кольца</string>
+    <string name="pref_background_ring_opacity_title">Непрозрачность фона кольца</string>
+
+    <!-- Design: Glow -->
+    <string name="pref_glow_enabled_title">Эффект свечения</string>
+    <string name="pref_glow_enabled_summary">Ореол вокруг индикатора выполнения</string>
+    <string name="pref_glow_radius_title">Радиус свечения</string>
+    <string name="pref_glow_radius_summary">Размер светового ореола</string>
+
+    <!-- Design: Geometry -->
+    <string name="pref_stroke_width_title">Толщина</string>
+    <string name="pref_stroke_width_summary">Ширина дуги прогресса</string>
+    <string name="pref_cutout_padding_title">Расстояние между вырезами</string>
+    <string name="pref_cutout_padding_summary">Множитель расстояния от края камеры</string>
+    <string name="pref_opacity_title">Непрозрачность</string>
+    <string name="pref_opacity_summary">Уровень прозрачности индикатора прогресса</string>
+    <string name="pref_ring_scale_linked_title">Масштаб ссылки</string>
+    <string name="pref_ring_scale_linked_summary">Отрегулируйте ширину и высоту одновременно</string>
+    <string name="pref_ring_scale_x_title">Шкала ширины</string>
+    <string name="pref_ring_scale_y_title">Шкала высоты</string>
+    <string name="group_advanced">Расширенные</string>
+    <string name="pref_path_mode_title">Альтернативный режим</string>
+    <string name="pref_path_mode_summary">Используйте альтернативный метод рисования кольца. Включите эту функцию, если вырез вашей камеры имеет форму таблетки.</string>
+
+    <!-- Design: Calibration -->
+    <string name="pref_calibrate_ring_title">Калибровка кольца</string>
+    <string name="pref_calibrate_ring_summary">Регулировка положения и размера кольца</string>
+    <string name="group_position">Позиция</string>
+    <string name="group_size">Размер</string>
+    <string name="pref_ring_offset_x_title">Горизонтальное смещение</string>
+    <string name="pref_ring_offset_y_title">Вертикальное смещение</string>
+
+    <!-- Design: Percentage Text -->
+    <string name="pref_show_percentage_title">Метка процента</string>
+    <string name="pref_show_percentage_summary">Отображение текущего прогресса в виде числового текста</string>
+    <string name="pref_calibrate_percent_title">Процент калибровки</string>
+    <string name="pref_calibrate_percent_summary">Настройка размещения метки процента</string>
+
+    <!-- Design: Filename Text -->
+    <string name="pref_show_filename_title">Метка имени файла</string>
+    <string name="pref_show_filename_summary">Отображать название загружаемого файла</string>
+    <string name="pref_calibrate_filename_title">Калибровка имени файла</string>
+    <string name="pref_calibrate_filename_summary">Настройте расположение метки имени файла</string>
+
+    <!-- Design: App Icon -->
+    <string name="pref_app_icon_enabled_title">Значок исходного приложения</string>
+    <string name="pref_app_icon_enabled_summary">Показать, какое приложение инициировало загрузку</string>
+    <string name="pref_app_icon_monochrome_title">Монохромная иконка</string>
+    <string name="pref_app_icon_monochrome_summary">Подберите оттенок в соответствии с цветом кольца, используя силуэт тематического значка</string>
+    <string name="pref_app_icon_size_title">Размер значка</string>
+    <string name="pref_app_icon_size_summary">Изменить размер исходной иконки приложения</string>
+    <string name="pref_calibrate_app_icon_title">Настроить исходную иконку</string>
+    <string name="pref_calibrate_app_icon_summary">Настроить положение исходной иконки приложения</string>
+
+    <!-- Motion: Animation -->
+    <string name="pref_completion_style_title">Стиль завершения</string>
+    <string name="pref_completion_style_summary">Визуальный эффект по завершении загрузки</string>
+    <string name="pref_segment_count_title">Количество сегментов</string>
+    <string name="pref_segment_count_summary">Количество фрагментов в анимации завершения</string>
+    <string name="pref_segment_gap_title">Разрыв между сегментами</string>
+    <string name="pref_segment_gap_summary">Расстояние между сегментами в градусах</string>
+
+    <!-- Motion: Timing -->
+
+    <!-- Motion: Feedback -->
+    <string name="pref_haptic_feedback_title">Тактильная обратная связь</string>
+    <string name="pref_haptic_feedback_summary">Вибрация по завершении загрузки</string>
+    <string name="pref_pulse_flash_title">Импульс завершения</string>
+    <string name="pref_pulse_flash_summary">Кратковременное затемнение перед завершением анимации</string>
+
+    <!-- Motion: Fast Downloads -->
+
+    <!-- System: Service -->
+
+    <!-- System: Visibility -->
+    <string name="pref_show_queue_count_title">Счетчик очереди</string>
+    <string name="pref_show_queue_count_summary">Отображение количества одновременных активных загрузок</string>
+    <string name="pref_calibrate_badge_title">Калибровка счетчика</string>
+    <string name="pref_calibrate_badge_summary">Настройте расположение счетчика очереди</string>
+    <string name="pref_burn_in_hide_title">Скрыть при бездействии</string>
+    <string name="pref_burn_in_hide_summary">Время, пока кольцо остается незамеченным, без каких-либо действий или прогресса</string>
+    <string name="pref_progress_anim_title">Плавность прогресса</string>
+    <string name="pref_progress_anim_summary">Продолжительность отображения индикатора выполнения зависит от того, как часто приложение передает данные о ходе выполнения в SystemUI.</string>
+    <string name="pref_font_size_title">Размер шрифта</string>
+    <string name="pref_bold_title">Жирный</string>
+    <string name="pref_italic_title">Курсив</string>
+    <string name="pref_text_style_title">Стиль текста</string>
+    <string name="group_typography">Типография</string>
+    <string name="group_layout">Макет</string>
+    <string name="pref_ellipsize_title">Размер эллипса</string>
+    <string name="pref_filename_truncate_title">Ограничение кол-ва символов</string>
+    <string name="pref_filename_max_chars_title">Макс. кол-во символов</string>
+    <string name="pref_filename_vertical_title">Вертикальный текст</string>
+    <string name="pref_filename_vertical_summary">Рисуйте каждый символ по вертикальной линии в альбомной ориентации.</string>
+    <string name="pref_preview_text_title">Предпросмотр текста</string>
+    <string name="pref_invert_rotation_title">Направление прогресса</string>
+    <string name="clockwise">По часовой стрелке</string>
+    <string name="counter_clockwise">Против часовой стрелки</string>
+
+    <!-- Material You -->
+    <string name="pref_material_you_title">Material You</string>
+    <string name="pref_material_you_summary">Подберите цвета контуров карты в соответствии с палитрой ваших обоев</string>
+    <string name="pref_material_you_configure_title">Цветовая кодировка</string>
+    <string name="pref_material_you_configure_summary">Назначьте цвета системной палитры каждой роли индикатора</string>
+    <string name="group_material_you_progress">Прогресс</string>
+    <string name="group_material_you_success">Завершение</string>
+    <string name="group_material_you_error">Ошибка</string>
+    <string name="material_you_row_primary">Начальный</string>
+    <string name="material_you_row_secondary">Среднее</string>
+    <string name="material_you_row_tertiary">Третичный</string>
+    <string name="material_you_row_neutral">Нейтральный</string>
+    <string name="material_you_row_neutral_variant">Нейтральный V.</string>
+    <string name="material_you_preset_default">По умолчанию</string>
+    <string name="material_you_preset_primary">Начальный</string>
+    <string name="material_you_preset_muted">Без звука</string>
+    <string name="material_you_preset_mono">Mono</string>
+    <string name="material_you_preset_custom">Пользовательский</string>
+
+    <!-- System: Power -->
+    <string name="pref_theme_title">Тема</string>
+    <string name="pref_theme_summary">Выберите светлую, темную или системную по умолчанию</string>
+    <string name="pref_dynamic_color_title">Динамические цвета</string>
+    <string name="pref_dynamic_color_summary">Используйте цвета Material You из обоев</string>
+    <string name="pref_battery_saver_title">Режим экономии заряда батареи</string>
+    <string name="pref_battery_saver_summary">Поведение индикатора во время работы в режиме экономии заряда батареи</string>
+
+    <!-- System: Diagnostics -->
+    <string name="pref_debug_completion_title">Имитировать завершение</string>
+    <string name="pref_debug_completion_summary">Запустить анимацию завершения теста</string>
+    <string name="pref_test_failure_title">Имитировать сбой</string>
+    <string name="pref_test_failure_summary">Запустить анимацию неудачного теста</string>
+    <string name="pref_clear_downloads_title">Очистить загрузки</string>
+    <string name="pref_clear_downloads_summary">Сброс зависших индикаторов загрузки</string>
+    <string name="clear_downloads_done">Загрузки удалены</string>
+    <string name="pref_hide_launcher_icon_title">Скрыть значок запуска</string>
+    <string name="pref_hide_launcher_icon_summary">Скрывает приложение в панели запуска</string>
+    <string name="pref_verbose_logging_title">Журналы отладки</string>
+    <string name="pref_verbose_logging_summary">Подробный журнал для отладки</string>
+
+    <!-- System: About -->
+    <string name="pref_version_title">Версия</string>
+    <string name="pref_git_repo">Исходный код</string>
+    <string name="pref_git_repo_summary">Просмотрите проект на GitHub</string>
+    <string name="pref_licenses">Сторонние лицензии</string>
+    <string name="pref_licenses_summary">Библиотеки, используемые этим приложением, и их лицензии</string>
+    <string name="pref_report_issue">Сообщите о проблеме</string>
+    <string name="pref_report_issue_summary">Сообщите об ошибке или предложите функцию на GitHub</string>
+
+    <!-- Color Picker -->
+    <string name="pick_color">Выбрать цвет</string>
+    <string name="presets">Предустановки</string>
+
+    <!-- Reset -->
+    <string name="reset_defaults">Сброс к настройкам по умолчанию</string>
+    <string name="reset_confirm">Сбросить все настройки до значений по умолчанию?</string>
+    <string name="reset_done">Сброс настроек</string>
+    <string name="reset">Сброс</string>
+    <string name="character_count">Количество символов: %d</string>
+    <string name="increase">Увеличить</string>
+    <string name="decrease">Уменьшение</string>
+
+    <!-- Dialog Arrays: Completion Style -->
+    <string-array name="finish_style_entries">
+        <item>Мгновенно</item>
+        <item>Всплеск</item>
+        <item>Сегментами</item>
+    </string-array>
+    <string-array name="finish_style_values">
+        <item>snap</item>
+        <item>pop</item>
+        <item>segmented</item>
+    </string-array>
+
+    <!-- Dialog Arrays: Power Saver -->
+    <string-array name="power_saver_entries">
+        <item>Обычный</item>
+        <item>Тусклое кольцо</item>
+        <item>Отключить анимацию</item>
+    </string-array>
+    <string-array name="power_saver_values">
+        <item>normal</item>
+        <item>dim</item>
+        <item>disable</item>
+    </string-array>
+
+    <!-- Dialog Arrays: Burn-in hide timeout -->
+    <string-array name="burn_in_hide_entries">
+        <item>10s</item>
+        <item>15s</item>
+        <item>30s</item>
+        <item>60s</item>
+        <item>120s</item>
+        <item>Никогда</item>
+    </string-array>
+
+    <!-- Dialog Arrays: App Theme -->
+    <string-array name="theme_entries">
+        <item>Система</item>
+        <item>Светлая</item>
+        <item>Тёмная</item>
+    </string-array>
+    <string-array name="theme_values">
+        <item>follow_system</item>
+        <item>light</item>
+        <item>dark</item>
+    </string-array>
+</resources>
