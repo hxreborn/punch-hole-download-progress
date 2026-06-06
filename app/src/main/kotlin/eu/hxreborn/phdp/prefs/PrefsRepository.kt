@@ -2,14 +2,14 @@ package eu.hxreborn.phdp.prefs
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import eu.hxreborn.phdp.ui.state.PrefsState
+import eu.hxreborn.phdp.ui.state.AppPrefs
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
 interface PrefsRepository {
-    val state: Flow<PrefsState>
+    val state: Flow<AppPrefs>
 
     fun <T : Any> save(
         pref: PrefSpec<T>,
@@ -23,13 +23,13 @@ class PrefsRepositoryImpl(
     private val localPrefs: SharedPreferences,
     private val remotePrefsProvider: () -> SharedPreferences?,
 ) : PrefsRepository {
-    override val state: Flow<PrefsState> =
+    override val state: Flow<AppPrefs> =
         callbackFlow {
             val listener =
                 SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
-                    trySend(localPrefs.toPrefsState())
+                    trySend(localPrefs.toAppPrefs())
                 }
-            trySend(localPrefs.toPrefsState())
+            trySend(localPrefs.toAppPrefs())
             localPrefs.registerOnSharedPreferenceChangeListener(listener)
             awaitClose { localPrefs.unregisterOnSharedPreferenceChangeListener(listener) }
         }
@@ -47,8 +47,8 @@ class PrefsRepositoryImpl(
         remotePrefsProvider()?.edit(commit = true) { Prefs.resettable.forEach { it.reset(this) } }
     }
 
-    private fun SharedPreferences.toPrefsState(): PrefsState =
-        PrefsState(
+    private fun SharedPreferences.toAppPrefs(): AppPrefs =
+        AppPrefs(
             enabled = Prefs.enabled.read(this),
             color = Prefs.color.read(this),
             strokeWidth = Prefs.strokeWidth.read(this),

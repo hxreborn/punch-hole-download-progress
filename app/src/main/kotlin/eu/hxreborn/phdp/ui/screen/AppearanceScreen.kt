@@ -24,7 +24,7 @@ import eu.hxreborn.phdp.ui.component.preference.NavigationPreference
 import eu.hxreborn.phdp.ui.component.preference.SelectPreference
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithReset
 import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
-import eu.hxreborn.phdp.ui.state.PrefsState
+import eu.hxreborn.phdp.ui.state.AppPrefs
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import eu.hxreborn.phdp.ui.theme.MaterialPalette
@@ -610,7 +610,7 @@ private fun AppearanceScreenPreview() {
 }
 
 internal class PreviewViewModel : SettingsViewModel() {
-    override val uiState: StateFlow<SettingsUiState> = MutableStateFlow(SettingsUiState.Success(PrefsState())).asStateFlow()
+    override val uiState: StateFlow<SettingsUiState> = MutableStateFlow(SettingsUiState.Success(AppPrefs())).asStateFlow()
 
     override fun <T : Any> savePref(
         pref: PrefSpec<T>,

@@ -2,7 +2,7 @@ package eu.hxreborn.phdp.ui
 
 import androidx.lifecycle.ViewModel
 import eu.hxreborn.phdp.prefs.PrefSpec
-import eu.hxreborn.phdp.ui.state.PrefsState
+import eu.hxreborn.phdp.ui.state.AppPrefs
 import kotlinx.coroutines.flow.StateFlow
 
 abstract class SettingsViewModel : ViewModel() {
@@ -28,7 +28,7 @@ sealed interface SettingsUiState {
     data object Loading : SettingsUiState
 
     data class Success(
-        val prefs: PrefsState,
+        val prefs: AppPrefs,
         val isLauncherIconHidden: Boolean = false,
     ) : SettingsUiState
 }

@@ -66,7 +66,7 @@ import eu.hxreborn.phdp.prefs.StringPref
 import eu.hxreborn.phdp.ui.SettingsUiState
 import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.SettingsScaffold
-import eu.hxreborn.phdp.ui.state.PrefsState
+import eu.hxreborn.phdp.ui.state.AppPrefs
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import eu.hxreborn.phdp.ui.theme.Tokens
@@ -80,7 +80,7 @@ private data class MaterialYouPreset(
     val errorPalette: String,
     val errorShade: Int,
 ) {
-    fun matches(state: PrefsState): Boolean =
+    fun matches(state: AppPrefs): Boolean =
         progressPalette == state.materialYouProgressPalette && progressShade == state.materialYouProgressShade &&
             successPalette == state.materialYouSuccessPalette &&
             successShade == state.materialYouSuccessShade &&
@@ -132,8 +132,8 @@ private data class ColorSection(
     val labelRes: Int,
     val paletteKey: StringPref,
     val shadeKey: IntPref,
-    val paletteOf: (PrefsState) -> String,
-    val shadeOf: (PrefsState) -> Int,
+    val paletteOf: (AppPrefs) -> String,
+    val shadeOf: (AppPrefs) -> Int,
 )
 
 private val colorSections =

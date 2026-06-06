@@ -4,7 +4,7 @@ import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.prefs.RotationOffsets
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 
-data class PrefsState(
+data class AppPrefs(
     val enabled: Boolean = Prefs.enabled.default,
     val color: Int = Prefs.color.default,
     val strokeWidth: Float = Prefs.strokeWidth.default,
