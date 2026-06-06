@@ -1,9 +1,11 @@
 package eu.hxreborn.phdp.ui.state
 
+import androidx.compose.runtime.Immutable
 import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.prefs.RotationOffsets
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 
+@Immutable
 data class AppPrefs(
     val enabled: Boolean = Prefs.enabled.default,
     val color: Int = Prefs.color.default,
