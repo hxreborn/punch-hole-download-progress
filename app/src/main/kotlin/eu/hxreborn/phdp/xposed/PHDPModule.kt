@@ -10,6 +10,7 @@ import io.github.libxposed.api.XposedModule
 import io.github.libxposed.api.XposedModuleInterface.ModuleLoadedParam
 import io.github.libxposed.api.XposedModuleInterface.PackageReadyParam
 
+@PublishedApi
 internal lateinit var module: PHDPModule
 
 class PHDPModule : XposedModule() {
