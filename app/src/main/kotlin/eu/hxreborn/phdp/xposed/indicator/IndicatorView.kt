@@ -23,7 +23,7 @@ import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.prefs.RotationSlot
 import eu.hxreborn.phdp.util.log
 import eu.hxreborn.phdp.util.logDebug
-import eu.hxreborn.phdp.xposed.hook.SystemUIHooker
+import eu.hxreborn.phdp.xposed.hook.SystemUIHook
 import kotlin.math.pow
 
 class IndicatorView(
@@ -425,7 +425,7 @@ class IndicatorView(
         PrefsManager.onTestErrorChanged = null
         PrefsManager.onPreviewTriggered = null
         PrefsManager.onGeometryPreviewTriggered = null
-        SystemUIHooker.detach()
+        SystemUIHook.detach()
     }
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {

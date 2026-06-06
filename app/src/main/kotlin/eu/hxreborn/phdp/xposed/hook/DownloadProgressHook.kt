@@ -10,7 +10,7 @@ import java.lang.reflect.Field
 import java.lang.reflect.Method
 import java.util.concurrent.ConcurrentHashMap
 
-object DownloadProgressHooker {
+object DownloadProgressHook {
     private const val EXTRA_PROGRESS = "android.progress"
     private const val EXTRA_PROGRESS_MAX = "android.progressMax"
     private const val EXTRA_TITLE = "android.title"

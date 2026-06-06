@@ -25,7 +25,7 @@ private const val NOTIFICATION_LISTENER = "com.android.systemui.statusbar.Notifi
 
 // Scoped to process lifetime, cannot leak
 @SuppressLint("StaticFieldLeak")
-object SystemUIHooker {
+object SystemUIHook {
     @Volatile
     private var attached = false
 
@@ -141,20 +141,20 @@ object SystemUIHooker {
     }
 
     private fun wireCallbacks() {
-        DownloadProgressHooker.onProgressChanged =
+        DownloadProgressHook.onProgressChanged =
             { progress -> onView { this.progress = progress } }
-        DownloadProgressHooker.onDownloadComplete = {
+        DownloadProgressHook.onDownloadComplete = {
             triggerHapticFeedback()
             onView { progress = 100 }
         }
-        DownloadProgressHooker.onDownloadCancelled = { onView { showError() } }
-        DownloadProgressHooker.onActiveCountChanged =
+        DownloadProgressHook.onDownloadCancelled = { onView { showError() } }
+        DownloadProgressHook.onActiveCountChanged =
             { count -> onView { activeDownloadCount = count } }
-        DownloadProgressHooker.onFilenameChanged =
+        DownloadProgressHook.onFilenameChanged =
             { filename -> onView { currentFilename = filename } }
-        DownloadProgressHooker.onPackageChanged =
+        DownloadProgressHook.onPackageChanged =
             { packageName -> onView { currentPackageName = packageName } }
-        DownloadProgressHooker.onActivity = { onView { touchActivity() } }
+        DownloadProgressHook.onActivity = { onView { touchActivity() } }
 
         PrefsManager.onAppVisibilityChanged = { visible -> onView { appVisible = visible } }
         PrefsManager.onTestProgressChanged = { progress -> onView { this.progress = progress } }
@@ -166,7 +166,7 @@ object SystemUIHooker {
         }
         PrefsManager.onDownloadComplete = { triggerHapticFeedback() }
         PrefsManager.onTestErrorChanged = { isError -> if (isError) onView { showError() } }
-        PrefsManager.onClearDownloadsTriggered = { DownloadProgressHooker.clearActiveDownloads() }
+        PrefsManager.onClearDownloadsTriggered = { DownloadProgressHook.clearActiveDownloads() }
         PrefsManager.onPersistentPreviewChanged = { enabled ->
             onView {
                 if (enabled) {
@@ -230,13 +230,13 @@ object SystemUIHooker {
         powerSaveReceiver = null
         indicatorView = null
 
-        DownloadProgressHooker.onProgressChanged = null
-        DownloadProgressHooker.onDownloadComplete = null
-        DownloadProgressHooker.onDownloadCancelled = null
-        DownloadProgressHooker.onActiveCountChanged = null
-        DownloadProgressHooker.onFilenameChanged = null
-        DownloadProgressHooker.onPackageChanged = null
-        DownloadProgressHooker.onActivity = null
+        DownloadProgressHook.onProgressChanged = null
+        DownloadProgressHook.onDownloadComplete = null
+        DownloadProgressHook.onDownloadCancelled = null
+        DownloadProgressHook.onActiveCountChanged = null
+        DownloadProgressHook.onFilenameChanged = null
+        DownloadProgressHook.onPackageChanged = null
+        DownloadProgressHook.onActivity = null
 
         PrefsManager.onAppVisibilityChanged = null
         PrefsManager.onTestProgressChanged = null
@@ -257,9 +257,9 @@ object SystemUIHooker {
             logDebug { "NotificationAdd: ${args.size} args" }
             // indexed loop avoids an iterator alloc on every posted notification
             for (i in args.indices) {
-                DownloadProgressHooker.processNotificationArg(
+                DownloadProgressHook.processNotificationArg(
                     args[i],
-                    DownloadProgressHooker::processNotification,
+                    DownloadProgressHook::processNotification,
                 )
             }
             result
@@ -275,13 +275,13 @@ object SystemUIHooker {
             for (i in args.indices) {
                 val arg = args[i] ?: continue
                 when {
-                    DownloadProgressHooker.isStatusBarNotification(arg) -> {
-                        DownloadProgressHooker.onNotificationRemoved(arg, reason)
+                    DownloadProgressHook.isStatusBarNotification(arg) -> {
+                        DownloadProgressHook.onNotificationRemoved(arg, reason)
                     }
 
                     arg.javaClass.name.contains("NotificationEntry") -> {
-                        DownloadProgressHooker.sbnFromEntry(arg)?.let {
-                            DownloadProgressHooker.onNotificationRemoved(it, reason)
+                        DownloadProgressHook.sbnFromEntry(arg)?.let {
+                            DownloadProgressHook.onNotificationRemoved(it, reason)
                         }
                     }
                 }

@@ -5,7 +5,7 @@ import eu.hxreborn.phdp.BuildConfig
 import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.util.Logger
 import eu.hxreborn.phdp.util.log
-import eu.hxreborn.phdp.xposed.hook.SystemUIHooker
+import eu.hxreborn.phdp.xposed.hook.SystemUIHook
 import io.github.libxposed.api.XposedModule
 import io.github.libxposed.api.XposedModuleInterface.ModuleLoadedParam
 import io.github.libxposed.api.XposedModuleInterface.PackageReadyParam
@@ -25,7 +25,7 @@ class PHDPModule : XposedModule() {
         log("Device: ${Build.MANUFACTURER} ${Build.MODEL} (SDK ${Build.VERSION.SDK_INT})")
         PrefsManager.init(this)
         runCatching {
-            SystemUIHooker.hook(param.classLoader)
+            SystemUIHook.hook(param.classLoader)
         }.onSuccess { log("Hooks registered") }.onFailure { log("Hook failed", it) }
     }
 
