@@ -54,7 +54,7 @@ class MainActivity :
                 SettingsViewModelFactory(repository, applicationContext),
             )[SettingsViewModelImpl::class.java]
 
-        PHDPApp.addServiceListener(this)
+        PHDPApp.from(this).addServiceListener(this)
 
         setContent {
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -140,7 +140,7 @@ class MainActivity :
 
     override fun onDestroy() {
         super.onDestroy()
-        PHDPApp.removeServiceListener(this)
+        PHDPApp.from(this).removeServiceListener(this)
     }
 
     override fun onServiceBind(service: XposedService) {
