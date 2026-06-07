@@ -8,7 +8,6 @@ import android.content.IntentFilter
 import android.os.PowerManager
 import androidx.core.view.HapticFeedbackConstantsCompat
 import androidx.core.view.ViewCompat
-import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.util.accessibleField
 import eu.hxreborn.phdp.util.accessibleFieldFromHierarchy
 import eu.hxreborn.phdp.util.log
@@ -156,18 +155,18 @@ object SystemUIHook {
             { packageName -> onView { currentPackageName = packageName } }
         DownloadProgressHook.onActivity = { onView { touchActivity() } }
 
-        PrefsManager.onAppVisibilityChanged = { visible -> onView { appVisible = visible } }
-        PrefsManager.onTestProgressChanged = { progress -> onView { this.progress = progress } }
-        PrefsManager.onPreviewTriggered = { onView { startDynamicPreviewAnim() } }
-        PrefsManager.onGeometryPreviewTriggered = {
+        IndicatorState.onAppVisibilityChanged = { visible -> onView { appVisible = visible } }
+        IndicatorState.onTestProgressChanged = { progress -> onView { this.progress = progress } }
+        IndicatorState.onPreviewTriggered = { onView { startDynamicPreviewAnim() } }
+        IndicatorState.onGeometryPreviewTriggered = {
             // Keep preview persistent if calibration screen is open
-            val autoHide = !PrefsManager.persistentPreviewActive
+            val autoHide = !IndicatorState.persistentPreviewActive
             onView { showStaticPreviewAnim(autoHide) }
         }
-        PrefsManager.onDownloadComplete = { triggerHapticFeedback() }
-        PrefsManager.onTestErrorChanged = { isError -> if (isError) onView { showError() } }
-        PrefsManager.onClearDownloadsTriggered = { DownloadProgressHook.clearActiveDownloads() }
-        PrefsManager.onPersistentPreviewChanged = { enabled ->
+        IndicatorState.onDownloadComplete = { triggerHapticFeedback() }
+        IndicatorState.onTestErrorChanged = { isError -> if (isError) onView { showError() } }
+        IndicatorState.onClearDownloadsTriggered = { DownloadProgressHook.clearActiveDownloads() }
+        IndicatorState.onPersistentPreviewChanged = { enabled ->
             onView {
                 if (enabled) {
                     showStaticPreviewAnim(
@@ -215,7 +214,7 @@ object SystemUIHook {
     }
 
     private fun triggerHapticFeedback() {
-        if (!PrefsManager.hooksFeedback) return
+        if (!IndicatorState.hooksFeedback) return
         onView { ViewCompat.performHapticFeedback(this, HapticFeedbackConstantsCompat.CONFIRM) }
     }
 
@@ -238,14 +237,14 @@ object SystemUIHook {
         DownloadProgressHook.onPackageChanged = null
         DownloadProgressHook.onActivity = null
 
-        PrefsManager.onAppVisibilityChanged = null
-        PrefsManager.onTestProgressChanged = null
-        PrefsManager.onPreviewTriggered = null
-        PrefsManager.onGeometryPreviewTriggered = null
-        PrefsManager.onDownloadComplete = null
-        PrefsManager.onTestErrorChanged = null
-        PrefsManager.onClearDownloadsTriggered = null
-        PrefsManager.onPersistentPreviewChanged = null
+        IndicatorState.onAppVisibilityChanged = null
+        IndicatorState.onTestProgressChanged = null
+        IndicatorState.onPreviewTriggered = null
+        IndicatorState.onGeometryPreviewTriggered = null
+        IndicatorState.onDownloadComplete = null
+        IndicatorState.onTestErrorChanged = null
+        IndicatorState.onClearDownloadsTriggered = null
+        IndicatorState.onPersistentPreviewChanged = null
 
         attached = false
     }

@@ -1,10 +1,15 @@
-package eu.hxreborn.phdp.prefs
+package eu.hxreborn.phdp.xposed.hook
 
 import android.content.SharedPreferences
+import eu.hxreborn.phdp.prefs.FloatPref
+import eu.hxreborn.phdp.prefs.OffsetPx
+import eu.hxreborn.phdp.prefs.Prefs
+import eu.hxreborn.phdp.prefs.RotationOffsets
+import eu.hxreborn.phdp.prefs.RotationOffsetsPref
 import eu.hxreborn.phdp.util.Logger
 import eu.hxreborn.phdp.util.log
 
-object PrefsManager {
+object IndicatorState {
     @Volatile
     private var remotePrefs: SharedPreferences? = null
 
@@ -304,7 +309,7 @@ object PrefsManager {
         runCatching {
             remotePrefs = xposed.getRemotePreferences(Prefs.GROUP)
             refreshCache()
-            log("Package selection: ${selectedPackages.size} packages")
+            log("loaded selection count=${selectedPackages.size}")
 
             remotePrefs?.registerOnSharedPreferenceChangeListener { prefs, key ->
                 runCatching {
@@ -349,10 +354,10 @@ object PrefsManager {
                             onPrefsChanged?.invoke()
                         }
                     }
-                }.onFailure { log("Preference change handler failed", it) }
+                }.onFailure { log("prefs-change failed", it) }
             }
-            log("PrefsManager initialized")
-        }.onFailure { log("PrefsManager.init() failed", it) }
+            log("initialized indicator-state")
+        }.onFailure { log("init failed target=indicator-state", it) }
     }
 
     private fun refreshCache() {
@@ -447,7 +452,7 @@ object PrefsManager {
                 burnInHideMs = Prefs.burnInHideMs.read(prefs)
                 progressAnimMs = Prefs.progressAnimMs.read(prefs)
             }
-        }.onFailure { log("refreshCache() failed", it) }
+        }.onFailure { log("refresh failed target=indicator-state", it) }
     }
 
     // TODO(#34): Remove legacy offset bootstrap after structured rotation prefs ship
@@ -462,7 +467,7 @@ object PrefsManager {
         }
         val baseOffset = OffsetPx(legacyX.read(prefs), legacyY.read(prefs))
         val seeded = RotationOffsets(r0 = baseOffset, r90 = baseOffset)
-        log("Bootstrapped ${structuredPref.key} from legacy offsets: ${seeded.serialize()}")
+        log("bootstrapped pref key=${structuredPref.key} from=legacy value=${seeded.serialize()}")
         return seeded
     }
 }

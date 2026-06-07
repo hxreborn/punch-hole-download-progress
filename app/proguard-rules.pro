@@ -12,10 +12,8 @@
 }
 
 # Prevent R8 from merging hook classes into app process code (compileOnly API)
+# This also covers IndicatorState, which holds the hook-side pref cache.
 -keep,allowobfuscation class eu.hxreborn.phdp.xposed.hook.** { *; }
-
-# Keep PrefsManager for remote preferences
--keep class eu.hxreborn.phdp.prefs.PrefsManager { *; }
 
 # Keep Xposed detection method
 -keep class eu.hxreborn.phdp.ui.MainActivity {

@@ -19,10 +19,10 @@ import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.core.graphics.withSave
-import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.prefs.RotationSlot
 import eu.hxreborn.phdp.util.log
 import eu.hxreborn.phdp.util.logDebug
+import eu.hxreborn.phdp.xposed.hook.IndicatorState
 import eu.hxreborn.phdp.xposed.hook.SystemUIHook
 import kotlin.math.pow
 
@@ -54,7 +54,7 @@ class IndicatorView(
     fun touchActivity() {
         lastActivityTime = System.currentTimeMillis()
         removeCallbacks(burnInHideRunnable)
-        val hideDelay = PrefsManager.burnInHideMs.toLong()
+        val hideDelay = IndicatorState.burnInHideMs.toLong()
         if (progress in 1..99 && hideDelay > 0L) {
             postDelayed(burnInHideRunnable, hideDelay)
         }
@@ -63,15 +63,15 @@ class IndicatorView(
     // Easing-pref drives previews directly; their internal animations already smooth the sweep
     private fun smoothProgressFor(effectiveProgress: Int): Float =
         if (animator.isGeometryPreviewActive || animator.isPreviewAnimating) {
-            applyEasing(effectiveProgress, PrefsManager.progressEasing)
+            applyEasing(effectiveProgress, IndicatorState.progressEasing)
         } else {
             smoothProgress
         }
 
     private fun animateProgressTo(target: Int) {
-        val targetFraction = applyEasing(target, PrefsManager.progressEasing)
+        val targetFraction = applyEasing(target, IndicatorState.progressEasing)
         progressAnim?.cancel()
-        val durationMs = PrefsManager.progressAnimMs.toLong()
+        val durationMs = IndicatorState.progressAnimMs.toLong()
         if (durationMs <= 0L) {
             smoothProgress = targetFraction
             invalidate()
@@ -89,7 +89,8 @@ class IndicatorView(
     }
 
     private val minVisibilityMs: Long
-        get() = if (PrefsManager.minVisibilityEnabled) PrefsManager.minVisibilityMs.toLong() else 0L
+        get() =
+            if (IndicatorState.minVisibilityEnabled) IndicatorState.minVisibilityMs.toLong() else 0L
 
     @Volatile
     var activeDownloadCount: Int = 0
@@ -195,7 +196,7 @@ class IndicatorView(
             }
         }
 
-    private var resolvedRingColor = PrefsManager.color
+    private var resolvedRingColor = IndicatorState.color
 
     private val glowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private val shinePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
@@ -229,14 +230,14 @@ class IndicatorView(
         }
     private val effectiveOpacity: Int
         get() =
-            if (isPowerSaveActive && PrefsManager.powerSaverMode == "dim") {
-                (PrefsManager.opacity * POWER_SAVER_DIM_FACTOR).toInt()
+            if (isPowerSaveActive && IndicatorState.powerSaverMode == "dim") {
+                (IndicatorState.opacity * POWER_SAVER_DIM_FACTOR).toInt()
             } else {
-                PrefsManager.opacity
+                IndicatorState.opacity
             }
     private val strokeCap: Paint.Cap
         get() =
-            when (PrefsManager.strokeCapStyle) {
+            when (IndicatorState.strokeCapStyle) {
                 "round" -> Paint.Cap.ROUND
                 "square" -> Paint.Cap.SQUARE
                 else -> Paint.Cap.BUTT
@@ -247,13 +248,13 @@ class IndicatorView(
         updatePaintFromPrefs()
         updateRenderer()
 
-        PrefsManager.onPrefsChanged = {
+        IndicatorState.onPrefsChanged = {
             post {
                 logDebug { "IndicatorView: prefs changed, updating..." }
                 updatePaintFromPrefs()
                 updateRenderer()
                 recalculateScaledPath()
-                smoothProgress = applyEasing(progress, PrefsManager.progressEasing)
+                smoothProgress = applyEasing(progress, IndicatorState.progressEasing)
                 invalidate()
             }
         }
@@ -269,15 +270,15 @@ class IndicatorView(
     }
 
     private fun updatePaintFromPrefs() {
-        resolvedRingColor = PrefsManager.color
+        resolvedRingColor = IndicatorState.color
 
         glowPaint.apply {
-            color = PrefsManager.color
+            color = IndicatorState.color
             alpha = effectiveOpacity * 255 / 100
-            strokeWidth = PrefsManager.strokeWidth * density
+            strokeWidth = IndicatorState.strokeWidth * density
             this.strokeCap = strokeCap
             setShadowLayer(
-                if (PrefsManager.glowEnabled) PrefsManager.glowRadius * density else 0f,
+                if (IndicatorState.glowEnabled) IndicatorState.glowRadius * density else 0f,
                 0f,
                 0f,
                 color,
@@ -286,55 +287,55 @@ class IndicatorView(
 
         shinePaint.apply {
             color =
-                if (PrefsManager.finishUseFlashColor) {
-                    PrefsManager.finishFlashColor
+                if (IndicatorState.finishUseFlashColor) {
+                    IndicatorState.finishFlashColor
                 } else {
-                    brightenColor(PrefsManager.color, 0.5f)
+                    brightenColor(IndicatorState.color, 0.5f)
                 }
             alpha = 255
-            strokeWidth = PrefsManager.strokeWidth * density * SHINE_STROKE_MULTIPLIER
+            strokeWidth = IndicatorState.strokeWidth * density * SHINE_STROKE_MULTIPLIER
             this.strokeCap = strokeCap
         }
 
         errorPaint.apply {
-            color = PrefsManager.errorColor
-            strokeWidth = PrefsManager.strokeWidth * density * ERROR_STROKE_MULTIPLIER
+            color = IndicatorState.errorColor
+            strokeWidth = IndicatorState.strokeWidth * density * ERROR_STROKE_MULTIPLIER
             this.strokeCap = strokeCap
         }
 
-        if (PrefsManager.materialYouEnabled && Build.VERSION.SDK_INT >= 31) {
+        if (IndicatorState.materialYouEnabled && Build.VERSION.SDK_INT >= 31) {
             resolveSystemAccent(
-                PrefsManager.materialYouProgressPalette,
-                PrefsManager.materialYouProgressShade,
+                IndicatorState.materialYouProgressPalette,
+                IndicatorState.materialYouProgressShade,
             )?.let { c ->
                 resolvedRingColor = c
                 glowPaint.color = c
                 glowPaint.alpha = effectiveOpacity * 255 / 100
                 glowPaint.setShadowLayer(
-                    if (PrefsManager.glowEnabled) PrefsManager.glowRadius * density else 0f,
+                    if (IndicatorState.glowEnabled) IndicatorState.glowRadius * density else 0f,
                     0f,
                     0f,
                     c,
                 )
             }
             resolveSystemAccent(
-                PrefsManager.materialYouSuccessPalette,
-                PrefsManager.materialYouSuccessShade,
+                IndicatorState.materialYouSuccessPalette,
+                IndicatorState.materialYouSuccessShade,
             )?.let { c ->
                 shinePaint.color = c
             }
             resolveSystemAccent(
-                PrefsManager.materialYouErrorPalette,
-                PrefsManager.materialYouErrorShade,
+                IndicatorState.materialYouErrorPalette,
+                IndicatorState.materialYouErrorShade,
             )?.let { c ->
                 errorPaint.color = c
             }
         }
 
         backgroundRingPaint.apply {
-            color = PrefsManager.backgroundRingColor
-            alpha = PrefsManager.backgroundRingOpacity * 255 / 100
-            strokeWidth = PrefsManager.strokeWidth * density
+            color = IndicatorState.backgroundRingColor
+            alpha = IndicatorState.backgroundRingOpacity * 255 / 100
+            strokeWidth = IndicatorState.strokeWidth * density
             this.strokeCap = strokeCap
         }
 
@@ -342,12 +343,12 @@ class IndicatorView(
             textSize =
                 android.util.TypedValue.applyDimension(
                     android.util.TypedValue.COMPLEX_UNIT_SP,
-                    PrefsManager.percentTextSize,
+                    IndicatorState.percentTextSize,
                     resources.displayMetrics,
                 )
             typeface =
                 Typeface.defaultFromStyle(
-                    typefaceStyle(PrefsManager.percentTextBold, PrefsManager.percentTextItalic),
+                    typefaceStyle(IndicatorState.percentTextBold, IndicatorState.percentTextItalic),
                 )
             setShadowLayer(
                 LABEL_SHADOW_RADIUS_DP * density,
@@ -360,12 +361,15 @@ class IndicatorView(
             textSize =
                 android.util.TypedValue.applyDimension(
                     android.util.TypedValue.COMPLEX_UNIT_SP,
-                    PrefsManager.filenameTextSize,
+                    IndicatorState.filenameTextSize,
                     resources.displayMetrics,
                 )
             typeface =
                 Typeface.defaultFromStyle(
-                    typefaceStyle(PrefsManager.filenameTextBold, PrefsManager.filenameTextItalic),
+                    typefaceStyle(
+                        IndicatorState.filenameTextBold,
+                        IndicatorState.filenameTextItalic,
+                    ),
                 )
             setShadowLayer(
                 LABEL_SHADOW_RADIUS_DP * density,
@@ -375,28 +379,28 @@ class IndicatorView(
             )
         }
 
-        badgePainter.updateColors(resolvedRingColor, PrefsManager.badgeTextSize)
+        badgePainter.updateColors(resolvedRingColor, IndicatorState.badgeTextSize)
         iconPainter.updateColors(resolvedRingColor, effectiveOpacity)
 
         logDebug {
             "Paint updated: color=${Integer.toHexString(resolvedRingColor)}, " +
-                "opacity=$effectiveOpacity, stroke=${PrefsManager.strokeWidth}, " +
-                "gap=${PrefsManager.ringGap}, scaleX=${PrefsManager.ringScaleX}, " +
-                "scaleY=${PrefsManager.ringScaleY}"
+                "opacity=$effectiveOpacity, stroke=${IndicatorState.strokeWidth}, " +
+                "gap=${IndicatorState.ringGap}, scaleX=${IndicatorState.ringScaleX}, " +
+                "scaleY=${IndicatorState.ringScaleY}"
         }
         invalidate()
     }
 
     private fun updateRenderer() {
-        renderer = if (PrefsManager.pathMode) PathRingRenderer() else ArcRingRenderer()
+        renderer = if (IndicatorState.pathMode) PathRingRenderer() else ArcRingRenderer()
     }
 
     private fun recalculateScaledPath() {
         cutoutPath?.let { path ->
             path.computeBounds(pathBounds, true)
             scaleMatrix.setScale(
-                PrefsManager.ringGap,
-                PrefsManager.ringGap,
+                IndicatorState.ringGap,
+                IndicatorState.ringGap,
                 pathBounds.centerX(),
                 pathBounds.centerY(),
             )
@@ -420,11 +424,11 @@ class IndicatorView(
         pendingFinishRunnable = null
         removeCallbacks(burnInHideRunnable)
         iconPainter.recycle()
-        PrefsManager.onPrefsChanged = null
-        PrefsManager.onTestProgressChanged = null
-        PrefsManager.onTestErrorChanged = null
-        PrefsManager.onPreviewTriggered = null
-        PrefsManager.onGeometryPreviewTriggered = null
+        IndicatorState.onPrefsChanged = null
+        IndicatorState.onTestProgressChanged = null
+        IndicatorState.onTestErrorChanged = null
+        IndicatorState.onPreviewTriggered = null
+        IndicatorState.onGeometryPreviewTriggered = null
         SystemUIHook.detach()
     }
 
@@ -470,19 +474,19 @@ class IndicatorView(
 
     private fun startFinishAnimation() {
         animator.startFinish(
-            style = PrefsManager.finishStyle,
-            holdMs = PrefsManager.finishHoldMs,
-            exitMs = PrefsManager.finishExitMs,
-            pulseEnabled = PrefsManager.completionPulseEnabled,
+            style = IndicatorState.finishStyle,
+            holdMs = IndicatorState.finishHoldMs,
+            exitMs = IndicatorState.finishExitMs,
+            pulseEnabled = IndicatorState.completionPulseEnabled,
         ) { progress = 0 }
     }
 
     fun startDynamicPreviewAnim() {
         animator.startDynamicPreviewAnim(
-            finishStyle = PrefsManager.finishStyle,
-            holdMs = PrefsManager.finishHoldMs,
-            exitMs = PrefsManager.finishExitMs,
-            pulseEnabled = PrefsManager.completionPulseEnabled,
+            finishStyle = IndicatorState.finishStyle,
+            holdMs = IndicatorState.finishHoldMs,
+            exitMs = IndicatorState.finishExitMs,
+            pulseEnabled = IndicatorState.completionPulseEnabled,
         )
     }
 
@@ -499,8 +503,8 @@ class IndicatorView(
             return
         }
 
-        if (!PrefsManager.enabled) return
-        if (isPowerSaveActive && PrefsManager.powerSaverMode == "disable") return
+        if (!IndicatorState.enabled) return
+        if (isPowerSaveActive && IndicatorState.powerSaverMode == "disable") return
 
         if (animator.isErrorAnimating) {
             computeCalibratedArcBounds()
@@ -517,7 +521,7 @@ class IndicatorView(
                 else -> progress
             }
 
-        val hideDelay = PrefsManager.burnInHideMs
+        val hideDelay = IndicatorState.burnInHideMs
         val isBurnInHidden =
             hideDelay > 0 &&
                 effectiveProgress in 1..99 && lastActivityTime > 0 &&
@@ -560,7 +564,7 @@ class IndicatorView(
             if (animator.successColorBlend > 0f) {
                 val baseColor = resolvedRingColor
                 val successColor =
-                    if (PrefsManager.finishUseFlashColor) {
+                    if (IndicatorState.finishUseFlashColor) {
                         shinePaint.color
                     } else {
                         brightenColor(baseColor, animator.successColorBlend)
@@ -573,7 +577,7 @@ class IndicatorView(
                 effectiveProgress in 1..99 || animator.isGeometryPreviewActive ||
                     animator.isPreviewAnimating
             val showBackgroundRing =
-                PrefsManager.backgroundRingEnabled && !animator.isFinishAnimating &&
+                IndicatorState.backgroundRingEnabled && !animator.isFinishAnimating &&
                     !animator.isErrorAnimating &&
                     isActiveProgress
 
@@ -582,10 +586,10 @@ class IndicatorView(
                 arcBounds.applyCalibration()
                 renderer.updateBounds(arcBounds)
                 val bgOpacityBase =
-                    if (isPowerSaveActive && PrefsManager.powerSaverMode == "dim") {
-                        (PrefsManager.backgroundRingOpacity * POWER_SAVER_DIM_FACTOR).toInt()
+                    if (isPowerSaveActive && IndicatorState.powerSaverMode == "dim") {
+                        (IndicatorState.backgroundRingOpacity * POWER_SAVER_DIM_FACTOR).toInt()
                     } else {
-                        PrefsManager.backgroundRingOpacity
+                        IndicatorState.backgroundRingOpacity
                     }
                 backgroundRingPaint.alpha =
                     (bgOpacityBase * 255 / 100 * animator.displayAlpha).toInt()
@@ -599,7 +603,7 @@ class IndicatorView(
                 arcBounds.applyCalibration()
                 renderer.updateBounds(arcBounds)
                 val fraction = smoothProgressFor(effectiveProgress)
-                renderer.drawProgress(this, fraction, PrefsManager.clockwise, animatedPaint)
+                renderer.drawProgress(this, fraction, IndicatorState.clockwise, animatedPaint)
 
                 val showLabels = effectiveProgress in 1..99 || animator.isGeometryPreviewActive
                 if (showLabels) {
@@ -610,14 +614,14 @@ class IndicatorView(
 
             // Badge drawn BELOW the ring (not at center - that's behind camera hardware)
             val showBadge =
-                !animator.isPreviewAnimating && PrefsManager.showDownloadCount &&
+                !animator.isPreviewAnimating && IndicatorState.showDownloadCount &&
                     (activeDownloadCount > 1 || animator.isGeometryPreviewActive)
             if (showBadge) {
                 scaledPath.computeBounds(arcBounds, true)
                 val viewDensity = this@IndicatorView.density
                 val badgeRotation = display?.rotation ?: Surface.ROTATION_0
                 val badgeSlot = RotationSlot.fromSurfaceRotation(badgeRotation)
-                val badgeOffset = PrefsManager.badgeOffsets[badgeSlot]
+                val badgeOffset = IndicatorState.badgeOffsets[badgeSlot]
                 val badgeCenterX = arcBounds.centerX() + badgeOffset.x * viewDensity
                 val badgeTop =
                     arcBounds.bottom + BADGE_TOP_PADDING_DP * viewDensity +
@@ -645,9 +649,9 @@ class IndicatorView(
         scaledPath.computeBounds(arcBounds, true)
         arcBounds.applyCalibration()
         renderer.updateBounds(arcBounds)
-        if (PrefsManager.finishStyle == "segmented") {
-            val count = PrefsManager.segmentCount
-            val gap = PrefsManager.segmentGapDegrees
+        if (IndicatorState.finishStyle == "segmented") {
+            val count = IndicatorState.segmentCount
+            val gap = IndicatorState.segmentGapDegrees
             val arc = (360f - count * gap) / count
             renderer.drawSegmented(
                 canvas,
@@ -682,17 +686,17 @@ class IndicatorView(
         val rotation = display?.rotation ?: Surface.ROTATION_0
         val slot = RotationSlot.fromSurfaceRotation(rotation)
 
-        if (PrefsManager.percentTextEnabled) {
+        if (IndicatorState.percentTextEnabled) {
             val text = "$progressVal%"
             val textWidth = percentPaint.measureText(text)
             val (baseX, baseY, align) =
                 computeLabelPosition(
-                    rotatePosition(PrefsManager.percentTextPosition, rotation),
+                    rotatePosition(IndicatorState.percentTextPosition, rotation),
                     padding,
                     percentPaint.textSize,
                     textWidth,
                 )
-            val pctOffset = PrefsManager.percentTextOffsets[slot]
+            val pctOffset = IndicatorState.percentTextOffsets[slot]
             val x = baseX + pctOffset.x * density
             val y = baseY + pctOffset.y * density
             specs += TextSpec(text, percentPaint, x, y, align)
@@ -700,27 +704,27 @@ class IndicatorView(
 
         val isGeometryPreview = animator.isGeometryPreviewActive
         val filenameToShow =
-            currentFilename ?: if (isGeometryPreview) PrefsManager.previewFilenameText else null
+            currentFilename ?: if (isGeometryPreview) IndicatorState.previewFilenameText else null
 
-        if (PrefsManager.filenameTextEnabled && filenameToShow != null &&
+        if (IndicatorState.filenameTextEnabled && filenameToShow != null &&
             (activeDownloadCount <= 1 || isGeometryPreview)
         ) {
             val truncated =
-                if (PrefsManager.filenameTruncateEnabled) {
+                if (IndicatorState.filenameTruncateEnabled) {
                     truncateWithEllipsis(
                         filenameToShow,
-                        PrefsManager.filenameMaxChars,
-                        PrefsManager.filenameEllipsize,
+                        IndicatorState.filenameMaxChars,
+                        IndicatorState.filenameEllipsize,
                     )
                 } else {
                     filenameToShow
                 }
             val isLandscape = rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270
-            val isVertical = PrefsManager.filenameVerticalText && isLandscape
+            val isVertical = IndicatorState.filenameVerticalText && isLandscape
             if (isVertical && truncated.isNotEmpty()) {
                 filenamePaint.color = resolvedRingColor
                 filenamePaint.alpha = alpha
-                val fnOffset = PrefsManager.filenameTextOffsets[slot]
+                val fnOffset = IndicatorState.filenameTextOffsets[slot]
                 val fm = filenamePaint.fontMetrics
                 val charHeight = fm.descent - fm.ascent
                 val totalHeight = truncated.length * charHeight
@@ -748,12 +752,12 @@ class IndicatorView(
             } else {
                 val (baseX, baseY, align) =
                     computeLabelPosition(
-                        rotatePosition(PrefsManager.filenameTextPosition, rotation),
+                        rotatePosition(IndicatorState.filenameTextPosition, rotation),
                         padding,
                         filenamePaint.textSize,
                         textWidth = null,
                     )
-                val fnOffset = PrefsManager.filenameTextOffsets[slot]
+                val fnOffset = IndicatorState.filenameTextOffsets[slot]
                 val x = baseX + fnOffset.x * density
                 val y = baseY + fnOffset.y * density
                 specs += TextSpec(truncated, filenamePaint, x, y, align)
@@ -769,7 +773,7 @@ class IndicatorView(
     }
 
     private fun drawAppIcon(canvas: Canvas) {
-        if (!PrefsManager.appIconEnabled) return
+        if (!IndicatorState.appIconEnabled) return
 
         val isGeometryPreview = animator.isGeometryPreviewActive
         val packageName =
@@ -777,20 +781,20 @@ class IndicatorView(
 
         if (activeDownloadCount > 1 && !isGeometryPreview) return
 
-        val sizePx = PrefsManager.appIconSize * density
+        val sizePx = IndicatorState.appIconSize * density
         val padding = LABEL_PADDING_DP * density
         val rotation = display?.rotation ?: Surface.ROTATION_0
         val slot = RotationSlot.fromSurfaceRotation(rotation)
 
         val (baseX, baseY, _) =
             computeLabelPosition(
-                rotatePosition(PrefsManager.appIconPosition, rotation),
+                rotatePosition(IndicatorState.appIconPosition, rotation),
                 padding,
                 sizePx,
                 sizePx,
             )
 
-        val iconOffset = PrefsManager.appIconOffsets[slot]
+        val iconOffset = IndicatorState.appIconOffsets[slot]
         val x = baseX + iconOffset.x * density - sizePx / 2
         val y = baseY + iconOffset.y * density - sizePx
 
@@ -1008,15 +1012,19 @@ class IndicatorView(
 
     // Apply calibration: normalize base, offset, then scale
     private fun RectF.applyCalibration() {
-        val (offsetX, offsetY) = rotateOffset(PrefsManager.ringOffsetX, PrefsManager.ringOffsetY)
-        val scaleX = PrefsManager.ringScaleX
-        val scaleY = PrefsManager.ringScaleY
+        val (offsetX, offsetY) =
+            rotateOffset(
+                IndicatorState.ringOffsetX,
+                IndicatorState.ringOffsetY,
+            )
+        val scaleX = IndicatorState.ringScaleX
+        val scaleY = IndicatorState.ringScaleY
 
         if (width() == 0f && height() == 0f) return
 
         // Arc mode: normalize to square so drawArc produces a circle as base
         // Path mode: keep original aspect ratio for pill-shaped cutouts
-        val halfBase = if (!PrefsManager.pathMode) maxOf(width(), height()) / 2f else null
+        val halfBase = if (!IndicatorState.pathMode) maxOf(width(), height()) / 2f else null
 
         val centerX = centerX() + offsetX
         val centerY = centerY() + offsetY

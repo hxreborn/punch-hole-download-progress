@@ -2,9 +2,9 @@ package eu.hxreborn.phdp.xposed
 
 import android.os.Build
 import eu.hxreborn.phdp.BuildConfig
-import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.util.Logger
 import eu.hxreborn.phdp.util.log
+import eu.hxreborn.phdp.xposed.hook.IndicatorState
 import eu.hxreborn.phdp.xposed.hook.SystemUIHook
 import io.github.libxposed.api.XposedModule
 import io.github.libxposed.api.XposedModuleInterface.ModuleLoadedParam
@@ -24,7 +24,7 @@ class PHDPModule : XposedModule() {
         if (param.packageName != SYSTEMUI_PACKAGE || !param.isFirstPackage) return
 
         log("Device: ${Build.MANUFACTURER} ${Build.MODEL} (SDK ${Build.VERSION.SDK_INT})")
-        PrefsManager.init(this)
+        IndicatorState.init(this)
         runCatching {
             SystemUIHook.hook(param.classLoader)
         }.onSuccess { log("Hooks registered") }.onFailure { log("Hook failed", it) }

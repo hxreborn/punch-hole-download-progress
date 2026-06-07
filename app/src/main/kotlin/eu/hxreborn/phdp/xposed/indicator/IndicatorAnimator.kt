@@ -8,8 +8,8 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.view.animation.OvershootInterpolator
-import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.util.logDebug
+import eu.hxreborn.phdp.xposed.hook.IndicatorState
 
 class IndicatorAnimator(
     private val view: View,
@@ -214,7 +214,7 @@ class IndicatorAnimator(
 
         finishAnimator =
             playInt(
-                to = PrefsManager.segmentCount + 2,
+                to = IndicatorState.segmentCount + 2,
                 durationMs = cascadePhaseMs,
                 onUpdate = { segment ->
                     segmentHighlight = segment

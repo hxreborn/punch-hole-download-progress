@@ -1,7 +1,6 @@
 package eu.hxreborn.phdp.xposed.hook
 
 import android.app.Notification
-import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.util.accessibleField
 import eu.hxreborn.phdp.util.accessibleFieldFromHierarchy
 import eu.hxreborn.phdp.util.log
@@ -79,7 +78,7 @@ object DownloadProgressHook {
         val pkg = getPackageName(sbn) ?: return
         logDebug { "Notification from: $pkg" }
 
-        if (pkg !in PrefsManager.selectedPackages) return
+        if (pkg !in IndicatorState.selectedPackages) return
 
         val rawId = getRawId(sbn) ?: return
         val id = "$pkg:$rawId"

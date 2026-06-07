@@ -11,8 +11,8 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.annotation.ColorInt
 import androidx.core.graphics.createBitmap
-import eu.hxreborn.phdp.prefs.PrefsManager
 import eu.hxreborn.phdp.util.log
+import eu.hxreborn.phdp.xposed.hook.IndicatorState
 
 class IconPainter(
     private val context: Context,
@@ -63,11 +63,11 @@ class IconPainter(
         y: Float,
         packageName: String,
     ) {
-        val sizePx = (PrefsManager.appIconSize * density).toInt()
+        val sizePx = (IndicatorState.appIconSize * density).toInt()
         val cached = getOrLoadCache(packageName, sizePx) ?: return
 
         val monoBitmap = cached.monoBitmap
-        val useMonochrome = PrefsManager.appIconMonochrome && monoBitmap != null
+        val useMonochrome = IndicatorState.appIconMonochrome && monoBitmap != null
         val bitmap = if (useMonochrome) monoBitmap else cached.bitmap
 
         iconPaint.colorFilter = if (useMonochrome) monoColorFilter else null
