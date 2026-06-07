@@ -7,6 +7,7 @@ import eu.hxreborn.phdp.util.log
 import eu.hxreborn.phdp.util.logDebug
 import java.lang.reflect.Field
 import java.lang.reflect.Method
+import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
 
 object DownloadProgressHook {
@@ -40,6 +41,14 @@ object DownloadProgressHook {
 
     @Volatile
     private var sbnField: Field? = null
+
+    private val rvActionsField = ConcurrentHashMap<Class<*>, Optional<Field>>()
+    private val actionFieldsCache = ConcurrentHashMap<Class<*>, ActionFields>()
+
+    private data class ActionFields(
+        val methodName: Field?,
+        val value: Field?,
+    )
 
     private val activeDownloads = ConcurrentHashMap<String, DownloadState>()
 
@@ -177,25 +186,38 @@ object DownloadProgressHook {
         }
     }
 
-    private fun remoteViewsActions(views: Any): ArrayList<*>? =
-        runCatching {
-            views.javaClass
-                .accessibleFieldFromHierarchy(
-                    RV_ACTIONS_FIELD,
-                )?.get(views) as? ArrayList<*>
-        }.getOrNull()
+    private fun remoteViewsActions(views: Any): ArrayList<*>? {
+        val field =
+            rvActionsField
+                .getOrPut(views.javaClass) {
+                    Optional.ofNullable(
+                        views.javaClass.accessibleFieldFromHierarchy(RV_ACTIONS_FIELD),
+                    )
+                }.orElse(null) ?: return null
+        return runCatching { field.get(views) as? ArrayList<*> }.getOrNull()
+    }
+
+    private fun actionFields(cls: Class<*>): ActionFields =
+        actionFieldsCache.getOrPut(cls) {
+            ActionFields(
+                methodName =
+                    cls.accessibleFieldFromHierarchy("mMethodName") // API 35+
+                        ?: cls.accessibleFieldFromHierarchy("methodName"),
+                value =
+                    cls.accessibleFieldFromHierarchy("mValue") // API 35+
+                        ?: cls.accessibleFieldFromHierarchy("value"),
+            )
+        }
 
     private fun actionMethodName(action: Any): String? =
-        (
-            action.javaClass.accessibleFieldFromHierarchy("mMethodName") // API 35+
-                ?: action.javaClass.accessibleFieldFromHierarchy("methodName")
-        )?.get(action) as? String
+        actionFields(action.javaClass).methodName?.let {
+            runCatching { it.get(action) as? String }.getOrNull()
+        }
 
     private fun actionIntValue(action: Any): Int? =
-        (
-            action.javaClass.accessibleFieldFromHierarchy("mValue") // API 35+
-                ?: action.javaClass.accessibleFieldFromHierarchy("value")
-        )?.get(action) as? Int
+        actionFields(action.javaClass).value?.let {
+            runCatching { it.get(action) as? Int }.getOrNull()
+        }
 
     // contentView/bigContentView are deprecated for producers but remain the only way to read RemoteViews from received notifications
     @Suppress("DEPRECATION")
