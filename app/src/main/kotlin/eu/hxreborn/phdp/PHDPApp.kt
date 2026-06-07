@@ -8,7 +8,6 @@ import java.util.concurrent.CopyOnWriteArrayList
 class PHDPApp : Application() {
     override fun onCreate() {
         super.onCreate()
-        instance = this
         XposedServiceHelper.registerListener(
             object : XposedServiceHelper.OnServiceListener {
                 override fun onServiceBind(svc: XposedService) {
@@ -25,9 +24,6 @@ class PHDPApp : Application() {
     }
 
     companion object {
-        lateinit var instance: PHDPApp
-            private set
-
         @Volatile
         var mService: XposedService? = null
             private set
