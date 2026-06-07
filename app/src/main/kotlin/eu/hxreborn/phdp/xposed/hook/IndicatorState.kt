@@ -13,6 +13,8 @@ object IndicatorState {
     @Volatile
     private var remotePrefs: SharedPreferences? = null
 
+    private var prefsListener: SharedPreferences.OnSharedPreferenceChangeListener? = null
+
     // Cached values
     @Volatile
     var enabled = Prefs.enabled.default
@@ -306,58 +308,70 @@ object IndicatorState {
     var onPersistentPreviewChanged: ((Boolean) -> Unit)? = null
 
     fun init(xposed: io.github.libxposed.api.XposedInterface) {
+        prefsListener?.let { remotePrefs?.unregisterOnSharedPreferenceChangeListener(it) }
         runCatching {
-            remotePrefs = xposed.getRemotePreferences(Prefs.GROUP)
+            val prefs = xposed.getRemotePreferences(Prefs.GROUP)
+            remotePrefs = prefs
             refreshCache()
             log("loaded selection count=${selectedPackages.size}")
 
-            remotePrefs?.registerOnSharedPreferenceChangeListener { prefs, key ->
-                runCatching {
-                    refreshCache()
-                    when (key) {
-                        Prefs.appVisible.key -> {
-                            onAppVisibilityChanged?.invoke(appVisible)
-                        }
-
-                        Prefs.testProgress.key -> {
-                            val progress = Prefs.testProgress.read(prefs)
-                            if (progress >= 0) {
-                                onTestProgressChanged?.invoke(progress)
-                                if (progress == 100) onDownloadComplete?.invoke()
-                            }
-                        }
-
-                        Prefs.testError.key -> {
-                            onTestErrorChanged?.invoke(Prefs.testError.read(prefs))
-                        }
-
-                        Prefs.previewTrigger.key -> {
-                            onPreviewTriggered?.invoke()
-                        }
-
-                        Prefs.clearDownloadsTrigger.key -> {
-                            onClearDownloadsTriggered?.invoke()
-                        }
-
-                        Prefs.persistentPreview.key -> {
-                            val enabled = Prefs.persistentPreview.read(prefs)
-                            persistentPreviewActive = enabled
-                            onPersistentPreviewChanged?.invoke(enabled)
-                        }
-
-                        in Prefs.visualKeys -> {
-                            onPrefsChanged?.invoke()
-                            onGeometryPreviewTriggered?.invoke()
-                        }
-
-                        else -> {
-                            onPrefsChanged?.invoke()
-                        }
-                    }
-                }.onFailure { log("prefs-change failed", it) }
-            }
+            val listener =
+                SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
+                    runCatching {
+                        refreshCache()
+                        dispatchPrefChange(sp, key)
+                    }.onFailure { log("prefs-change failed", it) }
+                }
+            prefsListener = listener
+            prefs.registerOnSharedPreferenceChangeListener(listener)
             log("initialized indicator-state")
         }.onFailure { log("init failed target=indicator-state", it) }
+    }
+
+    private fun dispatchPrefChange(
+        prefs: SharedPreferences,
+        key: String?,
+    ) {
+        when (key) {
+            Prefs.appVisible.key -> {
+                onAppVisibilityChanged?.invoke(appVisible)
+            }
+
+            Prefs.testProgress.key -> {
+                val progress = Prefs.testProgress.read(prefs)
+                if (progress >= 0) {
+                    onTestProgressChanged?.invoke(progress)
+                    if (progress == 100) onDownloadComplete?.invoke()
+                }
+            }
+
+            Prefs.testError.key -> {
+                onTestErrorChanged?.invoke(Prefs.testError.read(prefs))
+            }
+
+            Prefs.previewTrigger.key -> {
+                onPreviewTriggered?.invoke()
+            }
+
+            Prefs.clearDownloadsTrigger.key -> {
+                onClearDownloadsTriggered?.invoke()
+            }
+
+            Prefs.persistentPreview.key -> {
+                val enabled = Prefs.persistentPreview.read(prefs)
+                persistentPreviewActive = enabled
+                onPersistentPreviewChanged?.invoke(enabled)
+            }
+
+            in Prefs.visualKeys -> {
+                onPrefsChanged?.invoke()
+                onGeometryPreviewTriggered?.invoke()
+            }
+
+            else -> {
+                onPrefsChanged?.invoke()
+            }
+        }
     }
 
     private fun refreshCache() {
