@@ -19,6 +19,7 @@ import java.lang.reflect.Field
 import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
 
+private const val SYSTEMUI_PKG = "com.android.systemui"
 private const val CENTRAL_SURFACES_IMPL = "com.android.systemui.statusbar.phone.CentralSurfacesImpl"
 private const val STATUS_BAR = "com.android.systemui.statusbar.phone.StatusBar"
 private const val NOTIF_COLLECTION =
@@ -52,16 +53,15 @@ object SystemUIHook {
         val targetClass =
             runCatching { classLoader.loadClass(NOTIFICATION_LISTENER) }
                 .onFailure {
-                    log(
-                        "Failed to load $NOTIFICATION_LISTENER",
-                        it,
-                    )
+                    log("load failed pkg=$SYSTEMUI_PKG class=$NOTIFICATION_LISTENER", it)
                 }.getOrNull() ?: return
 
         targetClass.declaredMethods.filter { it.name == "onNotificationPosted" }.forEach { method ->
             runCatching {
                 module.hook(method).intercept(notificationAddHooker)
-            }.onSuccess { log("Hooked NotificationListener.onNotificationPosted") }
+            }.onSuccess {
+                log("hooked notif-post pkg=$SYSTEMUI_PKG class=NotificationListener")
+            }
         }
     }
 
@@ -72,14 +72,15 @@ object SystemUIHook {
             runCatching { classLoader.loadClass(CENTRAL_SURFACES_IMPL) }
                 .recoverCatching {
                     classLoader.loadClass(STATUS_BAR)
-                }.onFailure { log("Failed to load CentralSurfaces/StatusBar", it) }
-                .getOrNull()
+                }.onFailure {
+                    log("load failed pkg=$SYSTEMUI_PKG class=CentralSurfaces|StatusBar", it)
+                }.getOrNull()
                 ?: return
 
         val startMethod =
             targetClass.declaredMethods.find { it.name == "start" && it.parameterCount == 0 }
         if (startMethod == null) {
-            log("start() not found in ${targetClass.name}")
+            log("lookup failed pkg=$SYSTEMUI_PKG class=${targetClass.name} method=start")
             return
         }
 
@@ -95,35 +96,44 @@ object SystemUIHook {
                             ?.get(instance) as? Context
                     }.getOrNull()
                 if (context == null) {
-                    log("Failed to extract Context from ${instance.javaClass.simpleName}")
+                    log(
+                        "extract failed pkg=$SYSTEMUI_PKG class=${instance.javaClass.simpleName} field=mContext",
+                    )
                     return@intercept result
                 }
                 runCatching {
                     val view = IndicatorView.attach(context)
                     markAttached(view, context)
-                    log("IndicatorView attached")
-                }.onFailure { log("Failed to attach IndicatorView", it) }
+                    log("attached overlay pkg=$SYSTEMUI_PKG")
+                }.onFailure { log("attach failed pkg=$SYSTEMUI_PKG target=overlay", it) }
                 result
             }
-        }.onSuccess { log("Hooked ${targetClass.simpleName}.start()") }
-            .onFailure { log("Hook failed", it) }
+        }.onSuccess {
+            log(
+                "hooked entry pkg=$SYSTEMUI_PKG class=${targetClass.simpleName} method=start",
+            )
+        }.onFailure {
+            log(
+                "hook failed pkg=$SYSTEMUI_PKG class=${targetClass.simpleName} method=start",
+                it,
+            )
+        }
     }
 
     private fun hookNotifications(classLoader: ClassLoader) {
         val targetClass =
             runCatching { classLoader.loadClass(NOTIF_COLLECTION) }
                 .onFailure {
-                    log(
-                        "Failed to load $NOTIF_COLLECTION",
-                        it,
-                    )
+                    log("load failed pkg=$SYSTEMUI_PKG class=$NOTIF_COLLECTION", it)
                 }.getOrNull() ?: return
 
         // postNotification entry point for new notifications on Android 12 and later
         targetClass.declaredMethods.filter { it.name == "postNotification" }.forEach { method ->
             runCatching {
                 module.hook(method).intercept(notificationAddHooker)
-            }.onSuccess { log("Hooked NotifCollection.postNotification") }
+            }.onSuccess {
+                log("hooked notif-post pkg=$SYSTEMUI_PKG class=NotifCollection")
+            }
         }
 
         // Hook notification removal - method name varies by Android version
@@ -135,7 +145,11 @@ object SystemUIHook {
             }.forEach { method ->
                 runCatching {
                     module.hook(method).intercept(notificationRemoveHooker)
-                }.onSuccess { log("Hooked NotifCollection.${method.name}") }
+                }.onSuccess {
+                    log(
+                        "hooked notif-remove pkg=$SYSTEMUI_PKG class=NotifCollection method=${method.name}",
+                    )
+                }
             }
     }
 
@@ -215,7 +229,7 @@ object SystemUIHook {
             )
             indicatorView?.isPowerSaveActive =
                 context.getSystemService(PowerManager::class.java)?.isPowerSaveMode == true
-        }.onFailure { log("Failed to register power save receiver", it) }
+        }.onFailure { log("register failed pkg=$SYSTEMUI_PKG target=power-save-receiver", it) }
     }
 
     private fun triggerHapticFeedback() {
@@ -229,7 +243,12 @@ object SystemUIHook {
         powerSaveReceiver?.let { receiver ->
             runCatching {
                 indicatorView?.context?.unregisterReceiver(receiver)
-            }.onFailure { log("Failed to unregister power save receiver", it) }
+            }.onFailure {
+                log(
+                    "unregister failed pkg=$SYSTEMUI_PKG target=power-save-receiver",
+                    it,
+                )
+            }
         }
         powerSaveReceiver = null
         indicatorView = null
@@ -258,7 +277,7 @@ object SystemUIHook {
         XposedInterface.Hooker { chain ->
             val result = chain.proceed()
             val args = chain.args
-            logDebug { "NotificationAdd: ${args.size} args" }
+            logDebug { "intercept notif-add pkg=$SYSTEMUI_PKG args=${args.size}" }
             // indexed loop avoids an iterator alloc on every posted notification
             for (i in args.indices) {
                 DownloadProgressHook.processNotificationArg(
@@ -273,7 +292,7 @@ object SystemUIHook {
         XposedInterface.Hooker { chain ->
             val result = chain.proceed()
             val args = chain.args
-            logDebug { "NotificationRemove: ${args.size} args" }
+            logDebug { "intercept notif-remove pkg=$SYSTEMUI_PKG args=${args.size}" }
             val reason = extractRemovalReason(args)
             // indexed loop avoids an iterator alloc on every removed notification
             for (i in args.indices) {

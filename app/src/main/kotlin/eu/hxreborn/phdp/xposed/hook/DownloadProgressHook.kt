@@ -66,7 +66,7 @@ object DownloadProgressHook {
         onProgressChanged?.invoke(0)
         onFilenameChanged?.invoke(null)
         onPackageChanged?.invoke(null)
-        log("Downloads cleared manually")
+        log("cleared active-downloads source=manual")
     }
 
     private fun cleanupStaleSamePackage(
@@ -79,13 +79,13 @@ object DownloadProgressHook {
             .filter { now - it.value.lastUpdate > STALE_AGE_MS }
             .forEach { (staleId, state) ->
                 activeDownloads.remove(staleId)
-                logDebug { "Removed stale: $staleId at ${state.progress}%" }
+                logDebug { "removed stale pkg=$pkg id=$staleId progress=${state.progress}" }
             }
     }
 
     fun processNotification(sbn: Any) {
         val pkg = getPackageName(sbn) ?: return
-        logDebug { "Notification from: $pkg" }
+        logDebug { "seen notif pkg=$pkg" }
 
         if (pkg !in IndicatorState.selectedPackages) return
 
@@ -104,7 +104,7 @@ object DownloadProgressHook {
             ) ?: run {
                 // some browsers use max=0 as a completion signal rather than removing the notification
                 activeDownloads.remove(id)?.let {
-                    logDebug { "Download ${it.packageName}: 100% (max=0)" }
+                    logDebug { "complete download pkg=${it.packageName} source=max-zero" }
                     onActiveCountChanged?.invoke(activeDownloads.size)
                     onDownloadComplete?.invoke()
                     updateProgress()
@@ -131,7 +131,7 @@ object DownloadProgressHook {
 
         if (oldState?.progress != percent) {
             activeDownloads[id] = newState
-            logDebug { "Download $pkg: $percent%" }
+            logDebug { "progress pkg=$pkg percent=$percent" }
             updateProgress()
             if (wasNew) onActiveCountChanged?.invoke(activeDownloads.size)
         }
@@ -147,7 +147,7 @@ object DownloadProgressHook {
     private fun updateProgress() {
         val size = activeDownloads.size
         val avg = if (size == 0) 0 else activeDownloads.values.sumOf { it.progress } / size
-        logDebug { "Progress: $avg% avg ($size active)" }
+        logDebug { "progress avg=$avg active=$size" }
         onProgressChanged?.invoke(avg)
         updateFilename()
     }
@@ -182,7 +182,7 @@ object DownloadProgressHook {
 
         // some apps skip standard extras and encode progress in RemoteViews actions like Opera
         return extractRemoteViewsProgress(notification)?.also { (remoteProgress, remoteMax) ->
-            logDebug { "RemoteViews progress: $remoteProgress/$remoteMax" }
+            logDebug { "resolved remote-views progress=$remoteProgress max=$remoteMax" }
         }
     }
 
@@ -228,7 +228,7 @@ object DownloadProgressHook {
         val views = notification.contentView ?: notification.bigContentView ?: return null
         val actions =
             remoteViewsActions(views) ?: run {
-                logDebug { "mActions not found" }
+                logDebug { "lookup failed field=mActions" }
                 return null
             }
         logDebug {
@@ -284,40 +284,36 @@ object DownloadProgressHook {
             field.get(entry)
         }.getOrNull()
 
-    private fun getNotificationId(sbn: Any): String? {
-        val pkg = getPackageName(sbn) ?: return null
-        val rawId = getRawId(sbn) ?: return null
-        return "$pkg:$rawId"
-    }
-
     fun onNotificationRemoved(
         sbn: Any,
         reason: Int = -1,
     ) {
-        val id = getNotificationId(sbn) ?: return
-        logDebug { "Notification removed: $id (reason=$reason)" }
+        val pkg = getPackageName(sbn) ?: return
+        val rawId = getRawId(sbn) ?: return
+        val id = "$pkg:$rawId"
+        logDebug { "removed notif pkg=$pkg id=$rawId reason=$reason" }
 
-        val wasTracking = activeDownloads.remove(id)
-        if (wasTracking != null) {
-            onActiveCountChanged?.invoke(activeDownloads.size)
-            updateProgress()
-            when {
-                wasTracking.progress >= 100 -> {
-                    logDebug { "Download complete" }
-                    onProgressChanged?.invoke(100)
-                    onDownloadComplete?.invoke()
-                }
+        val wasTracking = activeDownloads.remove(id) ?: return
+        onActiveCountChanged?.invoke(activeDownloads.size)
+        updateProgress()
+        when {
+            wasTracking.progress >= 100 -> {
+                logDebug { "complete download pkg=$pkg progress=100" }
+                onProgressChanged?.invoke(100)
+                onDownloadComplete?.invoke()
+            }
 
-                reason == REASON_APP_CANCEL || reason == REASON_APP_CANCEL_ALL -> {
-                    logDebug { "Download completed (app removed at ${wasTracking.progress}%)" }
-                    onProgressChanged?.invoke(100)
-                    onDownloadComplete?.invoke()
+            reason == REASON_APP_CANCEL || reason == REASON_APP_CANCEL_ALL -> {
+                logDebug {
+                    "complete download pkg=$pkg reason=app-cancel progress=${wasTracking.progress}"
                 }
+                onProgressChanged?.invoke(100)
+                onDownloadComplete?.invoke()
+            }
 
-                wasTracking.progress >= LOW_PROGRESS_THRESHOLD -> {
-                    logDebug { "Download cancelled at ${wasTracking.progress}%" }
-                    onDownloadCancelled?.invoke()
-                }
+            wasTracking.progress >= LOW_PROGRESS_THRESHOLD -> {
+                logDebug { "cancelled download pkg=$pkg progress=${wasTracking.progress}" }
+                onDownloadCancelled?.invoke()
             }
         }
     }
