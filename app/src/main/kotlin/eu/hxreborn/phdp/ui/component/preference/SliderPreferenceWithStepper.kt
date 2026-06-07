@@ -21,6 +21,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -69,9 +70,8 @@ fun SliderPreferenceWithStepper(
     var isDragging by remember { mutableStateOf(false) }
     var sliderValue by remember { mutableFloatStateOf(value) }
 
-    // Sync from external only when not dragging to avoid excessive IO writes
-    if (!isDragging) {
-        sliderValue = value
+    LaunchedEffect(value, isDragging) {
+        if (!isDragging) sliderValue = value
     }
 
     val isDefault = abs(sliderValue - defaultValue) < 0.001f
