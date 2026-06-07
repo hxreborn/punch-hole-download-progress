@@ -49,10 +49,6 @@ class PrefsRepositoryImpl(
         remotePrefsProvider()?.edit(commit = true) { Prefs.resettable.forEach { it.reset(this) } }
     }
 
-    // Push every local pref to remote in one commit. Called when the Xposed
-    // service rebinds so any writes made while the binder was dead reach the
-    // hook process. Iterates SharedPreferences.all to cover triggers and any
-    // future pref without needing a separate spec list.
     override fun syncToRemote() {
         val remote = remotePrefsProvider() ?: return
         val snapshot = localPrefs.all
@@ -107,6 +103,14 @@ class PrefsRepositoryImpl(
             backgroundRingOpacity = Prefs.backgroundRingOpacity.read(this),
             glowEnabled = Prefs.glowEnabled.read(this),
             glowRadius = Prefs.glowRadius.read(this),
+            brightnessBoost = Prefs.brightnessBoost.read(this),
+            textShadowRadius = Prefs.textShadowRadius.read(this),
+            textShadowDy = Prefs.textShadowDy.read(this),
+            textShadowOpacity = Prefs.textShadowOpacity.read(this),
+            percentTextLockRotation = Prefs.percentTextLockRotation.read(this),
+            filenameTextLockRotation = Prefs.filenameTextLockRotation.read(this),
+            appIconLockRotation = Prefs.appIconLockRotation.read(this),
+            badgeLockRotation = Prefs.badgeLockRotation.read(this),
             powerSaverMode = Prefs.powerSaverMode.read(this),
             showDownloadCount = Prefs.showDownloadCount.read(this),
             badgeOffsets =
