@@ -17,6 +17,8 @@ interface PrefsRepository {
     )
 
     fun resetDefaults()
+
+    fun syncToRemote()
 }
 
 class PrefsRepositoryImpl(
@@ -45,6 +47,47 @@ class PrefsRepositoryImpl(
     override fun resetDefaults() {
         localPrefs.edit { Prefs.resettable.forEach { it.reset(this) } }
         remotePrefsProvider()?.edit(commit = true) { Prefs.resettable.forEach { it.reset(this) } }
+    }
+
+    // Push every local pref to remote in one commit. Called when the Xposed
+    // service rebinds so any writes made while the binder was dead reach the
+    // hook process. Iterates SharedPreferences.all to cover triggers and any
+    // future pref without needing a separate spec list.
+    override fun syncToRemote() {
+        val remote = remotePrefsProvider() ?: return
+        val snapshot = localPrefs.all
+        runCatching {
+            remote.edit(commit = true) {
+                for ((key, value) in snapshot) {
+                    when (value) {
+                        is Boolean -> {
+                            putBoolean(key, value)
+                        }
+
+                        is Int -> {
+                            putInt(key, value)
+                        }
+
+                        is Long -> {
+                            putLong(key, value)
+                        }
+
+                        is Float -> {
+                            putFloat(key, value)
+                        }
+
+                        is String -> {
+                            putString(key, value)
+                        }
+
+                        is Set<*> -> {
+                            @Suppress("UNCHECKED_CAST")
+                            putStringSet(key, value as Set<String>)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun SharedPreferences.toAppPrefs(): AppPrefs =

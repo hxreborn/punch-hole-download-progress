@@ -1,6 +1,5 @@
 package eu.hxreborn.phdp.ui
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -13,7 +12,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
-import androidx.core.content.edit
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -21,22 +19,13 @@ import androidx.lifecycle.lifecycleScope
 import eu.hxreborn.phdp.PHDPApp
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.Prefs
-import eu.hxreborn.phdp.prefs.PrefsRepositoryImpl
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import eu.hxreborn.phdp.util.RootUtils
-import io.github.libxposed.service.XposedService
-import io.github.libxposed.service.XposedServiceHelper
 import kotlinx.coroutines.launch
 
-class MainActivity :
-    ComponentActivity(),
-    XposedServiceHelper.OnServiceListener {
-    private lateinit var prefs: SharedPreferences
+class MainActivity : ComponentActivity() {
     private lateinit var viewModel: SettingsViewModel
-
-    private var xposedService: XposedService? = null
-    private var remotePrefs: SharedPreferences? = null
 
     private var showRestartDialog by mutableStateOf(false)
     private var showResetDialog by mutableStateOf(false)
@@ -46,15 +35,12 @@ class MainActivity :
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        prefs = getSharedPreferences(Prefs.GROUP, MODE_PRIVATE)
-        val repository = PrefsRepositoryImpl(prefs) { remotePrefs }
+        val repository = PHDPApp.from(this).prefs
         viewModel =
             ViewModelProvider(
                 this,
                 SettingsViewModelFactory(repository, applicationContext),
             )[SettingsViewModelImpl::class.java]
-
-        PHDPApp.from(this).addServiceListener(this)
 
         setContent {
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -138,29 +124,14 @@ class MainActivity :
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        PHDPApp.from(this).removeServiceListener(this)
-    }
-
-    override fun onServiceBind(service: XposedService) {
-        xposedService = service
-        remotePrefs = service.getRemotePreferences(Prefs.GROUP)
-    }
-
-    override fun onServiceDied(service: XposedService) {
-        xposedService = null
-        remotePrefs = null
-    }
-
     override fun onResume() {
         super.onResume()
-        remotePrefs?.edit(commit = true) { putBoolean(Prefs.appVisible.key, true) }
+        PHDPApp.from(this).prefs.save(Prefs.appVisible, true)
     }
 
     override fun onPause() {
         super.onPause()
-        remotePrefs?.edit(commit = true) { putBoolean(Prefs.appVisible.key, false) }
+        PHDPApp.from(this).prefs.save(Prefs.appVisible, false)
     }
 
     private fun performRestart() {
