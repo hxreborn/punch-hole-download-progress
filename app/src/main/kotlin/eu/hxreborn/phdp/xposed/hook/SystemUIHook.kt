@@ -15,6 +15,9 @@ import eu.hxreborn.phdp.util.logDebug
 import eu.hxreborn.phdp.xposed.indicator.IndicatorView
 import eu.hxreborn.phdp.xposed.module
 import io.github.libxposed.api.XposedInterface
+import java.lang.reflect.Field
+import java.util.Optional
+import java.util.concurrent.ConcurrentHashMap
 
 private const val CENTRAL_SURFACES_IMPL = "com.android.systemui.statusbar.phone.CentralSurfacesImpl"
 private const val STATUS_BAR = "com.android.systemui.statusbar.phone.StatusBar"
@@ -33,6 +36,8 @@ object SystemUIHook {
 
     @Volatile
     private var powerSaveReceiver: BroadcastReceiver? = null
+
+    private val cancellationReasonField = ConcurrentHashMap<Class<*>, Optional<Field>>()
 
     fun hook(classLoader: ClassLoader) {
         wireCallbacks()
@@ -292,13 +297,19 @@ object SystemUIHook {
         // Android 12-15: onNotificationRemoved(sbn, ranking, int_reason)
         if (args.size >= 3) (args[2] as? Int)?.let { return it }
         // Android 16+: tryRemoveNotification(NotificationEntry)
-        args.firstOrNull()?.let { entry ->
-            if (entry.javaClass.name.contains("NotificationEntry")) {
-                runCatching {
-                    entry.javaClass.accessibleField("mCancellationReason").getInt(entry)
-                }.getOrNull()?.let { return it }
-            }
-        }
-        return -1
+        val entry = args.firstOrNull() ?: return -1
+        if (!entry.javaClass.name.contains("NotificationEntry")) return -1
+        val field =
+            cancellationReasonField
+                .getOrPut(entry.javaClass) {
+                    Optional.ofNullable(
+                        runCatching {
+                            entry.javaClass.accessibleField(
+                                "mCancellationReason",
+                            )
+                        }.getOrNull(),
+                    )
+                }.orElse(null) ?: return -1
+        return runCatching { field.getInt(entry) }.getOrDefault(-1)
     }
 }
