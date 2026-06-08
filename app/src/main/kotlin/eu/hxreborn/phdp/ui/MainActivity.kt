@@ -148,11 +148,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-    companion object {
-        // Xposed hook target. Module replaces return value at runtime to signal active state
-        @JvmStatic
-        @Suppress("SameReturnValue")
-        fun isXposedEnabled(): Boolean = false
-    }
 }

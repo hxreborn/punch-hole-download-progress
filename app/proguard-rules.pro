@@ -15,11 +15,6 @@
 # This also covers IndicatorState, which holds the hook-side pref cache.
 -keep,allowobfuscation class eu.hxreborn.phdp.xposed.hook.** { *; }
 
-# Keep Xposed detection method
--keep class eu.hxreborn.phdp.ui.MainActivity {
-    public static boolean isXposedEnabled();
-}
-
 # Kotlin intrinsics optimization
 -assumenosideeffects class kotlin.jvm.internal.Intrinsics {
     public static void check*(...);
