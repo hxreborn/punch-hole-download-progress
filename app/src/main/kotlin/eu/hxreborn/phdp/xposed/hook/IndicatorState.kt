@@ -249,6 +249,62 @@ object IndicatorState {
         private set
 
     @Volatile
+    var percentTextShadowMode = Prefs.percentTextShadowMode.default
+        private set
+
+    @Volatile
+    var percentTextShadowColor = Prefs.percentTextShadowColor.default
+        private set
+
+    @Volatile
+    var percentTextShadowRadius = Prefs.percentTextShadowRadius.default
+        private set
+
+    @Volatile
+    var percentTextShadowDy = Prefs.percentTextShadowDy.default
+        private set
+
+    @Volatile
+    var percentTextShadowOpacity = Prefs.percentTextShadowOpacity.default
+        private set
+
+    @Volatile
+    var percentTextStrokeWidth = Prefs.percentTextStrokeWidth.default
+        private set
+
+    @Volatile
+    var percentTextStrokeColor = Prefs.percentTextStrokeColor.default
+        private set
+
+    @Volatile
+    var filenameTextShadowMode = Prefs.filenameTextShadowMode.default
+        private set
+
+    @Volatile
+    var filenameTextShadowColor = Prefs.filenameTextShadowColor.default
+        private set
+
+    @Volatile
+    var filenameTextShadowRadius = Prefs.filenameTextShadowRadius.default
+        private set
+
+    @Volatile
+    var filenameTextShadowDy = Prefs.filenameTextShadowDy.default
+        private set
+
+    @Volatile
+    var filenameTextShadowOpacity = Prefs.filenameTextShadowOpacity.default
+        private set
+
+    @Volatile
+    var filenameTextStrokeWidth = Prefs.filenameTextStrokeWidth.default
+        private set
+
+    @Volatile
+    var filenameTextStrokeColor = Prefs.filenameTextStrokeColor.default
+        private set
+
+    @Volatile
     var percentTextLockRotation = Prefs.percentTextLockRotation.default
         private set
 
@@ -469,6 +525,20 @@ object IndicatorState {
                 backgroundRingOpacity = Prefs.backgroundRingOpacity.read(prefs)
                 glowEnabled = Prefs.glowEnabled.read(prefs)
                 glowRadius = Prefs.glowRadius.read(prefs)
+                percentTextShadowMode = Prefs.percentTextShadowMode.read(prefs)
+                percentTextShadowColor = Prefs.percentTextShadowColor.read(prefs)
+                percentTextShadowRadius = Prefs.percentTextShadowRadius.read(prefs)
+                percentTextShadowDy = Prefs.percentTextShadowDy.read(prefs)
+                percentTextShadowOpacity = Prefs.percentTextShadowOpacity.read(prefs)
+                percentTextStrokeWidth = Prefs.percentTextStrokeWidth.read(prefs)
+                percentTextStrokeColor = Prefs.percentTextStrokeColor.read(prefs)
+                filenameTextShadowMode = Prefs.filenameTextShadowMode.read(prefs)
+                filenameTextShadowColor = Prefs.filenameTextShadowColor.read(prefs)
+                filenameTextShadowRadius = Prefs.filenameTextShadowRadius.read(prefs)
+                filenameTextShadowDy = Prefs.filenameTextShadowDy.read(prefs)
+                filenameTextShadowOpacity = Prefs.filenameTextShadowOpacity.read(prefs)
+                filenameTextStrokeWidth = Prefs.filenameTextStrokeWidth.read(prefs)
+                filenameTextStrokeColor = Prefs.filenameTextStrokeColor.read(prefs)
                 percentTextLockRotation = Prefs.percentTextLockRotation.read(prefs)
                 filenameTextLockRotation = Prefs.filenameTextLockRotation.read(prefs)
                 appIconLockRotation = Prefs.appIconLockRotation.read(prefs)

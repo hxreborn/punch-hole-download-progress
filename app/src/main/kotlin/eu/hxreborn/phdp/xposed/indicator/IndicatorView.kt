@@ -3,12 +3,14 @@ package eu.hxreborn.phdp.xposed.indicator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.BlurMaskFilter
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PixelFormat
+import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.Typeface
 import android.os.Build
@@ -228,6 +230,21 @@ class IndicatorView(
                     resources.displayMetrics,
                 )
         }
+    private val percentStrokePaint =
+        Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.STROKE
+            textAlign = Paint.Align.CENTER
+        }
+    private val filenameStrokePaint =
+        TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.STROKE
+            textAlign = Paint.Align.LEFT
+        }
+    private val percentHaloPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private var percentHaloBlurRadius: Float = -1f
+    private val filenameHaloPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private var filenameHaloBlurRadius: Float = -1f
+    private val textBoundsScratch = Rect()
     private val effectiveOpacity: Int
         get() =
             if (isPowerSaveActive && IndicatorState.powerSaverMode == "dim") {
@@ -267,6 +284,15 @@ class IndicatorView(
     ): Int? {
         val resId = context.resources.getIdentifier("system_${palette}_$shade", "color", "android")
         return if (resId != 0) context.getColor(resId) else null
+    }
+
+    private fun composeShadowColor(
+        baseColor: Int,
+        opacityPercent: Int,
+    ): Int {
+        val rgb = baseColor and 0x00FFFFFF
+        val alphaByte = (opacityPercent * 255 / 100).coerceIn(0, 255)
+        return rgb or (alphaByte shl 24)
     }
 
     private fun updatePaintFromPrefs() {
@@ -339,6 +365,24 @@ class IndicatorView(
             this.strokeCap = strokeCap
         }
 
+        val percentShadowColor =
+            composeShadowColor(
+                IndicatorState.percentTextShadowColor,
+                IndicatorState.percentTextShadowOpacity,
+            )
+        val percentShadowRadiusPx = IndicatorState.percentTextShadowRadius * density
+        val percentShadowDyPx = IndicatorState.percentTextShadowDy * density
+        val percentIsOval = IndicatorState.percentTextShadowMode == "oval"
+
+        val filenameShadowColor =
+            composeShadowColor(
+                IndicatorState.filenameTextShadowColor,
+                IndicatorState.filenameTextShadowOpacity,
+            )
+        val filenameShadowRadiusPx = IndicatorState.filenameTextShadowRadius * density
+        val filenameShadowDyPx = IndicatorState.filenameTextShadowDy * density
+        val filenameIsOval = IndicatorState.filenameTextShadowMode == "oval"
+
         percentPaint.apply {
             textSize =
                 android.util.TypedValue.applyDimension(
@@ -350,12 +394,11 @@ class IndicatorView(
                 Typeface.defaultFromStyle(
                     typefaceStyle(IndicatorState.percentTextBold, IndicatorState.percentTextItalic),
                 )
-            setShadowLayer(
-                LABEL_SHADOW_RADIUS_DP * density,
-                0f,
-                LABEL_SHADOW_DY_DP * density,
-                LABEL_SHADOW_COLOR,
-            )
+            if (percentIsOval) {
+                clearShadowLayer()
+            } else {
+                setShadowLayer(percentShadowRadiusPx, 0f, percentShadowDyPx, percentShadowColor)
+            }
         }
         filenamePaint.apply {
             textSize =
@@ -371,12 +414,49 @@ class IndicatorView(
                         IndicatorState.filenameTextItalic,
                     ),
                 )
-            setShadowLayer(
-                LABEL_SHADOW_RADIUS_DP * density,
-                0f,
-                LABEL_SHADOW_DY_DP * density,
-                LABEL_SHADOW_COLOR,
-            )
+            if (filenameIsOval) {
+                clearShadowLayer()
+            } else {
+                setShadowLayer(filenameShadowRadiusPx, 0f, filenameShadowDyPx, filenameShadowColor)
+            }
+        }
+
+        percentStrokePaint.apply {
+            textSize = percentPaint.textSize
+            typeface = percentPaint.typeface
+            strokeWidth = IndicatorState.percentTextStrokeWidth * density
+            color = IndicatorState.percentTextStrokeColor
+        }
+        filenameStrokePaint.apply {
+            textSize = filenamePaint.textSize
+            typeface = filenamePaint.typeface
+            strokeWidth = IndicatorState.filenameTextStrokeWidth * density
+            color = IndicatorState.filenameTextStrokeColor
+        }
+
+        if (percentIsOval) {
+            percentHaloPaint.color = percentShadowColor
+            if (percentHaloBlurRadius != percentShadowRadiusPx) {
+                percentHaloPaint.maskFilter =
+                    if (percentShadowRadiusPx > 0f) {
+                        BlurMaskFilter(percentShadowRadiusPx, BlurMaskFilter.Blur.NORMAL)
+                    } else {
+                        null
+                    }
+                percentHaloBlurRadius = percentShadowRadiusPx
+            }
+        }
+        if (filenameIsOval) {
+            filenameHaloPaint.color = filenameShadowColor
+            if (filenameHaloBlurRadius != filenameShadowRadiusPx) {
+                filenameHaloPaint.maskFilter =
+                    if (filenameShadowRadiusPx > 0f) {
+                        BlurMaskFilter(filenameShadowRadiusPx, BlurMaskFilter.Blur.NORMAL)
+                    } else {
+                        null
+                    }
+                filenameHaloBlurRadius = filenameShadowRadiusPx
+            }
         }
 
         badgePainter.updateColors(resolvedRingColor, IndicatorState.badgeTextSize)
@@ -684,6 +764,8 @@ class IndicatorView(
     private data class TextSpec(
         val text: String,
         val paint: Paint,
+        val strokePaint: Paint?,
+        val haloPaint: Paint?,
         val x: Float,
         val y: Float,
         val align: Paint.Align? = null,
@@ -698,6 +780,10 @@ class IndicatorView(
         val padding = LABEL_PADDING_DP * density
         val specs = mutableListOf<TextSpec>()
         val rotation = display?.rotation ?: Surface.ROTATION_0
+        val percentStrokeWidthPx = IndicatorState.percentTextStrokeWidth * density
+        val filenameStrokeWidthPx = IndicatorState.filenameTextStrokeWidth * density
+        val percentIsOval = IndicatorState.percentTextShadowMode == "oval"
+        val filenameIsOval = IndicatorState.filenameTextShadowMode == "oval"
 
         if (IndicatorState.percentTextEnabled) {
             val locked = IndicatorState.percentTextLockRotation
@@ -719,7 +805,9 @@ class IndicatorView(
             val pctOffset = IndicatorState.percentTextOffsets[slot]
             val x = baseX + pctOffset.x * density
             val y = baseY + pctOffset.y * density
-            specs += TextSpec(text, percentPaint, x, y, align, locked)
+            val stroke = if (percentStrokeWidthPx > 0f) percentStrokePaint else null
+            val halo = if (percentIsOval) percentHaloPaint else null
+            specs += TextSpec(text, percentPaint, stroke, halo, x, y, align, locked)
         }
 
         val isGeometryPreview = animator.isGeometryPreviewActive
@@ -787,7 +875,9 @@ class IndicatorView(
                 val fnOffset = IndicatorState.filenameTextOffsets[slot]
                 val x = baseX + fnOffset.x * density
                 val y = baseY + fnOffset.y * density
-                specs += TextSpec(truncated, filenamePaint, x, y, align, locked)
+                val stroke = if (filenameStrokeWidthPx > 0f) filenameStrokePaint else null
+                val halo = if (filenameIsOval) filenameHaloPaint else null
+                specs += TextSpec(truncated, filenamePaint, stroke, halo, x, y, align, locked)
             }
         }
 
@@ -795,6 +885,17 @@ class IndicatorView(
             spec.paint.color = resolvedRingColor
             spec.paint.alpha = alpha
             spec.align?.let { (spec.paint as? TextPaint)?.textAlign = it }
+            spec.strokePaint?.apply {
+                this.alpha = alpha
+                spec.align?.let { (this as? TextPaint)?.textAlign = it }
+            }
+            val drawBlock = {
+                spec.haloPaint?.let { drawTextOvalHalo(canvas, spec, it) }
+                spec.strokePaint?.let {
+                    canvas.drawText(spec.text, spec.x, spec.y, it)
+                }
+                canvas.drawText(spec.text, spec.x, spec.y, spec.paint)
+            }
             if (spec.locked && rotation != Surface.ROTATION_0) {
                 canvas.withSave {
                     rotate(
@@ -802,12 +903,40 @@ class IndicatorView(
                         arcBounds.centerX(),
                         arcBounds.centerY(),
                     )
-                    drawText(spec.text, spec.x, spec.y, spec.paint)
+                    drawBlock()
                 }
             } else {
-                canvas.drawText(spec.text, spec.x, spec.y, spec.paint)
+                drawBlock()
             }
         }
+    }
+
+    private fun drawTextOvalHalo(
+        canvas: Canvas,
+        spec: TextSpec,
+        halo: Paint,
+    ) {
+        if (halo.maskFilter == null) return
+        val bounds = textBoundsScratch
+        spec.paint.getTextBounds(spec.text, 0, spec.text.length, bounds)
+        val width = bounds.width().toFloat()
+        val height = bounds.height().toFloat()
+        if (width <= 0f || height <= 0f) return
+        val padX = height * 0.5f
+        val padY = height * 0.35f
+        val advance = spec.paint.measureText(spec.text)
+        val originX =
+            when (spec.paint.textAlign) {
+                Paint.Align.CENTER -> spec.x - advance / 2f
+                Paint.Align.RIGHT -> spec.x - advance
+                else -> spec.x
+            }
+        val left = originX + bounds.left - padX
+        val top = spec.y + bounds.top - padY
+        val right = originX + bounds.right + padX
+        val bottom = spec.y + bounds.bottom + padY
+        val radius = (bottom - top) / 2f
+        canvas.drawRoundRect(left, top, right, bottom, radius, radius, halo)
     }
 
     private fun drawAppIcon(canvas: Canvas) {
@@ -1142,9 +1271,6 @@ class IndicatorView(
         private const val ERROR_STROKE_MULTIPLIER = 1.5f
         private const val BADGE_TOP_PADDING_DP = 4f
         private const val LABEL_PADDING_DP = 4f
-        internal const val LABEL_SHADOW_RADIUS_DP = 2f
-        internal const val LABEL_SHADOW_DY_DP = 0.5f
-        internal const val LABEL_SHADOW_COLOR = 0x80000000.toInt()
 
         @SuppressLint("InlinedApi")
         fun attach(context: Context): IndicatorView {

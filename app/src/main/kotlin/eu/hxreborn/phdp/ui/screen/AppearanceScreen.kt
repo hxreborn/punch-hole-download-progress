@@ -35,7 +35,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import me.zhanghai.compose.preference.ProvidePreferenceLocals
 import me.zhanghai.compose.preference.preferenceCategory
 
-enum class CalibrationTarget { RING, PERCENT, FILENAME, APP_ICON }
+enum class CalibrationTarget { RING, PERCENT, FILENAME, APP_ICON, PERCENT_SHADOW, FILENAME_SHADOW }
 
 @Composable
 fun AppearanceScreen(
@@ -432,6 +432,19 @@ fun AppearanceScreen(
                                     },
                                 )
                             },
+                            {
+                                NavigationPreference(
+                                    onClick = { onNavigateToCalibration(CalibrationTarget.PERCENT_SHADOW) },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_calibrate_percent_shadow_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(stringResource(R.string.pref_text_shadow_nav_summary))
+                                    },
+                                )
+                            },
                         ),
                 )
             }
@@ -479,6 +492,19 @@ fun AppearanceScreen(
                                                 R.string.pref_calibrate_filename_summary,
                                             ),
                                         )
+                                    },
+                                )
+                            },
+                            {
+                                NavigationPreference(
+                                    onClick = { onNavigateToCalibration(CalibrationTarget.FILENAME_SHADOW) },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_calibrate_filename_shadow_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(stringResource(R.string.pref_text_shadow_nav_summary))
                                     },
                                 )
                             },

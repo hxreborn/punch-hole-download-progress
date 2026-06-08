@@ -56,6 +56,8 @@ import eu.hxreborn.phdp.ui.screen.MaterialYouScreen
 import eu.hxreborn.phdp.ui.screen.PackageSelectionScreen
 import eu.hxreborn.phdp.ui.screen.SystemScreen
 import eu.hxreborn.phdp.ui.screen.TextCalibrationScreen
+import eu.hxreborn.phdp.ui.screen.TextShadowBindings
+import eu.hxreborn.phdp.ui.screen.TextShadowCalibrationScreen
 import eu.hxreborn.phdp.ui.screen.TypographyConfig
 import eu.hxreborn.phdp.ui.screen.rememberDisplayRotation
 import eu.hxreborn.phdp.ui.theme.Tokens
@@ -89,6 +91,12 @@ sealed interface Screen : NavKey {
 
     @Serializable
     data object BadgeCalibration : Screen
+
+    @Serializable
+    data object PercentShadowCalibration : Screen
+
+    @Serializable
+    data object FilenameShadowCalibration : Screen
 
     @Serializable
     data object MaterialYou : Screen
@@ -184,6 +192,8 @@ fun MainNavDisplay(
                                         CalibrationTarget.PERCENT -> Screen.PercentCalibration
                                         CalibrationTarget.FILENAME -> Screen.FilenameCalibration
                                         CalibrationTarget.APP_ICON -> Screen.AppIconCalibration
+                                        CalibrationTarget.PERCENT_SHADOW -> Screen.PercentShadowCalibration
+                                        CalibrationTarget.FILENAME_SHADOW -> Screen.FilenameShadowCalibration
                                     },
                                 )
                             },
@@ -362,6 +372,54 @@ fun MainNavDisplay(
                         lockRotation = Prefs.badgeLockRotation bind prefs.badgeLockRotation,
                     )
                 }
+                entry<Screen.PercentShadowCalibration> {
+                    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                    val prefs = (uiState as? SettingsUiState.Success)?.prefs ?: return@entry
+                    TextShadowCalibrationScreen(
+                        titleRes = R.string.pref_calibrate_percent_shadow_title,
+                        bindings =
+                            TextShadowBindings(
+                                mode = Prefs.percentTextShadowMode bind prefs.percentTextShadowMode,
+                                color = Prefs.percentTextShadowColor bind prefs.percentTextShadowColor,
+                                radius = Prefs.percentTextShadowRadius bind prefs.percentTextShadowRadius,
+                                dy = Prefs.percentTextShadowDy bind prefs.percentTextShadowDy,
+                                opacity = Prefs.percentTextShadowOpacity bind prefs.percentTextShadowOpacity,
+                                strokeWidth = Prefs.percentTextStrokeWidth bind prefs.percentTextStrokeWidth,
+                                strokeColor = Prefs.percentTextStrokeColor bind prefs.percentTextStrokeColor,
+                                radiusRange = Prefs.percentTextShadowRadius.range!!,
+                                dyRange = Prefs.percentTextShadowDy.range!!,
+                                opacityRange = Prefs.percentTextShadowOpacity.range!!,
+                                strokeWidthRange = Prefs.percentTextStrokeWidth.range!!,
+                            ),
+                        viewModel = viewModel,
+                        onNavigateBack = { backStack.removeLastOrNull() },
+                        bottomNavPadding = bottomNavPadding,
+                    )
+                }
+                entry<Screen.FilenameShadowCalibration> {
+                    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                    val prefs = (uiState as? SettingsUiState.Success)?.prefs ?: return@entry
+                    TextShadowCalibrationScreen(
+                        titleRes = R.string.pref_calibrate_filename_shadow_title,
+                        bindings =
+                            TextShadowBindings(
+                                mode = Prefs.filenameTextShadowMode bind prefs.filenameTextShadowMode,
+                                color = Prefs.filenameTextShadowColor bind prefs.filenameTextShadowColor,
+                                radius = Prefs.filenameTextShadowRadius bind prefs.filenameTextShadowRadius,
+                                dy = Prefs.filenameTextShadowDy bind prefs.filenameTextShadowDy,
+                                opacity = Prefs.filenameTextShadowOpacity bind prefs.filenameTextShadowOpacity,
+                                strokeWidth = Prefs.filenameTextStrokeWidth bind prefs.filenameTextStrokeWidth,
+                                strokeColor = Prefs.filenameTextStrokeColor bind prefs.filenameTextStrokeColor,
+                                radiusRange = Prefs.filenameTextShadowRadius.range!!,
+                                dyRange = Prefs.filenameTextShadowDy.range!!,
+                                opacityRange = Prefs.filenameTextShadowOpacity.range!!,
+                                strokeWidthRange = Prefs.filenameTextStrokeWidth.range!!,
+                            ),
+                        viewModel = viewModel,
+                        onNavigateBack = { backStack.removeLastOrNull() },
+                        bottomNavPadding = bottomNavPadding,
+                    )
+                }
                 entry<Screen.Motion> {
                     MainTabScaffold(
                         onMenuAction = onMenuAction,
@@ -424,6 +482,8 @@ fun BottomNav(
             Screen.PercentCalibration,
             Screen.FilenameCalibration,
             Screen.AppIconCalibration,
+            Screen.PercentShadowCalibration,
+            Screen.FilenameShadowCalibration,
             Screen.MaterialYou,
             -> Screen.Design
 

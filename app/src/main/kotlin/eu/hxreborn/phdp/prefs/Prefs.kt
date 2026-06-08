@@ -28,6 +28,22 @@ object Prefs {
     val glowEnabled = BoolPref("glow_enabled", false)
     val glowRadius = FloatPref("glow_radius", 4f, 1f..15f)
 
+    val percentTextShadowMode = StringPref("percent_text_shadow_mode", "per_glyph")
+    val percentTextShadowColor = IntPref("percent_text_shadow_color", 0xFF000000.toInt())
+    val percentTextShadowRadius = FloatPref("percent_text_shadow_radius", 2f, 0f..8f)
+    val percentTextShadowDy = FloatPref("percent_text_shadow_dy", 0.5f, 0f..4f)
+    val percentTextShadowOpacity = IntPref("percent_text_shadow_opacity", 50, 0..100)
+    val percentTextStrokeWidth = FloatPref("percent_text_stroke_width", 0f, 0f..4f)
+    val percentTextStrokeColor = IntPref("percent_text_stroke_color", 0xFF000000.toInt())
+
+    val filenameTextShadowMode = StringPref("filename_text_shadow_mode", "per_glyph")
+    val filenameTextShadowColor = IntPref("filename_text_shadow_color", 0xFF000000.toInt())
+    val filenameTextShadowRadius = FloatPref("filename_text_shadow_radius", 2f, 0f..8f)
+    val filenameTextShadowDy = FloatPref("filename_text_shadow_dy", 0.5f, 0f..4f)
+    val filenameTextShadowOpacity = IntPref("filename_text_shadow_opacity", 50, 0..100)
+    val filenameTextStrokeWidth = FloatPref("filename_text_stroke_width", 0f, 0f..4f)
+    val filenameTextStrokeColor = IntPref("filename_text_stroke_color", 0xFF000000.toInt())
+
     val percentTextLockRotation = BoolPref("percent_text_lock_rotation", false)
     val filenameTextLockRotation = BoolPref("filename_text_lock_rotation", false)
     val appIconLockRotation = BoolPref("app_icon_lock_rotation", false)
@@ -196,6 +212,20 @@ object Prefs {
             backgroundRingOpacity,
             glowEnabled,
             glowRadius,
+            percentTextShadowMode,
+            percentTextShadowColor,
+            percentTextShadowRadius,
+            percentTextShadowDy,
+            percentTextShadowOpacity,
+            percentTextStrokeWidth,
+            percentTextStrokeColor,
+            filenameTextShadowMode,
+            filenameTextShadowColor,
+            filenameTextShadowRadius,
+            filenameTextShadowDy,
+            filenameTextShadowOpacity,
+            filenameTextStrokeWidth,
+            filenameTextStrokeColor,
             percentTextLockRotation,
             filenameTextLockRotation,
             appIconLockRotation,
@@ -267,6 +297,20 @@ object Prefs {
             backgroundRingOpacity.key,
             glowEnabled.key,
             glowRadius.key,
+            percentTextShadowMode.key,
+            percentTextShadowColor.key,
+            percentTextShadowRadius.key,
+            percentTextShadowDy.key,
+            percentTextShadowOpacity.key,
+            percentTextStrokeWidth.key,
+            percentTextStrokeColor.key,
+            filenameTextShadowMode.key,
+            filenameTextShadowColor.key,
+            filenameTextShadowRadius.key,
+            filenameTextShadowDy.key,
+            filenameTextShadowOpacity.key,
+            filenameTextStrokeWidth.key,
+            filenameTextStrokeColor.key,
             percentTextLockRotation.key,
             filenameTextLockRotation.key,
             appIconLockRotation.key,

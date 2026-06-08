@@ -33,10 +33,10 @@ class IconPainter(
     private val iconPaint =
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             setShadowLayer(
-                IndicatorView.LABEL_SHADOW_RADIUS_DP * density,
+                ICON_SHADOW_RADIUS_DP * density,
                 0f,
-                IndicatorView.LABEL_SHADOW_DY_DP * density,
-                IndicatorView.LABEL_SHADOW_COLOR,
+                ICON_SHADOW_DY_DP * density,
+                ICON_SHADOW_COLOR,
             )
         }
 
@@ -123,5 +123,11 @@ class IconPainter(
             mono.setBounds(-insetPx, -insetPx, sizePx + insetPx, sizePx + insetPx)
             mono.draw(Canvas(it))
         }
+    }
+
+    companion object {
+        private const val ICON_SHADOW_RADIUS_DP = 2f
+        private const val ICON_SHADOW_DY_DP = 0.5f
+        private const val ICON_SHADOW_COLOR = 0x80000000.toInt()
     }
 }

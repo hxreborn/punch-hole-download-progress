@@ -129,6 +129,27 @@
     <string name="pref_lock_rotation_title">Keep in portrait</string>
     <string name="pref_lock_rotation_summary">Pins this overlay item to portrait orientation so it stays upright when the screen rotates</string>
 
+    <!-- Design: Text shadow and outline (per-element calibration screens) -->
+    <string name="pref_text_shadow_nav_summary">Customize the shadow and the optional outline</string>
+    <string name="pref_calibrate_percent_shadow_title">Calibrate percentage shadow</string>
+    <string name="pref_calibrate_filename_shadow_title">Calibrate filename shadow</string>
+    <string name="pref_text_shadow_mode_title">Shadow shape</string>
+    <string name="pref_text_shadow_mode_summary">Per glyph drops a shadow under each character. Capsule halo blurs one soft glow behind the whole label (default: Per glyph)</string>
+    <string name="pref_text_shadow_mode_per_glyph">Per glyph</string>
+    <string name="pref_text_shadow_mode_oval">Capsule halo</string>
+    <string name="pref_text_shadow_color_title">Shadow color</string>
+    <string name="pref_text_shadow_color_summary">Color drawn beneath the text (default: Black)</string>
+    <string name="pref_text_shadow_radius_title">Shadow blur</string>
+    <string name="pref_text_shadow_radius_summary">Softness of the shadow edges</string>
+    <string name="pref_text_shadow_dy_title">Shadow drop</string>
+    <string name="pref_text_shadow_dy_summary">How far below the text the shadow falls. Capsule halos stay centered</string>
+    <string name="pref_text_shadow_opacity_title">Shadow strength</string>
+    <string name="pref_text_shadow_opacity_summary">Darkness of the shadow</string>
+    <string name="pref_text_stroke_width_title">Outline width</string>
+    <string name="pref_text_stroke_width_summary">Adds an outline around each character. 0 disables it</string>
+    <string name="pref_text_stroke_color_title">Outline color</string>
+    <string name="pref_text_stroke_color_summary">Color of the outline (default: Black)</string>
+
     <!-- Motion: Animation -->
     <string name="pref_completion_style_title">Completion style</string>
     <string name="pref_completion_style_summary">Visual effect when downloads finish</string>
