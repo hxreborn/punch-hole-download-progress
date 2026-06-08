@@ -150,6 +150,13 @@
     <string name="pref_text_stroke_color_title">Outline color</string>
     <string name="pref_text_stroke_color_summary">Color of the outline (default: Black)</string>
 
+    <!-- Design: HDR (API 35+) -->
+    <string name="group_hdr">HDR brightness</string>
+    <string name="pref_hdr_enabled_title">Use HDR</string>
+    <string name="pref_hdr_enabled_summary">Renders the ring above standard SDR brightness on HDR displays. Requires Android 15 or later (default: off)</string>
+    <string name="pref_hdr_headroom_title">HDR strength</string>
+    <string name="pref_hdr_headroom_summary">Target HDR/SDR ratio. 1.0× is SDR, 3.0× the requested max. Display clamps the actual value</string>
+
     <!-- Motion: Animation -->
     <string name="pref_completion_style_title">Completion style</string>
     <string name="pref_completion_style_summary">Visual effect when downloads finish</string>

@@ -28,6 +28,9 @@ object Prefs {
     val glowEnabled = BoolPref("glow_enabled", false)
     val glowRadius = FloatPref("glow_radius", 4f, 1f..15f)
 
+    val hdrEnabled = BoolPref("hdr_enabled", false)
+    val hdrHeadroom = FloatPref("hdr_headroom", 1.5f, 1f..3f)
+
     val percentTextShadowMode = StringPref("percent_text_shadow_mode", "per_glyph")
     val percentTextShadowColor = IntPref("percent_text_shadow_color", 0xFF000000.toInt())
     val percentTextShadowRadius = FloatPref("percent_text_shadow_radius", 2f, 0f..8f)
@@ -212,6 +215,8 @@ object Prefs {
             backgroundRingOpacity,
             glowEnabled,
             glowRadius,
+            hdrEnabled,
+            hdrHeadroom,
             percentTextShadowMode,
             percentTextShadowColor,
             percentTextShadowRadius,
@@ -297,6 +302,8 @@ object Prefs {
             backgroundRingOpacity.key,
             glowEnabled.key,
             glowRadius.key,
+            hdrEnabled.key,
+            hdrHeadroom.key,
             percentTextShadowMode.key,
             percentTextShadowColor.key,
             percentTextShadowRadius.key,

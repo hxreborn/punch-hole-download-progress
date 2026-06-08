@@ -22,6 +22,8 @@ data class AppPrefs(
     val backgroundRingOpacity: Int = Prefs.backgroundRingOpacity.default,
     val glowEnabled: Boolean = Prefs.glowEnabled.default,
     val glowRadius: Float = Prefs.glowRadius.default,
+    val hdrEnabled: Boolean = Prefs.hdrEnabled.default,
+    val hdrHeadroom: Float = Prefs.hdrHeadroom.default,
     val percentTextShadowMode: String = Prefs.percentTextShadowMode.default,
     val percentTextShadowColor: Int = Prefs.percentTextShadowColor.default,
     val percentTextShadowRadius: Float = Prefs.percentTextShadowRadius.default,

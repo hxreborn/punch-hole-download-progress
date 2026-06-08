@@ -3,9 +3,11 @@ package eu.hxreborn.phdp.xposed.indicator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.graphics.BlurMaskFilter
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.ColorSpace
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
@@ -20,6 +22,7 @@ import android.view.Surface
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
+import androidx.annotation.RequiresApi
 import androidx.core.graphics.withSave
 import eu.hxreborn.phdp.prefs.RotationSlot
 import eu.hxreborn.phdp.util.log
@@ -49,6 +52,7 @@ class IndicatorView(
     private var downloadStartTime = 0L
     private var pendingFinishRunnable: Runnable? = null
     private var lastActivityTime = 0L
+    internal var windowParams: WindowManager.LayoutParams? = null
     private val burnInHideRunnable = Runnable { invalidate() }
     private var smoothProgress: Float = 0f
     private var progressAnim: ValueAnimator? = null
@@ -295,11 +299,53 @@ class IndicatorView(
         return rgb or (alphaByte shl 24)
     }
 
+    @RequiresApi(35)
+    private fun applyHdrColor(
+        paint: Paint,
+        baseColor: Int,
+        headroom: Float,
+    ) {
+        val a = Color.alpha(baseColor) / 255f
+        val r = Color.red(baseColor) / 255f * headroom
+        val g = Color.green(baseColor) / 255f * headroom
+        val b = Color.blue(baseColor) / 255f * headroom
+        paint.setColor(Color.pack(r, g, b, a, ColorSpace.get(ColorSpace.Named.EXTENDED_SRGB)))
+    }
+
+    private fun applyRingColor(
+        paint: Paint,
+        baseColor: Int,
+    ) {
+        if (Build.VERSION.SDK_INT >= 35 && IndicatorState.hdrEnabled) {
+            applyHdrColor(paint, baseColor, IndicatorState.hdrHeadroom)
+        } else {
+            paint.color = baseColor
+        }
+    }
+
+    private fun applyHdrToOverlayWindow() {
+        if (Build.VERSION.SDK_INT < 35) return
+        post {
+            val params = windowParams ?: return@post
+            if (IndicatorState.hdrEnabled) {
+                params.colorMode = ActivityInfo.COLOR_MODE_HDR
+                params.desiredHdrHeadroom = IndicatorState.hdrHeadroom
+            } else {
+                params.colorMode = ActivityInfo.COLOR_MODE_DEFAULT
+                params.desiredHdrHeadroom = 0f
+            }
+            runCatching {
+                (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager)
+                    .updateViewLayout(this, params)
+            }.onFailure { log("hdr refresh failed", it) }
+        }
+    }
+
     private fun updatePaintFromPrefs() {
         resolvedRingColor = IndicatorState.color
 
         glowPaint.apply {
-            color = IndicatorState.color
+            applyRingColor(this, resolvedRingColor)
             alpha = effectiveOpacity * 255 / 100
             strokeWidth = IndicatorState.strokeWidth * density
             this.strokeCap = strokeCap
@@ -307,7 +353,7 @@ class IndicatorView(
                 if (IndicatorState.glowEnabled) IndicatorState.glowRadius * density else 0f,
                 0f,
                 0f,
-                color,
+                resolvedRingColor,
             )
         }
 
@@ -335,13 +381,13 @@ class IndicatorView(
                 IndicatorState.materialYouProgressShade,
             )?.let { c ->
                 resolvedRingColor = c
-                glowPaint.color = c
+                applyRingColor(glowPaint, resolvedRingColor)
                 glowPaint.alpha = effectiveOpacity * 255 / 100
                 glowPaint.setShadowLayer(
                     if (IndicatorState.glowEnabled) IndicatorState.glowRadius * density else 0f,
                     0f,
                     0f,
-                    c,
+                    resolvedRingColor,
                 )
             }
             resolveSystemAccent(
@@ -359,7 +405,7 @@ class IndicatorView(
         }
 
         backgroundRingPaint.apply {
-            color = IndicatorState.backgroundRingColor
+            applyRingColor(this, IndicatorState.backgroundRingColor)
             alpha = IndicatorState.backgroundRingOpacity * 255 / 100
             strokeWidth = IndicatorState.strokeWidth * density
             this.strokeCap = strokeCap
@@ -492,6 +538,7 @@ class IndicatorView(
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         log("IndicatorView: onAttachedToWindow()")
+        IndicatorState.onHdrConfigChanged = { applyHdrToOverlayWindow() }
     }
 
     override fun onDetachedFromWindow() {
@@ -509,6 +556,7 @@ class IndicatorView(
         IndicatorState.onTestErrorChanged = null
         IndicatorState.onPreviewTriggered = null
         IndicatorState.onGeometryPreviewTriggered = null
+        IndicatorState.onHdrConfigChanged = null
         SystemUIHook.detach()
     }
 
@@ -1292,8 +1340,13 @@ class IndicatorView(
                         layoutInDisplayCutoutMode =
                             WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
                     }
+            if (Build.VERSION.SDK_INT >= 35 && IndicatorState.hdrEnabled) {
+                params.colorMode = ActivityInfo.COLOR_MODE_HDR
+                params.desiredHdrHeadroom = IndicatorState.hdrHeadroom
+            }
 
             wm.addView(view, params)
+            view.windowParams = params
             return view
         }
     }

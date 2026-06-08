@@ -249,6 +249,14 @@ object IndicatorState {
         private set
 
     @Volatile
+    var hdrEnabled = Prefs.hdrEnabled.default
+        private set
+
+    @Volatile
+    var hdrHeadroom = Prefs.hdrHeadroom.default
+        private set
+
+    @Volatile
     var percentTextShadowMode = Prefs.percentTextShadowMode.default
         private set
 
@@ -378,6 +386,7 @@ object IndicatorState {
     var onGeometryPreviewTriggered: (() -> Unit)? = null
     var onClearDownloadsTriggered: (() -> Unit)? = null
     var onPersistentPreviewChanged: ((Boolean) -> Unit)? = null
+    var onHdrConfigChanged: (() -> Unit)? = null
 
     fun init(xposed: io.github.libxposed.api.XposedInterface) {
         prefsListener?.let { remotePrefs?.unregisterOnSharedPreferenceChangeListener(it) }
@@ -433,6 +442,12 @@ object IndicatorState {
                 val enabled = Prefs.persistentPreview.read(prefs)
                 persistentPreviewActive = enabled
                 onPersistentPreviewChanged?.invoke(enabled)
+            }
+
+            Prefs.hdrEnabled.key, Prefs.hdrHeadroom.key -> {
+                onHdrConfigChanged?.invoke()
+                onPrefsChanged?.invoke()
+                onGeometryPreviewTriggered?.invoke()
             }
 
             in Prefs.visualKeys -> {
@@ -525,6 +540,8 @@ object IndicatorState {
                 backgroundRingOpacity = Prefs.backgroundRingOpacity.read(prefs)
                 glowEnabled = Prefs.glowEnabled.read(prefs)
                 glowRadius = Prefs.glowRadius.read(prefs)
+                hdrEnabled = Prefs.hdrEnabled.read(prefs)
+                hdrHeadroom = Prefs.hdrHeadroom.read(prefs)
                 percentTextShadowMode = Prefs.percentTextShadowMode.read(prefs)
                 percentTextShadowColor = Prefs.percentTextShadowColor.read(prefs)
                 percentTextShadowRadius = Prefs.percentTextShadowRadius.read(prefs)

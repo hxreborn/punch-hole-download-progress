@@ -103,6 +103,8 @@ class PrefsRepositoryImpl(
             backgroundRingOpacity = Prefs.backgroundRingOpacity.read(this),
             glowEnabled = Prefs.glowEnabled.read(this),
             glowRadius = Prefs.glowRadius.read(this),
+            hdrEnabled = Prefs.hdrEnabled.read(this),
+            hdrHeadroom = Prefs.hdrHeadroom.read(this),
             percentTextShadowMode = Prefs.percentTextShadowMode.read(this),
             percentTextShadowColor = Prefs.percentTextShadowColor.read(this),
             percentTextShadowRadius = Prefs.percentTextShadowRadius.read(this),

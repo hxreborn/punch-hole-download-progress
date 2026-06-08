@@ -386,6 +386,60 @@ fun AppearanceScreen(
                 )
             }
 
+            if (Build.VERSION.SDK_INT >= 35) {
+                preferenceCategory(
+                    key = "design_hdr_header",
+                    title = { Text(stringResource(R.string.group_hdr)) },
+                )
+
+                item(key = "design_hdr_section") {
+                    SectionCard(
+                        items =
+                            buildList {
+                                add {
+                                    TogglePreferenceWithIcon(
+                                        value = prefsState.hdrEnabled,
+                                        onValueChange = {
+                                            viewModel.savePref(Prefs.hdrEnabled, it)
+                                        },
+                                        title = {
+                                            Text(stringResource(R.string.pref_hdr_enabled_title))
+                                        },
+                                        summary = {
+                                            Text(stringResource(R.string.pref_hdr_enabled_summary))
+                                        },
+                                    )
+                                }
+                                if (prefsState.hdrEnabled) {
+                                    add {
+                                        SliderPreferenceWithReset(
+                                            value = prefsState.hdrHeadroom,
+                                            onValueChange = {
+                                                viewModel.savePref(Prefs.hdrHeadroom, it)
+                                            },
+                                            title = {
+                                                Text(stringResource(R.string.pref_hdr_headroom_title))
+                                            },
+                                            summary = {
+                                                Text(stringResource(R.string.pref_hdr_headroom_summary))
+                                            },
+                                            valueRange = Prefs.hdrHeadroom.range!!,
+                                            defaultValue = Prefs.hdrHeadroom.default,
+                                            onReset = {
+                                                viewModel.savePref(
+                                                    Prefs.hdrHeadroom,
+                                                    Prefs.hdrHeadroom.default,
+                                                )
+                                            },
+                                            valueText = { Text("%.1f×".format(it)) },
+                                        )
+                                    }
+                                }
+                            },
+                    )
+                }
+            }
+
             preferenceCategory(
                 key = "design_percent_header",
                 title = { Text(stringResource(R.string.group_percent_text)) },
