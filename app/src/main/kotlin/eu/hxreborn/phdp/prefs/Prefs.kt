@@ -85,13 +85,9 @@ object Prefs {
     // Text overlays
     val percentTextEnabled = BoolPref("percent_text_enabled", false)
     val percentTextPosition = StringPref("percent_text_position", "right")
-    val percentTextOffsetX = FloatPref("percent_text_offset_x", 0f, -200f..200f)
-    val percentTextOffsetY = FloatPref("percent_text_offset_y", 0f, -200f..200f)
     val percentTextSize = FloatPref("percent_text_size", 8f, 4f..20f)
     val filenameTextEnabled = BoolPref("filename_text_enabled", false)
     val filenameTextPosition = StringPref("filename_text_position", "top_right")
-    val filenameTextOffsetX = FloatPref("filename_text_offset_x", 0f, -200f..200f)
-    val filenameTextOffsetY = FloatPref("filename_text_offset_y", 0f, -200f..200f)
     val filenameTextSize = FloatPref("filename_text_size", 7f, 4f..20f)
     val filenameMaxChars = IntPref("filename_max_chars", 20, 5..100)
     val filenameTruncateEnabled = BoolPref("filename_truncate_enabled", true)
@@ -123,8 +119,6 @@ object Prefs {
     val minVisibilityEnabled = BoolPref("min_visibility_enabled", true)
     val minVisibilityMs = IntPref("min_visibility_ms", 500, 0..2000)
     val showDownloadCount = BoolPref("show_download_count", false)
-    val badgeOffsetX = FloatPref("badge_offset_x", 0f, -200f..200f)
-    val badgeOffsetY = FloatPref("badge_offset_y", 0f, -200f..200f)
     val badgeTextSize = FloatPref("badge_text_size", 10f, 4f..20f)
 
     // Power

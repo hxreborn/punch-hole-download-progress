@@ -1,11 +1,8 @@
 package eu.hxreborn.phdp.xposed.hook
 
 import android.content.SharedPreferences
-import eu.hxreborn.phdp.prefs.FloatPref
-import eu.hxreborn.phdp.prefs.OffsetPx
 import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.prefs.RotationOffsets
-import eu.hxreborn.phdp.prefs.RotationOffsetsPref
 import eu.hxreborn.phdp.util.Logger
 import eu.hxreborn.phdp.util.log
 import io.github.libxposed.api.XposedInterface
@@ -858,17 +855,16 @@ object IndicatorState {
                     progressAnimMs = Prefs.progressAnimMs.read(prefs)
                 }
 
-                Prefs.badgeOffsets.key,
-                Prefs.badgeOffsetX.key,
-                Prefs.badgeOffsetY.key,
-                Prefs.percentTextOffsets.key,
-                Prefs.percentTextOffsetX.key,
-                Prefs.percentTextOffsetY.key,
-                Prefs.filenameTextOffsets.key,
-                Prefs.filenameTextOffsetX.key,
-                Prefs.filenameTextOffsetY.key,
-                -> {
-                    refreshCache()
+                Prefs.badgeOffsets.key -> {
+                    badgeOffsets = Prefs.badgeOffsets.read(prefs)
+                }
+
+                Prefs.percentTextOffsets.key -> {
+                    percentTextOffsets = Prefs.percentTextOffsets.read(prefs)
+                }
+
+                Prefs.filenameTextOffsets.key -> {
+                    filenameTextOffsets = Prefs.filenameTextOffsets.read(prefs)
                 }
 
                 else -> { /* trigger-only or unknown key - dispatcher handles it */ }
@@ -891,13 +887,7 @@ object IndicatorState {
                 errorColor = Prefs.errorColor.read(prefs)
                 powerSaverMode = Prefs.powerSaverMode.read(prefs)
                 showDownloadCount = Prefs.showDownloadCount.read(prefs)
-                badgeOffsets =
-                    bootstrapOrRead(
-                        prefs,
-                        Prefs.badgeOffsets,
-                        Prefs.badgeOffsetX,
-                        Prefs.badgeOffsetY,
-                    )
+                badgeOffsets = Prefs.badgeOffsets.read(prefs)
                 badgeTextSize = Prefs.badgeTextSize.read(prefs)
                 finishStyle = Prefs.finishStyle.read(prefs)
                 finishHoldMs = Prefs.finishHoldMs.read(prefs)
@@ -911,23 +901,11 @@ object IndicatorState {
                 segmentGapDegrees = Prefs.segmentGapDegrees.read(prefs)
                 percentTextEnabled = Prefs.percentTextEnabled.read(prefs)
                 percentTextPosition = Prefs.percentTextPosition.read(prefs)
-                percentTextOffsets =
-                    bootstrapOrRead(
-                        prefs,
-                        Prefs.percentTextOffsets,
-                        Prefs.percentTextOffsetX,
-                        Prefs.percentTextOffsetY,
-                    )
+                percentTextOffsets = Prefs.percentTextOffsets.read(prefs)
                 percentTextSize = Prefs.percentTextSize.read(prefs)
                 filenameTextEnabled = Prefs.filenameTextEnabled.read(prefs)
                 filenameTextPosition = Prefs.filenameTextPosition.read(prefs)
-                filenameTextOffsets =
-                    bootstrapOrRead(
-                        prefs,
-                        Prefs.filenameTextOffsets,
-                        Prefs.filenameTextOffsetX,
-                        Prefs.filenameTextOffsetY,
-                    )
+                filenameTextOffsets = Prefs.filenameTextOffsets.read(prefs)
                 filenameTextSize = Prefs.filenameTextSize.read(prefs)
                 filenameMaxChars = Prefs.filenameMaxChars.read(prefs)
                 filenameTruncateEnabled = Prefs.filenameTruncateEnabled.read(prefs)
@@ -989,21 +967,5 @@ object IndicatorState {
                 progressAnimMs = Prefs.progressAnimMs.read(prefs)
             }
         }.onFailure { log("refresh failed target=indicator-state", it) }
-    }
-
-    // TODO(#34): Remove legacy offset bootstrap after structured rotation prefs ship
-    private fun bootstrapOrRead(
-        prefs: SharedPreferences,
-        structuredPref: RotationOffsetsPref,
-        legacyX: FloatPref,
-        legacyY: FloatPref,
-    ): RotationOffsets {
-        if (prefs.contains(structuredPref.key)) {
-            return structuredPref.read(prefs)
-        }
-        val baseOffset = OffsetPx(legacyX.read(prefs), legacyY.read(prefs))
-        val seeded = RotationOffsets(r0 = baseOffset, r90 = baseOffset)
-        log("bootstrapped pref key=${structuredPref.key} from=legacy value=${seeded.serialize()}")
-        return seeded
     }
 }
