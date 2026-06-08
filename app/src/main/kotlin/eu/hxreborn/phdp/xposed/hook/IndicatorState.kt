@@ -249,6 +249,22 @@ object IndicatorState {
         private set
 
     @Volatile
+    var percentTextLockRotation = Prefs.percentTextLockRotation.default
+        private set
+
+    @Volatile
+    var filenameTextLockRotation = Prefs.filenameTextLockRotation.default
+        private set
+
+    @Volatile
+    var appIconLockRotation = Prefs.appIconLockRotation.default
+        private set
+
+    @Volatile
+    var badgeLockRotation = Prefs.badgeLockRotation.default
+        private set
+
+    @Volatile
     var materialYouEnabled = Prefs.materialYouEnabled.default
         private set
 
@@ -453,6 +469,10 @@ object IndicatorState {
                 backgroundRingOpacity = Prefs.backgroundRingOpacity.read(prefs)
                 glowEnabled = Prefs.glowEnabled.read(prefs)
                 glowRadius = Prefs.glowRadius.read(prefs)
+                percentTextLockRotation = Prefs.percentTextLockRotation.read(prefs)
+                filenameTextLockRotation = Prefs.filenameTextLockRotation.read(prefs)
+                appIconLockRotation = Prefs.appIconLockRotation.read(prefs)
+                badgeLockRotation = Prefs.badgeLockRotation.read(prefs)
                 materialYouEnabled = Prefs.materialYouEnabled.read(prefs)
                 materialYouProgressPalette = Prefs.materialYouProgressPalette.read(prefs)
                 materialYouProgressShade = Prefs.materialYouProgressShade.read(prefs)

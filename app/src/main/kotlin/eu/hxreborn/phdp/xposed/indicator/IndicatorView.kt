@@ -620,20 +620,33 @@ class IndicatorView(
                 scaledPath.computeBounds(arcBounds, true)
                 val viewDensity = this@IndicatorView.density
                 val badgeRotation = display?.rotation ?: Surface.ROTATION_0
-                val badgeSlot = RotationSlot.fromSurfaceRotation(badgeRotation)
+                val badgeLocked = IndicatorState.badgeLockRotation
+                val badgeEffRotation = if (badgeLocked) Surface.ROTATION_0 else badgeRotation
+                val badgeSlot = RotationSlot.fromSurfaceRotation(badgeEffRotation)
                 val badgeOffset = IndicatorState.badgeOffsets[badgeSlot]
                 val badgeCenterX = arcBounds.centerX() + badgeOffset.x * viewDensity
                 val badgeTop =
                     arcBounds.bottom + BADGE_TOP_PADDING_DP * viewDensity +
                         badgeOffset.y * viewDensity
                 val badgeCount = if (animator.isGeometryPreviewActive) 3 else activeDownloadCount
-                badgePainter.draw(
-                    this,
-                    badgeCenterX,
-                    badgeTop,
-                    badgeCount,
-                    effectiveOpacity,
-                )
+                if (badgeLocked && badgeRotation != Surface.ROTATION_0) {
+                    withSave {
+                        rotate(
+                            -90f * (badgeRotation / Surface.ROTATION_90).toFloat(),
+                            arcBounds.centerX(),
+                            arcBounds.centerY(),
+                        )
+                        badgePainter.draw(
+                            this,
+                            badgeCenterX,
+                            badgeTop,
+                            badgeCount,
+                            effectiveOpacity,
+                        )
+                    }
+                } else {
+                    badgePainter.draw(this, badgeCenterX, badgeTop, badgeCount, effectiveOpacity)
+                }
             }
         }
 
@@ -674,6 +687,7 @@ class IndicatorView(
         val x: Float,
         val y: Float,
         val align: Paint.Align? = null,
+        val locked: Boolean = false,
     )
 
     private fun drawLabels(
@@ -684,14 +698,20 @@ class IndicatorView(
         val padding = LABEL_PADDING_DP * density
         val specs = mutableListOf<TextSpec>()
         val rotation = display?.rotation ?: Surface.ROTATION_0
-        val slot = RotationSlot.fromSurfaceRotation(rotation)
 
         if (IndicatorState.percentTextEnabled) {
+            val locked = IndicatorState.percentTextLockRotation
+            val effRotation = if (locked) Surface.ROTATION_0 else rotation
+            val slot = RotationSlot.fromSurfaceRotation(effRotation)
             val text = "$progressVal%"
             val textWidth = percentPaint.measureText(text)
             val (baseX, baseY, align) =
                 computeLabelPosition(
-                    rotatePosition(IndicatorState.percentTextPosition, rotation),
+                    if (locked) {
+                        IndicatorState.percentTextPosition
+                    } else {
+                        rotatePosition(IndicatorState.percentTextPosition, rotation)
+                    },
                     padding,
                     percentPaint.textSize,
                     textWidth,
@@ -699,7 +719,7 @@ class IndicatorView(
             val pctOffset = IndicatorState.percentTextOffsets[slot]
             val x = baseX + pctOffset.x * density
             val y = baseY + pctOffset.y * density
-            specs += TextSpec(text, percentPaint, x, y, align)
+            specs += TextSpec(text, percentPaint, x, y, align, locked)
         }
 
         val isGeometryPreview = animator.isGeometryPreviewActive
@@ -709,6 +729,9 @@ class IndicatorView(
         if (IndicatorState.filenameTextEnabled && filenameToShow != null &&
             (activeDownloadCount <= 1 || isGeometryPreview)
         ) {
+            val locked = IndicatorState.filenameTextLockRotation
+            val effRotation = if (locked) Surface.ROTATION_0 else rotation
+            val slot = RotationSlot.fromSurfaceRotation(effRotation)
             val truncated =
                 if (IndicatorState.filenameTruncateEnabled) {
                     truncateWithEllipsis(
@@ -720,7 +743,7 @@ class IndicatorView(
                     filenameToShow
                 }
             val isLandscape = rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270
-            val isVertical = IndicatorState.filenameVerticalText && isLandscape
+            val isVertical = IndicatorState.filenameVerticalText && isLandscape && !locked
             if (isVertical && truncated.isNotEmpty()) {
                 filenamePaint.color = resolvedRingColor
                 filenamePaint.alpha = alpha
@@ -752,7 +775,11 @@ class IndicatorView(
             } else {
                 val (baseX, baseY, align) =
                     computeLabelPosition(
-                        rotatePosition(IndicatorState.filenameTextPosition, rotation),
+                        if (locked) {
+                            IndicatorState.filenameTextPosition
+                        } else {
+                            rotatePosition(IndicatorState.filenameTextPosition, rotation)
+                        },
                         padding,
                         filenamePaint.textSize,
                         textWidth = null,
@@ -760,7 +787,7 @@ class IndicatorView(
                 val fnOffset = IndicatorState.filenameTextOffsets[slot]
                 val x = baseX + fnOffset.x * density
                 val y = baseY + fnOffset.y * density
-                specs += TextSpec(truncated, filenamePaint, x, y, align)
+                specs += TextSpec(truncated, filenamePaint, x, y, align, locked)
             }
         }
 
@@ -768,7 +795,18 @@ class IndicatorView(
             spec.paint.color = resolvedRingColor
             spec.paint.alpha = alpha
             spec.align?.let { (spec.paint as? TextPaint)?.textAlign = it }
-            canvas.drawText(spec.text, spec.x, spec.y, spec.paint)
+            if (spec.locked && rotation != Surface.ROTATION_0) {
+                canvas.withSave {
+                    rotate(
+                        -90f * (rotation / Surface.ROTATION_90).toFloat(),
+                        arcBounds.centerX(),
+                        arcBounds.centerY(),
+                    )
+                    drawText(spec.text, spec.x, spec.y, spec.paint)
+                }
+            } else {
+                canvas.drawText(spec.text, spec.x, spec.y, spec.paint)
+            }
         }
     }
 
@@ -784,11 +822,17 @@ class IndicatorView(
         val sizePx = IndicatorState.appIconSize * density
         val padding = LABEL_PADDING_DP * density
         val rotation = display?.rotation ?: Surface.ROTATION_0
-        val slot = RotationSlot.fromSurfaceRotation(rotation)
+        val locked = IndicatorState.appIconLockRotation
+        val effRotation = if (locked) Surface.ROTATION_0 else rotation
+        val slot = RotationSlot.fromSurfaceRotation(effRotation)
 
         val (baseX, baseY, _) =
             computeLabelPosition(
-                rotatePosition(IndicatorState.appIconPosition, rotation),
+                if (locked) {
+                    IndicatorState.appIconPosition
+                } else {
+                    rotatePosition(IndicatorState.appIconPosition, rotation)
+                },
                 padding,
                 sizePx,
                 sizePx,
@@ -798,7 +842,18 @@ class IndicatorView(
         val x = baseX + iconOffset.x * density - sizePx / 2
         val y = baseY + iconOffset.y * density - sizePx
 
-        iconPainter.draw(canvas, x, y, packageName)
+        if (locked && rotation != Surface.ROTATION_0) {
+            canvas.withSave {
+                rotate(
+                    -90f * (rotation / Surface.ROTATION_90).toFloat(),
+                    arcBounds.centerX(),
+                    arcBounds.centerY(),
+                )
+                iconPainter.draw(this, x, y, packageName)
+            }
+        } else {
+            iconPainter.draw(canvas, x, y, packageName)
+        }
     }
 
     private fun computeLabelPosition(

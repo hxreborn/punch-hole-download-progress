@@ -28,6 +28,11 @@ object Prefs {
     val glowEnabled = BoolPref("glow_enabled", false)
     val glowRadius = FloatPref("glow_radius", 4f, 1f..15f)
 
+    val percentTextLockRotation = BoolPref("percent_text_lock_rotation", false)
+    val filenameTextLockRotation = BoolPref("filename_text_lock_rotation", false)
+    val appIconLockRotation = BoolPref("app_icon_lock_rotation", false)
+    val badgeLockRotation = BoolPref("badge_lock_rotation", false)
+
     // Geometry
     val ringScaleX = FloatPref("ring_scale_x", 1f, 0.25f..3f)
     val ringScaleY = FloatPref("ring_scale_y", 1f, 0.25f..3f)
@@ -191,6 +196,10 @@ object Prefs {
             backgroundRingOpacity,
             glowEnabled,
             glowRadius,
+            percentTextLockRotation,
+            filenameTextLockRotation,
+            appIconLockRotation,
+            badgeLockRotation,
             ringScaleX,
             ringScaleY,
             ringScaleLinked,
@@ -258,6 +267,10 @@ object Prefs {
             backgroundRingOpacity.key,
             glowEnabled.key,
             glowRadius.key,
+            percentTextLockRotation.key,
+            filenameTextLockRotation.key,
+            appIconLockRotation.key,
+            badgeLockRotation.key,
             ringScaleX.key,
             ringScaleY.key,
             ringOffsetX.key,

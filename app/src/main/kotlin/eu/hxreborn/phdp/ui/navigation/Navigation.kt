@@ -236,6 +236,7 @@ fun MainNavDisplay(
                                 bold = Prefs.percentTextBold bind prefs.percentTextBold,
                                 italic = Prefs.percentTextItalic bind prefs.percentTextItalic,
                             ),
+                        lockRotation = Prefs.percentTextLockRotation bind prefs.percentTextLockRotation,
                     )
                 }
                 entry<Screen.FilenameCalibration> {
@@ -283,6 +284,7 @@ fun MainNavDisplay(
                                 previewText = Prefs.previewFilenameText bind prefs.previewFilenameText,
                                 verticalText = Prefs.filenameVerticalText bind prefs.filenameVerticalText,
                             ),
+                        lockRotation = Prefs.filenameTextLockRotation bind prefs.filenameTextLockRotation,
                     )
                 }
                 entry<Screen.AppIconCalibration> {
@@ -314,6 +316,7 @@ fun MainNavDisplay(
                         viewModel = viewModel,
                         onNavigateBack = { backStack.removeLastOrNull() },
                         bottomNavPadding = bottomNavPadding,
+                        lockRotation = Prefs.appIconLockRotation bind prefs.appIconLockRotation,
                     )
                 }
                 entry<Screen.MaterialYou> {
@@ -356,6 +359,7 @@ fun MainNavDisplay(
                             TypographyConfig(
                                 fontSize = Prefs.badgeTextSize bind prefs.badgeTextSize,
                             ),
+                        lockRotation = Prefs.badgeLockRotation bind prefs.badgeLockRotation,
                     )
                 }
                 entry<Screen.Motion> {

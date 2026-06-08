@@ -84,6 +84,7 @@ fun TextCalibrationScreen(
     offsetRange: ClosedFloatingPointRange<Float> = -200f..200f,
     typography: TypographyConfig? = null,
     layout: LayoutConfig? = null,
+    lockRotation: BoundPref<Boolean>? = null,
 ) {
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         viewModel.savePref(Prefs.persistentPreview, true)
@@ -146,6 +147,7 @@ fun TextCalibrationScreen(
                                         offsetRange,
                                     )
                                     layoutItems(layout, viewModel)
+                                    lockRotationItem(lockRotation, viewModel)
                                 },
                         )
                     }
@@ -165,6 +167,7 @@ fun TextCalibrationScreen(
                                         onOffsetYReset,
                                         offsetRange,
                                     )
+                                    lockRotationItem(lockRotation, viewModel)
                                 },
                         )
                     }
@@ -313,6 +316,21 @@ private fun MutableList<@Composable () -> Unit>.offsetItems(
             stepSize = 1f,
             decimalPlaces = 0,
             suffix = "px",
+        )
+    }
+}
+
+private fun MutableList<@Composable () -> Unit>.lockRotationItem(
+    lockRotation: BoundPref<Boolean>?,
+    viewModel: SettingsViewModel,
+) {
+    if (lockRotation == null) return
+    add {
+        TogglePreferenceWithIcon(
+            value = lockRotation.value,
+            onValueChange = { viewModel.savePref(lockRotation.spec, it) },
+            title = { Text(stringResource(R.string.pref_lock_rotation_title)) },
+            summary = { Text(stringResource(R.string.pref_lock_rotation_summary)) },
         )
     }
 }

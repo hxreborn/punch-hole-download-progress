@@ -125,6 +125,10 @@
     <string name="pref_calibrate_app_icon_title">Calibrate source icon</string>
     <string name="pref_calibrate_app_icon_summary">Adjust source app icon placement</string>
 
+    <!-- Calibration: Rotation lock -->
+    <string name="pref_lock_rotation_title">Keep in portrait</string>
+    <string name="pref_lock_rotation_summary">Pins this overlay item to portrait orientation so it stays upright when the screen rotates</string>
+
     <!-- Motion: Animation -->
     <string name="pref_completion_style_title">Completion style</string>
     <string name="pref_completion_style_summary">Visual effect when downloads finish</string>
