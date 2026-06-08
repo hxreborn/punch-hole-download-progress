@@ -1,9 +1,11 @@
 package eu.hxreborn.phdp.ui
 
 import android.content.Context
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import eu.hxreborn.phdp.PHDPApp
 import eu.hxreborn.phdp.prefs.PrefSpec
 import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.prefs.PrefsRepository
@@ -74,12 +76,14 @@ class SettingsViewModelImpl(
         LauncherIconHelper.setLauncherIconVisible(applicationContext, !hidden)
         launcherIconHidden.value = hidden
     }
-}
 
-class SettingsViewModelFactory(
-    private val repository: PrefsRepository,
-    private val applicationContext: Context,
-) : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T = SettingsViewModelImpl(repository, applicationContext) as T
+    companion object {
+        val Factory =
+            viewModelFactory {
+                initializer {
+                    val app = this[APPLICATION_KEY] as PHDPApp
+                    SettingsViewModelImpl(app.prefs, app)
+                }
+            }
+    }
 }

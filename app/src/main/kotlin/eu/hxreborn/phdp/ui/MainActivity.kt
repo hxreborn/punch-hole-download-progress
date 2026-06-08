@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -13,7 +14,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import eu.hxreborn.phdp.PHDPApp
@@ -25,7 +25,7 @@ import eu.hxreborn.phdp.util.RootUtils
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
-    private lateinit var viewModel: SettingsViewModel
+    private val viewModel: SettingsViewModel by viewModels<SettingsViewModelImpl> { SettingsViewModelImpl.Factory }
 
     private var showRestartDialog by mutableStateOf(false)
     private var showResetDialog by mutableStateOf(false)
@@ -34,13 +34,6 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-
-        val repository = PHDPApp.from(this).prefs
-        viewModel =
-            ViewModelProvider(
-                this,
-                SettingsViewModelFactory(repository, applicationContext),
-            )[SettingsViewModelImpl::class.java]
 
         setContent {
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
