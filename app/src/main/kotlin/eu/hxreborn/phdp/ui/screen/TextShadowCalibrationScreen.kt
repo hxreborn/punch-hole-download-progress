@@ -15,12 +15,14 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.BoundPref
 import eu.hxreborn.phdp.prefs.Prefs
+import eu.hxreborn.phdp.prefs.bind
 import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.SettingsScaffold
 import eu.hxreborn.phdp.ui.component.preference.ColorPreference
 import eu.hxreborn.phdp.ui.component.preference.SelectPreference
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithReset
+import eu.hxreborn.phdp.ui.state.AppPrefs
 import eu.hxreborn.phdp.ui.theme.MaterialPalette
 import eu.hxreborn.phdp.ui.theme.Tokens
 import me.zhanghai.compose.preference.ProvidePreferenceLocals
@@ -37,7 +39,39 @@ data class TextShadowBindings(
     val dyRange: ClosedFloatingPointRange<Float>,
     val opacityRange: IntRange,
     val strokeWidthRange: ClosedFloatingPointRange<Float>,
-)
+) {
+    companion object {
+        fun forPercent(prefs: AppPrefs): TextShadowBindings =
+            TextShadowBindings(
+                mode = Prefs.percentTextShadowMode bind prefs.percentTextShadowMode,
+                color = Prefs.percentTextShadowColor bind prefs.percentTextShadowColor,
+                radius = Prefs.percentTextShadowRadius bind prefs.percentTextShadowRadius,
+                dy = Prefs.percentTextShadowDy bind prefs.percentTextShadowDy,
+                opacity = Prefs.percentTextShadowOpacity bind prefs.percentTextShadowOpacity,
+                strokeWidth = Prefs.percentTextStrokeWidth bind prefs.percentTextStrokeWidth,
+                strokeColor = Prefs.percentTextStrokeColor bind prefs.percentTextStrokeColor,
+                radiusRange = Prefs.percentTextShadowRadius.range!!,
+                dyRange = Prefs.percentTextShadowDy.range!!,
+                opacityRange = Prefs.percentTextShadowOpacity.range!!,
+                strokeWidthRange = Prefs.percentTextStrokeWidth.range!!,
+            )
+
+        fun forFilename(prefs: AppPrefs): TextShadowBindings =
+            TextShadowBindings(
+                mode = Prefs.filenameTextShadowMode bind prefs.filenameTextShadowMode,
+                color = Prefs.filenameTextShadowColor bind prefs.filenameTextShadowColor,
+                radius = Prefs.filenameTextShadowRadius bind prefs.filenameTextShadowRadius,
+                dy = Prefs.filenameTextShadowDy bind prefs.filenameTextShadowDy,
+                opacity = Prefs.filenameTextShadowOpacity bind prefs.filenameTextShadowOpacity,
+                strokeWidth = Prefs.filenameTextStrokeWidth bind prefs.filenameTextStrokeWidth,
+                strokeColor = Prefs.filenameTextStrokeColor bind prefs.filenameTextStrokeColor,
+                radiusRange = Prefs.filenameTextShadowRadius.range!!,
+                dyRange = Prefs.filenameTextShadowDy.range!!,
+                opacityRange = Prefs.filenameTextShadowOpacity.range!!,
+                strokeWidthRange = Prefs.filenameTextStrokeWidth.range!!,
+            )
+    }
+}
 
 @Composable
 fun TextShadowCalibrationScreen(
@@ -134,8 +168,7 @@ fun TextShadowCalibrationScreen(
                                         },
                                         title = { Text(stringResource(R.string.pref_text_shadow_opacity_title)) },
                                         summary = { Text(stringResource(R.string.pref_text_shadow_opacity_summary)) },
-                                        valueRange =
-                                            bindings.opacityRange.first.toFloat()..bindings.opacityRange.last.toFloat(),
+                                        valueRange = bindings.opacityRange.first.toFloat()..bindings.opacityRange.last.toFloat(),
                                         defaultValue =
                                             bindings.opacity.spec.default
                                                 .toFloat(),

@@ -8,6 +8,7 @@ import eu.hxreborn.phdp.prefs.RotationOffsets
 import eu.hxreborn.phdp.prefs.RotationOffsetsPref
 import eu.hxreborn.phdp.util.Logger
 import eu.hxreborn.phdp.util.log
+import io.github.libxposed.api.XposedInterface
 
 object IndicatorState {
     @Volatile
@@ -388,7 +389,7 @@ object IndicatorState {
     var onPersistentPreviewChanged: ((Boolean) -> Unit)? = null
     var onHdrConfigChanged: (() -> Unit)? = null
 
-    fun init(xposed: io.github.libxposed.api.XposedInterface) {
+    fun init(xposed: XposedInterface) {
         prefsListener?.let { remotePrefs?.unregisterOnSharedPreferenceChangeListener(it) }
         runCatching {
             val prefs = xposed.getRemotePreferences(Prefs.GROUP)
@@ -399,7 +400,7 @@ object IndicatorState {
             val listener =
                 SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
                     runCatching {
-                        refreshCache()
+                        if (key == null) refreshCache() else refreshCacheForKey(sp, key)
                         dispatchPrefChange(sp, key)
                     }.onFailure { log("prefs-change failed", it) }
                 }
@@ -459,6 +460,420 @@ object IndicatorState {
                 onPrefsChanged?.invoke()
             }
         }
+    }
+
+    @Suppress("LongMethod", "CyclomaticComplexMethod")
+    private fun refreshCacheForKey(
+        prefs: SharedPreferences,
+        key: String,
+    ) {
+        runCatching {
+            when (key) {
+                Prefs.enabled.key -> {
+                    enabled = Prefs.enabled.read(prefs)
+                }
+
+                Prefs.color.key -> {
+                    color = Prefs.color.read(prefs)
+                }
+
+                Prefs.strokeWidth.key -> {
+                    strokeWidth = Prefs.strokeWidth.read(prefs)
+                }
+
+                Prefs.ringGap.key -> {
+                    ringGap = Prefs.ringGap.read(prefs)
+                }
+
+                Prefs.opacity.key -> {
+                    opacity = Prefs.opacity.read(prefs)
+                }
+
+                Prefs.hooksFeedback.key -> {
+                    hooksFeedback = Prefs.hooksFeedback.read(prefs)
+                }
+
+                Prefs.appVisible.key -> {
+                    appVisible = Prefs.appVisible.read(prefs)
+                }
+
+                Prefs.clockwise.key -> {
+                    clockwise = Prefs.clockwise.read(prefs)
+                }
+
+                Prefs.progressEasing.key -> {
+                    progressEasing = Prefs.progressEasing.read(prefs)
+                }
+
+                Prefs.errorColor.key -> {
+                    errorColor = Prefs.errorColor.read(prefs)
+                }
+
+                Prefs.powerSaverMode.key -> {
+                    powerSaverMode = Prefs.powerSaverMode.read(prefs)
+                }
+
+                Prefs.showDownloadCount.key -> {
+                    showDownloadCount =
+                        Prefs.showDownloadCount.read(prefs)
+                }
+
+                Prefs.badgeTextSize.key -> {
+                    badgeTextSize = Prefs.badgeTextSize.read(prefs)
+                }
+
+                Prefs.finishStyle.key -> {
+                    finishStyle = Prefs.finishStyle.read(prefs)
+                }
+
+                Prefs.finishHoldMs.key -> {
+                    finishHoldMs = Prefs.finishHoldMs.read(prefs)
+                }
+
+                Prefs.finishExitMs.key -> {
+                    finishExitMs = Prefs.finishExitMs.read(prefs)
+                }
+
+                Prefs.finishUseFlashColor.key -> {
+                    finishUseFlashColor =
+                        Prefs.finishUseFlashColor.read(prefs)
+                }
+
+                Prefs.finishFlashColor.key -> {
+                    finishFlashColor = Prefs.finishFlashColor.read(prefs)
+                }
+
+                Prefs.minVisibilityEnabled.key -> {
+                    minVisibilityEnabled =
+                        Prefs.minVisibilityEnabled.read(prefs)
+                }
+
+                Prefs.minVisibilityMs.key -> {
+                    minVisibilityMs = Prefs.minVisibilityMs.read(prefs)
+                }
+
+                Prefs.completionPulseEnabled.key -> {
+                    completionPulseEnabled =
+                        Prefs.completionPulseEnabled.read(prefs)
+                }
+
+                Prefs.segmentCount.key -> {
+                    segmentCount = Prefs.segmentCount.read(prefs)
+                }
+
+                Prefs.segmentGapDegrees.key -> {
+                    segmentGapDegrees =
+                        Prefs.segmentGapDegrees.read(prefs)
+                }
+
+                Prefs.percentTextEnabled.key -> {
+                    percentTextEnabled =
+                        Prefs.percentTextEnabled.read(prefs)
+                }
+
+                Prefs.percentTextPosition.key -> {
+                    percentTextPosition =
+                        Prefs.percentTextPosition.read(prefs)
+                }
+
+                Prefs.percentTextSize.key -> {
+                    percentTextSize = Prefs.percentTextSize.read(prefs)
+                }
+
+                Prefs.filenameTextEnabled.key -> {
+                    filenameTextEnabled =
+                        Prefs.filenameTextEnabled.read(prefs)
+                }
+
+                Prefs.filenameTextPosition.key -> {
+                    filenameTextPosition =
+                        Prefs.filenameTextPosition.read(prefs)
+                }
+
+                Prefs.filenameTextSize.key -> {
+                    filenameTextSize = Prefs.filenameTextSize.read(prefs)
+                }
+
+                Prefs.filenameMaxChars.key -> {
+                    filenameMaxChars = Prefs.filenameMaxChars.read(prefs)
+                }
+
+                Prefs.filenameTruncateEnabled.key -> {
+                    filenameTruncateEnabled =
+                        Prefs.filenameTruncateEnabled.read(prefs)
+                }
+
+                Prefs.percentTextBold.key -> {
+                    percentTextBold = Prefs.percentTextBold.read(prefs)
+                }
+
+                Prefs.percentTextItalic.key -> {
+                    percentTextItalic =
+                        Prefs.percentTextItalic.read(prefs)
+                }
+
+                Prefs.filenameTextBold.key -> {
+                    filenameTextBold = Prefs.filenameTextBold.read(prefs)
+                }
+
+                Prefs.filenameTextItalic.key -> {
+                    filenameTextItalic =
+                        Prefs.filenameTextItalic.read(prefs)
+                }
+
+                Prefs.filenameEllipsize.key -> {
+                    filenameEllipsize =
+                        Prefs.filenameEllipsize.read(prefs)
+                }
+
+                Prefs.filenameVerticalText.key -> {
+                    filenameVerticalText =
+                        Prefs.filenameVerticalText.read(prefs)
+                }
+
+                Prefs.appIconEnabled.key -> {
+                    appIconEnabled = Prefs.appIconEnabled.read(prefs)
+                }
+
+                Prefs.appIconPosition.key -> {
+                    appIconPosition = Prefs.appIconPosition.read(prefs)
+                }
+
+                Prefs.appIconSize.key -> {
+                    appIconSize = Prefs.appIconSize.read(prefs)
+                }
+
+                Prefs.appIconMonochrome.key -> {
+                    appIconMonochrome =
+                        Prefs.appIconMonochrome.read(prefs)
+                }
+
+                Prefs.appIconOffsets.key -> {
+                    appIconOffsets = Prefs.appIconOffsets.read(prefs)
+                }
+
+                Prefs.previewFilenameText.key -> {
+                    previewFilenameText =
+                        Prefs.previewFilenameText.read(prefs)
+                }
+
+                Prefs.ringScaleX.key -> {
+                    ringScaleX = Prefs.ringScaleX.read(prefs)
+                }
+
+                Prefs.ringScaleY.key -> {
+                    ringScaleY = Prefs.ringScaleY.read(prefs)
+                }
+
+                Prefs.ringScaleLinked.key -> {
+                    ringScaleLinked = Prefs.ringScaleLinked.read(prefs)
+                }
+
+                Prefs.ringOffsetX.key -> {
+                    ringOffsetX = Prefs.ringOffsetX.read(prefs)
+                }
+
+                Prefs.ringOffsetY.key -> {
+                    ringOffsetY = Prefs.ringOffsetY.read(prefs)
+                }
+
+                Prefs.pathMode.key -> {
+                    pathMode = Prefs.pathMode.read(prefs)
+                }
+
+                Prefs.strokeCapStyle.key -> {
+                    strokeCapStyle = Prefs.strokeCapStyle.read(prefs)
+                }
+
+                Prefs.backgroundRingEnabled.key -> {
+                    backgroundRingEnabled =
+                        Prefs.backgroundRingEnabled.read(prefs)
+                }
+
+                Prefs.backgroundRingColor.key -> {
+                    backgroundRingColor =
+                        Prefs.backgroundRingColor.read(prefs)
+                }
+
+                Prefs.backgroundRingOpacity.key -> {
+                    backgroundRingOpacity =
+                        Prefs.backgroundRingOpacity.read(prefs)
+                }
+
+                Prefs.glowEnabled.key -> {
+                    glowEnabled = Prefs.glowEnabled.read(prefs)
+                }
+
+                Prefs.glowRadius.key -> {
+                    glowRadius = Prefs.glowRadius.read(prefs)
+                }
+
+                Prefs.hdrEnabled.key -> {
+                    hdrEnabled = Prefs.hdrEnabled.read(prefs)
+                }
+
+                Prefs.hdrHeadroom.key -> {
+                    hdrHeadroom = Prefs.hdrHeadroom.read(prefs)
+                }
+
+                Prefs.percentTextShadowMode.key -> {
+                    percentTextShadowMode =
+                        Prefs.percentTextShadowMode.read(prefs)
+                }
+
+                Prefs.percentTextShadowColor.key -> {
+                    percentTextShadowColor =
+                        Prefs.percentTextShadowColor.read(prefs)
+                }
+
+                Prefs.percentTextShadowRadius.key -> {
+                    percentTextShadowRadius =
+                        Prefs.percentTextShadowRadius.read(prefs)
+                }
+
+                Prefs.percentTextShadowDy.key -> {
+                    percentTextShadowDy =
+                        Prefs.percentTextShadowDy.read(prefs)
+                }
+
+                Prefs.percentTextShadowOpacity.key -> {
+                    percentTextShadowOpacity =
+                        Prefs.percentTextShadowOpacity.read(prefs)
+                }
+
+                Prefs.percentTextStrokeWidth.key -> {
+                    percentTextStrokeWidth =
+                        Prefs.percentTextStrokeWidth.read(prefs)
+                }
+
+                Prefs.percentTextStrokeColor.key -> {
+                    percentTextStrokeColor =
+                        Prefs.percentTextStrokeColor.read(prefs)
+                }
+
+                Prefs.filenameTextShadowMode.key -> {
+                    filenameTextShadowMode =
+                        Prefs.filenameTextShadowMode.read(prefs)
+                }
+
+                Prefs.filenameTextShadowColor.key -> {
+                    filenameTextShadowColor =
+                        Prefs.filenameTextShadowColor.read(prefs)
+                }
+
+                Prefs.filenameTextShadowRadius.key -> {
+                    filenameTextShadowRadius =
+                        Prefs.filenameTextShadowRadius.read(prefs)
+                }
+
+                Prefs.filenameTextShadowDy.key -> {
+                    filenameTextShadowDy =
+                        Prefs.filenameTextShadowDy.read(prefs)
+                }
+
+                Prefs.filenameTextShadowOpacity.key -> {
+                    filenameTextShadowOpacity =
+                        Prefs.filenameTextShadowOpacity.read(prefs)
+                }
+
+                Prefs.filenameTextStrokeWidth.key -> {
+                    filenameTextStrokeWidth =
+                        Prefs.filenameTextStrokeWidth.read(prefs)
+                }
+
+                Prefs.filenameTextStrokeColor.key -> {
+                    filenameTextStrokeColor =
+                        Prefs.filenameTextStrokeColor.read(prefs)
+                }
+
+                Prefs.percentTextLockRotation.key -> {
+                    percentTextLockRotation =
+                        Prefs.percentTextLockRotation.read(prefs)
+                }
+
+                Prefs.filenameTextLockRotation.key -> {
+                    filenameTextLockRotation =
+                        Prefs.filenameTextLockRotation.read(prefs)
+                }
+
+                Prefs.appIconLockRotation.key -> {
+                    appIconLockRotation =
+                        Prefs.appIconLockRotation.read(prefs)
+                }
+
+                Prefs.badgeLockRotation.key -> {
+                    badgeLockRotation =
+                        Prefs.badgeLockRotation.read(prefs)
+                }
+
+                Prefs.materialYouEnabled.key -> {
+                    materialYouEnabled =
+                        Prefs.materialYouEnabled.read(prefs)
+                }
+
+                Prefs.materialYouProgressPalette.key -> {
+                    materialYouProgressPalette =
+                        Prefs.materialYouProgressPalette.read(prefs)
+                }
+
+                Prefs.materialYouProgressShade.key -> {
+                    materialYouProgressShade =
+                        Prefs.materialYouProgressShade.read(prefs)
+                }
+
+                Prefs.materialYouSuccessPalette.key -> {
+                    materialYouSuccessPalette =
+                        Prefs.materialYouSuccessPalette.read(prefs)
+                }
+
+                Prefs.materialYouSuccessShade.key -> {
+                    materialYouSuccessShade =
+                        Prefs.materialYouSuccessShade.read(prefs)
+                }
+
+                Prefs.materialYouErrorPalette.key -> {
+                    materialYouErrorPalette =
+                        Prefs.materialYouErrorPalette.read(prefs)
+                }
+
+                Prefs.materialYouErrorShade.key -> {
+                    materialYouErrorShade =
+                        Prefs.materialYouErrorShade.read(prefs)
+                }
+
+                Prefs.selectedPackages.key -> {
+                    selectedPackages = Prefs.selectedPackages.read(prefs)
+                }
+
+                Prefs.verboseLogging.key -> {
+                    verboseLogging = Prefs.verboseLogging.read(prefs)
+                    Logger.verboseEnabled = verboseLogging
+                }
+
+                Prefs.burnInHideMs.key -> {
+                    burnInHideMs = Prefs.burnInHideMs.read(prefs)
+                }
+
+                Prefs.progressAnimMs.key -> {
+                    progressAnimMs = Prefs.progressAnimMs.read(prefs)
+                }
+
+                Prefs.badgeOffsets.key,
+                Prefs.badgeOffsetX.key,
+                Prefs.badgeOffsetY.key,
+                Prefs.percentTextOffsets.key,
+                Prefs.percentTextOffsetX.key,
+                Prefs.percentTextOffsetY.key,
+                Prefs.filenameTextOffsets.key,
+                Prefs.filenameTextOffsetX.key,
+                Prefs.filenameTextOffsetY.key,
+                -> {
+                    refreshCache()
+                }
+
+                else -> { /* trigger-only or unknown key - dispatcher handles it */ }
+            }
+        }.onFailure { log("refresh failed key=$key", it) }
     }
 
     private fun refreshCache() {

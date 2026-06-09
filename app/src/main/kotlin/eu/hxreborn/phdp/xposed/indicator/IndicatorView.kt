@@ -244,10 +244,14 @@ class IndicatorView(
             style = Paint.Style.STROKE
             textAlign = Paint.Align.LEFT
         }
-    private val percentHaloPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private var percentHaloBlurRadius: Float = -1f
-    private val filenameHaloPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private var filenameHaloBlurRadius: Float = -1f
+
+    private class HaloPaint {
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+        var lastBlurRadius: Float = -1f
+    }
+
+    private val percentHalo = HaloPaint()
+    private val filenameHalo = HaloPaint()
     private val textBoundsScratch = Rect()
     private val effectiveOpacity: Int
         get() =
@@ -290,15 +294,6 @@ class IndicatorView(
         return if (resId != 0) context.getColor(resId) else null
     }
 
-    private fun composeShadowColor(
-        baseColor: Int,
-        opacityPercent: Int,
-    ): Int {
-        val rgb = baseColor and 0x00FFFFFF
-        val alphaByte = (opacityPercent * 255 / 100).coerceIn(0, 255)
-        return rgb or (alphaByte shl 24)
-    }
-
     @RequiresApi(35)
     private fun applyHdrColor(
         paint: Paint,
@@ -323,187 +318,47 @@ class IndicatorView(
         }
     }
 
-    private fun applyHdrToOverlayWindow() {
-        if (Build.VERSION.SDK_INT < 35) return
-        post {
-            val params = windowParams ?: return@post
-            if (IndicatorState.hdrEnabled) {
-                params.colorMode = ActivityInfo.COLOR_MODE_HDR
-                params.desiredHdrHeadroom = IndicatorState.hdrHeadroom
-            } else {
-                params.colorMode = ActivityInfo.COLOR_MODE_DEFAULT
-                params.desiredHdrHeadroom = 0f
-            }
-            runCatching {
-                (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager)
-                    .updateViewLayout(this, params)
-            }.onFailure { log("hdr refresh failed", it) }
-        }
+    private fun composeShadowColor(
+        baseColor: Int,
+        opacityPercent: Int,
+    ): Int {
+        val rgb = baseColor and 0x00FFFFFF
+        val alphaByte = (opacityPercent * 255 / 100).coerceIn(0, 255)
+        return rgb or (alphaByte shl 24)
     }
 
     private fun updatePaintFromPrefs() {
-        resolvedRingColor = IndicatorState.color
-
-        glowPaint.apply {
-            applyRingColor(this, resolvedRingColor)
-            alpha = effectiveOpacity * 255 / 100
-            strokeWidth = IndicatorState.strokeWidth * density
-            this.strokeCap = strokeCap
-            setShadowLayer(
-                if (IndicatorState.glowEnabled) IndicatorState.glowRadius * density else 0f,
-                0f,
-                0f,
-                resolvedRingColor,
-            )
-        }
-
-        shinePaint.apply {
-            color =
-                if (IndicatorState.finishUseFlashColor) {
-                    IndicatorState.finishFlashColor
-                } else {
-                    brightenColor(IndicatorState.color, 0.5f)
-                }
-            alpha = 255
-            strokeWidth = IndicatorState.strokeWidth * density * SHINE_STROKE_MULTIPLIER
-            this.strokeCap = strokeCap
-        }
-
-        errorPaint.apply {
-            color = IndicatorState.errorColor
-            strokeWidth = IndicatorState.strokeWidth * density * ERROR_STROKE_MULTIPLIER
-            this.strokeCap = strokeCap
-        }
-
-        if (IndicatorState.materialYouEnabled && Build.VERSION.SDK_INT >= 31) {
-            resolveSystemAccent(
-                IndicatorState.materialYouProgressPalette,
-                IndicatorState.materialYouProgressShade,
-            )?.let { c ->
-                resolvedRingColor = c
-                applyRingColor(glowPaint, resolvedRingColor)
-                glowPaint.alpha = effectiveOpacity * 255 / 100
-                glowPaint.setShadowLayer(
-                    if (IndicatorState.glowEnabled) IndicatorState.glowRadius * density else 0f,
-                    0f,
-                    0f,
-                    resolvedRingColor,
-                )
-            }
-            resolveSystemAccent(
-                IndicatorState.materialYouSuccessPalette,
-                IndicatorState.materialYouSuccessShade,
-            )?.let { c ->
-                shinePaint.color = c
-            }
-            resolveSystemAccent(
-                IndicatorState.materialYouErrorPalette,
-                IndicatorState.materialYouErrorShade,
-            )?.let { c ->
-                errorPaint.color = c
-            }
-        }
-
-        backgroundRingPaint.apply {
-            applyRingColor(this, IndicatorState.backgroundRingColor)
-            alpha = IndicatorState.backgroundRingOpacity * 255 / 100
-            strokeWidth = IndicatorState.strokeWidth * density
-            this.strokeCap = strokeCap
-        }
-
-        val percentShadowColor =
-            composeShadowColor(
-                IndicatorState.percentTextShadowColor,
-                IndicatorState.percentTextShadowOpacity,
-            )
-        val percentShadowRadiusPx = IndicatorState.percentTextShadowRadius * density
-        val percentShadowDyPx = IndicatorState.percentTextShadowDy * density
-        val percentIsOval = IndicatorState.percentTextShadowMode == "oval"
-
-        val filenameShadowColor =
-            composeShadowColor(
-                IndicatorState.filenameTextShadowColor,
-                IndicatorState.filenameTextShadowOpacity,
-            )
-        val filenameShadowRadiusPx = IndicatorState.filenameTextShadowRadius * density
-        val filenameShadowDyPx = IndicatorState.filenameTextShadowDy * density
-        val filenameIsOval = IndicatorState.filenameTextShadowMode == "oval"
-
-        percentPaint.apply {
-            textSize =
-                android.util.TypedValue.applyDimension(
-                    android.util.TypedValue.COMPLEX_UNIT_SP,
-                    IndicatorState.percentTextSize,
-                    resources.displayMetrics,
-                )
-            typeface =
-                Typeface.defaultFromStyle(
-                    typefaceStyle(IndicatorState.percentTextBold, IndicatorState.percentTextItalic),
-                )
-            if (percentIsOval) {
-                clearShadowLayer()
-            } else {
-                setShadowLayer(percentShadowRadiusPx, 0f, percentShadowDyPx, percentShadowColor)
-            }
-        }
-        filenamePaint.apply {
-            textSize =
-                android.util.TypedValue.applyDimension(
-                    android.util.TypedValue.COMPLEX_UNIT_SP,
-                    IndicatorState.filenameTextSize,
-                    resources.displayMetrics,
-                )
-            typeface =
-                Typeface.defaultFromStyle(
-                    typefaceStyle(
-                        IndicatorState.filenameTextBold,
-                        IndicatorState.filenameTextItalic,
-                    ),
-                )
-            if (filenameIsOval) {
-                clearShadowLayer()
-            } else {
-                setShadowLayer(filenameShadowRadiusPx, 0f, filenameShadowDyPx, filenameShadowColor)
-            }
-        }
-
-        percentStrokePaint.apply {
-            textSize = percentPaint.textSize
-            typeface = percentPaint.typeface
-            strokeWidth = IndicatorState.percentTextStrokeWidth * density
-            color = IndicatorState.percentTextStrokeColor
-        }
-        filenameStrokePaint.apply {
-            textSize = filenamePaint.textSize
-            typeface = filenamePaint.typeface
-            strokeWidth = IndicatorState.filenameTextStrokeWidth * density
-            color = IndicatorState.filenameTextStrokeColor
-        }
-
-        if (percentIsOval) {
-            percentHaloPaint.color = percentShadowColor
-            if (percentHaloBlurRadius != percentShadowRadiusPx) {
-                percentHaloPaint.maskFilter =
-                    if (percentShadowRadiusPx > 0f) {
-                        BlurMaskFilter(percentShadowRadiusPx, BlurMaskFilter.Blur.NORMAL)
-                    } else {
-                        null
-                    }
-                percentHaloBlurRadius = percentShadowRadiusPx
-            }
-        }
-        if (filenameIsOval) {
-            filenameHaloPaint.color = filenameShadowColor
-            if (filenameHaloBlurRadius != filenameShadowRadiusPx) {
-                filenameHaloPaint.maskFilter =
-                    if (filenameShadowRadiusPx > 0f) {
-                        BlurMaskFilter(filenameShadowRadiusPx, BlurMaskFilter.Blur.NORMAL)
-                    } else {
-                        null
-                    }
-                filenameHaloBlurRadius = filenameShadowRadiusPx
-            }
-        }
+        configureRingFamily()
+        applyTextShadow(
+            fillPaint = percentPaint,
+            strokePaint = percentStrokePaint,
+            halo = percentHalo,
+            textSizeSp = IndicatorState.percentTextSize,
+            bold = IndicatorState.percentTextBold,
+            italic = IndicatorState.percentTextItalic,
+            shadowMode = IndicatorState.percentTextShadowMode,
+            shadowColor = IndicatorState.percentTextShadowColor,
+            shadowOpacity = IndicatorState.percentTextShadowOpacity,
+            shadowRadius = IndicatorState.percentTextShadowRadius,
+            shadowDy = IndicatorState.percentTextShadowDy,
+            strokeWidthDp = IndicatorState.percentTextStrokeWidth,
+            strokeColor = IndicatorState.percentTextStrokeColor,
+        )
+        applyTextShadow(
+            fillPaint = filenamePaint,
+            strokePaint = filenameStrokePaint,
+            halo = filenameHalo,
+            textSizeSp = IndicatorState.filenameTextSize,
+            bold = IndicatorState.filenameTextBold,
+            italic = IndicatorState.filenameTextItalic,
+            shadowMode = IndicatorState.filenameTextShadowMode,
+            shadowColor = IndicatorState.filenameTextShadowColor,
+            shadowOpacity = IndicatorState.filenameTextShadowOpacity,
+            shadowRadius = IndicatorState.filenameTextShadowRadius,
+            shadowDy = IndicatorState.filenameTextShadowDy,
+            strokeWidthDp = IndicatorState.filenameTextStrokeWidth,
+            strokeColor = IndicatorState.filenameTextStrokeColor,
+        )
 
         badgePainter.updateColors(resolvedRingColor, IndicatorState.badgeTextSize)
         iconPainter.updateColors(resolvedRingColor, effectiveOpacity)
@@ -515,6 +370,124 @@ class IndicatorView(
                 "scaleY=${IndicatorState.ringScaleY}"
         }
         invalidate()
+    }
+
+    private fun configureRingFamily() {
+        resolvedRingColor = IndicatorState.color
+        val ringStrokeWidth = IndicatorState.strokeWidth * density
+        val glowRadiusPx =
+            if (IndicatorState.glowEnabled) IndicatorState.glowRadius * density else 0f
+
+        glowPaint.apply {
+            applyRingColor(this, resolvedRingColor)
+            alpha = effectiveOpacity * 255 / 100
+            strokeWidth = ringStrokeWidth
+            this.strokeCap = strokeCap
+            setShadowLayer(glowRadiusPx, 0f, 0f, resolvedRingColor)
+        }
+
+        shinePaint.apply {
+            color =
+                if (IndicatorState.finishUseFlashColor) {
+                    IndicatorState.finishFlashColor
+                } else {
+                    brightenColor(IndicatorState.color, 0.5f)
+                }
+            alpha = 255
+            strokeWidth = ringStrokeWidth * SHINE_STROKE_MULTIPLIER
+            this.strokeCap = strokeCap
+        }
+
+        errorPaint.apply {
+            color = IndicatorState.errorColor
+            strokeWidth = ringStrokeWidth * ERROR_STROKE_MULTIPLIER
+            this.strokeCap = strokeCap
+        }
+
+        if (IndicatorState.materialYouEnabled && Build.VERSION.SDK_INT >= 31) {
+            resolveSystemAccent(
+                IndicatorState.materialYouProgressPalette,
+                IndicatorState.materialYouProgressShade,
+            )?.let { c ->
+                resolvedRingColor = c
+                applyRingColor(glowPaint, resolvedRingColor)
+                glowPaint.alpha = effectiveOpacity * 255 / 100
+                glowPaint.setShadowLayer(glowRadiusPx, 0f, 0f, resolvedRingColor)
+            }
+            resolveSystemAccent(
+                IndicatorState.materialYouSuccessPalette,
+                IndicatorState.materialYouSuccessShade,
+            )?.let { c -> shinePaint.color = c }
+            resolveSystemAccent(
+                IndicatorState.materialYouErrorPalette,
+                IndicatorState.materialYouErrorShade,
+            )?.let { c -> errorPaint.color = c }
+        }
+
+        backgroundRingPaint.apply {
+            applyRingColor(this, IndicatorState.backgroundRingColor)
+            alpha = IndicatorState.backgroundRingOpacity * 255 / 100
+            strokeWidth = ringStrokeWidth
+            this.strokeCap = strokeCap
+        }
+    }
+
+    private fun applyTextShadow(
+        fillPaint: Paint,
+        strokePaint: Paint,
+        halo: HaloPaint,
+        textSizeSp: Float,
+        bold: Boolean,
+        italic: Boolean,
+        shadowMode: String,
+        shadowColor: Int,
+        shadowOpacity: Int,
+        shadowRadius: Float,
+        shadowDy: Float,
+        strokeWidthDp: Float,
+        strokeColor: Int,
+    ) {
+        val composedColor = composeShadowColor(shadowColor, shadowOpacity)
+        val radiusPx = shadowRadius * density
+        val dyPx = shadowDy * density
+        val isOval = shadowMode == "oval"
+
+        fillPaint.apply {
+            textSize =
+                android.util.TypedValue.applyDimension(
+                    android.util.TypedValue.COMPLEX_UNIT_SP,
+                    textSizeSp,
+                    resources.displayMetrics,
+                )
+            typeface = Typeface.defaultFromStyle(typefaceStyle(bold, italic))
+            if (isOval) {
+                clearShadowLayer()
+            } else {
+                setShadowLayer(radiusPx, 0f, dyPx, composedColor)
+            }
+        }
+
+        strokePaint.apply {
+            textSize = fillPaint.textSize
+            typeface = fillPaint.typeface
+            strokeWidth = strokeWidthDp * density
+            color = strokeColor
+        }
+
+        if (isOval) {
+            halo.paint.color = composedColor
+            if (halo.lastBlurRadius != radiusPx) {
+                halo.paint.maskFilter =
+                    if (radiusPx >
+                        0f
+                    ) {
+                        BlurMaskFilter(radiusPx, BlurMaskFilter.Blur.NORMAL)
+                    } else {
+                        null
+                    }
+                halo.lastBlurRadius = radiusPx
+            }
+        }
     }
 
     private fun updateRenderer() {
@@ -558,6 +531,24 @@ class IndicatorView(
         IndicatorState.onGeometryPreviewTriggered = null
         IndicatorState.onHdrConfigChanged = null
         SystemUIHook.detach()
+    }
+
+    private fun applyHdrToOverlayWindow() {
+        if (Build.VERSION.SDK_INT < 35) return
+        post {
+            val params = windowParams ?: return@post
+            if (IndicatorState.hdrEnabled) {
+                params.colorMode = ActivityInfo.COLOR_MODE_HDR
+                params.desiredHdrHeadroom = IndicatorState.hdrHeadroom
+            } else {
+                params.colorMode = ActivityInfo.COLOR_MODE_DEFAULT
+                params.desiredHdrHeadroom = 0f
+            }
+            runCatching {
+                (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager)
+                    .updateViewLayout(this, params)
+            }.onFailure { log("hdr refresh failed", it) }
+        }
     }
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
@@ -854,7 +845,7 @@ class IndicatorView(
             val x = baseX + pctOffset.x * density
             val y = baseY + pctOffset.y * density
             val stroke = if (percentStrokeWidthPx > 0f) percentStrokePaint else null
-            val halo = if (percentIsOval) percentHaloPaint else null
+            val halo = if (percentIsOval) percentHalo.paint else null
             specs += TextSpec(text, percentPaint, stroke, halo, x, y, align, locked)
         }
 
@@ -924,7 +915,7 @@ class IndicatorView(
                 val x = baseX + fnOffset.x * density
                 val y = baseY + fnOffset.y * density
                 val stroke = if (filenameStrokeWidthPx > 0f) filenameStrokePaint else null
-                val halo = if (filenameIsOval) filenameHaloPaint else null
+                val halo = if (filenameIsOval) filenameHalo.paint else null
                 specs += TextSpec(truncated, filenamePaint, stroke, halo, x, y, align, locked)
             }
         }

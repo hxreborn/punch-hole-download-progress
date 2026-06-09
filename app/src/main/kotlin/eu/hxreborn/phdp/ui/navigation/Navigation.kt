@@ -377,20 +377,7 @@ fun MainNavDisplay(
                     val prefs = (uiState as? SettingsUiState.Success)?.prefs ?: return@entry
                     TextShadowCalibrationScreen(
                         titleRes = R.string.pref_calibrate_percent_shadow_title,
-                        bindings =
-                            TextShadowBindings(
-                                mode = Prefs.percentTextShadowMode bind prefs.percentTextShadowMode,
-                                color = Prefs.percentTextShadowColor bind prefs.percentTextShadowColor,
-                                radius = Prefs.percentTextShadowRadius bind prefs.percentTextShadowRadius,
-                                dy = Prefs.percentTextShadowDy bind prefs.percentTextShadowDy,
-                                opacity = Prefs.percentTextShadowOpacity bind prefs.percentTextShadowOpacity,
-                                strokeWidth = Prefs.percentTextStrokeWidth bind prefs.percentTextStrokeWidth,
-                                strokeColor = Prefs.percentTextStrokeColor bind prefs.percentTextStrokeColor,
-                                radiusRange = Prefs.percentTextShadowRadius.range!!,
-                                dyRange = Prefs.percentTextShadowDy.range!!,
-                                opacityRange = Prefs.percentTextShadowOpacity.range!!,
-                                strokeWidthRange = Prefs.percentTextStrokeWidth.range!!,
-                            ),
+                        bindings = TextShadowBindings.forPercent(prefs),
                         viewModel = viewModel,
                         onNavigateBack = { backStack.removeLastOrNull() },
                         bottomNavPadding = bottomNavPadding,
@@ -401,20 +388,7 @@ fun MainNavDisplay(
                     val prefs = (uiState as? SettingsUiState.Success)?.prefs ?: return@entry
                     TextShadowCalibrationScreen(
                         titleRes = R.string.pref_calibrate_filename_shadow_title,
-                        bindings =
-                            TextShadowBindings(
-                                mode = Prefs.filenameTextShadowMode bind prefs.filenameTextShadowMode,
-                                color = Prefs.filenameTextShadowColor bind prefs.filenameTextShadowColor,
-                                radius = Prefs.filenameTextShadowRadius bind prefs.filenameTextShadowRadius,
-                                dy = Prefs.filenameTextShadowDy bind prefs.filenameTextShadowDy,
-                                opacity = Prefs.filenameTextShadowOpacity bind prefs.filenameTextShadowOpacity,
-                                strokeWidth = Prefs.filenameTextStrokeWidth bind prefs.filenameTextStrokeWidth,
-                                strokeColor = Prefs.filenameTextStrokeColor bind prefs.filenameTextStrokeColor,
-                                radiusRange = Prefs.filenameTextShadowRadius.range!!,
-                                dyRange = Prefs.filenameTextShadowDy.range!!,
-                                opacityRange = Prefs.filenameTextShadowOpacity.range!!,
-                                strokeWidthRange = Prefs.filenameTextStrokeWidth.range!!,
-                            ),
+                        bindings = TextShadowBindings.forFilename(prefs),
                         viewModel = viewModel,
                         onNavigateBack = { backStack.removeLastOrNull() },
                         bottomNavPadding = bottomNavPadding,
