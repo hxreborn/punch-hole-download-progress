@@ -104,6 +104,7 @@ jobs:
           repository: Xposed-Modules-Repo/eu.hxreborn.phdp
           token: ${{ secrets.XPOSED_REPO_PAT }}
           tag_name: ${{ steps.version.outputs.code }}-${{ steps.version.outputs.name }}
+          name: v${{ steps.version.outputs.name }}
           prerelease: ${{ steps.version.outputs.prerelease }}
           body: ${{ steps.changelog.outputs.content }}
           files: app/build/outputs/apk/release/*.apk
