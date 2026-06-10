@@ -1,0 +1,7 @@
+Added HDR brightness toggle for the ring on Android 15+
+Added text shadow and outline customization per element
+Added per-element rotation lock for overlay items
+Added Russian translation
+Fixed preferences not always applying after change
+Fixed sliders showing stale values when reopening settings
+Lower CPU overhead during downloads and faster reaction to setting changes
