@@ -81,8 +81,8 @@ commit_parsers = [
   { message = '^chore(\(release\))?:\s*(prepare|prep|bump|align|v?\d+\.\d+)', skip = true },
   { message = '^release:\s*(bump|prepare|v?\d+\.\d+)', skip = true },
   { message = '^chore\(changelog\)', skip = true },
-  # Catch-all
-  { message = ".*", group = "<!-- 99 -->Miscellaneous" },
+  # Catch-all: drop anything that didn't match a user-facing type above
+  { message = ".*", skip = true },
 ]
 filter_commits = false
 tag_pattern = "v[0-9]*"
