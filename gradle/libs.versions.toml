@@ -13,7 +13,7 @@ material3 = "1.5.0-alpha18"
 compose-preference = "1.1.1"
 serialization = "1.11.0"
 aboutlibraries = "14.1.0"
-colorpicker = "1.1.4"
+colorpicker = "1.2.0"
 ktlint = "1.8.0"
 
 [libraries]
