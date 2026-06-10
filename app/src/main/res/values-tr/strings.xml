@@ -125,6 +125,38 @@
     <string name="pref_calibrate_app_icon_title">Kaynak simgeyi kalibre et</string>
     <string name="pref_calibrate_app_icon_summary">Kaynak uygulama simgesinin yerleşimini ayarla</string>
 
+    <!-- Calibration: Rotation lock -->
+    <string name="pref_lock_rotation_title">Dikey kalsın</string>
+    <string name="pref_lock_rotation_summary">Bu kaplama öğesini dikey yönlendirmeye sabitler, ekran döndüğünde dik kalır</string>
+
+    <!-- Design: Text shadow and outline (per-element calibration screens) -->
+    <string name="pref_text_shadow_nav_summary">Gölgeyi ve isteğe bağlı kenarlığı özelleştirin</string>
+    <string name="pref_calibrate_percent_shadow_title">Yüzde gölgesini kalibre et</string>
+    <string name="pref_calibrate_filename_shadow_title">Dosya adı gölgesini kalibre et</string>
+    <string name="pref_text_shadow_mode_title">Gölge şekli</string>
+    <string name="pref_text_shadow_mode_summary">Karakter başına her karakterin altına gölge bırakır. Kapsül halesi tüm etiketin arkasına yumuşak bir parıltı yayar (varsayılan: Karakter başına)</string>
+    <string name="pref_text_shadow_mode_per_glyph">Karakter başına</string>
+    <string name="pref_text_shadow_mode_oval">Kapsül halesi</string>
+    <string name="pref_text_shadow_color_title">Gölge rengi</string>
+    <string name="pref_text_shadow_color_summary">Metnin altına çizilen renk (varsayılan: Siyah)</string>
+    <string name="pref_text_shadow_radius_title">Gölge bulanıklığı</string>
+    <string name="pref_text_shadow_radius_summary">Gölge kenarlarının yumuşaklığı</string>
+    <string name="pref_text_shadow_dy_title">Gölge düşüşü</string>
+    <string name="pref_text_shadow_dy_summary">Gölgenin metnin ne kadar altına düştüğü. Kapsül haleleri merkezde kalır</string>
+    <string name="pref_text_shadow_opacity_title">Gölge yoğunluğu</string>
+    <string name="pref_text_shadow_opacity_summary">Gölgenin koyuluğu</string>
+    <string name="pref_text_stroke_width_title">Kenarlık genişliği</string>
+    <string name="pref_text_stroke_width_summary">Her karakterin etrafına kenarlık ekler. 0 devre dışı bırakır</string>
+    <string name="pref_text_stroke_color_title">Kenarlık rengi</string>
+    <string name="pref_text_stroke_color_summary">Kenarlık rengi (varsayılan: Siyah)</string>
+
+    <!-- Design: HDR (API 35+) -->
+    <string name="group_hdr">HDR parlaklığı</string>
+    <string name="pref_hdr_enabled_title">HDR kullan</string>
+    <string name="pref_hdr_enabled_summary">Halkayı HDR ekranlarda standart SDR parlaklığının üzerinde gösterir. Android 15 veya üstü gerekir (varsayılan: kapalı)</string>
+    <string name="pref_hdr_headroom_title">HDR gücü</string>
+    <string name="pref_hdr_headroom_summary">Hedef HDR/SDR oranı. 1.0× SDR, 3.0× istenen maksimum. Ekran gerçek değeri sınırlar</string>
+
     <!-- Motion: Animation -->
     <string name="pref_completion_style_title">Tamamlanma stili</string>
     <string name="pref_completion_style_summary">İndirmeler bittiğinde gösterilecek görsel efekt</string>
@@ -238,24 +270,12 @@
         <item>Sıçrama</item>
         <item>Parçalı</item>
     </string-array>
-    <string-array name="finish_style_values">
-        <item>snap</item>
-        <item>pop</item>
-        <item>segmented</item>
-    </string-array>
-
     <!-- Dialog Arrays: Power Saver -->
     <string-array name="power_saver_entries">
         <item>Normal</item>
         <item>Soluk Halka</item>
         <item>Animasyonları Kapat</item>
     </string-array>
-    <string-array name="power_saver_values">
-        <item>normal</item>
-        <item>dim</item>
-        <item>disable</item>
-    </string-array>
-
     <!-- Dialog Arrays: Burn-in hide timeout -->
     <string-array name="burn_in_hide_entries">
         <item>10s</item>
@@ -271,10 +291,5 @@
         <item>Sistem</item>
         <item>Açık</item>
         <item>Koyu</item>
-    </string-array>
-    <string-array name="theme_values">
-        <item>follow_system</item>
-        <item>light</item>
-        <item>dark</item>
     </string-array>
 </resources>

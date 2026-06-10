@@ -94,6 +94,32 @@
     <string name="pref_app_icon_size_summary">调整来源应用图标大小</string>
     <string name="pref_calibrate_app_icon_title">校准</string>
     <string name="pref_calibrate_app_icon_summary">调整来源应用图标位置</string>
+    <string name="pref_lock_rotation_title">保持竖屏</string>
+    <string name="pref_lock_rotation_summary">将该项锁定为竖屏方向，屏幕旋转时仍保持直立</string>
+    <string name="pref_text_shadow_nav_summary">自定义阴影和可选描边</string>
+    <string name="pref_calibrate_percent_shadow_title">校准百分比阴影</string>
+    <string name="pref_calibrate_filename_shadow_title">校准文件名阴影</string>
+    <string name="pref_text_shadow_mode_title">阴影形状</string>
+    <string name="pref_text_shadow_mode_summary">逐字符模式在每个字符下方投影；胶囊光晕在整段文字背后渲染一层柔和光晕（默认：逐字符）</string>
+    <string name="pref_text_shadow_mode_per_glyph">逐字符</string>
+    <string name="pref_text_shadow_mode_oval">胶囊光晕</string>
+    <string name="pref_text_shadow_color_title">阴影颜色</string>
+    <string name="pref_text_shadow_color_summary">文字下方绘制的颜色（默认：黑色）</string>
+    <string name="pref_text_shadow_radius_title">阴影模糊</string>
+    <string name="pref_text_shadow_radius_summary">阴影边缘的柔和程度</string>
+    <string name="pref_text_shadow_dy_title">阴影偏移</string>
+    <string name="pref_text_shadow_dy_summary">阴影从文字向下偏移的距离。胶囊光晕始终居中</string>
+    <string name="pref_text_shadow_opacity_title">阴影强度</string>
+    <string name="pref_text_shadow_opacity_summary">阴影的浓度</string>
+    <string name="pref_text_stroke_width_title">描边宽度</string>
+    <string name="pref_text_stroke_width_summary">为每个字符添加描边，0 表示关闭</string>
+    <string name="pref_text_stroke_color_title">描边颜色</string>
+    <string name="pref_text_stroke_color_summary">描边颜色（默认：黑色）</string>
+    <string name="group_hdr">HDR 亮度</string>
+    <string name="pref_hdr_enabled_title">使用 HDR</string>
+    <string name="pref_hdr_enabled_summary">在 HDR 屏幕上以高于标准 SDR 的亮度渲染进度环。需要 Android 15 或更高版本（默认：关闭）</string>
+    <string name="pref_hdr_headroom_title">HDR 强度</string>
+    <string name="pref_hdr_headroom_summary">目标 HDR/SDR 比例。1.0× 为 SDR，3.0× 为请求的最大值。实际数值由屏幕限制</string>
     <string name="pref_completion_style_title">完成特效</string>
     <string name="pref_completion_style_summary">下载完成后的视觉效果</string>
     <string name="pref_segment_count_title">分段数量</string>
@@ -184,5 +210,20 @@
         <item>60秒</item>
         <item>120秒</item>
         <item>从不</item>
+    </string-array>
+    <string-array name="finish_style_entries">
+        <item>瞬间</item>
+        <item>弹跳</item>
+        <item>分段</item>
+    </string-array>
+    <string-array name="power_saver_entries">
+        <item>正常</item>
+        <item>调暗进度环</item>
+        <item>禁用动画</item>
+    </string-array>
+    <string-array name="theme_entries">
+        <item>系统</item>
+        <item>浅色</item>
+        <item>深色</item>
     </string-array>
 </resources>

@@ -270,7 +270,7 @@
         <item>Pop</item>
         <item>Segmented</item>
     </string-array>
-    <string-array name="finish_style_values">
+    <string-array name="finish_style_values" translatable="false">
         <item>snap</item>
         <item>pop</item>
         <item>segmented</item>
@@ -282,7 +282,7 @@
         <item>Dim Ring</item>
         <item>Disable Animations</item>
     </string-array>
-    <string-array name="power_saver_values">
+    <string-array name="power_saver_values" translatable="false">
         <item>normal</item>
         <item>dim</item>
         <item>disable</item>
@@ -297,7 +297,7 @@
         <item>120s</item>
         <item>Never</item>
     </string-array>
-    <string-array name="burn_in_hide_values">
+    <string-array name="burn_in_hide_values" translatable="false">
         <item>10000</item>
         <item>15000</item>
         <item>30000</item>
@@ -314,7 +314,7 @@
         <item>Light</item>
         <item>Dark</item>
     </string-array>
-    <string-array name="theme_values">
+    <string-array name="theme_values" translatable="false">
         <item>follow_system</item>
         <item>light</item>
         <item>dark</item>

@@ -125,6 +125,38 @@
     <string name="pref_calibrate_app_icon_title">Настроить исходную иконку</string>
     <string name="pref_calibrate_app_icon_summary">Настроить положение исходной иконки приложения</string>
 
+    <!-- Calibration: Rotation lock -->
+    <string name="pref_lock_rotation_title">Только портрет</string>
+    <string name="pref_lock_rotation_summary">Закрепляет этот элемент в портретной ориентации, чтобы он оставался вертикальным при повороте экрана</string>
+
+    <!-- Design: Text shadow and outline (per-element calibration screens) -->
+    <string name="pref_text_shadow_nav_summary">Настройте тень и дополнительный контур</string>
+    <string name="pref_calibrate_percent_shadow_title">Калибровка тени процента</string>
+    <string name="pref_calibrate_filename_shadow_title">Калибровка тени имени файла</string>
+    <string name="pref_text_shadow_mode_title">Форма тени</string>
+    <string name="pref_text_shadow_mode_summary">«По глифу» создаёт тень под каждым символом. «Капсульный ореол» создаёт мягкое свечение позади всей надписи (по умолчанию: По глифу)</string>
+    <string name="pref_text_shadow_mode_per_glyph">По глифу</string>
+    <string name="pref_text_shadow_mode_oval">Капсульный ореол</string>
+    <string name="pref_text_shadow_color_title">Цвет тени</string>
+    <string name="pref_text_shadow_color_summary">Цвет, рисуемый под текстом (по умолчанию: Чёрный)</string>
+    <string name="pref_text_shadow_radius_title">Размытие тени</string>
+    <string name="pref_text_shadow_radius_summary">Мягкость краёв тени</string>
+    <string name="pref_text_shadow_dy_title">Смещение тени</string>
+    <string name="pref_text_shadow_dy_summary">Насколько ниже текста падает тень. Капсульные ореолы остаются по центру</string>
+    <string name="pref_text_shadow_opacity_title">Насыщенность тени</string>
+    <string name="pref_text_shadow_opacity_summary">Плотность тени</string>
+    <string name="pref_text_stroke_width_title">Толщина контура</string>
+    <string name="pref_text_stroke_width_summary">Добавляет контур вокруг каждого символа. 0 отключает</string>
+    <string name="pref_text_stroke_color_title">Цвет контура</string>
+    <string name="pref_text_stroke_color_summary">Цвет контура (по умолчанию: Чёрный)</string>
+
+    <!-- Design: HDR (API 35+) -->
+    <string name="group_hdr">Яркость HDR</string>
+    <string name="pref_hdr_enabled_title">Использовать HDR</string>
+    <string name="pref_hdr_enabled_summary">Отображает кольцо ярче стандартного SDR на HDR-дисплеях. Требуется Android 15 или новее (по умолчанию: выкл.)</string>
+    <string name="pref_hdr_headroom_title">Сила HDR</string>
+    <string name="pref_hdr_headroom_summary">Целевое соотношение HDR/SDR. 1.0× — SDR, 3.0× — запрошенный максимум. Дисплей ограничивает фактическое значение</string>
+
     <!-- Motion: Animation -->
     <string name="pref_completion_style_title">Стиль завершения</string>
     <string name="pref_completion_style_summary">Визуальный эффект по завершении загрузки</string>
@@ -238,24 +270,12 @@
         <item>Всплеск</item>
         <item>Сегментами</item>
     </string-array>
-    <string-array name="finish_style_values">
-        <item>snap</item>
-        <item>pop</item>
-        <item>segmented</item>
-    </string-array>
-
     <!-- Dialog Arrays: Power Saver -->
     <string-array name="power_saver_entries">
         <item>Обычный</item>
         <item>Тусклое кольцо</item>
         <item>Отключить анимацию</item>
     </string-array>
-    <string-array name="power_saver_values">
-        <item>normal</item>
-        <item>dim</item>
-        <item>disable</item>
-    </string-array>
-
     <!-- Dialog Arrays: Burn-in hide timeout -->
     <string-array name="burn_in_hide_entries">
         <item>10s</item>
@@ -271,10 +291,5 @@
         <item>Система</item>
         <item>Светлая</item>
         <item>Тёмная</item>
-    </string-array>
-    <string-array name="theme_values">
-        <item>follow_system</item>
-        <item>light</item>
-        <item>dark</item>
     </string-array>
 </resources>
