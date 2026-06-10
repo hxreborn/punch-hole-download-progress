@@ -18,6 +18,12 @@ updates:
         patterns:
           - "org.jetbrains.kotlin*"
           - "org.jetbrains.kotlinx*"
+    # Pin to last SDK-36-compatible versions until compileSdk bumps to 37
+    ignore:
+      - dependency-name: "androidx.core:core-ktx"
+        versions: [">=1.19.0"]
+      - dependency-name: "androidx.compose.material3:*"
+        versions: [">=1.5.0-alpha19"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
