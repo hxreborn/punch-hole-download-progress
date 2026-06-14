@@ -25,6 +25,7 @@ import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.withSave
 import eu.hxreborn.phdp.prefs.RotationSlot
+import eu.hxreborn.phdp.util.accessibleField
 import eu.hxreborn.phdp.util.log
 import eu.hxreborn.phdp.util.logDebug
 import eu.hxreborn.phdp.xposed.hook.IndicatorState
@@ -1303,6 +1304,7 @@ class IndicatorView(
 
     companion object {
         private const val TYPE_NAVIGATION_BAR_PANEL = 2024
+        private const val PRIVATE_FLAG_EXCLUDE_FROM_SCREEN_MAGNIFICATION = 1 shl 21
 
         // Drawing constants
         private const val POWER_SAVER_DIM_FACTOR = 0.5f
@@ -1335,6 +1337,13 @@ class IndicatorView(
                 params.colorMode = ActivityInfo.COLOR_MODE_HDR
                 params.desiredHdrHeadroom = IndicatorState.hdrHeadroom
             }
+
+            runCatching {
+                val privateFlagsField = params.javaClass.accessibleField("privateFlags")
+                val currentFlags = privateFlagsField.getInt(params)
+                val newFlags = currentFlags or PRIVATE_FLAG_EXCLUDE_FROM_SCREEN_MAGNIFICATION
+                privateFlagsField.setInt(params, newFlags)
+            }.onFailure { log("magnification exclusion failed", it) }
 
             wm.addView(view, params)
             view.windowParams = params
