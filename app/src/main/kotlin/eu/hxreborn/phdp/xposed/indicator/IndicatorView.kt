@@ -512,7 +512,7 @@ class IndicatorView(
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         log("IndicatorView: onAttachedToWindow()")
-        IndicatorState.onHdrConfigChanged = { applyHdrToOverlayWindow() }
+        IndicatorState.onHdrConfigChanged = { postInvalidate() }
     }
 
     override fun onDetachedFromWindow() {
@@ -534,17 +534,20 @@ class IndicatorView(
         SystemUIHook.detach()
     }
 
-    private fun applyHdrToOverlayWindow() {
+    private var hdrWindowActive = false
+    private var hdrWindowHeadroom = -1f
+
+    private fun updateHdrWindow(active: Boolean) {
         if (Build.VERSION.SDK_INT < 35) return
+        val headroom = if (active) IndicatorState.hdrHeadroom else 0f
+        if (active == hdrWindowActive && headroom == hdrWindowHeadroom) return
+        hdrWindowActive = active
+        hdrWindowHeadroom = headroom
         post {
             val params = windowParams ?: return@post
-            if (IndicatorState.hdrEnabled) {
-                params.colorMode = ActivityInfo.COLOR_MODE_HDR
-                params.desiredHdrHeadroom = IndicatorState.hdrHeadroom
-            } else {
-                params.colorMode = ActivityInfo.COLOR_MODE_DEFAULT
-                params.desiredHdrHeadroom = 0f
-            }
+            params.colorMode =
+                if (active) ActivityInfo.COLOR_MODE_HDR else ActivityInfo.COLOR_MODE_DEFAULT
+            params.desiredHdrHeadroom = headroom
             runCatching {
                 (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager)
                     .updateViewLayout(this, params)
@@ -610,7 +613,9 @@ class IndicatorView(
         )
     }
 
-    fun showStaticPreviewAnim(autoHide: Boolean = true) = animator.showStaticPreviewAnim(autoHide)
+    fun showStaticPreviewAnim(autoHide: Boolean = true) {
+        animator.showStaticPreviewAnim(autoHide)
+    }
 
     fun cancelStaticPreviewAnim() = animator.cancelStaticPreviewAnim()
 
@@ -656,6 +661,7 @@ class IndicatorView(
                 pendingFinishRunnable != null -> true
                 else -> false
             }
+        updateHdrWindow(IndicatorState.hdrEnabled && shouldDraw)
         if (!shouldDraw) {
             if (drawCount == 1) log("IndicatorView: not drawing (disabled or no visibility)")
             return
@@ -1333,10 +1339,6 @@ class IndicatorView(
                         layoutInDisplayCutoutMode =
                             WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
                     }
-            if (Build.VERSION.SDK_INT >= 35 && IndicatorState.hdrEnabled) {
-                params.colorMode = ActivityInfo.COLOR_MODE_HDR
-                params.desiredHdrHeadroom = IndicatorState.hdrHeadroom
-            }
 
             runCatching {
                 val privateFlagsField = params.javaClass.accessibleField("privateFlags")
