@@ -2,14 +2,30 @@ package eu.hxreborn.phdp.ui.screen
 
 import android.content.res.Configuration
 import android.os.Build
+import android.view.Display
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,6 +50,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import me.zhanghai.compose.preference.ProvidePreferenceLocals
 import me.zhanghai.compose.preference.preferenceCategory
+import java.util.function.Consumer
 
 enum class CalibrationTarget { RING, PERCENT, FILENAME, APP_ICON, PERCENT_SHADOW, FILENAME_SHADOW }
 
@@ -434,6 +451,7 @@ fun AppearanceScreen(
                                             valueText = { Text("%.1f×".format(it)) },
                                         )
                                     }
+                                    add { HdrRatioReadout() }
                                 }
                             },
                     )
@@ -717,5 +735,64 @@ internal class PreviewViewModel : SettingsViewModel() {
 
     override fun setLauncherIconHidden(hidden: Boolean) {
         // no-op preview stub
+    }
+}
+
+private const val HDR_REFERENCE_WHITE_NITS = 203f
+
+@RequiresApi(35)
+@Composable
+private fun HdrRatioReadout(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val display = remember(context) { context.display?.takeIf { it.isHdrSdrRatioAvailable } }
+    var ratio by remember { mutableFloatStateOf(1f) }
+
+    DisposableEffect(display) {
+        if (display == null) return@DisposableEffect onDispose {}
+        ratio = display.hdrSdrRatio
+        val listener = Consumer<Display> { ratio = it.hdrSdrRatio }
+        display.registerHdrSdrRatioChangedListener(context.mainExecutor, listener)
+        onDispose { display.unregisterHdrSdrRatioChangedListener(listener) }
+    }
+
+    Row(
+        modifier = modifier.fillMaxWidth().padding(Tokens.PreferencePadding),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            ProvideTextStyle(MaterialTheme.typography.bodyLarge) {
+                Text(stringResource(R.string.pref_hdr_ratio_title))
+            }
+            CompositionLocalProvider(
+                LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant,
+            ) {
+                ProvideTextStyle(MaterialTheme.typography.bodyMedium) {
+                    Text(
+                        stringResource(
+                            if (display != null) R.string.pref_hdr_ratio_summary else R.string.pref_hdr_ratio_unavailable,
+                        ),
+                    )
+                }
+            }
+        }
+        Column(horizontalAlignment = Alignment.End) {
+            Text(
+                text = if (display != null) "%.2f×".format(ratio) else "—",
+                style = MaterialTheme.typography.titleMedium,
+                color =
+                    if (ratio > 1.01f) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+            )
+            if (display != null) {
+                Text(
+                    text = "%.0f cd/m²".format(ratio * HDR_REFERENCE_WHITE_NITS),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
     }
 }

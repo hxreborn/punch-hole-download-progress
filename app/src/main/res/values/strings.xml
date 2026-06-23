@@ -156,6 +156,9 @@
     <string name="pref_hdr_enabled_summary">Renders the ring above standard SDR brightness on HDR displays. Requires Android 15 or later (default: off)</string>
     <string name="pref_hdr_headroom_title">HDR strength</string>
     <string name="pref_hdr_headroom_summary">Target HDR/SDR ratio. 1.0× is SDR, 3.0× the requested max. Display clamps the actual value</string>
+    <string name="pref_hdr_ratio_title">Live HDR/SDR ratio</string>
+    <string name="pref_hdr_ratio_summary">Actual HDR/SDR ratio the display reports</string>
+    <string name="pref_hdr_ratio_unavailable">This display does not report an HDR/SDR ratio</string>
 
     <!-- Motion: Animation -->
     <string name="pref_completion_style_title">Completion style</string>
