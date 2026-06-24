@@ -135,6 +135,7 @@ dependencies {
     implementation(libs.activity.compose)
     implementation(libs.navigation3.runtime)
     implementation(libs.navigation3.ui)
+    implementation(libs.material.motion.compose.core)
     implementation(libs.serialization.json)
     implementation(libs.compose.preference)
     implementation(libs.aboutlibraries.core)

@@ -14,6 +14,7 @@ compose-preference = "1.1.1"
 serialization = "1.11.0"
 aboutlibraries = "14.1.0"
 colorpicker = "1.2.0"
+material-motion = "2.0.1"
 ktlint = "1.8.0"
 
 [libraries]
@@ -39,6 +40,7 @@ compose-preference = { group = "me.zhanghai.compose.preference", name = "library
 aboutlibraries-core = { group = "com.mikepenz", name = "aboutlibraries-core", version.ref = "aboutlibraries" }
 aboutlibraries-compose = { group = "com.mikepenz", name = "aboutlibraries-compose-m3", version.ref = "aboutlibraries" }
 colorpicker-compose = { group = "com.github.skydoves", name = "colorpicker-compose", version.ref = "colorpicker" }
+material-motion-compose-core = { group = "io.github.fornewid", name = "material-motion-compose-core", version.ref = "material-motion" }
 ktlint-cli = { group = "com.pinterest.ktlint", name = "ktlint-cli", version.ref = "ktlint" }
 
 [plugins]

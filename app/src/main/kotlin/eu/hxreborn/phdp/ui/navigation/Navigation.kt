@@ -1,10 +1,9 @@
 package eu.hxreborn.phdp.ui.navigation
 
 import android.provider.Settings
+import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesomeMotion
@@ -29,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
@@ -37,6 +37,7 @@ import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.scene.Scene
 import androidx.navigation3.ui.NavDisplay
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.OffsetPx
@@ -63,6 +64,8 @@ import eu.hxreborn.phdp.ui.screen.TypographyConfig
 import eu.hxreborn.phdp.ui.screen.rememberDisplayRotation
 import eu.hxreborn.phdp.ui.theme.Tokens
 import kotlinx.serialization.Serializable
+import soup.compose.material.motion.animation.materialSharedAxisXIn
+import soup.compose.material.motion.animation.materialSharedAxisXOut
 
 @Serializable
 sealed interface Screen : NavKey {
@@ -113,6 +116,17 @@ data class BottomNavItem(
     val unselectedIcon: ImageVector,
 )
 
+private fun tabIndexOf(contentKey: Any?): Int = bottomNavItems.indexOfFirst { it.key.toString() == contentKey }
+
+private fun isForwardTabTransition(
+    initial: Scene<NavKey>,
+    target: Scene<NavKey>,
+): Boolean {
+    val initialIdx = tabIndexOf(initial.entries.lastOrNull()?.contentKey)
+    val targetIdx = tabIndexOf(target.entries.lastOrNull()?.contentKey)
+    return if (initialIdx >= 0 && targetIdx >= 0) targetIdx >= initialIdx else true
+}
+
 val bottomNavItems =
     listOf(
         BottomNavItem(
@@ -161,22 +175,22 @@ fun MainNavDisplay(
     bottomNavPadding: Dp,
     modifier: Modifier = Modifier,
 ) {
+    val slideInDistance = with(LocalDensity.current) { Tokens.NavSlideDistance.roundToPx() }
+
+    fun sharedAxisX(forward: Boolean): ContentTransform =
+        materialSharedAxisXIn(forward = forward, slideDistance = slideInDistance) togetherWith
+            materialSharedAxisXOut(
+                forward = forward,
+                slideDistance = slideInDistance,
+            )
+
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
         modifier = modifier,
-        transitionSpec = {
-            slideInHorizontally(initialOffsetX = { it }) togetherWith
-                slideOutHorizontally(targetOffsetX = { -it })
-        },
-        popTransitionSpec = {
-            slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                slideOutHorizontally(targetOffsetX = { it })
-        },
-        predictivePopTransitionSpec = {
-            slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                slideOutHorizontally(targetOffsetX = { it })
-        },
+        transitionSpec = { sharedAxisX(isForwardTabTransition(initialState, targetState)) },
+        popTransitionSpec = { sharedAxisX(forward = false) },
+        predictivePopTransitionSpec = { sharedAxisX(forward = false) },
         entryProvider =
             entryProvider {
                 entry<Screen.Design> {
