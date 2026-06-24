@@ -67,7 +67,11 @@ object Prefs {
     val finishExitMs = IntPref("finish_exit_ms", 500, 50..3000)
     val finishUseFlashColor = BoolPref("finish_use_flash_color", true)
     val finishFlashColor = IntPref("finish_flash_color", MaterialPalette.White)
-    val completionPulseEnabled = BoolPref("completion_pulse_enabled", true)
+
+    val effectSpeed = StringPref("effect_speed", "medium")
+    val effectIntensity = StringPref("effect_intensity", "medium")
+    val effectReverse = BoolPref("effect_reverse", false)
+    val effectRepeat = IntPref("effect_repeat", 3, 1..6)
 
     // Segment animation
     val segmentCount = IntPref("segment_count", 12, 4..24)
@@ -242,7 +246,10 @@ object Prefs {
             finishExitMs,
             finishUseFlashColor,
             finishFlashColor,
-            completionPulseEnabled,
+            effectSpeed,
+            effectIntensity,
+            effectReverse,
+            effectRepeat,
             segmentCount,
             segmentGapDegrees,
             percentTextEnabled,

@@ -99,7 +99,19 @@ object IndicatorState {
         private set
 
     @Volatile
-    var completionPulseEnabled = Prefs.completionPulseEnabled.default
+    var effectSpeed = Prefs.effectSpeed.default
+        private set
+
+    @Volatile
+    var effectIntensity = Prefs.effectIntensity.default
+        private set
+
+    @Volatile
+    var effectReverse = Prefs.effectReverse.default
+        private set
+
+    @Volatile
+    var effectRepeat = Prefs.effectRepeat.default
         private set
 
     @Volatile
@@ -549,9 +561,20 @@ object IndicatorState {
                     minVisibilityMs = Prefs.minVisibilityMs.read(prefs)
                 }
 
-                Prefs.completionPulseEnabled.key -> {
-                    completionPulseEnabled =
-                        Prefs.completionPulseEnabled.read(prefs)
+                Prefs.effectSpeed.key -> {
+                    effectSpeed = Prefs.effectSpeed.read(prefs)
+                }
+
+                Prefs.effectIntensity.key -> {
+                    effectIntensity = Prefs.effectIntensity.read(prefs)
+                }
+
+                Prefs.effectReverse.key -> {
+                    effectReverse = Prefs.effectReverse.read(prefs)
+                }
+
+                Prefs.effectRepeat.key -> {
+                    effectRepeat = Prefs.effectRepeat.read(prefs)
                 }
 
                 Prefs.segmentCount.key -> {
@@ -896,7 +919,10 @@ object IndicatorState {
                 finishFlashColor = Prefs.finishFlashColor.read(prefs)
                 minVisibilityEnabled = Prefs.minVisibilityEnabled.read(prefs)
                 minVisibilityMs = Prefs.minVisibilityMs.read(prefs)
-                completionPulseEnabled = Prefs.completionPulseEnabled.read(prefs)
+                effectSpeed = Prefs.effectSpeed.read(prefs)
+                effectIntensity = Prefs.effectIntensity.read(prefs)
+                effectReverse = Prefs.effectReverse.read(prefs)
+                effectRepeat = Prefs.effectRepeat.read(prefs)
                 segmentCount = Prefs.segmentCount.read(prefs)
                 segmentGapDegrees = Prefs.segmentGapDegrees.read(prefs)
                 percentTextEnabled = Prefs.percentTextEnabled.read(prefs)
