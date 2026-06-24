@@ -23,12 +23,12 @@ val versionMajor: Provider<Int> =
 
 android {
     namespace = "eu.hxreborn.phdp"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = namespace
         minSdk = 28
-        targetSdk = 36
+        targetSdk = 37
         versionCode = project.findProperty("version.code")?.toString()?.toInt()
             ?: (versionMajor.get() * 10000 + gitCommitCount.get().toInt())
         versionName = project.findProperty("version.name")?.toString()
