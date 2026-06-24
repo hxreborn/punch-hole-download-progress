@@ -46,6 +46,8 @@
     <string name="group_percent_text">Текст процента</string>
     <string name="group_filename_text">Текст имени файла</string>
     <string name="group_app_icon">Исходное приложение</string>
+    <string name="group_progress_ring">Кольцо прогресса</string>
+    <string name="group_completion_effect">Эффект завершения</string>
     <string name="group_indicators">Индикаторы</string>
     <string name="group_feedback">Обратная связь</string>
     <string name="group_app_theme">Тема приложения</string>
@@ -155,6 +157,9 @@
     <string name="pref_hdr_enabled_summary">Отображает кольцо ярче стандартного SDR на HDR-дисплеях. Требуется Android 15 или новее (по умолчанию: выкл.)</string>
     <string name="pref_hdr_headroom_title">Сила HDR</string>
     <string name="pref_hdr_headroom_summary">Целевое соотношение HDR/SDR. 1.0× — SDR, 3.0× — запрошенный максимум. Дисплей ограничивает фактическое значение</string>
+    <string name="pref_hdr_ratio_title">Текущее соотношение HDR/SDR</string>
+    <string name="pref_hdr_ratio_summary">Фактическое соотношение HDR/SDR, сообщаемое дисплеем</string>
+    <string name="pref_hdr_ratio_unavailable">Этот дисплей не сообщает соотношение HDR/SDR</string>
 
     <!-- Motion: Animation -->
     <string name="pref_completion_style_title">Стиль завершения</string>
@@ -163,6 +168,28 @@
     <string name="pref_segment_count_summary">Количество фрагментов в анимации завершения</string>
     <string name="pref_segment_gap_title">Разрыв между сегментами</string>
     <string name="pref_segment_gap_summary">Расстояние между сегментами в градусах</string>
+
+    <!-- Motion: Effect descriptions -->
+    <string name="effect_desc_snap">Кольцо исчезает мгновенно, без анимации</string>
+    <string name="effect_desc_pop">Кольцо немного увеличивается, затем исчезает</string>
+    <string name="effect_desc_segmented">Кольцо загорается по одному сегменту, затем исчезает</string>
+    <string name="effect_desc_wipe">Кольцо постепенно стирается по кругу</string>
+    <string name="effect_desc_spinoff">Кольцо вращается и сжимается, исчезая</string>
+    <string name="effect_desc_blink">Кольцо несколько раз мигает цветом завершения, затем исчезает</string>
+    <string name="effect_desc_sweep">Кольцо заполняется от пустого до полного, затем исчезает</string>
+    <string name="effect_desc_rainbow">Кольцо перебирает цвета радуги, затем исчезает</string>
+
+    <!-- Motion: Effect options -->
+    <string name="pref_effect_speed_title">Скорость</string>
+    <string name="pref_effect_speed_summary">Как быстро проигрывается анимация завершения</string>
+    <string name="pref_effect_intensity_title">Интенсивность</string>
+    <string name="pref_effect_intensity_summary">Насколько сильно эффект масштабируется, вращается или мигает</string>
+    <string name="pref_effect_direction_title">Обратный эффект завершения</string>
+    <string name="pref_effect_direction_summary">Проигрывать анимацию завершения в обратном направлении</string>
+    <string name="pref_effect_repeat_title">Повтор</string>
+    <string name="pref_effect_repeat_summary">Количество циклов эффекта</string>
+    <string name="pref_effect_repeat_timing">~%1$d мс на цикл, всего %2$d мс</string>
+    <string name="pref_effect_flicker_warning">Очень быстро, может выглядеть как мерцание</string>
 
     <!-- Motion: Timing -->
 
@@ -223,6 +250,8 @@
     <string name="pref_theme_summary">Выберите светлую, темную или системную по умолчанию</string>
     <string name="pref_dynamic_color_title">Динамические цвета</string>
     <string name="pref_dynamic_color_summary">Используйте цвета Material You из обоев</string>
+    <string name="pref_floating_nav_bar_title">Плавающая панель навигации</string>
+    <string name="pref_floating_nav_bar_summary">Использовать компактную плавающую панель вместо панели во всю ширину</string>
     <string name="pref_battery_saver_title">Режим экономии заряда батареи</string>
     <string name="pref_battery_saver_summary">Поведение индикатора во время работы в режиме экономии заряда батареи</string>
 
@@ -260,6 +289,32 @@
     <string name="character_count">Количество символов: %d</string>
     <string name="increase">Увеличить</string>
     <string name="decrease">Уменьшение</string>
+
+    <!-- Dialog Arrays: Completion Style -->
+    <string-array name="finish_style_entries">
+        <item>Нет</item>
+        <item>Всплеск</item>
+        <item>Сегменты</item>
+        <item>Стирание</item>
+        <item>Вращение</item>
+        <item>Мигание</item>
+        <item>Заполнение</item>
+        <item>Радуга</item>
+    </string-array>
+
+    <!-- Dialog Arrays: Effect Speed -->
+    <string-array name="effect_speed_entries">
+        <item>Медленно</item>
+        <item>Средне</item>
+        <item>Быстро</item>
+    </string-array>
+
+    <!-- Dialog Arrays: Effect Intensity -->
+    <string-array name="effect_intensity_entries">
+        <item>Низкая</item>
+        <item>Средняя</item>
+        <item>Высокая</item>
+    </string-array>
 
     <!-- Dialog Arrays: Power Saver -->
     <string-array name="power_saver_entries">

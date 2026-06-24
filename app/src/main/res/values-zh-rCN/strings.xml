@@ -34,6 +34,8 @@
     <string name="group_percent_text">进度百分比</string>
     <string name="group_filename_text">文件名</string>
     <string name="group_app_icon">来源应用</string>
+    <string name="group_progress_ring">进度环</string>
+    <string name="group_completion_effect">完成特效</string>
     <string name="group_indicators">数字角标</string>
     <string name="group_feedback">反馈</string>
     <string name="group_app_theme">应用主题</string>
@@ -119,12 +121,33 @@
     <string name="pref_hdr_enabled_summary">在 HDR 屏幕上以高于标准 SDR 的亮度渲染进度环。需要 Android 15 或更高版本（默认：关闭）</string>
     <string name="pref_hdr_headroom_title">HDR 强度</string>
     <string name="pref_hdr_headroom_summary">目标 HDR/SDR 比例。1.0× 为 SDR，3.0× 为请求的最大值。实际数值由屏幕限制</string>
+    <string name="pref_hdr_ratio_title">实时 HDR/SDR 比例</string>
+    <string name="pref_hdr_ratio_summary">屏幕报告的实际 HDR/SDR 比例</string>
+    <string name="pref_hdr_ratio_unavailable">此屏幕不报告 HDR/SDR 比例</string>
     <string name="pref_completion_style_title">完成特效</string>
     <string name="pref_completion_style_summary">下载完成后的视觉效果</string>
     <string name="pref_segment_count_title">分段数量</string>
     <string name="pref_segment_count_summary">完成特效中的分段数量</string>
     <string name="pref_segment_gap_title">分段间隙</string>
     <string name="pref_segment_gap_summary">分段之间的间隔</string>
+    <string name="effect_desc_snap">进度环立即消失，无动画</string>
+    <string name="effect_desc_pop">进度环短暂放大后淡出</string>
+    <string name="effect_desc_segmented">进度环逐段点亮，然后淡出</string>
+    <string name="effect_desc_wipe">进度环沿圆周逐渐擦除</string>
+    <string name="effect_desc_spinoff">进度环旋转收缩并淡出</string>
+    <string name="effect_desc_blink">进度环以完成颜色闪烁几次后淡出</string>
+    <string name="effect_desc_sweep">进度环从空到满逐渐填充，然后淡出</string>
+    <string name="effect_desc_rainbow">进度环循环显示彩虹色后淡出</string>
+    <string name="pref_effect_speed_title">速度</string>
+    <string name="pref_effect_speed_summary">完成动画的播放速度</string>
+    <string name="pref_effect_intensity_title">强度</string>
+    <string name="pref_effect_intensity_summary">特效缩放、旋转或闪烁的强烈程度</string>
+    <string name="pref_effect_direction_title">反向完成特效</string>
+    <string name="pref_effect_direction_summary">以相反方向播放完成动画</string>
+    <string name="pref_effect_repeat_title">重复次数</string>
+    <string name="pref_effect_repeat_summary">特效运行的循环次数</string>
+    <string name="pref_effect_repeat_timing">每次循环约 %1$d 毫秒，共 %2$d 毫秒</string>
+    <string name="pref_effect_flicker_warning">速度过快，可能看起来像闪烁</string>
     <string name="pref_haptic_feedback_title">触觉反馈</string>
     <string name="pref_haptic_feedback_summary">下载完成后震动提醒</string>
     <string name="pref_show_queue_count_title">下载数角标</string>
@@ -171,6 +194,8 @@
     <string name="pref_theme_summary">可设置浅色、深色或系统默认主题</string>
     <string name="pref_dynamic_color_title">动态取色</string>
     <string name="pref_dynamic_color_summary">根据壁纸自动生成主题颜色</string>
+    <string name="pref_floating_nav_bar_title">悬浮导航栏</string>
+    <string name="pref_floating_nav_bar_summary">使用紧凑的悬浮导航栏，替代全宽导航栏</string>
     <string name="pref_battery_saver_title">省电模式</string>
     <string name="pref_battery_saver_summary">可设置省电模式下进度环表现</string>
     <string name="pref_debug_completion_title">测试完成效果</string>
@@ -200,6 +225,26 @@
     <string name="character_count">字符数：%d</string>
     <string name="increase">增加</string>
     <string name="decrease">减少</string>
+    <string-array name="finish_style_entries">
+        <item>无</item>
+        <item>弹跳</item>
+        <item>分段</item>
+        <item>擦除</item>
+        <item>旋转</item>
+        <item>闪烁</item>
+        <item>填充</item>
+        <item>彩虹</item>
+    </string-array>
+    <string-array name="effect_speed_entries">
+        <item>慢</item>
+        <item>中</item>
+        <item>快</item>
+    </string-array>
+    <string-array name="effect_intensity_entries">
+        <item>低</item>
+        <item>中</item>
+        <item>高</item>
+    </string-array>
     <string-array name="burn_in_hide_entries">
         <item>10秒</item>
         <item>15秒</item>
