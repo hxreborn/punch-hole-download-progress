@@ -1,0 +1,6 @@
+Added new completion effects on download finish (Wipe, Spin-off, Blink, Sweep, Rainbow) with speed, intensity, repeat, and reverse controls
+Added option to float the navigation bar
+Reworked HDR brightness with a new indicator, reboot persistence across more OEMs, and overall refinements
+Smoother sliding transitions between settings screens
+Added descriptions to the animation selection dialogs
+Overlay no longer breaks screen magnification
