@@ -168,6 +168,7 @@ class PrefsRepositoryImpl(
             previewFilenameText = Prefs.previewFilenameText.read(this),
             darkThemeConfig = readDarkThemeConfig(),
             useDynamicColor = Prefs.useDynamicColor.read(this),
+            floatingNavBar = Prefs.floatingNavBar.read(this),
             ringScaleX = Prefs.ringScaleX.read(this),
             ringScaleY = Prefs.ringScaleY.read(this),
             ringScaleLinked = Prefs.ringScaleLinked.read(this),

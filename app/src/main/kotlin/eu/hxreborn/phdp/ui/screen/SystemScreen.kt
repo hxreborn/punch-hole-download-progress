@@ -107,6 +107,22 @@ fun SystemScreen(
                                     },
                                 )
                             },
+                            {
+                                TogglePreferenceWithIcon(
+                                    value = prefsState.floatingNavBar,
+                                    onValueChange = { viewModel.savePref(Prefs.floatingNavBar, it) },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_floating_nav_bar_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_floating_nav_bar_summary),
+                                        )
+                                    },
+                                )
+                            },
                         ),
                 )
             }

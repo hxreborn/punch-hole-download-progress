@@ -101,4 +101,8 @@ object Tokens {
     val NavBarPillWidth: Dp = 56.dp
     val NavBarPillHeight: Dp = 32.dp
     val NavBarPillTopOffset: Dp = 14.dp
+
+    // Navigation bar floating variant (FloatingNavBar)
+    val FloatingBarItemHeight: Dp = 56.dp
+    val FloatingBarBottomPadding: Dp = 24.dp
 }

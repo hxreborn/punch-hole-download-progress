@@ -127,6 +127,7 @@ object Prefs {
     // UI-only
     val darkThemeConfig = StringPref("dark_theme_config", "follow_system")
     val useDynamicColor = BoolPref("use_dynamic_color", true)
+    val floatingNavBar = BoolPref("floating_nav_bar", false)
 
     // Diagnostics
     val verboseLogging = BoolPref("verbose_logging", false)

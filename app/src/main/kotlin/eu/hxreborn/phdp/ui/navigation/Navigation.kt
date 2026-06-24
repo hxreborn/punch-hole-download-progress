@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -446,6 +447,7 @@ fun BottomNav(
     backStack: NavBackStack<NavKey>,
     currentKey: NavKey?,
     modifier: Modifier = Modifier,
+    floating: Boolean = false,
 ) {
     val haptics = LocalHapticFeedback.current
     val animDuration = rememberScaledAnimDuration()
@@ -468,6 +470,27 @@ fun BottomNav(
             else -> currentKey
         }
 
+    val selectTab: (BottomNavItem) -> Unit =
+        remember(backStack, haptics) {
+            { item ->
+                haptics.performHapticFeedback(HapticFeedbackType.ContextClick)
+                backStack.removeAll { it != Screen.Design }
+                if (item.key != Screen.Design) {
+                    backStack.add(item.key)
+                }
+            }
+        }
+
+    if (floating) {
+        FloatingNavBar(
+            items = bottomNavItems,
+            selectedKey = effectiveKey as? Screen,
+            onSelect = selectTab,
+            modifier = modifier,
+        )
+        return
+    }
+
     val selectedIndex =
         bottomNavItems
             .indexOfFirst { it.key == effectiveKey }
@@ -483,17 +506,10 @@ fun BottomNav(
         NavigationBar(modifier = modifier) {
             bottomNavItems.forEach { item ->
                 val selected = effectiveKey == item.key
+                val onSelectTab = dropUnlessResumed { selectTab(item) }
                 NavigationBarItem(
                     selected = selected,
-                    onClick = {
-                        if (!selected) {
-                            haptics.performHapticFeedback(HapticFeedbackType.ContextClick)
-                            backStack.removeAll { it != Screen.Design }
-                            if (item.key != Screen.Design) {
-                                backStack.add(item.key)
-                            }
-                        }
-                    },
+                    onClick = { if (!selected) onSelectTab() },
                     icon = {
                         Crossfade(
                             targetState = selected,

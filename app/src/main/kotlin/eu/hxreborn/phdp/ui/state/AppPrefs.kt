@@ -87,6 +87,7 @@ data class AppPrefs(
     val previewFilenameText: String = Prefs.previewFilenameText.default,
     val darkThemeConfig: DarkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
     val useDynamicColor: Boolean = Prefs.useDynamicColor.default,
+    val floatingNavBar: Boolean = Prefs.floatingNavBar.default,
     val ringScaleX: Float = Prefs.ringScaleX.default,
     val ringScaleY: Float = Prefs.ringScaleY.default,
     val ringScaleLinked: Boolean = Prefs.ringScaleLinked.default,
