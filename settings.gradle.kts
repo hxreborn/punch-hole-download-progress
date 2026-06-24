@@ -20,3 +20,4 @@ dependencyResolutionManagement {
 rootProject.name = "Orbit"
 
 include(":app")
+include(":tools:download-sim")

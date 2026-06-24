@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">PHDP Download Sim</string>
+    <string name="header">PHDP Download Sim</string>
+    <string name="btn_slow">Slow download</string>
+    <string name="btn_fast">Fast download</string>
+    <string name="btn_two">Two downloads</string>
+    <string name="btn_custom">Start custom</string>
+    <string name="hint_interval">Interval ms</string>
+    <string name="hint_step">Step % per tick</string>
+    <string name="hint_count">Concurrent (1-5)</string>
+</resources>
