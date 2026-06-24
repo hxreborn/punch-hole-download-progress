@@ -46,7 +46,6 @@
     <string name="group_percent_text">Yüzde Metni</string>
     <string name="group_filename_text">Dosya Adı Metni</string>
     <string name="group_app_icon">Kaynak Uygulama</string>
-    <string name="group_animation">Animasyon</string>
     <string name="group_indicators">Göstergeler</string>
     <string name="group_feedback">Geri Bildirim</string>
     <string name="group_app_theme">Uygulama Teması</string>
@@ -170,8 +169,6 @@
     <!-- Motion: Feedback -->
     <string name="pref_haptic_feedback_title">Dokunsal geri bildirim</string>
     <string name="pref_haptic_feedback_summary">İndirme tamamlandığında titreş</string>
-    <string name="pref_pulse_flash_title">Tamamlanma atımı</string>
-    <string name="pref_pulse_flash_summary">Tamamlanma animasyonundan önce kısa süreli kararma</string>
 
     <!-- Motion: Fast Downloads -->
 
@@ -264,12 +261,6 @@
     <string name="increase">Artır</string>
     <string name="decrease">Azalt</string>
 
-    <!-- Dialog Arrays: Completion Style -->
-    <string-array name="finish_style_entries">
-        <item>Anında</item>
-        <item>Sıçrama</item>
-        <item>Parçalı</item>
-    </string-array>
     <!-- Dialog Arrays: Power Saver -->
     <string-array name="power_saver_entries">
         <item>Normal</item>

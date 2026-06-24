@@ -46,7 +46,8 @@
     <string name="group_percent_text">Percentage Text</string>
     <string name="group_filename_text">Filename Text</string>
     <string name="group_app_icon">Source App</string>
-    <string name="group_animation">Animation</string>
+    <string name="group_progress_ring">Progress ring</string>
+    <string name="group_completion_effect">Completion effect</string>
     <string name="group_indicators">Indicators</string>
     <string name="group_feedback">Feedback</string>
     <string name="group_app_theme">App theme</string>
@@ -168,13 +169,33 @@
     <string name="pref_segment_gap_title">Segment gap</string>
     <string name="pref_segment_gap_summary">Spacing between segments in degrees</string>
 
+    <!-- Motion: Effect descriptions -->
+    <string name="effect_desc_snap">Ring disappears instantly, no animation</string>
+    <string name="effect_desc_pop">Ring briefly grows, then fades out</string>
+    <string name="effect_desc_segmented">Ring lights up one segment at a time, then fades out</string>
+    <string name="effect_desc_wipe">Ring erases gradually around the circle</string>
+    <string name="effect_desc_spinoff">Ring spins and shrinks while fading out</string>
+    <string name="effect_desc_blink">Ring flashes the completion color a few times, then fades out</string>
+    <string name="effect_desc_sweep">Ring fills from empty to full, then fades out</string>
+    <string name="effect_desc_rainbow">Ring cycles through rainbow colors, then fades out</string>
+
+    <!-- Motion: Effect options -->
+    <string name="pref_effect_speed_title">Speed</string>
+    <string name="pref_effect_speed_summary">How fast the completion animation plays</string>
+    <string name="pref_effect_intensity_title">Intensity</string>
+    <string name="pref_effect_intensity_summary">How strongly the effect scales, spins, or flashes</string>
+    <string name="pref_effect_direction_title">Reverse completion effect</string>
+    <string name="pref_effect_direction_summary">Play the completion animation in the opposite direction</string>
+    <string name="pref_effect_repeat_title">Repeat</string>
+    <string name="pref_effect_repeat_summary">Number of cycles the effect runs</string>
+    <string name="pref_effect_repeat_timing">~%1$d ms per cycle, %2$d ms total</string>
+    <string name="pref_effect_flicker_warning">Very fast, may look like flicker</string>
+
     <!-- Motion: Timing -->
 
     <!-- Motion: Feedback -->
     <string name="pref_haptic_feedback_title">Haptic feedback</string>
     <string name="pref_haptic_feedback_summary">Vibrate on download completion</string>
-    <string name="pref_pulse_flash_title">Completion pulse</string>
-    <string name="pref_pulse_flash_summary">Brief dim before completion animation</string>
 
     <!-- Motion: Fast Downloads -->
 
@@ -201,7 +222,7 @@
     <string name="pref_filename_vertical_title">Vertical text</string>
     <string name="pref_filename_vertical_summary">Draw each character in a vertical line when in landscape orientation</string>
     <string name="pref_preview_text_title">Preview text</string>
-    <string name="pref_invert_rotation_title">Progress direction</string>
+    <string name="pref_invert_rotation_title">Ring fill direction</string>
     <string name="clockwise">Clockwise</string>
     <string name="counter_clockwise">Counter-clockwise</string>
 
@@ -271,14 +292,48 @@
 
     <!-- Dialog Arrays: Completion Style -->
     <string-array name="finish_style_entries">
-        <item>Snap</item>
+        <item>None</item>
         <item>Pop</item>
         <item>Segmented</item>
+        <item>Wipe</item>
+        <item>Spin-off</item>
+        <item>Blink</item>
+        <item>Sweep</item>
+        <item>Rainbow</item>
     </string-array>
     <string-array name="finish_style_values" translatable="false">
         <item>snap</item>
         <item>pop</item>
         <item>segmented</item>
+        <item>wipe</item>
+        <item>spinoff</item>
+        <item>blink</item>
+        <item>sweep</item>
+        <item>rainbow</item>
+    </string-array>
+
+    <!-- Dialog Arrays: Effect Speed -->
+    <string-array name="effect_speed_entries">
+        <item>Slow</item>
+        <item>Medium</item>
+        <item>Fast</item>
+    </string-array>
+    <string-array name="effect_speed_values" translatable="false">
+        <item>slow</item>
+        <item>medium</item>
+        <item>fast</item>
+    </string-array>
+
+    <!-- Dialog Arrays: Effect Intensity -->
+    <string-array name="effect_intensity_entries">
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+    </string-array>
+    <string-array name="effect_intensity_values" translatable="false">
+        <item>low</item>
+        <item>medium</item>
+        <item>high</item>
     </string-array>
 
     <!-- Dialog Arrays: Power Saver -->

@@ -46,7 +46,6 @@
     <string name="group_percent_text">Текст процента</string>
     <string name="group_filename_text">Текст имени файла</string>
     <string name="group_app_icon">Исходное приложение</string>
-    <string name="group_animation">Анимация</string>
     <string name="group_indicators">Индикаторы</string>
     <string name="group_feedback">Обратная связь</string>
     <string name="group_app_theme">Тема приложения</string>
@@ -170,8 +169,6 @@
     <!-- Motion: Feedback -->
     <string name="pref_haptic_feedback_title">Тактильная обратная связь</string>
     <string name="pref_haptic_feedback_summary">Вибрация по завершении загрузки</string>
-    <string name="pref_pulse_flash_title">Импульс завершения</string>
-    <string name="pref_pulse_flash_summary">Кратковременное затемнение перед завершением анимации</string>
 
     <!-- Motion: Fast Downloads -->
 
@@ -264,12 +261,6 @@
     <string name="increase">Увеличить</string>
     <string name="decrease">Уменьшение</string>
 
-    <!-- Dialog Arrays: Completion Style -->
-    <string-array name="finish_style_entries">
-        <item>Мгновенно</item>
-        <item>Всплеск</item>
-        <item>Сегментами</item>
-    </string-array>
     <!-- Dialog Arrays: Power Saver -->
     <string-array name="power_saver_entries">
         <item>Обычный</item>

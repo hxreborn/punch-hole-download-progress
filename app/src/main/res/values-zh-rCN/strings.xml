@@ -34,7 +34,6 @@
     <string name="group_percent_text">进度百分比</string>
     <string name="group_filename_text">文件名</string>
     <string name="group_app_icon">来源应用</string>
-    <string name="group_animation">动画</string>
     <string name="group_indicators">数字角标</string>
     <string name="group_feedback">反馈</string>
     <string name="group_app_theme">应用主题</string>
@@ -128,8 +127,6 @@
     <string name="pref_segment_gap_summary">分段之间的间隔</string>
     <string name="pref_haptic_feedback_title">触觉反馈</string>
     <string name="pref_haptic_feedback_summary">下载完成后震动提醒</string>
-    <string name="pref_pulse_flash_title">脉冲</string>
-    <string name="pref_pulse_flash_summary">动画开始前会先短暂变暗</string>
     <string name="pref_show_queue_count_title">下载数角标</string>
     <string name="pref_show_queue_count_summary">显示同时进行的下载数量</string>
     <string name="pref_calibrate_badge_title">校准</string>
@@ -210,11 +207,6 @@
         <item>60秒</item>
         <item>120秒</item>
         <item>从不</item>
-    </string-array>
-    <string-array name="finish_style_entries">
-        <item>瞬间</item>
-        <item>弹跳</item>
-        <item>分段</item>
     </string-array>
     <string-array name="power_saver_entries">
         <item>正常</item>
