@@ -464,106 +464,103 @@ fun PackageSelectionScreen(
         }
 
     Box(modifier = modifier.fillMaxSize()) {
-        Box(
-            modifier =
-                Modifier.fillMaxSize().padding(
+        LazyColumn(
+            state = listState,
+            modifier = Modifier.fillMaxSize().drawVerticalScrollbar(listState),
+            contentPadding =
+                PaddingValues(
                     top = contentPadding.calculateTopPadding() + Tokens.SpacingLg,
                     bottom = contentPadding.calculateBottomPadding() + Tokens.SpacingLg,
                 ),
         ) {
-            LazyColumn(
-                state = listState,
-                modifier = Modifier.fillMaxSize().drawVerticalScrollbar(listState),
-            ) {
-                item(key = "search") {
-                    SearchField(
-                        query = searchQuery,
-                        onQueryChange = { searchQuery = it },
-                        showSystemApps = showSystemApps,
-                        onSystemToggle = { showSystemApps = it },
-                        selectedCount = selectedCount,
-                        onClearClick = { showClearDialog = true },
-                        onApplyDefaults = {
-                            val installedPackageNames = appState.apps.map { it.packageName }.toSet()
-                            applyDefaults(
-                                installedPackageNames = installedPackageNames,
-                                currentSelection = prefsState.selectedPackages,
-                                onSave = saveSelection,
-                                snackbarHostState = snackbarHostState,
-                                scope = scope,
-                                appliedMessage = defaultsAppliedMessage,
-                                noneMessage = defaultsNoneMessage,
-                                undoLabel = undoLabel,
-                            )
-                        },
-                        onHelp = { showHelpDialog = true },
-                        modifier = Modifier.padding(horizontal = Tokens.SectionHorizontalMargin),
-                    )
+            item(key = "search") {
+                SearchField(
+                    query = searchQuery,
+                    onQueryChange = { searchQuery = it },
+                    showSystemApps = showSystemApps,
+                    onSystemToggle = { showSystemApps = it },
+                    selectedCount = selectedCount,
+                    onClearClick = { showClearDialog = true },
+                    onApplyDefaults = {
+                        val installedPackageNames = appState.apps.map { it.packageName }.toSet()
+                        applyDefaults(
+                            installedPackageNames = installedPackageNames,
+                            currentSelection = prefsState.selectedPackages,
+                            onSave = saveSelection,
+                            snackbarHostState = snackbarHostState,
+                            scope = scope,
+                            appliedMessage = defaultsAppliedMessage,
+                            noneMessage = defaultsNoneMessage,
+                            undoLabel = undoLabel,
+                        )
+                    },
+                    onHelp = { showHelpDialog = true },
+                    modifier = Modifier.padding(horizontal = Tokens.SectionHorizontalMargin),
+                )
+            }
+
+            item { Spacer(modifier = Modifier.height(Tokens.SpacingLg)) }
+
+            when {
+                appState.isLoading -> {
+                    items(Tokens.SHIMMER_PLACEHOLDER_COUNT) {
+                        ShimmerListItem(
+                            modifier =
+                                Modifier.padding(
+                                    horizontal = Tokens.SectionHorizontalMargin,
+                                    vertical = Tokens.SpacingSm,
+                                ),
+                        )
+                    }
                 }
 
-                item { Spacer(modifier = Modifier.height(Tokens.SpacingLg)) }
+                sortedApps.isEmpty() -> {
+                    item(key = "empty") {
+                        var visible by remember { mutableStateOf(false) }
+                        LaunchedEffect(Unit) { visible = true }
 
-                when {
-                    appState.isLoading -> {
-                        items(Tokens.SHIMMER_PLACEHOLDER_COUNT) {
-                            ShimmerListItem(
-                                modifier =
-                                    Modifier.padding(
-                                        horizontal = Tokens.SectionHorizontalMargin,
-                                        vertical = Tokens.SpacingSm,
-                                    ),
-                            )
-                        }
-                    }
-
-                    sortedApps.isEmpty() -> {
-                        item(key = "empty") {
-                            var visible by remember { mutableStateOf(false) }
-                            LaunchedEffect(Unit) { visible = true }
-
-                            Box(
-                                modifier = Modifier.fillMaxWidth().padding(Tokens.SpacingLg),
-                                contentAlignment = Alignment.Center,
+                        Box(
+                            modifier = Modifier.fillMaxWidth().padding(Tokens.SpacingLg),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            AnimatedVisibility(
+                                visible = visible,
+                                enter =
+                                    slideInVertically(
+                                        initialOffsetY = { -it * 2 },
+                                        animationSpec =
+                                            spring(
+                                                dampingRatio = Spring.DampingRatioMediumBouncy,
+                                                stiffness = Spring.StiffnessLow,
+                                            ),
+                                    ) + fadeIn(animationSpec = tween(Tokens.EMPTY_STATE_FADE_MS)),
                             ) {
-                                AnimatedVisibility(
-                                    visible = visible,
-                                    enter =
-                                        slideInVertically(
-                                            initialOffsetY = { -it * 2 },
-                                            animationSpec =
-                                                spring(
-                                                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                                                    stiffness = Spring.StiffnessLow,
-                                                ),
-                                        ) + fadeIn(animationSpec = tween(Tokens.EMPTY_STATE_FADE_MS)),
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.packages_empty_search),
-                                        modifier = Modifier.padding(vertical = Tokens.EmptyStatePadding),
-                                        style = MaterialTheme.typography.titleLarge,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    )
-                                }
+                                Text(
+                                    text = stringResource(R.string.packages_empty_search),
+                                    modifier = Modifier.padding(vertical = Tokens.EmptyStatePadding),
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
                             }
                         }
                     }
+                }
 
-                    else -> {
-                        items(
-                            items = sortedApps,
-                            key = { it.packageName },
-                        ) { app ->
-                            AppListItem(
-                                app = app,
-                                isChecked = app.packageName in prefsState.selectedPackages,
-                                onCheckedChange = { onToggle(app.packageName, it) },
-                                modifier =
-                                    Modifier.padding(
-                                        horizontal = Tokens.SectionHorizontalMargin,
-                                        vertical = Tokens.SpacingSm,
-                                    ),
-                            )
-                        }
+                else -> {
+                    items(
+                        items = sortedApps,
+                        key = { it.packageName },
+                    ) { app ->
+                        AppListItem(
+                            app = app,
+                            isChecked = app.packageName in prefsState.selectedPackages,
+                            onCheckedChange = { onToggle(app.packageName, it) },
+                            modifier =
+                                Modifier.padding(
+                                    horizontal = Tokens.SectionHorizontalMargin,
+                                    vertical = Tokens.SpacingSm,
+                                ),
+                        )
                     }
                 }
             }
