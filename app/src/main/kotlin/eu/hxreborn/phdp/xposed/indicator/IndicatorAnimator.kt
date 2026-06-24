@@ -7,24 +7,18 @@ import android.animation.ValueAnimator
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
-import android.view.animation.OvershootInterpolator
 import eu.hxreborn.phdp.util.logDebug
-import eu.hxreborn.phdp.xposed.hook.IndicatorState
+import eu.hxreborn.phdp.xposed.indicator.effects.CompletionEffect
+import eu.hxreborn.phdp.xposed.indicator.effects.CompletionEffects
+import eu.hxreborn.phdp.xposed.indicator.effects.EffectParams
 
 class IndicatorAnimator(
     private val view: View,
 ) {
     var isFinishAnimating = false
         private set
-    var displayAlpha = 1f
-        private set
-    var displayScale = 1f
-        private set
-    var segmentHighlight = -1
-        private set
-    var successColorBlend = 0f
-        private set
-    var completionPulseAlpha = 1f
+
+    var activeEffect: CompletionEffect? = null
         private set
 
     var isErrorAnimating = false
@@ -42,8 +36,6 @@ class IndicatorAnimator(
     val isPreviewAnimating: Boolean get() = previewMode == PreviewMode.ANIMATING
     val isGeometryPreviewActive: Boolean get() = previewMode == PreviewMode.GEOMETRY
 
-    private var finishAnimator: ValueAnimator? = null
-    private var pulseAnimator: ValueAnimator? = null
     private var errorAnimator: ValueAnimator? = null
     private var previewAnimator: ValueAnimator? = null
     private var previewDebounceRunnable: Runnable? = null
@@ -51,15 +43,6 @@ class IndicatorAnimator(
 
     private val previewDebounceMs = 300L
     private val geometryPreviewDurationMs = 3000L
-
-    companion object {
-        private const val MAX_ANIMATION_MS = 800
-        private const val FINISH_INTENSITY = 1.5f
-        private const val POP_SCALE_FACTOR = 0.08f
-        private const val SEGMENT_COLOR_BLEND_FACTOR = 0.4f
-        private const val PULSE_MIN_ALPHA = 0.7f
-        private const val PULSE_DURATION_MS = 400L
-    }
 
     private fun play(
         values: FloatArray,
@@ -125,150 +108,33 @@ class IndicatorAnimator(
     }
 
     fun startFinish(
-        style: String,
-        holdMs: Int,
-        exitMs: Int,
-        pulseEnabled: Boolean,
+        params: EffectParams,
         onComplete: () -> Unit,
     ) {
         cancelFinish()
         isFinishAnimating = true
-
-        logDebug { "Starting finish animation: style=$style, hold=${holdMs}ms, exit=${exitMs}ms" }
-
-        displayAlpha = 1f
-        displayScale = 1f
-        segmentHighlight = -1
-        successColorBlend = 1f
-        completionPulseAlpha = 1f
-
-        val startStyleAnimation = {
-            when (style) {
-                "snap" -> {
-                    isFinishAnimating = false
-                    onComplete()
-                }
-
-                "pop" -> {
-                    animatePop(holdMs, exitMs, onComplete)
-                }
-
-                "segmented" -> {
-                    animateSegmented(holdMs, exitMs, onComplete)
-                }
-
-                else -> {
-                    animatePop(holdMs, exitMs, onComplete)
-                }
-            }
+        logDebug {
+            "Starting finish animation: style=${params.style}, " +
+                "hold=${params.holdMs}ms, exit=${params.exitMs}ms"
         }
-
-        if (pulseEnabled && style != "snap") {
-            animateCompletionPulse { startStyleAnimation() }
-        } else {
-            startStyleAnimation()
+        val effect = CompletionEffects.create(params.style)
+        activeEffect = effect
+        effect.start(view, params) {
+            activeEffect = null
+            finishEnd(onComplete)
         }
-    }
-
-    private fun animatePop(
-        holdMs: Int,
-        exitMs: Int,
-        onComplete: () -> Unit,
-    ) {
-        val totalMs = (holdMs + exitMs).coerceAtMost(MAX_ANIMATION_MS)
-        val scalePhaseMs = (totalMs * 0.4f).toLong()
-        val fadePhaseMs = totalMs - scalePhaseMs
-
-        finishAnimator =
-            play(
-                values = floatArrayOf(0f, 1f),
-                durationMs = scalePhaseMs,
-                interpolator = OvershootInterpolator(2f * FINISH_INTENSITY),
-                onUpdate = { fraction ->
-                    displayScale = 1f + (POP_SCALE_FACTOR * FINISH_INTENSITY * fraction)
-                },
-                onEnd = {
-                    finishAnimator =
-                        play(
-                            values = floatArrayOf(0f, 1f),
-                            durationMs = fadePhaseMs,
-                            onUpdate = { fraction ->
-                                val scaleFactor = POP_SCALE_FACTOR * FINISH_INTENSITY
-                                displayScale = 1f + (scaleFactor * (1f - fraction * 0.5f))
-                                displayAlpha = 1f - fraction
-                            },
-                            onEnd = { finishEnd(onComplete) },
-                        )
-                },
-            )
-    }
-
-    private fun animateSegmented(
-        holdMs: Int,
-        exitMs: Int,
-        onComplete: () -> Unit,
-    ) {
-        val totalMs = (holdMs + exitMs).coerceAtMost(MAX_ANIMATION_MS)
-        val cascadePhaseMs = (totalMs * 0.6f).toLong()
-        val fadePhaseMs = totalMs - cascadePhaseMs
-
-        finishAnimator =
-            playInt(
-                to = IndicatorState.segmentCount + 2,
-                durationMs = cascadePhaseMs,
-                onUpdate = { segment ->
-                    segmentHighlight = segment
-                    successColorBlend = FINISH_INTENSITY * SEGMENT_COLOR_BLEND_FACTOR
-                },
-                onEnd = {
-                    segmentHighlight = -1
-                    finishAnimator =
-                        play(
-                            values = floatArrayOf(1f, 0f),
-                            durationMs = fadePhaseMs,
-                            onUpdate = { alpha -> displayAlpha = alpha },
-                            onEnd = { finishEnd(onComplete) },
-                        )
-                },
-            )
     }
 
     private fun finishEnd(onComplete: () -> Unit) {
         isFinishAnimating = false
-        resetFinishState()
         onComplete()
         view.invalidate()
     }
 
-    private fun animateCompletionPulse(onComplete: () -> Unit) {
-        pulseAnimator?.cancel()
-        pulseAnimator =
-            play(
-                values = floatArrayOf(1f, PULSE_MIN_ALPHA, 1f),
-                durationMs = PULSE_DURATION_MS,
-                onUpdate = { alpha -> completionPulseAlpha = alpha },
-                onEnd = {
-                    completionPulseAlpha = 1f
-                    onComplete()
-                },
-            )
-    }
-
     fun cancelFinish() {
-        finishAnimator?.cancel()
-        finishAnimator = null
-        pulseAnimator?.cancel()
-        pulseAnimator = null
+        activeEffect?.cancel()
+        activeEffect = null
         isFinishAnimating = false
-        resetFinishState()
-    }
-
-    private fun resetFinishState() {
-        displayAlpha = 1f
-        displayScale = 1f
-        segmentHighlight = -1
-        successColorBlend = 0f
-        completionPulseAlpha = 1f
     }
 
     fun startError(onComplete: () -> Unit) {
@@ -299,28 +165,18 @@ class IndicatorAnimator(
         errorAlpha = 0f
     }
 
-    fun startDynamicPreviewAnim(
-        finishStyle: String,
-        holdMs: Int,
-        exitMs: Int,
-        pulseEnabled: Boolean,
-    ) {
+    fun startDynamicPreviewAnim(params: EffectParams) {
         logDebug { "IndicatorAnimator: startDynamicPreviewAnim() - debouncing" }
 
         previewDebounceRunnable?.let { view.removeCallbacks(it) }
         previewDebounceRunnable =
             Runnable {
-                startDynamicPreviewAnimInternal(finishStyle, holdMs, exitMs, pulseEnabled)
+                startDynamicPreviewAnimInternal(params)
             }
         view.postDelayed(previewDebounceRunnable, previewDebounceMs)
     }
 
-    private fun startDynamicPreviewAnimInternal(
-        finishStyle: String,
-        holdMs: Int,
-        exitMs: Int,
-        pulseEnabled: Boolean,
-    ) {
+    private fun startDynamicPreviewAnimInternal(params: EffectParams) {
         logDebug { "IndicatorAnimator: startDynamicPreviewAnimInternal()" }
         cancelDynamicPreviewAnim()
         previewMode = PreviewMode.ANIMATING
@@ -334,7 +190,7 @@ class IndicatorAnimator(
                 onUpdate = { progress -> previewProgress = progress },
                 onEnd = {
                     previewProgress = 100
-                    startFinish(finishStyle, holdMs, exitMs, pulseEnabled) {
+                    startFinish(params) {
                         view.postDelayed(
                             {
                                 previewMode = PreviewMode.NONE

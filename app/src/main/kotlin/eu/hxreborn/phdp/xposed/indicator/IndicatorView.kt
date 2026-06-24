@@ -30,6 +30,8 @@ import eu.hxreborn.phdp.util.log
 import eu.hxreborn.phdp.util.logDebug
 import eu.hxreborn.phdp.xposed.hook.IndicatorState
 import eu.hxreborn.phdp.xposed.hook.SystemUIHook
+import eu.hxreborn.phdp.xposed.indicator.effects.EffectParams
+import eu.hxreborn.phdp.xposed.indicator.effects.FinishDrawContext
 import kotlin.math.pow
 
 class IndicatorView(
@@ -209,6 +211,7 @@ class IndicatorView(
     private val shinePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private val errorPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private val animatedPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
+    private val effectPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private val backgroundRingPaint =
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             style = Paint.Style.STROKE
@@ -479,9 +482,7 @@ class IndicatorView(
             halo.paint.color = composedColor
             if (halo.lastBlurRadius != radiusPx) {
                 halo.paint.maskFilter =
-                    if (radiusPx >
-                        0f
-                    ) {
+                    if (radiusPx > 0f) {
                         BlurMaskFilter(radiusPx, BlurMaskFilter.Blur.NORMAL)
                     } else {
                         null
@@ -549,8 +550,14 @@ class IndicatorView(
                 if (active) ActivityInfo.COLOR_MODE_HDR else ActivityInfo.COLOR_MODE_DEFAULT
             params.desiredHdrHeadroom = headroom
             runCatching {
-                (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager)
-                    .updateViewLayout(this, params)
+                (
+                    context.getSystemService(
+                        Context.WINDOW_SERVICE,
+                    ) as WindowManager
+                ).updateViewLayout(
+                    this,
+                    params,
+                )
             }.onFailure { log("hdr refresh failed", it) }
         }
     }
@@ -596,21 +603,11 @@ class IndicatorView(
     }
 
     private fun startFinishAnimation() {
-        animator.startFinish(
-            style = IndicatorState.finishStyle,
-            holdMs = IndicatorState.finishHoldMs,
-            exitMs = IndicatorState.finishExitMs,
-            pulseEnabled = IndicatorState.completionPulseEnabled,
-        ) { progress = 0 }
+        animator.startFinish(EffectParams.fromState()) { progress = 0 }
     }
 
     fun startDynamicPreviewAnim() {
-        animator.startDynamicPreviewAnim(
-            finishStyle = IndicatorState.finishStyle,
-            holdMs = IndicatorState.finishHoldMs,
-            exitMs = IndicatorState.finishExitMs,
-            pulseEnabled = IndicatorState.completionPulseEnabled,
-        )
+        animator.startDynamicPreviewAnim(EffectParams.fromState())
     }
 
     fun showStaticPreviewAnim(autoHide: Boolean = true) {
@@ -648,8 +645,7 @@ class IndicatorView(
 
         val hideDelay = IndicatorState.burnInHideMs
         val isBurnInHidden =
-            hideDelay > 0 &&
-                effectiveProgress in 1..99 && lastActivityTime > 0 &&
+            hideDelay > 0 && effectiveProgress in 1..99 && lastActivityTime > 0 &&
                 System.currentTimeMillis() - lastActivityTime >= hideDelay
 
         val shouldDraw =
@@ -668,36 +664,9 @@ class IndicatorView(
         }
 
         canvas.withSave {
-            if (animator.displayScale != 1f) {
-                scaledPath.computeBounds(arcBounds, true)
-                // Use the calibrated bounds so the pivot reflects ring offsets/scales
-                arcBounds.applyCalibration()
-                scale(
-                    animator.displayScale,
-                    animator.displayScale,
-                    arcBounds.centerX(),
-                    arcBounds.centerY(),
-                )
-            }
-
             animatedPaint.set(glowPaint)
-            animatedPaint.alpha =
-                (
-                    effectiveOpacity * 255 / 100 * animator.displayAlpha *
-                        animator.completionPulseAlpha
-                ).toInt()
+            animatedPaint.alpha = effectiveOpacity * 255 / 100
             animatedPaint.strokeCap = strokeCap
-            if (animator.successColorBlend > 0f) {
-                val baseColor = resolvedRingColor
-                val successColor =
-                    if (IndicatorState.finishUseFlashColor) {
-                        shinePaint.color
-                    } else {
-                        brightenColor(baseColor, animator.successColorBlend)
-                    }
-                animatedPaint.color =
-                    blendColors(baseColor, successColor, animator.successColorBlend)
-            }
 
             val isActiveProgress =
                 effectiveProgress in 1..99 || animator.isGeometryPreviewActive ||
@@ -717,13 +686,12 @@ class IndicatorView(
                     } else {
                         IndicatorState.backgroundRingOpacity
                     }
-                backgroundRingPaint.alpha =
-                    (bgOpacityBase * 255 / 100 * animator.displayAlpha).toInt()
+                backgroundRingPaint.alpha = bgOpacityBase * 255 / 100
                 renderer.drawFullRing(this, backgroundRingPaint)
             }
 
             if (animator.isFinishAnimating) {
-                drawFinishAnimation(this, animatedPaint)
+                drawFinishAnimation(this)
             } else {
                 scaledPath.computeBounds(arcBounds, true)
                 arcBounds.applyCalibration()
@@ -781,30 +749,25 @@ class IndicatorView(
         }
     }
 
-    private fun drawFinishAnimation(
-        canvas: Canvas,
-        paint: Paint,
-    ) {
+    private fun drawFinishAnimation(canvas: Canvas) {
         scaledPath.computeBounds(arcBounds, true)
         arcBounds.applyCalibration()
         renderer.updateBounds(arcBounds)
-        if (IndicatorState.finishStyle == "segmented") {
-            val count = IndicatorState.segmentCount
-            val gap = IndicatorState.segmentGapDegrees
-            val arc = (360f - count * gap) / count
-            renderer.drawSegmented(
-                canvas,
-                count,
-                gap,
-                arc,
-                animator.segmentHighlight,
-                paint,
-                shinePaint,
-                animator.displayAlpha,
-            )
-        } else {
-            renderer.drawFullRing(canvas, paint)
-        }
+        val effect = animator.activeEffect ?: return
+        effectPaint.set(glowPaint)
+        effectPaint.alpha = effectiveOpacity * 255 / 100
+        effectPaint.strokeCap = strokeCap
+        effect.draw(
+            canvas,
+            FinishDrawContext(
+                renderer = renderer,
+                bounds = arcBounds,
+                paint = effectPaint,
+                shinePaint = shinePaint,
+                baseColor = resolvedRingColor,
+                clockwise = IndicatorState.clockwise,
+            ),
+        )
     }
 
     private data class TextSpec(
@@ -1143,18 +1106,6 @@ class IndicatorView(
         val g = (Color.green(color) + (255 - Color.green(color)) * factor).toInt().coerceIn(0, 255)
         val b = (Color.blue(color) + (255 - Color.blue(color)) * factor).toInt().coerceIn(0, 255)
         return Color.argb(Color.alpha(color), r, g, b)
-    }
-
-    private fun blendColors(
-        color1: Int,
-        color2: Int,
-        ratio: Float,
-    ): Int {
-        val inv = 1f - ratio
-        val r = (Color.red(color1) * inv + Color.red(color2) * ratio).toInt()
-        val g = (Color.green(color1) * inv + Color.green(color2) * ratio).toInt()
-        val b = (Color.blue(color1) * inv + Color.blue(color2) * ratio).toInt()
-        return Color.argb(Color.alpha(color1), r, g, b)
     }
 
     private fun applyEasing(
