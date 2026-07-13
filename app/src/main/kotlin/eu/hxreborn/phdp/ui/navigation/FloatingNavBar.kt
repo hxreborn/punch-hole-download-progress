@@ -7,16 +7,17 @@ import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingToolbarDefaults
+import androidx.compose.material3.FloatingToolbarScrollBehavior
 import androidx.compose.material3.HorizontalFloatingToolbar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalRippleConfiguration
@@ -51,6 +52,7 @@ fun FloatingNavBar(
     selectedKey: Screen?,
     onSelect: (BottomNavItem) -> Unit,
     modifier: Modifier = Modifier,
+    scrollBehavior: FloatingToolbarScrollBehavior? = null,
 ) {
     val buttonBounds = remember { mutableStateMapOf<Int, Rect>() }
     val currentIndex = items.indexOfFirst { it.key == selectedKey }.coerceAtLeast(0)
@@ -70,17 +72,16 @@ fun FloatingNavBar(
         label = "navPillWidth",
     )
     val pillColor = MaterialTheme.colorScheme.secondaryContainer
+    val navBarBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     Box(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .windowInsetsPadding(WindowInsets.navigationBars)
-                .padding(bottom = Tokens.FloatingBarBottomPadding),
+        modifier = modifier.fillMaxWidth(),
         contentAlignment = Alignment.BottomCenter,
     ) {
         HorizontalFloatingToolbar(
+            modifier = Modifier.padding(bottom = navBarBottom + Tokens.FloatingBarBottomPadding),
             expanded = true,
+            scrollBehavior = scrollBehavior,
             colors =
                 FloatingToolbarDefaults.standardFloatingToolbarColors(
                     toolbarContainerColor = MaterialTheme.colorScheme.surfaceContainer,

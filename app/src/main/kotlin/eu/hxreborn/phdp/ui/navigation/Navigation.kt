@@ -14,6 +14,8 @@ import androidx.compose.material.icons.outlined.AutoAwesomeMotion
 import androidx.compose.material.icons.outlined.Dashboard
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FloatingToolbarScrollBehavior
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -456,12 +458,14 @@ fun MainNavDisplay(
     )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun BottomNav(
     backStack: NavBackStack<NavKey>,
     currentKey: NavKey?,
     modifier: Modifier = Modifier,
     floating: Boolean = false,
+    scrollBehavior: FloatingToolbarScrollBehavior? = null,
 ) {
     val haptics = LocalHapticFeedback.current
     val animDuration = rememberScaledAnimDuration()
@@ -501,6 +505,7 @@ fun BottomNav(
             selectedKey = effectiveKey as? Screen,
             onSelect = selectTab,
             modifier = modifier,
+            scrollBehavior = scrollBehavior,
         )
         return
     }

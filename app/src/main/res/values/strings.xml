@@ -252,6 +252,8 @@
     <string name="pref_dynamic_color_summary">Use Material You colors from wallpaper</string>
     <string name="pref_floating_nav_bar_title">Floating navigation bar</string>
     <string name="pref_floating_nav_bar_summary">Use a compact floating bar instead of the full-width bar</string>
+    <string name="pref_hide_nav_bar_on_scroll_title">Hide on scroll</string>
+    <string name="pref_hide_nav_bar_on_scroll_summary">Slide the floating bar away while scrolling</string>
     <string name="pref_battery_saver_title">Battery saver mode</string>
     <string name="pref_battery_saver_summary">Indicator behavior during battery saver</string>
 

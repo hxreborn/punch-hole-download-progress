@@ -3,11 +3,15 @@ package eu.hxreborn.phdp.ui
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FloatingToolbarDefaults
+import androidx.compose.material3.FloatingToolbarExitDirection
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.rememberNavBackStack
 import eu.hxreborn.phdp.ui.navigation.BottomNav
@@ -21,6 +25,7 @@ sealed class MenuAction {
     data object Reset : MenuAction()
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PunchHoleProgressContent(
     viewModel: SettingsViewModel,
@@ -31,15 +36,24 @@ fun PunchHoleProgressContent(
     val currentKey = backStack.lastOrNull() as? Screen
     val isTopLevel = bottomNavItems.any { it.key == currentKey }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val floatingNavBar = (uiState as? SettingsUiState.Success)?.prefs?.floatingNavBar ?: false
+    val prefs = (uiState as? SettingsUiState.Success)?.prefs
+    val floatingNavBar = prefs?.floatingNavBar ?: false
+    val hideNavBarOnScroll = prefs?.hideNavBarOnScroll ?: false
 
     val slide by animateFloatAsState(
         targetValue = if (isTopLevel) 0f else 1f,
         label = "bottomBarSlide",
     )
 
+    val scrollBehavior =
+        if (floatingNavBar && hideNavBarOnScroll) {
+            FloatingToolbarDefaults.exitAlwaysScrollBehavior(exitDirection = FloatingToolbarExitDirection.Bottom)
+        } else {
+            null
+        }
+
     Scaffold(
-        modifier = modifier,
+        modifier = if (scrollBehavior != null) modifier.nestedScroll(scrollBehavior) else modifier,
         contentWindowInsets = WindowInsets(0),
         bottomBar = {
             Box(modifier = Modifier.graphicsLayer { translationY = size.height * slide }) {
@@ -47,6 +61,7 @@ fun PunchHoleProgressContent(
                     backStack = backStack,
                     currentKey = currentKey,
                     floating = floatingNavBar,
+                    scrollBehavior = scrollBehavior,
                 )
             }
         },
