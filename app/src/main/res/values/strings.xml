@@ -75,6 +75,7 @@
     <string name="gradient_direction_sweep">Sweep</string>
     <string name="gradient_direction_linear">Linear</string>
     <string name="gradient_angle_title">Angle</string>
+    <string name="gradient_angle_summary">Rotation of the color transition</string>
 
     <!-- Design: Stroke Style -->
     <string name="pref_stroke_cap_style_title">Ring edge style</string>

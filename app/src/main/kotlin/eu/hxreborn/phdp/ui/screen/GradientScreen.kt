@@ -114,7 +114,7 @@ fun GradientScreen(
                     )
                 }
 
-                item(key = "gradient_enabled") {
+                item(key = "gradient_controls") {
                     SectionCard(
                         items =
                             listOf(
@@ -132,19 +132,6 @@ fun GradientScreen(
                                         },
                                     )
                                 },
-                            ),
-                    )
-                }
-
-                preferenceCategory(
-                    key = "gradient_colors_header",
-                    title = { Text(stringResource(R.string.group_colors)) },
-                )
-
-                item(key = "gradient_colors") {
-                    SectionCard(
-                        items =
-                            listOf(
                                 {
                                     GradientColorsRow(
                                         startColor = prefsState.gradientStartColor,
@@ -238,6 +225,13 @@ fun GradientScreen(
                                             },
                                             title = {
                                                 Text(stringResource(R.string.gradient_angle_title))
+                                            },
+                                            summary = {
+                                                Text(
+                                                    stringResource(
+                                                        R.string.gradient_angle_summary,
+                                                    ),
+                                                )
                                             },
                                             valueRange =
                                                 angleRange.first.toFloat()..angleRange.last.toFloat(),

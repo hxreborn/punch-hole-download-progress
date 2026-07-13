@@ -75,6 +75,7 @@
     <string name="gradient_direction_sweep">Dairesel</string>
     <string name="gradient_direction_linear">Doğrusal</string>
     <string name="gradient_angle_title">Açı</string>
+    <string name="gradient_angle_summary">Renk geçişinin dönüşü</string>
 
     <!-- Design: Stroke Style -->
     <string name="pref_stroke_cap_style_title">Halka kenar stili</string>
