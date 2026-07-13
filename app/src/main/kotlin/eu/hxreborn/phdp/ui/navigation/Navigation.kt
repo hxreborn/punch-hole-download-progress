@@ -7,13 +7,13 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesomeMotion
-import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Apps
 import androidx.compose.material.icons.outlined.AutoAwesomeMotion
-import androidx.compose.material.icons.outlined.Dashboard
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.rounded.Apps
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingToolbarScrollBehavior
 import androidx.compose.material3.Icon
@@ -150,8 +150,8 @@ val bottomNavItems =
         BottomNavItem(
             key = Screen.Packages,
             titleRes = R.string.tab_packages,
-            selectedIcon = Icons.Filled.Dashboard,
-            unselectedIcon = Icons.Outlined.Dashboard,
+            selectedIcon = Icons.Rounded.Apps,
+            unselectedIcon = Icons.Outlined.Apps,
         ),
         BottomNavItem(
             key = Screen.System,
