@@ -34,7 +34,7 @@ class PHDPApp :
     }
 
     override fun onServiceBind(svc: XposedService) {
-        Log.i(TAG, "service bound v${svc.frameworkVersion}")
+        Log.i(TAG, "service bound: ${svc.frameworkName} v${svc.frameworkVersion}")
         mService = svc
         prefs.syncToRemote()
         listeners.forEach { it.onServiceBind(svc) }

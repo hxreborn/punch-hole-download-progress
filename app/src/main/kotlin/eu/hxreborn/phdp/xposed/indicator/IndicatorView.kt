@@ -771,10 +771,18 @@ class IndicatorView(
         scaledPath.computeBounds(arcBounds, true)
         arcBounds.applyCalibration()
         renderer.updateBounds(arcBounds)
-        val effect = animator.activeEffect ?: return
         effectPaint.set(glowPaint)
         effectPaint.alpha = effectiveOpacity * 255 / 100
         effectPaint.strokeCap = strokeCap
+        val effect = animator.activeEffect
+        if (effect == null) {
+            if (animator.staticFinish) {
+                effectPaint.color = shinePaint.color
+                effectPaint.alpha = effectiveOpacity * 255 / 100
+                renderer.drawFullRing(canvas, effectPaint)
+            }
+            return
+        }
         effect.draw(
             canvas,
             FinishDrawContext(

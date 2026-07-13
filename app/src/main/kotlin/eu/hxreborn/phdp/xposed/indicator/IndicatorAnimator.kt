@@ -21,6 +21,9 @@ class IndicatorAnimator(
     var activeEffect: CompletionEffect? = null
         private set
 
+    var staticFinish = false
+        private set
+
     var isErrorAnimating = false
         private set
     var errorAlpha = 0f
@@ -37,6 +40,7 @@ class IndicatorAnimator(
     val isGeometryPreviewActive: Boolean get() = previewMode == PreviewMode.GEOMETRY
 
     private var errorAnimator: ValueAnimator? = null
+    private var staticFinishRunnable: Runnable? = null
     private var previewAnimator: ValueAnimator? = null
     private var previewDebounceRunnable: Runnable? = null
     private var geometryPreviewRunnable: Runnable? = null
@@ -117,6 +121,19 @@ class IndicatorAnimator(
             "Starting finish animation: style=${params.style}, " +
                 "hold=${params.holdMs}ms, exit=${params.exitMs}ms"
         }
+        if (!ValueAnimator.areAnimatorsEnabled()) {
+            staticFinish = true
+            val totalMs = params.scaled(params.holdMs + params.exitMs)
+            val holdMs = totalMs.coerceAtLeast(MIN_STATIC_HOLD_MS)
+            view.invalidate()
+            staticFinishRunnable =
+                Runnable {
+                    staticFinish = false
+                    finishEnd(onComplete)
+                }
+            view.postDelayed(staticFinishRunnable, holdMs)
+            return
+        }
         val effect = CompletionEffects.create(params.style)
         activeEffect = effect
         effect.start(view, params) {
@@ -132,6 +149,9 @@ class IndicatorAnimator(
     }
 
     fun cancelFinish() {
+        staticFinishRunnable?.let { view.removeCallbacks(it) }
+        staticFinishRunnable = null
+        staticFinish = false
         activeEffect?.cancel()
         activeEffect = null
         isFinishAnimating = false
@@ -247,5 +267,9 @@ class IndicatorAnimator(
         cancelError()
         cancelDynamicPreviewAnim()
         cancelStaticPreviewAnim()
+    }
+
+    companion object {
+        private const val MIN_STATIC_HOLD_MS = 600L
     }
 }
