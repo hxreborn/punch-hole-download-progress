@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -138,8 +139,8 @@ fun GradientScreen(
                 }
 
                 preferenceCategory(
-                    key = "gradient_style_header",
-                    title = { Text(stringResource(R.string.gradient_style_title)) },
+                    key = "gradient_type_header",
+                    title = { Text(stringResource(R.string.gradient_type_title)) },
                 )
 
                 item(key = "gradient_direction") {
@@ -171,11 +172,11 @@ fun GradientScreen(
                                     stringResource(
                                         when (direction) {
                                             GradientDirection.SWEEP -> {
-                                                R.string.gradient_style_circular
+                                                R.string.gradient_type_sweep
                                             }
 
                                             GradientDirection.LINEAR -> {
-                                                R.string.gradient_style_linear
+                                                R.string.gradient_type_linear
                                             }
                                         },
                                     ),
@@ -204,13 +205,6 @@ fun GradientScreen(
                                             },
                                             title = {
                                                 Text(stringResource(R.string.gradient_angle_title))
-                                            },
-                                            summary = {
-                                                Text(
-                                                    stringResource(
-                                                        R.string.gradient_angle_summary,
-                                                    ),
-                                                )
                                             },
                                             valueRange =
                                                 angleRange.first.toFloat()..angleRange.last.toFloat(),
@@ -272,8 +266,9 @@ private fun GradientColorsRow(
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.weight(1f),
         )
-        ColorDot(
+        LabeledColorDot(
             color = startColor,
+            label = stringResource(R.string.gradient_start_label),
             description = stringResource(R.string.gradient_start_color_title),
             onClick = { editingStart = true },
         )
@@ -283,10 +278,32 @@ private fun GradientColorsRow(
                 contentDescription = stringResource(R.string.gradient_swap_colors),
             )
         }
-        ColorDot(
+        LabeledColorDot(
             color = endColor,
+            label = stringResource(R.string.gradient_end_label),
             description = stringResource(R.string.gradient_end_color_title),
             onClick = { editingStart = false },
+        )
+    }
+}
+
+@Composable
+private fun LabeledColorDot(
+    color: Int,
+    label: String,
+    description: String,
+    onClick: () -> Unit,
+) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        ColorDot(
+            color = color,
+            description = description,
+            onClick = onClick,
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }

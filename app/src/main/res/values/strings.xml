@@ -69,12 +69,15 @@
     <string name="gradient_colors_title">Gradient colors</string>
     <string name="gradient_start_color_title">Start color</string>
     <string name="gradient_end_color_title">End color</string>
-    <string name="gradient_style_title">Gradient style</string>
+    <string name="gradient_type_title">Gradient type</string>
     <string name="gradient_swap_colors">Swap colors</string>
-    <string name="gradient_style_circular">Circular</string>
-    <string name="gradient_style_linear">Linear</string>
-    <string name="gradient_angle_title">Angle</string>
-    <string name="gradient_angle_summary">Rotation of the color transition</string>
+    <string name="gradient_start_label">Start</string>
+    <string name="gradient_end_label">End</string>
+    <string name="test_preview_completion">Preview completion</string>
+    <string name="test_preview_error">Preview error</string>
+    <string name="gradient_type_sweep">Sweep</string>
+    <string name="gradient_type_linear">Linear</string>
+    <string name="gradient_angle_title">Gradient angle</string>
 
     <!-- Design: Stroke Style -->
     <string name="pref_stroke_cap_style_title">Ring edge style</string>

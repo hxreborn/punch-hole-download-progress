@@ -47,7 +47,7 @@ fun TestButtonsRow(
                     modifier = Modifier.size(18.dp),
                 )
                 Spacer(modifier = Modifier.width(Tokens.SpacingSm))
-                Text(stringResource(R.string.group_material_you_success))
+                Text(stringResource(R.string.test_preview_completion))
             }
             TextButton(onClick = onSimulateFailure) {
                 Icon(
@@ -56,7 +56,7 @@ fun TestButtonsRow(
                     modifier = Modifier.size(18.dp),
                 )
                 Spacer(modifier = Modifier.width(Tokens.SpacingSm))
-                Text(stringResource(R.string.group_material_you_error))
+                Text(stringResource(R.string.test_preview_error))
             }
         }
     }
