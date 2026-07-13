@@ -139,6 +139,9 @@ fun AppearanceScreen(
                                     value = prefsState.gradientEnabled,
                                     onValueChange = {
                                         viewModel.savePref(Prefs.gradientEnabled, it)
+                                        if (it) {
+                                            viewModel.savePref(Prefs.materialYouEnabled, false)
+                                        }
                                     },
                                     title = {
                                         Text(stringResource(R.string.pref_gradient_title))
@@ -171,6 +174,9 @@ fun AppearanceScreen(
                                         value = prefsState.materialYouEnabled,
                                         onValueChange = {
                                             viewModel.savePref(Prefs.materialYouEnabled, it)
+                                            if (it) {
+                                                viewModel.savePref(Prefs.gradientEnabled, false)
+                                            }
                                         },
                                         title = {
                                             Text(
