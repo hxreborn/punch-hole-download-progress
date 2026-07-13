@@ -6,11 +6,16 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import eu.hxreborn.phdp.prefs.GradientDirection
+import kotlin.math.PI
+import kotlin.math.abs
+import kotlin.math.cos
+import kotlin.math.sin
 
 internal fun gradientBrush(
     startColor: Color,
     endColor: Color,
     direction: String,
+    angleDegrees: Int,
     bounds: Rect,
 ): Brush =
     when (GradientDirection.fromStoredValue(direction)) {
@@ -28,35 +33,23 @@ internal fun gradientBrush(
             )
         }
 
-        GradientDirection.LEFT_TO_RIGHT -> {
+        GradientDirection.LINEAR -> {
+            val radians = angleDegrees * PI.toFloat() / 180f
+            val dx = cos(radians)
+            val dy = sin(radians)
+            val halfExtent = bounds.width / 2f * abs(dx) + bounds.height / 2f * abs(dy)
             Brush.linearGradient(
                 colors = listOf(startColor, endColor),
-                start = Offset(bounds.left, bounds.center.y),
-                end = Offset(bounds.right, bounds.center.y),
-            )
-        }
-
-        GradientDirection.TOP_TO_BOTTOM -> {
-            Brush.linearGradient(
-                colors = listOf(startColor, endColor),
-                start = Offset(bounds.center.x, bounds.top),
-                end = Offset(bounds.center.x, bounds.bottom),
-            )
-        }
-
-        GradientDirection.TOP_LEFT_TO_BOTTOM_RIGHT -> {
-            Brush.linearGradient(
-                colors = listOf(startColor, endColor),
-                start = bounds.topLeft,
-                end = bounds.bottomRight,
-            )
-        }
-
-        GradientDirection.BOTTOM_LEFT_TO_TOP_RIGHT -> {
-            Brush.linearGradient(
-                colors = listOf(startColor, endColor),
-                start = bounds.bottomLeft,
-                end = bounds.topRight,
+                start =
+                    Offset(
+                        bounds.center.x - dx * halfExtent,
+                        bounds.center.y - dy * halfExtent,
+                    ),
+                end =
+                    Offset(
+                        bounds.center.x + dx * halfExtent,
+                        bounds.center.y + dy * halfExtent,
+                    ),
             )
         }
     }

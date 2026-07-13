@@ -13,6 +13,7 @@ data class AppPrefs(
     val gradientStartColor: Int = Prefs.gradientStartColor.default,
     val gradientEndColor: Int = Prefs.gradientEndColor.default,
     val gradientDirection: String = Prefs.gradientDirection.default,
+    val gradientAngle: Int = Prefs.gradientAngle.default,
     val strokeWidth: Float = Prefs.strokeWidth.default,
     val ringGap: Float = Prefs.ringGap.default,
     val opacity: Int = Prefs.opacity.default,

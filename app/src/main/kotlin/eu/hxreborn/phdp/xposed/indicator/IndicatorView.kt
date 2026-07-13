@@ -711,6 +711,7 @@ class IndicatorView(
                         startColor = IndicatorState.gradientStartColor,
                         endColor = IndicatorState.gradientEndColor,
                         direction = IndicatorState.gradientDirection,
+                        angle = IndicatorState.gradientAngle,
                         hdrEnabled = IndicatorState.hdrEnabled,
                         hdrHeadroom = IndicatorState.hdrHeadroom,
                         enabled = IndicatorState.gradientEnabled,

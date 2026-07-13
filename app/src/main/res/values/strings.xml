@@ -73,10 +73,8 @@
     <string name="gradient_direction_title">Direction</string>
     <string name="gradient_swap_colors">Swap colors</string>
     <string name="gradient_direction_sweep">Sweep</string>
-    <string name="gradient_direction_left_to_right">Left to right</string>
-    <string name="gradient_direction_top_to_bottom">Top to bottom</string>
-    <string name="gradient_direction_top_left_to_bottom_right">Top left to bottom right</string>
-    <string name="gradient_direction_bottom_left_to_top_right">Bottom left to top right</string>
+    <string name="gradient_direction_linear">Linear</string>
+    <string name="gradient_angle_title">Angle</string>
 
     <!-- Design: Stroke Style -->
     <string name="pref_stroke_cap_style_title">Ring edge style</string>

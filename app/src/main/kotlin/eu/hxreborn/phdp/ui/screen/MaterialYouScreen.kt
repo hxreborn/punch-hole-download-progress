@@ -273,6 +273,7 @@ fun MaterialYouScreen(
                         progressStartColor = effectiveProgressColor,
                         progressEndColor = effectiveProgressEndColor,
                         progressDirection = prefsState.gradientDirection,
+                        progressAngle = prefsState.gradientAngle,
                         gradientEnabled = prefsState.gradientEnabled,
                         completionColor = completionColor,
                         errorColor = errorColor,
@@ -392,6 +393,7 @@ private fun IndicatorPreviewRing(
     progressStartColor: Color,
     progressEndColor: Color,
     progressDirection: String,
+    progressAngle: Int,
     gradientEnabled: Boolean,
     completionColor: Color,
     errorColor: Color,
@@ -416,6 +418,7 @@ private fun IndicatorPreviewRing(
                     animatedProgressStart,
                     animatedProgressEnd,
                     progressDirection,
+                    progressAngle,
                     bounds,
                 )
             } else {

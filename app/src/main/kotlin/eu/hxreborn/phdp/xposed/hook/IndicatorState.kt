@@ -40,6 +40,10 @@ object IndicatorState {
         private set
 
     @Volatile
+    var gradientAngle = Prefs.gradientAngle.default
+        private set
+
+    @Volatile
     var strokeWidth = Prefs.strokeWidth.default
         private set
 
@@ -522,6 +526,10 @@ object IndicatorState {
                             .storedValue
                 }
 
+                Prefs.gradientAngle.key -> {
+                    gradientAngle = Prefs.gradientAngle.read(prefs)
+                }
+
                 Prefs.strokeWidth.key -> {
                     strokeWidth = Prefs.strokeWidth.read(prefs)
                 }
@@ -943,6 +951,7 @@ object IndicatorState {
                     GradientDirection
                         .fromStoredValue(Prefs.gradientDirection.read(prefs))
                         .storedValue
+                gradientAngle = Prefs.gradientAngle.read(prefs)
                 strokeWidth = Prefs.strokeWidth.read(prefs)
                 ringGap = Prefs.ringGap.read(prefs)
                 opacity = Prefs.opacity.read(prefs)

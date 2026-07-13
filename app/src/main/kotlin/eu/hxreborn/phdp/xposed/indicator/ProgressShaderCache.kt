@@ -10,6 +10,10 @@ import android.graphics.SweepGradient
 import android.os.Build
 import androidx.annotation.RequiresApi
 import eu.hxreborn.phdp.prefs.GradientDirection
+import kotlin.math.PI
+import kotlin.math.abs
+import kotlin.math.cos
+import kotlin.math.sin
 
 internal class ProgressShaderCache {
     private data class Config(
@@ -20,6 +24,7 @@ internal class ProgressShaderCache {
         val startColor: Int,
         val endColor: Int,
         val direction: GradientDirection,
+        val angle: Int,
         val hdrEnabled: Boolean,
         val hdrHeadroom: Float,
         val enabled: Boolean,
@@ -40,6 +45,7 @@ internal class ProgressShaderCache {
         startColor: Int,
         endColor: Int,
         direction: String,
+        angle: Int,
         hdrEnabled: Boolean,
         hdrHeadroom: Float,
         enabled: Boolean,
@@ -50,6 +56,7 @@ internal class ProgressShaderCache {
                 startColor,
                 endColor,
                 normalizedDirection,
+                angle,
                 hdrEnabled,
                 hdrHeadroom,
                 enabled,
@@ -67,6 +74,7 @@ internal class ProgressShaderCache {
                 startColor = startColor,
                 endColor = endColor,
                 direction = normalizedDirection,
+                angle = angle,
                 hdrEnabled = hdrEnabled,
                 hdrHeadroom = hdrHeadroom,
                 enabled = enabled,
@@ -86,6 +94,7 @@ internal class ProgressShaderCache {
         startColor: Int,
         endColor: Int,
         direction: GradientDirection,
+        angle: Int,
         hdrEnabled: Boolean,
         hdrHeadroom: Float,
         enabled: Boolean,
@@ -97,6 +106,7 @@ internal class ProgressShaderCache {
             this.startColor == startColor &&
             this.endColor == endColor &&
             this.direction == direction &&
+            this.angle == angle &&
             this.hdrEnabled == hdrEnabled &&
             this.hdrHeadroom == hdrHeadroom &&
             this.enabled == enabled
@@ -112,7 +122,7 @@ internal class ProgressShaderCache {
                 ).alignSweepToTop(config)
             }
 
-            else -> {
+            GradientDirection.LINEAR -> {
                 val points = config.linearPoints()
                 LinearGradient(
                     points.startX,
@@ -140,7 +150,7 @@ internal class ProgressShaderCache {
                 ).alignSweepToTop(config)
             }
 
-            else -> {
+            GradientDirection.LINEAR -> {
                 val points = config.linearPoints()
                 LinearGradient(
                     points.startX,
@@ -164,14 +174,18 @@ internal class ProgressShaderCache {
             )
         }
 
-    private fun Config.linearPoints(): LinearPoints =
-        when (direction) {
-            GradientDirection.LEFT_TO_RIGHT -> LinearPoints(left, centerY, right, centerY)
-            GradientDirection.TOP_TO_BOTTOM -> LinearPoints(centerX, top, centerX, bottom)
-            GradientDirection.TOP_LEFT_TO_BOTTOM_RIGHT -> LinearPoints(left, top, right, bottom)
-            GradientDirection.BOTTOM_LEFT_TO_TOP_RIGHT -> LinearPoints(left, bottom, right, top)
-            GradientDirection.SWEEP -> error("Sweep gradients do not use linear points")
-        }
+    private fun Config.linearPoints(): LinearPoints {
+        val radians = angle * PI.toFloat() / 180f
+        val dx = cos(radians)
+        val dy = sin(radians)
+        val halfExtent = (right - left) / 2f * abs(dx) + (bottom - top) / 2f * abs(dy)
+        return LinearPoints(
+            startX = centerX - dx * halfExtent,
+            startY = centerY - dy * halfExtent,
+            endX = centerX + dx * halfExtent,
+            endY = centerY + dy * halfExtent,
+        )
+    }
 
     @RequiresApi(35)
     private fun packExtendedSrgb(

@@ -16,6 +16,7 @@ object Prefs {
     val gradientStartColor = IntPref("gradient_start_color", MaterialPalette.Blue500)
     val gradientEndColor = IntPref("gradient_end_color", MaterialPalette.Cyan500)
     val gradientDirection = StringPref("gradient_direction", GradientDirection.SWEEP.storedValue)
+    val gradientAngle = IntPref("gradient_angle", 0, 0..360)
     val strokeWidth = FloatPref("stroke_width", 2f, 0.5f..10f)
     val ringGap = FloatPref("ring_gap", 1.155f, 0.5f..3f)
     val opacity = IntPref("opacity", 90, 1..100)
@@ -212,6 +213,7 @@ object Prefs {
             gradientStartColor,
             gradientEndColor,
             gradientDirection,
+            gradientAngle,
             strokeWidth,
             ringGap,
             opacity,
@@ -307,6 +309,7 @@ object Prefs {
             gradientStartColor.key,
             gradientEndColor.key,
             gradientDirection.key,
+            gradientAngle.key,
             strokeWidth.key,
             ringGap.key,
             opacity.key,

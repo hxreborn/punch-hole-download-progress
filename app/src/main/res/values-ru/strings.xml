@@ -73,10 +73,8 @@
     <string name="gradient_direction_title">Направление</string>
     <string name="gradient_swap_colors">Поменять цвета местами</string>
     <string name="gradient_direction_sweep">Круговой</string>
-    <string name="gradient_direction_left_to_right">Слева направо</string>
-    <string name="gradient_direction_top_to_bottom">Сверху вниз</string>
-    <string name="gradient_direction_top_left_to_bottom_right">Из левого верхнего в правый нижний</string>
-    <string name="gradient_direction_bottom_left_to_top_right">Из левого нижнего в правый верхний</string>
+    <string name="gradient_direction_linear">Линейный</string>
+    <string name="gradient_angle_title">Угол</string>
 
     <!-- Design: Stroke Style -->
     <string name="pref_stroke_cap_style_title">Стиль края кольца</string>

@@ -97,6 +97,7 @@ class PrefsRepositoryImpl(
                 GradientDirection
                     .fromStoredValue(Prefs.gradientDirection.read(this))
                     .storedValue,
+            gradientAngle = Prefs.gradientAngle.read(this),
             strokeWidth = Prefs.strokeWidth.read(this),
             ringGap = Prefs.ringGap.read(this),
             opacity = Prefs.opacity.read(this),

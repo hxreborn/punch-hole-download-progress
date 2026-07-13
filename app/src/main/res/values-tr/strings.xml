@@ -73,10 +73,8 @@
     <string name="gradient_direction_title">Yön</string>
     <string name="gradient_swap_colors">Renkleri değiştir</string>
     <string name="gradient_direction_sweep">Dairesel</string>
-    <string name="gradient_direction_left_to_right">Soldan sağa</string>
-    <string name="gradient_direction_top_to_bottom">Yukarıdan aşağıya</string>
-    <string name="gradient_direction_top_left_to_bottom_right">Sol üstten sağ alta</string>
-    <string name="gradient_direction_bottom_left_to_top_right">Sol alttan sağ üste</string>
+    <string name="gradient_direction_linear">Doğrusal</string>
+    <string name="gradient_angle_title">Açı</string>
 
     <!-- Design: Stroke Style -->
     <string name="pref_stroke_cap_style_title">Halka kenar stili</string>
