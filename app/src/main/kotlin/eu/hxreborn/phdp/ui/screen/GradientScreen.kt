@@ -58,7 +58,6 @@ import eu.hxreborn.phdp.ui.component.TestButtonsRow
 import eu.hxreborn.phdp.ui.component.gradientBrush
 import eu.hxreborn.phdp.ui.component.preference.ColorPickerDialog
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithReset
-import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import eu.hxreborn.phdp.ui.theme.MaterialPalette
@@ -108,24 +107,10 @@ fun GradientScreen(
                     )
                 }
 
-                item(key = "gradient_controls") {
+                item(key = "gradient_colors") {
                     SectionCard(
                         items =
                             listOf(
-                                {
-                                    TogglePreferenceWithIcon(
-                                        value = prefsState.gradientEnabled,
-                                        onValueChange = {
-                                            viewModel.savePref(Prefs.gradientEnabled, it)
-                                        },
-                                        title = {
-                                            Text(stringResource(R.string.gradient_enable_title))
-                                        },
-                                        summary = {
-                                            Text(stringResource(R.string.pref_gradient_summary))
-                                        },
-                                    )
-                                },
                                 {
                                     GradientColorsRow(
                                         startColor = prefsState.gradientStartColor,
