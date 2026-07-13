@@ -90,6 +90,13 @@ class PrefsRepositoryImpl(
         AppPrefs(
             enabled = Prefs.enabled.read(this),
             color = Prefs.color.read(this),
+            gradientEnabled = Prefs.gradientEnabled.read(this),
+            gradientColors = decodeGradientColors(Prefs.gradientColors.read(this)),
+            gradientDirection =
+                GradientDirection
+                    .fromStoredValue(Prefs.gradientDirection.read(this))
+                    .storedValue,
+            gradientAngle = Prefs.gradientAngle.read(this),
             strokeWidth = Prefs.strokeWidth.read(this),
             ringGap = Prefs.ringGap.read(this),
             opacity = Prefs.opacity.read(this),
@@ -172,6 +179,7 @@ class PrefsRepositoryImpl(
             darkThemeConfig = readDarkThemeConfig(),
             useDynamicColor = Prefs.useDynamicColor.read(this),
             floatingNavBar = Prefs.floatingNavBar.read(this),
+            hideNavBarOnScroll = Prefs.hideNavBarOnScroll.read(this),
             ringScaleX = Prefs.ringScaleX.read(this),
             ringScaleY = Prefs.ringScaleY.read(this),
             ringScaleLinked = Prefs.ringScaleLinked.read(this),

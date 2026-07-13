@@ -130,7 +130,7 @@ fun ColorPreference(
 }
 
 @Composable
-private fun ColorPickerDialog(
+internal fun ColorPickerDialog(
     initialColor: Int,
     colors: List<Int>,
     onDismiss: () -> Unit,

@@ -62,6 +62,22 @@
     <string name="pref_success_color_summary">İndirme bittiğinde uygulanan halka rengi</string>
     <string name="pref_error_color_title">Hata rengi</string>
     <string name="pref_error_color_summary">İndirme başarısız olduğunda uygulanan halka rengi</string>
+    <string name="pref_gradient_title">Gradyan</string>
+    <string name="pref_gradient_summary">Etkin indirme ilerlemesinde iki rengi harmanlayın</string>
+    <string name="pref_gradient_configure_title">Gradyan ayarları</string>
+    <string name="pref_gradient_configure_summary">Gradyan renklerini ve yönünü seçin</string>
+    <string name="gradient_colors_title">Gradyan renkleri</string>
+    <string name="gradient_type_title">Gradyan türü</string>
+    <string name="gradient_swap_colors">Renk sırasını tersine çevir</string>
+    <string name="gradient_add_color">Renk ekle</string>
+    <string name="gradient_remove_color">Renk kaldır</string>
+    <string name="gradient_color_position">Renk %1$d</string>
+    <string name="test_preview_completion">Tamamlanmayı önizle</string>
+    <string name="test_preview_error">Hatayı önizle</string>
+    <string name="gradient_type_sweep">Dairesel</string>
+    <string name="gradient_type_linear">Doğrusal</string>
+    <string name="gradient_angle_title">Gradyan açısı</string>
+    <string name="gradient_start_position">Başlangıç konumu</string>
 
     <!-- Design: Stroke Style -->
     <string name="pref_stroke_cap_style_title">Halka kenar stili</string>

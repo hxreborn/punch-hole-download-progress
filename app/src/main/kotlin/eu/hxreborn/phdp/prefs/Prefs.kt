@@ -12,6 +12,14 @@ object Prefs {
 
     // Appearance
     val color = IntPref("color", MaterialPalette.Blue500)
+    val gradientEnabled = BoolPref("gradient_enabled", false)
+    val gradientColors =
+        StringPref(
+            "gradient_colors",
+            "${MaterialPalette.Blue500},${MaterialPalette.Cyan500}",
+        )
+    val gradientDirection = StringPref("gradient_direction", GradientDirection.SWEEP.storedValue)
+    val gradientAngle = IntPref("gradient_angle", 0, 0..360)
     val strokeWidth = FloatPref("stroke_width", 2f, 0.5f..10f)
     val ringGap = FloatPref("ring_gap", 1.155f, 0.5f..3f)
     val opacity = IntPref("opacity", 90, 1..100)
@@ -132,6 +140,7 @@ object Prefs {
     val darkThemeConfig = StringPref("dark_theme_config", "follow_system")
     val useDynamicColor = BoolPref("use_dynamic_color", true)
     val floatingNavBar = BoolPref("floating_nav_bar", false)
+    val hideNavBarOnScroll = BoolPref("hide_nav_bar_on_scroll", true)
 
     // Diagnostics
     val verboseLogging = BoolPref("verbose_logging", false)
@@ -203,6 +212,10 @@ object Prefs {
     val resettable: List<PrefSpec<*>> =
         listOf(
             color,
+            gradientEnabled,
+            gradientColors,
+            gradientDirection,
+            gradientAngle,
             strokeWidth,
             ringGap,
             opacity,
@@ -294,6 +307,10 @@ object Prefs {
     val visualKeys: Set<String> =
         setOf(
             color.key,
+            gradientEnabled.key,
+            gradientColors.key,
+            gradientDirection.key,
+            gradientAngle.key,
             strokeWidth.key,
             ringGap.key,
             opacity.key,
@@ -359,4 +376,26 @@ object Prefs {
             materialYouErrorPalette.key,
             materialYouErrorShade.key,
         )
+}
+
+const val GRADIENT_MIN_COLORS = 2
+const val GRADIENT_MAX_COLORS = 5
+
+fun encodeGradientColors(colors: List<Int>): String = colors.joinToString(",")
+
+fun decodeGradientColors(value: String): List<Int> {
+    val parsed = value.split(",").mapNotNull { it.trim().toIntOrNull() }
+    return when {
+        parsed.size < GRADIENT_MIN_COLORS -> {
+            listOf(MaterialPalette.Blue500, MaterialPalette.Cyan500)
+        }
+
+        parsed.size > GRADIENT_MAX_COLORS -> {
+            parsed.take(GRADIENT_MAX_COLORS)
+        }
+
+        else -> {
+            parsed
+        }
+    }
 }

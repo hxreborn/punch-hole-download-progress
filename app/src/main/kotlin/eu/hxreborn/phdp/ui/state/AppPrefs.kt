@@ -3,12 +3,17 @@ package eu.hxreborn.phdp.ui.state
 import androidx.compose.runtime.Immutable
 import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.prefs.RotationOffsets
+import eu.hxreborn.phdp.prefs.decodeGradientColors
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 
 @Immutable
 data class AppPrefs(
     val enabled: Boolean = Prefs.enabled.default,
     val color: Int = Prefs.color.default,
+    val gradientEnabled: Boolean = Prefs.gradientEnabled.default,
+    val gradientColors: List<Int> = decodeGradientColors(Prefs.gradientColors.default),
+    val gradientDirection: String = Prefs.gradientDirection.default,
+    val gradientAngle: Int = Prefs.gradientAngle.default,
     val strokeWidth: Float = Prefs.strokeWidth.default,
     val ringGap: Float = Prefs.ringGap.default,
     val opacity: Int = Prefs.opacity.default,
@@ -91,6 +96,7 @@ data class AppPrefs(
     val darkThemeConfig: DarkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
     val useDynamicColor: Boolean = Prefs.useDynamicColor.default,
     val floatingNavBar: Boolean = Prefs.floatingNavBar.default,
+    val hideNavBarOnScroll: Boolean = Prefs.hideNavBarOnScroll.default,
     val ringScaleX: Float = Prefs.ringScaleX.default,
     val ringScaleY: Float = Prefs.ringScaleY.default,
     val ringScaleLinked: Boolean = Prefs.ringScaleLinked.default,

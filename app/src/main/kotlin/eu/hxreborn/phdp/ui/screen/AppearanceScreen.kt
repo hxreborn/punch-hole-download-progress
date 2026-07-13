@@ -58,6 +58,7 @@ enum class CalibrationTarget { RING, PERCENT, FILENAME, APP_ICON, PERCENT_SHADOW
 fun AppearanceScreen(
     viewModel: SettingsViewModel,
     onNavigateToCalibration: (CalibrationTarget) -> Unit,
+    onNavigateToGradient: () -> Unit,
     onNavigateToMaterialYou: () -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
@@ -88,7 +89,9 @@ fun AppearanceScreen(
                                 ColorPreference(
                                     value = prefsState.color,
                                     onValueChange = { viewModel.savePref(Prefs.color, it) },
-                                    enabled = !prefsState.materialYouEnabled,
+                                    enabled =
+                                        !prefsState.gradientEnabled &&
+                                            !prefsState.materialYouEnabled,
                                     title = {
                                         Text(
                                             stringResource(R.string.pref_progress_color_title),
@@ -131,6 +134,40 @@ fun AppearanceScreen(
                                     },
                                 )
                             }
+                            add {
+                                TogglePreferenceWithIcon(
+                                    value = prefsState.gradientEnabled,
+                                    onValueChange = {
+                                        viewModel.savePref(Prefs.gradientEnabled, it)
+                                    },
+                                    enabled =
+                                        prefsState.gradientEnabled ||
+                                            !prefsState.materialYouEnabled,
+                                    title = {
+                                        Text(stringResource(R.string.pref_gradient_title))
+                                    },
+                                    summary = {
+                                        Text(stringResource(R.string.pref_gradient_summary))
+                                    },
+                                )
+                            }
+                            if (prefsState.gradientEnabled) {
+                                add {
+                                    NavigationPreference(
+                                        onClick = onNavigateToGradient,
+                                        title = {
+                                            Text(
+                                                stringResource(R.string.pref_gradient_configure_title),
+                                            )
+                                        },
+                                        summary = {
+                                            Text(
+                                                stringResource(R.string.pref_gradient_configure_summary),
+                                            )
+                                        },
+                                    )
+                                }
+                            }
                             if (Build.VERSION.SDK_INT >= 31) {
                                 add {
                                     TogglePreferenceWithIcon(
@@ -138,6 +175,9 @@ fun AppearanceScreen(
                                         onValueChange = {
                                             viewModel.savePref(Prefs.materialYouEnabled, it)
                                         },
+                                        enabled =
+                                            prefsState.materialYouEnabled ||
+                                                !prefsState.gradientEnabled,
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_material_you_title),
@@ -701,6 +741,7 @@ private fun AppearanceScreenPreview() {
         AppearanceScreen(
             viewModel = PreviewViewModel(),
             onNavigateToCalibration = {},
+            onNavigateToGradient = {},
             onNavigateToMaterialYou = {},
             contentPadding = PaddingValues(),
         )

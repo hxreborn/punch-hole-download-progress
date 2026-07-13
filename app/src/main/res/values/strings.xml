@@ -62,6 +62,22 @@
     <string name="pref_success_color_summary">Ring color applied when download finishes</string>
     <string name="pref_error_color_title">Error color</string>
     <string name="pref_error_color_summary">Ring color applied when download fails</string>
+    <string name="pref_gradient_title">Gradient</string>
+    <string name="pref_gradient_summary">Blend two colors across active download progress</string>
+    <string name="pref_gradient_configure_title">Gradient settings</string>
+    <string name="pref_gradient_configure_summary">Choose gradient colors and direction</string>
+    <string name="gradient_colors_title">Gradient colors</string>
+    <string name="gradient_type_title">Gradient type</string>
+    <string name="gradient_swap_colors">Reverse colors</string>
+    <string name="gradient_add_color">Add color</string>
+    <string name="gradient_remove_color">Remove color</string>
+    <string name="gradient_color_position">Color %1$d</string>
+    <string name="test_preview_completion">Preview completion</string>
+    <string name="test_preview_error">Preview error</string>
+    <string name="gradient_type_sweep">Sweep</string>
+    <string name="gradient_type_linear">Linear</string>
+    <string name="gradient_angle_title">Gradient angle</string>
+    <string name="gradient_start_position">Start position</string>
 
     <!-- Design: Stroke Style -->
     <string name="pref_stroke_cap_style_title">Ring edge style</string>
@@ -252,6 +268,8 @@
     <string name="pref_dynamic_color_summary">Use Material You colors from wallpaper</string>
     <string name="pref_floating_nav_bar_title">Floating navigation bar</string>
     <string name="pref_floating_nav_bar_summary">Use a compact floating bar instead of the full-width bar</string>
+    <string name="pref_hide_nav_bar_on_scroll_title">Hide on scroll</string>
+    <string name="pref_hide_nav_bar_on_scroll_summary">Slide the floating bar away while scrolling</string>
     <string name="pref_battery_saver_title">Battery saver mode</string>
     <string name="pref_battery_saver_summary">Indicator behavior during battery saver</string>
 

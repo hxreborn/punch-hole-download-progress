@@ -78,7 +78,7 @@ fun SystemScreen(
             item(key = "system_app_theme_section") {
                 SectionCard(
                     items =
-                        listOf(
+                        listOfNotNull(
                             {
                                 SelectPreference(
                                     value = currentThemeValue,
@@ -122,6 +122,26 @@ fun SystemScreen(
                                         )
                                     },
                                 )
+                            },
+                            if (prefsState.floatingNavBar) {
+                                {
+                                    TogglePreferenceWithIcon(
+                                        value = prefsState.hideNavBarOnScroll,
+                                        onValueChange = { viewModel.savePref(Prefs.hideNavBarOnScroll, it) },
+                                        title = {
+                                            Text(
+                                                stringResource(R.string.pref_hide_nav_bar_on_scroll_title),
+                                            )
+                                        },
+                                        summary = {
+                                            Text(
+                                                stringResource(R.string.pref_hide_nav_bar_on_scroll_summary),
+                                            )
+                                        },
+                                    )
+                                }
+                            } else {
+                                null
                             },
                         ),
                 )

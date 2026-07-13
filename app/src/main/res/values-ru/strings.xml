@@ -62,6 +62,22 @@
     <string name="pref_success_color_summary">Цвет кольца, применяемый по окончании загрузки</string>
     <string name="pref_error_color_title">Ошибка цвета</string>
     <string name="pref_error_color_summary">Цвет кольца, применяемый при сбое загрузки</string>
+    <string name="pref_gradient_title">Градиент</string>
+    <string name="pref_gradient_summary">Смешивать два цвета по ходу активной загрузки</string>
+    <string name="pref_gradient_configure_title">Настройки градиента</string>
+    <string name="pref_gradient_configure_summary">Выберите цвета и направление градиента</string>
+    <string name="gradient_colors_title">Цвета градиента</string>
+    <string name="gradient_type_title">Тип градиента</string>
+    <string name="gradient_swap_colors">Обратить порядок цветов</string>
+    <string name="gradient_add_color">Добавить цвет</string>
+    <string name="gradient_remove_color">Удалить цвет</string>
+    <string name="gradient_color_position">Цвет %1$d</string>
+    <string name="test_preview_completion">Тест завершения</string>
+    <string name="test_preview_error">Тест ошибки</string>
+    <string name="gradient_type_sweep">Круговой</string>
+    <string name="gradient_type_linear">Линейный</string>
+    <string name="gradient_angle_title">Угол градиента</string>
+    <string name="gradient_start_position">Начальная позиция</string>
 
     <!-- Design: Stroke Style -->
     <string name="pref_stroke_cap_style_title">Стиль края кольца</string>
