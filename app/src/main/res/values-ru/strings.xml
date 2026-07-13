@@ -66,10 +66,10 @@
     <string name="pref_gradient_summary">Смешивать два цвета по ходу активной загрузки</string>
     <string name="pref_gradient_configure_title">Настройки градиента</string>
     <string name="pref_gradient_configure_summary">Выберите цвета и направление градиента</string>
+    <string name="gradient_enable_title">Включить градиент</string>
+    <string name="gradient_colors_title">Цвета градиента</string>
     <string name="gradient_start_color_title">Начальный цвет</string>
-    <string name="gradient_start_color_summary">Цвет в начале градиента</string>
     <string name="gradient_end_color_title">Конечный цвет</string>
-    <string name="gradient_end_color_summary">Цвет в конце градиента</string>
     <string name="gradient_direction_title">Направление</string>
     <string name="gradient_swap_colors">Поменять цвета местами</string>
     <string name="gradient_direction_sweep">Круговой</string>

@@ -2,12 +2,19 @@ package eu.hxreborn.phdp.ui.screen
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.outlined.DonutLarge
@@ -19,18 +26,19 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
-import androidx.compose.material3.TooltipAnchorPosition
-import androidx.compose.material3.TooltipBox
-import androidx.compose.material3.TooltipDefaults
-import androidx.compose.material3.rememberTooltipState
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
@@ -38,6 +46,9 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -50,9 +61,11 @@ import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.SettingsScaffold
 import eu.hxreborn.phdp.ui.component.gradientBrush
-import eu.hxreborn.phdp.ui.component.preference.ColorPreference
+import eu.hxreborn.phdp.ui.component.preference.ColorPickerDialog
+import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
+import eu.hxreborn.phdp.ui.theme.MaterialPalette
 import eu.hxreborn.phdp.ui.theme.Tokens
 import me.zhanghai.compose.preference.ProvidePreferenceLocals
 import me.zhanghai.compose.preference.preferenceCategory
@@ -106,12 +119,6 @@ fun GradientScreen(
     SettingsScaffold(
         title = stringResource(R.string.pref_gradient_title),
         onNavigateBack = onNavigateBack,
-        actions = {
-            SwapColorsAction {
-                viewModel.savePref(Prefs.gradientStartColor, prefsState.gradientEndColor)
-                viewModel.savePref(Prefs.gradientEndColor, prefsState.gradientStartColor)
-            }
-        },
         bottomPadding = bottomNavPadding,
         modifier = modifier,
     ) { innerPadding ->
@@ -139,6 +146,34 @@ fun GradientScreen(
                     )
                 }
 
+                item(key = "gradient_enabled") {
+                    SectionCard(
+                        items =
+                            listOf(
+                                {
+                                    TogglePreferenceWithIcon(
+                                        value = prefsState.gradientEnabled,
+                                        onValueChange = {
+                                            viewModel.savePref(Prefs.gradientEnabled, it)
+                                            if (it) {
+                                                viewModel.savePref(
+                                                    Prefs.materialYouEnabled,
+                                                    false,
+                                                )
+                                            }
+                                        },
+                                        title = {
+                                            Text(stringResource(R.string.gradient_enable_title))
+                                        },
+                                        summary = {
+                                            Text(stringResource(R.string.pref_gradient_summary))
+                                        },
+                                    )
+                                },
+                            ),
+                    )
+                }
+
                 preferenceCategory(
                     key = "gradient_colors_header",
                     title = { Text(stringResource(R.string.group_colors)) },
@@ -149,30 +184,24 @@ fun GradientScreen(
                         items =
                             listOf(
                                 {
-                                    ColorPreference(
-                                        value = prefsState.gradientStartColor,
-                                        onValueChange = {
+                                    GradientColorsRow(
+                                        startColor = prefsState.gradientStartColor,
+                                        endColor = prefsState.gradientEndColor,
+                                        onStartColorChange = {
                                             viewModel.savePref(Prefs.gradientStartColor, it)
                                         },
-                                        title = {
-                                            Text(stringResource(R.string.gradient_start_color_title))
-                                        },
-                                        summary = {
-                                            Text(stringResource(R.string.gradient_start_color_summary))
-                                        },
-                                    )
-                                },
-                                {
-                                    ColorPreference(
-                                        value = prefsState.gradientEndColor,
-                                        onValueChange = {
+                                        onEndColorChange = {
                                             viewModel.savePref(Prefs.gradientEndColor, it)
                                         },
-                                        title = {
-                                            Text(stringResource(R.string.gradient_end_color_title))
-                                        },
-                                        summary = {
-                                            Text(stringResource(R.string.gradient_end_color_summary))
+                                        onSwap = {
+                                            viewModel.savePref(
+                                                Prefs.gradientStartColor,
+                                                prefsState.gradientEndColor,
+                                            )
+                                            viewModel.savePref(
+                                                Prefs.gradientEndColor,
+                                                prefsState.gradientStartColor,
+                                            )
                                         },
                                     )
                                 },
@@ -210,6 +239,7 @@ fun GradientScreen(
                                         index = index,
                                         count = directionOptions.size,
                                     ),
+                                icon = {},
                             ) {
                                 Icon(
                                     imageVector = option.icon,
@@ -224,25 +254,84 @@ fun GradientScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SwapColorsAction(onClick: () -> Unit) {
-    TooltipBox(
-        positionProvider =
-            TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Above),
-        tooltip = {
-            PlainTooltip {
-                Text(stringResource(R.string.gradient_swap_colors))
-            }
-        },
-        state = rememberTooltipState(),
+private fun GradientColorsRow(
+    startColor: Int,
+    endColor: Int,
+    onStartColorChange: (Int) -> Unit,
+    onEndColorChange: (Int) -> Unit,
+    onSwap: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var editingStart by remember { mutableStateOf<Boolean?>(null) }
+
+    editingStart?.let { isStart ->
+        ColorPickerDialog(
+            initialColor = if (isStart) startColor else endColor,
+            colors = MaterialPalette.materialColors,
+            onDismiss = { editingStart = null },
+            onColorSelected = { color ->
+                if (isStart) onStartColorChange(color) else onEndColorChange(color)
+                editingStart = null
+            },
+        )
+    }
+
+    Row(
+        modifier = modifier.fillMaxWidth().padding(Tokens.PreferencePadding),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        IconButton(onClick = onClick) {
+        Text(
+            text = stringResource(R.string.gradient_colors_title),
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.weight(1f),
+        )
+        ColorDot(
+            color = startColor,
+            description = stringResource(R.string.gradient_start_color_title),
+            onClick = { editingStart = true },
+        )
+        IconButton(onClick = onSwap) {
             Icon(
                 imageVector = Icons.Default.SwapHoriz,
                 contentDescription = stringResource(R.string.gradient_swap_colors),
             )
         }
+        ColorDot(
+            color = endColor,
+            description = stringResource(R.string.gradient_end_color_title),
+            onClick = { editingStart = false },
+        )
+    }
+}
+
+@Composable
+private fun ColorDot(
+    color: Int,
+    description: String,
+    onClick: () -> Unit,
+) {
+    Box(
+        modifier =
+            Modifier
+                .minimumInteractiveComponentSize()
+                .clip(CircleShape)
+                .clickable(onClick = onClick, role = Role.Button)
+                .semantics { contentDescription = description },
+        contentAlignment = Alignment.Center,
+    ) {
+        Box(
+            modifier =
+                Modifier
+                    .size(Tokens.ColorPreviewSize)
+                    .clip(CircleShape)
+                    .background(Color(color))
+                    .border(
+                        width = Tokens.ColorBorderWidth,
+                        color = MaterialTheme.colorScheme.outline,
+                        shape = CircleShape,
+                    ),
+        )
     }
 }
 
@@ -262,7 +351,7 @@ private fun GradientPreviewRing(
             if (pathMode) {
                 minOf(size.width - strokeWidth, PREVIEW_PATH_WIDTH_DP.dp.toPx())
             } else {
-                minOf(size.width, size.height) - strokeWidth
+                minOf(minOf(size.width, size.height) - strokeWidth, PREVIEW_RING_SIZE_DP.dp.toPx())
             }
         val previewHeight = minOf(size.height - strokeWidth, PREVIEW_RING_SIZE_DP.dp.toPx())
         val left = (size.width - previewWidth) / 2f

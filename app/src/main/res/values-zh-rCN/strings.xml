@@ -52,10 +52,10 @@
     <string name="pref_gradient_summary">在下载进度中混合两种颜色</string>
     <string name="pref_gradient_configure_title">渐变设置</string>
     <string name="pref_gradient_configure_summary">选择渐变颜色和方向</string>
+    <string name="gradient_enable_title">启用渐变</string>
+    <string name="gradient_colors_title">渐变颜色</string>
     <string name="gradient_start_color_title">起始颜色</string>
-    <string name="gradient_start_color_summary">渐变起点的颜色</string>
     <string name="gradient_end_color_title">结束颜色</string>
-    <string name="gradient_end_color_summary">渐变终点的颜色</string>
     <string name="gradient_direction_title">方向</string>
     <string name="gradient_swap_colors">交换颜色</string>
     <string name="gradient_direction_sweep">环形</string>

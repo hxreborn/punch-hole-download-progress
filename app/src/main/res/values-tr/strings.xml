@@ -66,10 +66,10 @@
     <string name="pref_gradient_summary">Etkin indirme ilerlemesinde iki rengi harmanlayın</string>
     <string name="pref_gradient_configure_title">Gradyan ayarları</string>
     <string name="pref_gradient_configure_summary">Gradyan renklerini ve yönünü seçin</string>
+    <string name="gradient_enable_title">Gradyanı etkinleştir</string>
+    <string name="gradient_colors_title">Gradyan renkleri</string>
     <string name="gradient_start_color_title">Başlangıç rengi</string>
-    <string name="gradient_start_color_summary">Gradyanın başlangıcındaki renk</string>
     <string name="gradient_end_color_title">Bitiş rengi</string>
-    <string name="gradient_end_color_summary">Gradyanın sonundaki renk</string>
     <string name="gradient_direction_title">Yön</string>
     <string name="gradient_swap_colors">Renkleri değiştir</string>
     <string name="gradient_direction_sweep">Dairesel</string>

@@ -66,10 +66,10 @@
     <string name="pref_gradient_summary">Blend two colors across active download progress</string>
     <string name="pref_gradient_configure_title">Gradient settings</string>
     <string name="pref_gradient_configure_summary">Choose gradient colors and direction</string>
+    <string name="gradient_enable_title">Enable gradient</string>
+    <string name="gradient_colors_title">Gradient colors</string>
     <string name="gradient_start_color_title">Start color</string>
-    <string name="gradient_start_color_summary">Color at the start of the gradient</string>
     <string name="gradient_end_color_title">End color</string>
-    <string name="gradient_end_color_summary">Color at the end of the gradient</string>
     <string name="gradient_direction_title">Direction</string>
     <string name="gradient_swap_colors">Swap colors</string>
     <string name="gradient_direction_sweep">Sweep</string>
