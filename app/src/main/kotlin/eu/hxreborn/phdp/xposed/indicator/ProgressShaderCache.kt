@@ -169,7 +169,7 @@ internal class ProgressShaderCache {
         apply {
             setLocalMatrix(
                 Matrix().apply {
-                    setRotate(-90f, config.centerX, config.centerY)
+                    setRotate(-90f + config.angle, config.centerX, config.centerY)
                 },
             )
         }

@@ -78,6 +78,7 @@
     <string name="gradient_type_sweep">Dairesel</string>
     <string name="gradient_type_linear">Doğrusal</string>
     <string name="gradient_angle_title">Gradyan açısı</string>
+    <string name="gradient_start_position">Başlangıç konumu</string>
 
     <!-- Design: Stroke Style -->
     <string name="pref_stroke_cap_style_title">Halka kenar stili</string>

@@ -64,6 +64,7 @@
     <string name="gradient_type_sweep">环形</string>
     <string name="gradient_type_linear">线性</string>
     <string name="gradient_angle_title">渐变角度</string>
+    <string name="gradient_start_position">起始位置</string>
     <string name="pref_stroke_cap_style_title">边缘样式</string>
     <string name="pref_stroke_cap_style_summary">进度环边缘的形状</string>
     <string name="group_background_ring">进度环背景</string>

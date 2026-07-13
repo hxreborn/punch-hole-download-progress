@@ -19,21 +19,8 @@ internal fun gradientBrush(
 ): Brush =
     when (GradientDirection.fromStoredValue(direction)) {
         GradientDirection.SWEEP -> {
-            val midpoint =
-                Color(
-                    red = (startColor.red + endColor.red) / 2f,
-                    green = (startColor.green + endColor.green) / 2f,
-                    blue = (startColor.blue + endColor.blue) / 2f,
-                    alpha = (startColor.alpha + endColor.alpha) / 2f,
-                )
             Brush.sweepGradient(
-                colorStops =
-                    arrayOf(
-                        0f to midpoint,
-                        0.25f to endColor,
-                        0.75f to startColor,
-                        1f to midpoint,
-                    ),
+                colorStops = sweepStops(startColor, endColor, angleDegrees),
                 center = bounds.center,
             )
         }
@@ -58,3 +45,36 @@ internal fun gradientBrush(
             )
         }
     }
+
+private fun sweepStops(
+    startColor: Color,
+    endColor: Color,
+    angleDegrees: Int,
+): Array<Pair<Float, Color>> {
+    val startFraction = (((angleDegrees - 90) % 360 + 360) % 360) / 360f
+
+    fun colorAt(position: Float): Color {
+        val t = (position - startFraction + 1f) % 1f
+        val k = if (t < 0.5f) t * 2f else (1f - t) * 2f
+        return Color(
+            red = startColor.red + (endColor.red - startColor.red) * k,
+            green = startColor.green + (endColor.green - startColor.green) * k,
+            blue = startColor.blue + (endColor.blue - startColor.blue) * k,
+            alpha = startColor.alpha + (endColor.alpha - startColor.alpha) * k,
+        )
+    }
+
+    val boundary = colorAt(0f)
+    val anchors =
+        listOf(
+            startFraction to startColor,
+            (startFraction + 0.5f) % 1f to endColor,
+        ).sortedBy { it.first }
+    return buildList {
+        add(0f to boundary)
+        for (anchor in anchors) {
+            if (anchor.first > 0f && anchor.first < 1f) add(anchor)
+        }
+        add(1f to boundary)
+    }.toTypedArray()
+}

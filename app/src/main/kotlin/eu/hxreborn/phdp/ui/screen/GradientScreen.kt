@@ -186,41 +186,49 @@ fun GradientScreen(
                     }
                 }
 
-                if (GradientDirection.fromStoredValue(prefsState.gradientDirection) ==
-                    GradientDirection.LINEAR
-                ) {
-                    item(key = "gradient_angle") {
-                        SectionCard(
-                            items =
-                                listOf(
-                                    {
-                                        val angleRange = Prefs.gradientAngle.range!!
-                                        SliderPreferenceWithReset(
-                                            value = prefsState.gradientAngle.toFloat(),
-                                            onValueChange = {
-                                                viewModel.savePref(
-                                                    Prefs.gradientAngle,
-                                                    it.toInt(),
-                                                )
-                                            },
-                                            title = {
-                                                Text(stringResource(R.string.gradient_angle_title))
-                                            },
-                                            valueRange =
-                                                angleRange.first.toFloat()..angleRange.last.toFloat(),
-                                            defaultValue = Prefs.gradientAngle.default.toFloat(),
-                                            onReset = {
-                                                viewModel.savePref(
-                                                    Prefs.gradientAngle,
-                                                    Prefs.gradientAngle.default,
-                                                )
-                                            },
-                                            valueText = { Text("${it.toInt()}°") },
-                                        )
-                                    },
-                                ),
-                        )
-                    }
+                item(key = "gradient_angle") {
+                    SectionCard(
+                        items =
+                            listOf(
+                                {
+                                    val angleRange = Prefs.gradientAngle.range!!
+                                    val isSweep =
+                                        GradientDirection.fromStoredValue(
+                                            prefsState.gradientDirection,
+                                        ) == GradientDirection.SWEEP
+                                    SliderPreferenceWithReset(
+                                        value = prefsState.gradientAngle.toFloat(),
+                                        onValueChange = {
+                                            viewModel.savePref(
+                                                Prefs.gradientAngle,
+                                                it.toInt(),
+                                            )
+                                        },
+                                        title = {
+                                            Text(
+                                                stringResource(
+                                                    if (isSweep) {
+                                                        R.string.gradient_start_position
+                                                    } else {
+                                                        R.string.gradient_angle_title
+                                                    },
+                                                ),
+                                            )
+                                        },
+                                        valueRange =
+                                            angleRange.first.toFloat()..angleRange.last.toFloat(),
+                                        defaultValue = Prefs.gradientAngle.default.toFloat(),
+                                        onReset = {
+                                            viewModel.savePref(
+                                                Prefs.gradientAngle,
+                                                Prefs.gradientAngle.default,
+                                            )
+                                        },
+                                        valueText = { Text("${it.toInt()}°") },
+                                    )
+                                },
+                            ),
+                    )
                 }
 
                 item(key = "test_buttons") {

@@ -78,6 +78,7 @@
     <string name="gradient_type_sweep">Sweep</string>
     <string name="gradient_type_linear">Linear</string>
     <string name="gradient_angle_title">Gradient angle</string>
+    <string name="gradient_start_position">Start position</string>
 
     <!-- Design: Stroke Style -->
     <string name="pref_stroke_cap_style_title">Ring edge style</string>
