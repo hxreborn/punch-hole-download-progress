@@ -62,6 +62,21 @@
     <string name="pref_success_color_summary">Ring color applied when download finishes</string>
     <string name="pref_error_color_title">Error color</string>
     <string name="pref_error_color_summary">Ring color applied when download fails</string>
+    <string name="pref_gradient_title">Gradient</string>
+    <string name="pref_gradient_summary">Blend two colors across active download progress</string>
+    <string name="pref_gradient_configure_title">Gradient settings</string>
+    <string name="pref_gradient_configure_summary">Choose gradient colors and direction</string>
+    <string name="gradient_start_color_title">Start color</string>
+    <string name="gradient_start_color_summary">Color at the start of the gradient</string>
+    <string name="gradient_end_color_title">End color</string>
+    <string name="gradient_end_color_summary">Color at the end of the gradient</string>
+    <string name="gradient_direction_title">Direction</string>
+    <string name="gradient_swap_colors">Swap colors</string>
+    <string name="gradient_direction_sweep">Sweep</string>
+    <string name="gradient_direction_left_to_right">Left to right</string>
+    <string name="gradient_direction_top_to_bottom">Top to bottom</string>
+    <string name="gradient_direction_top_left_to_bottom_right">Top left to bottom right</string>
+    <string name="gradient_direction_bottom_left_to_top_right">Bottom left to top right</string>
 
     <!-- Design: Stroke Style -->
     <string name="pref_stroke_cap_style_title">Ring edge style</string>

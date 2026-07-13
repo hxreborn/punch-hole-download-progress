@@ -48,8 +48,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.luminance
@@ -66,6 +68,7 @@ import eu.hxreborn.phdp.prefs.StringPref
 import eu.hxreborn.phdp.ui.SettingsUiState
 import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.SettingsScaffold
+import eu.hxreborn.phdp.ui.component.gradientBrush
 import eu.hxreborn.phdp.ui.state.AppPrefs
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
@@ -219,7 +222,7 @@ fun MaterialYouScreen(
 
     var selectedSection by rememberSaveable { mutableIntStateOf(0) }
 
-    val progressColor =
+    val materialProgressColor =
         resolveSystemColor(
             prefsState.materialYouProgressPalette,
             prefsState.materialYouProgressShade,
@@ -234,6 +237,18 @@ fun MaterialYouScreen(
             prefsState.materialYouErrorPalette,
             prefsState.materialYouErrorShade,
         )
+    val effectiveProgressColor =
+        if (prefsState.gradientEnabled) {
+            Color(prefsState.gradientStartColor)
+        } else {
+            materialProgressColor
+        }
+    val effectiveProgressEndColor =
+        if (prefsState.gradientEnabled) {
+            Color(prefsState.gradientEndColor)
+        } else {
+            materialProgressColor
+        }
 
     SettingsScaffold(
         title = stringResource(R.string.pref_material_you_title),
@@ -255,13 +270,16 @@ fun MaterialYouScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     IndicatorPreviewRing(
-                        progressColor = progressColor,
+                        progressStartColor = effectiveProgressColor,
+                        progressEndColor = effectiveProgressEndColor,
+                        progressDirection = prefsState.gradientDirection,
+                        gradientEnabled = prefsState.gradientEnabled,
                         completionColor = completionColor,
                         errorColor = errorColor,
                     )
                     Spacer(modifier = Modifier.height(Tokens.SpacingSm))
                     PreviewLegend(
-                        progressColor = progressColor,
+                        progressColor = effectiveProgressColor,
                         completionColor = completionColor,
                         errorColor = errorColor,
                     )
@@ -371,23 +389,19 @@ fun MaterialYouScreen(
 
 @Composable
 private fun IndicatorPreviewRing(
-    progressColor: Color,
+    progressStartColor: Color,
+    progressEndColor: Color,
+    progressDirection: String,
+    gradientEnabled: Boolean,
     completionColor: Color,
     errorColor: Color,
     modifier: Modifier = Modifier,
 ) {
-    val animatedProgress by animateColorAsState(progressColor, label = "progress")
+    val animatedProgressStart by animateColorAsState(progressStartColor, label = "progressStart")
+    val animatedProgressEnd by animateColorAsState(progressEndColor, label = "progressEnd")
     val animatedCompletion by animateColorAsState(completionColor, label = "completion")
     val animatedError by animateColorAsState(errorColor, label = "error")
     val bgColor = MaterialTheme.colorScheme.surfaceContainerHighest
-
-    val arcs =
-        listOf(
-            Triple(bgColor, 0f, 360f),
-            Triple(animatedProgress, -90f, 252f),
-            Triple(animatedCompletion, 162f, 72f),
-            Triple(animatedError, 234f, 36f),
-        )
 
     Canvas(modifier = modifier.size(RING_SIZE_DP.dp)) {
         val strokeWidth = RING_STROKE_DP.dp.toPx()
@@ -395,18 +409,55 @@ private fun IndicatorPreviewRing(
         val inset = strokeWidth / 2f
         val arcSize = Size(size.width - strokeWidth, size.height - strokeWidth)
         val topLeft = Offset(inset, inset)
+        val bounds = Rect(topLeft, arcSize)
+        val progressBrush =
+            if (gradientEnabled) {
+                gradientBrush(
+                    animatedProgressStart,
+                    animatedProgressEnd,
+                    progressDirection,
+                    bounds,
+                )
+            } else {
+                SolidColor(animatedProgressStart)
+            }
 
-        arcs.forEach { (color, startAngle, sweepAngle) ->
-            drawArc(
-                color = color,
-                startAngle = startAngle,
-                sweepAngle = sweepAngle,
-                useCenter = false,
-                topLeft = topLeft,
-                size = arcSize,
-                style = arcStroke,
-            )
-        }
+        drawArc(
+            color = bgColor,
+            startAngle = 0f,
+            sweepAngle = 360f,
+            useCenter = false,
+            topLeft = topLeft,
+            size = arcSize,
+            style = arcStroke,
+        )
+        drawArc(
+            brush = progressBrush,
+            startAngle = -90f,
+            sweepAngle = 252f,
+            useCenter = false,
+            topLeft = topLeft,
+            size = arcSize,
+            style = arcStroke,
+        )
+        drawArc(
+            color = animatedCompletion,
+            startAngle = 162f,
+            sweepAngle = 72f,
+            useCenter = false,
+            topLeft = topLeft,
+            size = arcSize,
+            style = arcStroke,
+        )
+        drawArc(
+            color = animatedError,
+            startAngle = 234f,
+            sweepAngle = 36f,
+            useCenter = false,
+            topLeft = topLeft,
+            size = arcSize,
+            style = arcStroke,
+        )
     }
 }
 

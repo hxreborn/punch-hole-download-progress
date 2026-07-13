@@ -54,6 +54,7 @@ import eu.hxreborn.phdp.ui.screen.AppearanceScreen
 import eu.hxreborn.phdp.ui.screen.BehaviorScreen
 import eu.hxreborn.phdp.ui.screen.CalibrationScreen
 import eu.hxreborn.phdp.ui.screen.CalibrationTarget
+import eu.hxreborn.phdp.ui.screen.GradientScreen
 import eu.hxreborn.phdp.ui.screen.LayoutConfig
 import eu.hxreborn.phdp.ui.screen.LicensesScreen
 import eu.hxreborn.phdp.ui.screen.MaterialYouScreen
@@ -103,6 +104,9 @@ sealed interface Screen : NavKey {
 
     @Serializable
     data object FilenameShadowCalibration : Screen
+
+    @Serializable
+    data object Gradient : Screen
 
     @Serializable
     data object MaterialYou : Screen
@@ -213,6 +217,9 @@ fun MainNavDisplay(
                                         CalibrationTarget.FILENAME_SHADOW -> Screen.FilenameShadowCalibration
                                     },
                                 )
+                            },
+                            onNavigateToGradient = {
+                                backStack.add(Screen.Gradient)
                             },
                             onNavigateToMaterialYou = {
                                 backStack.add(Screen.MaterialYou)
@@ -353,6 +360,13 @@ fun MainNavDisplay(
                         bottomNavPadding = bottomNavPadding,
                     )
                 }
+                entry<Screen.Gradient> {
+                    GradientScreen(
+                        viewModel = viewModel,
+                        onNavigateBack = { backStack.removeLastOrNull() },
+                        bottomNavPadding = bottomNavPadding,
+                    )
+                }
                 entry<Screen.BadgeCalibration> {
                     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                     val prefs = (uiState as? SettingsUiState.Success)?.prefs ?: return@entry
@@ -478,6 +492,7 @@ fun BottomNav(
             Screen.AppIconCalibration,
             Screen.PercentShadowCalibration,
             Screen.FilenameShadowCalibration,
+            Screen.Gradient,
             Screen.MaterialYou,
             -> Screen.Design
 

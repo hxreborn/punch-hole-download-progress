@@ -9,6 +9,10 @@ import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 data class AppPrefs(
     val enabled: Boolean = Prefs.enabled.default,
     val color: Int = Prefs.color.default,
+    val gradientEnabled: Boolean = Prefs.gradientEnabled.default,
+    val gradientStartColor: Int = Prefs.gradientStartColor.default,
+    val gradientEndColor: Int = Prefs.gradientEndColor.default,
+    val gradientDirection: String = Prefs.gradientDirection.default,
     val strokeWidth: Float = Prefs.strokeWidth.default,
     val ringGap: Float = Prefs.ringGap.default,
     val opacity: Int = Prefs.opacity.default,

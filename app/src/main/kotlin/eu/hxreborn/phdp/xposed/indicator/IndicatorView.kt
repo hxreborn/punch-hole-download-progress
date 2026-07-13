@@ -46,6 +46,7 @@ class IndicatorView(
     private val density = resources.displayMetrics.density
     private val badgePainter = BadgePainter(density)
     private val iconPainter = IconPainter(context, density)
+    private val progressShaderCache = ProgressShaderCache()
 
     // ArcRingRenderer (default) for circles, PathRingRenderer for pills. Toggled via "Path mode" pref.
     private var renderer: RingRenderer = ArcRingRenderer()
@@ -377,7 +378,12 @@ class IndicatorView(
     }
 
     private fun configureRingFamily() {
-        resolvedRingColor = IndicatorState.color
+        resolvedRingColor =
+            if (IndicatorState.gradientEnabled) {
+                IndicatorState.gradientStartColor
+            } else {
+                IndicatorState.color
+            }
         val ringStrokeWidth = IndicatorState.strokeWidth * density
         val glowRadiusPx =
             if (IndicatorState.glowEnabled) IndicatorState.glowRadius * density else 0f
@@ -395,7 +401,7 @@ class IndicatorView(
                 if (IndicatorState.finishUseFlashColor) {
                     IndicatorState.finishFlashColor
                 } else {
-                    brightenColor(IndicatorState.color, 0.5f)
+                    brightenColor(resolvedRingColor, 0.5f)
                 }
             alpha = 255
             strokeWidth = ringStrokeWidth * SHINE_STROKE_MULTIPLIER
@@ -409,14 +415,16 @@ class IndicatorView(
         }
 
         if (IndicatorState.materialYouEnabled && Build.VERSION.SDK_INT >= 31) {
-            resolveSystemAccent(
-                IndicatorState.materialYouProgressPalette,
-                IndicatorState.materialYouProgressShade,
-            )?.let { c ->
-                resolvedRingColor = c
-                applyRingColor(glowPaint, resolvedRingColor)
-                glowPaint.alpha = effectiveOpacity * 255 / 100
-                glowPaint.setShadowLayer(glowRadiusPx, 0f, 0f, resolvedRingColor)
+            if (!IndicatorState.gradientEnabled) {
+                resolveSystemAccent(
+                    IndicatorState.materialYouProgressPalette,
+                    IndicatorState.materialYouProgressShade,
+                )?.let { c ->
+                    resolvedRingColor = c
+                    applyRingColor(glowPaint, resolvedRingColor)
+                    glowPaint.alpha = effectiveOpacity * 255 / 100
+                    glowPaint.setShadowLayer(glowRadiusPx, 0f, 0f, resolvedRingColor)
+                }
             }
             resolveSystemAccent(
                 IndicatorState.materialYouSuccessPalette,
@@ -697,6 +705,16 @@ class IndicatorView(
                 arcBounds.applyCalibration()
                 renderer.updateBounds(arcBounds)
                 val fraction = smoothProgressFor(effectiveProgress)
+                animatedPaint.shader =
+                    progressShaderCache.shaderFor(
+                        bounds = arcBounds,
+                        startColor = IndicatorState.gradientStartColor,
+                        endColor = IndicatorState.gradientEndColor,
+                        direction = IndicatorState.gradientDirection,
+                        hdrEnabled = IndicatorState.hdrEnabled,
+                        hdrHeadroom = IndicatorState.hdrHeadroom,
+                        enabled = IndicatorState.gradientEnabled,
+                    )
                 renderer.drawProgress(this, fraction, IndicatorState.clockwise, animatedPaint)
 
                 val showLabels = effectiveProgress in 1..99 || animator.isGeometryPreviewActive

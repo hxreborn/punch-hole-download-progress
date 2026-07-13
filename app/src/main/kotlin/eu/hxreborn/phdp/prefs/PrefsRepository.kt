@@ -90,6 +90,13 @@ class PrefsRepositoryImpl(
         AppPrefs(
             enabled = Prefs.enabled.read(this),
             color = Prefs.color.read(this),
+            gradientEnabled = Prefs.gradientEnabled.read(this),
+            gradientStartColor = Prefs.gradientStartColor.read(this),
+            gradientEndColor = Prefs.gradientEndColor.read(this),
+            gradientDirection =
+                GradientDirection
+                    .fromStoredValue(Prefs.gradientDirection.read(this))
+                    .storedValue,
             strokeWidth = Prefs.strokeWidth.read(this),
             ringGap = Prefs.ringGap.read(this),
             opacity = Prefs.opacity.read(this),

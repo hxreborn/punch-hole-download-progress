@@ -1,6 +1,7 @@
 package eu.hxreborn.phdp.xposed.hook
 
 import android.content.SharedPreferences
+import eu.hxreborn.phdp.prefs.GradientDirection
 import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.prefs.RotationOffsets
 import eu.hxreborn.phdp.util.Logger
@@ -20,6 +21,22 @@ object IndicatorState {
 
     @Volatile
     var color = Prefs.color.default
+        private set
+
+    @Volatile
+    var gradientEnabled = Prefs.gradientEnabled.default
+        private set
+
+    @Volatile
+    var gradientStartColor = Prefs.gradientStartColor.default
+        private set
+
+    @Volatile
+    var gradientEndColor = Prefs.gradientEndColor.default
+        private set
+
+    @Volatile
+    var gradientDirection = Prefs.gradientDirection.default
         private set
 
     @Volatile
@@ -486,6 +503,25 @@ object IndicatorState {
                     color = Prefs.color.read(prefs)
                 }
 
+                Prefs.gradientEnabled.key -> {
+                    gradientEnabled = Prefs.gradientEnabled.read(prefs)
+                }
+
+                Prefs.gradientStartColor.key -> {
+                    gradientStartColor = Prefs.gradientStartColor.read(prefs)
+                }
+
+                Prefs.gradientEndColor.key -> {
+                    gradientEndColor = Prefs.gradientEndColor.read(prefs)
+                }
+
+                Prefs.gradientDirection.key -> {
+                    gradientDirection =
+                        GradientDirection
+                            .fromStoredValue(Prefs.gradientDirection.read(prefs))
+                            .storedValue
+                }
+
                 Prefs.strokeWidth.key -> {
                     strokeWidth = Prefs.strokeWidth.read(prefs)
                 }
@@ -900,6 +936,13 @@ object IndicatorState {
             remotePrefs?.let { prefs ->
                 enabled = Prefs.enabled.read(prefs)
                 color = Prefs.color.read(prefs)
+                gradientEnabled = Prefs.gradientEnabled.read(prefs)
+                gradientStartColor = Prefs.gradientStartColor.read(prefs)
+                gradientEndColor = Prefs.gradientEndColor.read(prefs)
+                gradientDirection =
+                    GradientDirection
+                        .fromStoredValue(Prefs.gradientDirection.read(prefs))
+                        .storedValue
                 strokeWidth = Prefs.strokeWidth.read(prefs)
                 ringGap = Prefs.ringGap.read(prefs)
                 opacity = Prefs.opacity.read(prefs)
