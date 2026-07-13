@@ -56,10 +56,10 @@
     <string name="gradient_colors_title">渐变颜色</string>
     <string name="gradient_start_color_title">起始颜色</string>
     <string name="gradient_end_color_title">结束颜色</string>
-    <string name="gradient_direction_title">方向</string>
+    <string name="gradient_style_title">渐变样式</string>
     <string name="gradient_swap_colors">交换颜色</string>
-    <string name="gradient_direction_sweep">环形</string>
-    <string name="gradient_direction_linear">线性</string>
+    <string name="gradient_style_circular">环形</string>
+    <string name="gradient_style_linear">线性</string>
     <string name="gradient_angle_title">角度</string>
     <string name="gradient_angle_summary">颜色过渡的旋转</string>
     <string name="pref_stroke_cap_style_title">边缘样式</string>

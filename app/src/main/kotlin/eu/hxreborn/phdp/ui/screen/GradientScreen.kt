@@ -153,8 +153,8 @@ fun GradientScreen(
                 }
 
                 preferenceCategory(
-                    key = "gradient_direction_header",
-                    title = { Text(stringResource(R.string.gradient_direction_title)) },
+                    key = "gradient_style_header",
+                    title = { Text(stringResource(R.string.gradient_style_title)) },
                 )
 
                 item(key = "gradient_direction") {
@@ -186,11 +186,11 @@ fun GradientScreen(
                                     stringResource(
                                         when (direction) {
                                             GradientDirection.SWEEP -> {
-                                                R.string.gradient_direction_sweep
+                                                R.string.gradient_style_circular
                                             }
 
                                             GradientDirection.LINEAR -> {
-                                                R.string.gradient_direction_linear
+                                                R.string.gradient_style_linear
                                             }
                                         },
                                     ),

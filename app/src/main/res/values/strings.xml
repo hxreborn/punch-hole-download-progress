@@ -70,10 +70,10 @@
     <string name="gradient_colors_title">Gradient colors</string>
     <string name="gradient_start_color_title">Start color</string>
     <string name="gradient_end_color_title">End color</string>
-    <string name="gradient_direction_title">Direction</string>
+    <string name="gradient_style_title">Gradient style</string>
     <string name="gradient_swap_colors">Swap colors</string>
-    <string name="gradient_direction_sweep">Sweep</string>
-    <string name="gradient_direction_linear">Linear</string>
+    <string name="gradient_style_circular">Circular</string>
+    <string name="gradient_style_linear">Linear</string>
     <string name="gradient_angle_title">Angle</string>
     <string name="gradient_angle_summary">Rotation of the color transition</string>
 

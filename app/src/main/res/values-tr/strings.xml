@@ -70,10 +70,10 @@
     <string name="gradient_colors_title">Gradyan renkleri</string>
     <string name="gradient_start_color_title">Başlangıç rengi</string>
     <string name="gradient_end_color_title">Bitiş rengi</string>
-    <string name="gradient_direction_title">Yön</string>
+    <string name="gradient_style_title">Gradyan stili</string>
     <string name="gradient_swap_colors">Renkleri değiştir</string>
-    <string name="gradient_direction_sweep">Dairesel</string>
-    <string name="gradient_direction_linear">Doğrusal</string>
+    <string name="gradient_style_circular">Dairesel</string>
+    <string name="gradient_style_linear">Doğrusal</string>
     <string name="gradient_angle_title">Açı</string>
     <string name="gradient_angle_summary">Renk geçişinin dönüşü</string>
 

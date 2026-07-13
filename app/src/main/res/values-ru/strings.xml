@@ -70,10 +70,10 @@
     <string name="gradient_colors_title">Цвета градиента</string>
     <string name="gradient_start_color_title">Начальный цвет</string>
     <string name="gradient_end_color_title">Конечный цвет</string>
-    <string name="gradient_direction_title">Направление</string>
+    <string name="gradient_style_title">Стиль градиента</string>
     <string name="gradient_swap_colors">Поменять цвета местами</string>
-    <string name="gradient_direction_sweep">Круговой</string>
-    <string name="gradient_direction_linear">Линейный</string>
+    <string name="gradient_style_circular">Круговой</string>
+    <string name="gradient_style_linear">Линейный</string>
     <string name="gradient_angle_title">Угол</string>
     <string name="gradient_angle_summary">Поворот цветового перехода</string>
 
