@@ -4,7 +4,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.lerp
 import eu.hxreborn.phdp.prefs.GradientDirection
 import kotlin.math.PI
 import kotlin.math.abs
@@ -20,7 +19,13 @@ internal fun gradientBrush(
 ): Brush =
     when (GradientDirection.fromStoredValue(direction)) {
         GradientDirection.SWEEP -> {
-            val midpoint = lerp(startColor, endColor, 0.5f)
+            val midpoint =
+                Color(
+                    red = (startColor.red + endColor.red) / 2f,
+                    green = (startColor.green + endColor.green) / 2f,
+                    blue = (startColor.blue + endColor.blue) / 2f,
+                    alpha = (startColor.alpha + endColor.alpha) / 2f,
+                )
             Brush.sweepGradient(
                 colorStops =
                     arrayOf(
