@@ -162,12 +162,6 @@ fun GradientScreen(
                                         value = prefsState.gradientEnabled,
                                         onValueChange = {
                                             viewModel.savePref(Prefs.gradientEnabled, it)
-                                            if (it) {
-                                                viewModel.savePref(
-                                                    Prefs.materialYouEnabled,
-                                                    false,
-                                                )
-                                            }
                                         },
                                         title = {
                                             Text(stringResource(R.string.gradient_enable_title))
