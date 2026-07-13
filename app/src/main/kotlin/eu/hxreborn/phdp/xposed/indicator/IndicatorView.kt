@@ -1152,18 +1152,6 @@ class IndicatorView(
         arcBounds.applyCalibration()
     }
 
-    // Rotate portrait-calibrated offset vector to match current display rotation
-    private fun rotateOffset(
-        dx: Float,
-        dy: Float,
-    ): Pair<Float, Float> =
-        when (display?.rotation) {
-            Surface.ROTATION_90 -> dy to -dx
-            Surface.ROTATION_180 -> -dx to -dy
-            Surface.ROTATION_270 -> -dy to dx
-            else -> dx to dy
-        }
-
     // Transform portrait-calibrated position string to match current display rotation
     private fun rotatePosition(
         position: String,
@@ -1219,11 +1207,8 @@ class IndicatorView(
 
     // Apply calibration: normalize base, offset, then scale
     private fun RectF.applyCalibration() {
-        val (offsetX, offsetY) =
-            rotateOffset(
-                IndicatorState.ringOffsetX,
-                IndicatorState.ringOffsetY,
-            )
+        val slot = RotationSlot.fromSurfaceRotation(display?.rotation ?: Surface.ROTATION_0)
+        val perRot = IndicatorState.ringOffsets[slot]
         val scaleX = IndicatorState.ringScaleX
         val scaleY = IndicatorState.ringScaleY
 
@@ -1233,8 +1218,8 @@ class IndicatorView(
         // Path mode: keep original aspect ratio for pill-shaped cutouts
         val halfBase = if (!IndicatorState.pathMode) maxOf(width(), height()) / 2f else null
 
-        val centerX = centerX() + offsetX
-        val centerY = centerY() + offsetY
+        val centerX = centerX() + perRot.x
+        val centerY = centerY() + perRot.y
 
         val halfWidth = (halfBase ?: (width() / 2f)) * scaleX
         val halfHeight = (halfBase ?: (height() / 2f)) * scaleY

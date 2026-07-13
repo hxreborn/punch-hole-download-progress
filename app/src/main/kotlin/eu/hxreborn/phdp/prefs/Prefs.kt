@@ -121,6 +121,7 @@ object Prefs {
     val filenameTextOffsets = RotationOffsetsPref("filename_text_offsets_by_rotation")
     val appIconOffsets = RotationOffsetsPref("app_icon_offsets_by_rotation")
     val badgeOffsets = RotationOffsetsPref("badge_offsets_by_rotation")
+    val ringOffsets = RingOffsetsPref("ring_offsets_by_rotation", ringOffsetX, ringOffsetY)
     val previewFilenameText =
         StringPref(
             "preview_filename_text",
@@ -252,6 +253,7 @@ object Prefs {
             ringScaleLinked,
             ringOffsetX,
             ringOffsetY,
+            ringOffsets,
             pathMode,
             progressEasing,
             finishStyle,
@@ -343,8 +345,7 @@ object Prefs {
             badgeLockRotation.key,
             ringScaleX.key,
             ringScaleY.key,
-            ringOffsetX.key,
-            ringOffsetY.key,
+            ringOffsets.key,
             pathMode.key,
             percentTextPosition.key,
             percentTextOffsets.key,

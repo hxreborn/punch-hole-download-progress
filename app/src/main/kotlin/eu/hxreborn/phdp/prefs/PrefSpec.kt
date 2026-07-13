@@ -111,6 +111,34 @@ class RotationOffsetsPref(
     }
 }
 
+// Migrates the legacy single ring_offset_x/y into per-rotation slots when the new key is absent,
+// reproducing the old rotateOffset() output per rotation. legacyX/legacyY clamp like the old reads.
+class RingOffsetsPref(
+    key: String,
+    private val legacyX: FloatPref,
+    private val legacyY: FloatPref,
+) : PrefSpec<RotationOffsets>(key, RotationOffsets.EMPTY) {
+    override fun read(prefs: SharedPreferences): RotationOffsets {
+        prefs.getString(key, null)?.let { return RotationOffsets.deserialize(it) }
+        val ox = legacyX.read(prefs)
+        val oy = legacyY.read(prefs)
+        if (ox == 0f && oy == 0f) return RotationOffsets.EMPTY
+        return RotationOffsets(
+            OffsetPx(ox, oy),
+            OffsetPx(oy, -ox),
+            OffsetPx(-ox, -oy),
+            OffsetPx(-oy, ox),
+        )
+    }
+
+    override fun write(
+        editor: SharedPreferences.Editor,
+        value: RotationOffsets,
+    ) {
+        editor.putString(key, value.serialize())
+    }
+}
+
 data class BoundPref<T : Any>(
     val value: T,
     val spec: PrefSpec<T>,

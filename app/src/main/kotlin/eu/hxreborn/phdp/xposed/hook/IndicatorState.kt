@@ -241,11 +241,7 @@ object IndicatorState {
         private set
 
     @Volatile
-    var ringOffsetX = Prefs.ringOffsetX.default
-        private set
-
-    @Volatile
-    var ringOffsetY = Prefs.ringOffsetY.default
+    var ringOffsets = RotationOffsets.EMPTY
         private set
 
     @Volatile
@@ -727,12 +723,8 @@ object IndicatorState {
                     ringScaleLinked = Prefs.ringScaleLinked.read(prefs)
                 }
 
-                Prefs.ringOffsetX.key -> {
-                    ringOffsetX = Prefs.ringOffsetX.read(prefs)
-                }
-
-                Prefs.ringOffsetY.key -> {
-                    ringOffsetY = Prefs.ringOffsetY.read(prefs)
+                Prefs.ringOffsets.key -> {
+                    ringOffsets = Prefs.ringOffsets.read(prefs)
                 }
 
                 Prefs.pathMode.key -> {
@@ -996,8 +988,7 @@ object IndicatorState {
                 ringScaleX = Prefs.ringScaleX.read(prefs)
                 ringScaleY = Prefs.ringScaleY.read(prefs)
                 ringScaleLinked = Prefs.ringScaleLinked.read(prefs)
-                ringOffsetX = Prefs.ringOffsetX.read(prefs)
-                ringOffsetY = Prefs.ringOffsetY.read(prefs)
+                ringOffsets = Prefs.ringOffsets.read(prefs)
                 pathMode = Prefs.pathMode.read(prefs)
                 strokeCapStyle = Prefs.strokeCapStyle.read(prefs)
                 backgroundRingEnabled = Prefs.backgroundRingEnabled.read(prefs)

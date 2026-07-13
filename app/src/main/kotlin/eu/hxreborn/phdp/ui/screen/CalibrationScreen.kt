@@ -22,6 +22,7 @@ import eu.hxreborn.phdp.ui.SettingsUiState
 import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.SettingsScaffold
+import eu.hxreborn.phdp.ui.component.preference.NavigationPreference
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithStepper
 import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
 import eu.hxreborn.phdp.ui.theme.AppTheme
@@ -34,6 +35,7 @@ import me.zhanghai.compose.preference.preferenceCategory
 fun CalibrationScreen(
     viewModel: SettingsViewModel,
     onNavigateBack: () -> Unit,
+    onNavigateToRingRotation: () -> Unit,
     modifier: Modifier = Modifier,
     bottomNavPadding: Dp = 0.dp,
 ) {
@@ -75,47 +77,14 @@ fun CalibrationScreen(
                         items =
                             listOf(
                                 {
-                                    SliderPreferenceWithStepper(
-                                        value = prefsState.ringOffsetX,
-                                        onValueChange = {
-                                            viewModel.savePref(Prefs.ringOffsetX, it)
-                                        },
+                                    NavigationPreference(
+                                        onClick = onNavigateToRingRotation,
                                         title = {
-                                            Text(stringResource(R.string.pref_ring_offset_x_title))
+                                            Text(stringResource(R.string.pref_calibrate_ring_rotation_title))
                                         },
-                                        valueRange = Prefs.ringOffsetX.range!!,
-                                        defaultValue = Prefs.ringOffsetX.default,
-                                        onReset = {
-                                            viewModel.savePref(
-                                                Prefs.ringOffsetX,
-                                                Prefs.ringOffsetX.default,
-                                            )
+                                        summary = {
+                                            Text(stringResource(R.string.pref_calibrate_ring_rotation_summary))
                                         },
-                                        stepSize = 1f,
-                                        decimalPlaces = 0,
-                                        suffix = "px",
-                                    )
-                                },
-                                {
-                                    SliderPreferenceWithStepper(
-                                        value = prefsState.ringOffsetY,
-                                        onValueChange = {
-                                            viewModel.savePref(Prefs.ringOffsetY, it)
-                                        },
-                                        title = {
-                                            Text(stringResource(R.string.pref_ring_offset_y_title))
-                                        },
-                                        valueRange = Prefs.ringOffsetY.range!!,
-                                        defaultValue = Prefs.ringOffsetY.default,
-                                        onReset = {
-                                            viewModel.savePref(
-                                                Prefs.ringOffsetY,
-                                                Prefs.ringOffsetY.default,
-                                            )
-                                        },
-                                        stepSize = 1f,
-                                        decimalPlaces = 0,
-                                        suffix = "px",
                                     )
                                 },
                             ),
@@ -248,6 +217,7 @@ private fun CalibrationScreenPreview() {
         CalibrationScreen(
             viewModel = PreviewViewModel(),
             onNavigateBack = {},
+            onNavigateToRingRotation = {},
         )
     }
 }

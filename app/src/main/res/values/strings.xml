@@ -115,6 +115,8 @@
     <!-- Design: Calibration -->
     <string name="pref_calibrate_ring_title">Calibrate ring</string>
     <string name="pref_calibrate_ring_summary">Adjust ring position and size</string>
+    <string name="pref_calibrate_ring_rotation_title">Ring offset (per rotation)</string>
+    <string name="pref_calibrate_ring_rotation_summary">Position the ring separately for each screen rotation</string>
     <string name="group_position">Position</string>
     <string name="group_size">Size</string>
     <string name="pref_ring_offset_x_title">Horizontal offset</string>

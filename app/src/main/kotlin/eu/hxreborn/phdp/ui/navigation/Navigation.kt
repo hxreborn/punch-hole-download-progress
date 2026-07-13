@@ -88,6 +88,9 @@ sealed interface Screen : NavKey {
     data object Calibration : Screen
 
     @Serializable
+    data object RingRotationCalibration : Screen
+
+    @Serializable
     data object PercentCalibration : Screen
 
     @Serializable
@@ -232,7 +235,44 @@ fun MainNavDisplay(
                     CalibrationScreen(
                         viewModel = viewModel,
                         onNavigateBack = { backStack.removeLastOrNull() },
+                        onNavigateToRingRotation = {
+                            backStack.add(Screen.RingRotationCalibration)
+                        },
                         bottomNavPadding = bottomNavPadding,
+                    )
+                }
+                entry<Screen.RingRotationCalibration> {
+                    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                    val prefs = (uiState as? SettingsUiState.Success)?.prefs ?: return@entry
+                    val rotation = rememberDisplayRotation()
+                    val slot = RotationSlot.fromSurfaceRotation(rotation)
+                    val current = prefs.ringOffsets[slot]
+                    val dm = LocalContext.current.resources.displayMetrics
+                    val span = maxOf(dm.widthPixels, dm.heightPixels).toFloat()
+                    TextCalibrationScreen(
+                        titleRes = R.string.pref_calibrate_ring_rotation_title,
+                        offsetX = current.x,
+                        offsetY = current.y,
+                        onOffsetXChange = { newX ->
+                            val updated = prefs.ringOffsets.with(slot, OffsetPx(newX, current.y))
+                            viewModel.savePref(Prefs.ringOffsets, updated)
+                        },
+                        onOffsetYChange = { newY ->
+                            val updated = prefs.ringOffsets.with(slot, OffsetPx(current.x, newY))
+                            viewModel.savePref(Prefs.ringOffsets, updated)
+                        },
+                        onOffsetXReset = {
+                            val updated = prefs.ringOffsets.with(slot, OffsetPx(0f, current.y))
+                            viewModel.savePref(Prefs.ringOffsets, updated)
+                        },
+                        onOffsetYReset = {
+                            val updated = prefs.ringOffsets.with(slot, OffsetPx(current.x, 0f))
+                            viewModel.savePref(Prefs.ringOffsets, updated)
+                        },
+                        viewModel = viewModel,
+                        onNavigateBack = { backStack.removeLastOrNull() },
+                        bottomNavPadding = bottomNavPadding,
+                        offsetRange = -span..span,
                     )
                 }
                 entry<Screen.PercentCalibration> {
@@ -487,6 +527,7 @@ fun BottomNav(
     val effectiveKey =
         when (currentKey) {
             Screen.Calibration,
+            Screen.RingRotationCalibration,
             Screen.PercentCalibration,
             Screen.FilenameCalibration,
             Screen.AppIconCalibration,
