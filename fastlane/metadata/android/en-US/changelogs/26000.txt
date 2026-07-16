@@ -1,0 +1,6 @@
+Added a gradient color option for the progress ring
+Added per-rotation position offset for the ring
+Added option to auto-hide the floating navigation bar while scrolling
+Improved the floating navigation bar colors
+Fixed the finish ring not showing when animations are disabled
+Updated core libraries and dependencies
