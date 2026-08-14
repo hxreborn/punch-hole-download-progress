@@ -1,5 +1,6 @@
 package eu.hxreborn.phdp.ui.theme
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
@@ -47,6 +48,7 @@ object Tokens {
     val SectionItemSpacing: Dp = 2.dp
     val RowCornerRadius: Dp = 24.dp
     val SectionHorizontalMargin: Dp = 12.dp
+    val SnackbarShape: Shape = RoundedCornerShape(RowCornerRadius)
 
     // App icon in list items
     val AppIconSize: Dp = 48.dp

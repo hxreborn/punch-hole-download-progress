@@ -52,7 +52,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
@@ -85,6 +84,7 @@ import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.ui.SettingsUiState
 import eu.hxreborn.phdp.ui.SettingsViewModel
+import eu.hxreborn.phdp.ui.component.AppSnackbarHost
 import eu.hxreborn.phdp.ui.component.AppTypeChip
 import eu.hxreborn.phdp.ui.component.ExpressiveCheckbox
 import eu.hxreborn.phdp.ui.component.OverflowMenu
@@ -566,7 +566,7 @@ fun PackageSelectionScreen(
             }
         }
 
-        SnackbarHost(
+        AppSnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = contentPadding.calculateBottomPadding()),
         )
