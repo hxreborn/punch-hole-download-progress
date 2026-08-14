@@ -1,0 +1,3 @@
+Added settings export and import so you can back up your setup and restore it later or on another device
+Fixed the snackbar overlapping the navigation bar and not matching the rounded settings rows
+Updated core libraries and dependencies
