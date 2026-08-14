@@ -801,7 +801,7 @@ private const val HDR_REFERENCE_WHITE_NITS = 203f
 @Composable
 private fun HdrRatioReadout(modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    val display = remember(context) { context.display?.takeIf { it.isHdrSdrRatioAvailable } }
+    val display = remember(context) { context.display.takeIf { it.isHdrSdrRatioAvailable } }
     var ratio by remember { mutableFloatStateOf(1f) }
 
     DisposableEffect(display) {
