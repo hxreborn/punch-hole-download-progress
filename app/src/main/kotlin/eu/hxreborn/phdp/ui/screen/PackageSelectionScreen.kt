@@ -568,7 +568,7 @@ fun PackageSelectionScreen(
 
         AppSnackbarHost(
             hostState = snackbarHostState,
-            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = contentPadding.calculateBottomPadding()),
+            modifier = Modifier.align(Alignment.BottomCenter),
         )
     }
 
