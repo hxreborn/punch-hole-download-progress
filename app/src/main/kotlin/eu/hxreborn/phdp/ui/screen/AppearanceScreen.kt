@@ -1,6 +1,7 @@
 package eu.hxreborn.phdp.ui.screen
 
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Build
 import android.view.Display
 import androidx.annotation.RequiresApi
@@ -32,6 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.PrefSpec
 import eu.hxreborn.phdp.prefs.Prefs
+import eu.hxreborn.phdp.ui.BackupEvent
 import eu.hxreborn.phdp.ui.SettingsUiState
 import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.SectionCard
@@ -759,6 +761,20 @@ internal class PreviewViewModel : SettingsViewModel() {
     }
 
     override fun resetDefaults() {
+        // no-op preview stub
+    }
+
+    override val backupEvent: StateFlow<BackupEvent?> = MutableStateFlow(null).asStateFlow()
+
+    override fun exportSettings(destination: Uri) {
+        // no-op preview stub
+    }
+
+    override fun importSettings(source: Uri) {
+        // no-op preview stub
+    }
+
+    override fun clearBackupEvent() {
         // no-op preview stub
     }
 

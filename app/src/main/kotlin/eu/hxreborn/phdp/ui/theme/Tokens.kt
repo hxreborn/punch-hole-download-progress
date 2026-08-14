@@ -109,4 +109,9 @@ object Tokens {
     val FloatingBarBottomPadding: Dp = 24.dp
 
     val NavSlideDistance: Dp = 96.dp
+
+    // Import/export result dialog
+    val ResultIconSize: Dp = 20.dp
+    val ResultRowSpacing: Dp = 12.dp
+    val ResultDetailIndent: Dp = 32.dp
 }

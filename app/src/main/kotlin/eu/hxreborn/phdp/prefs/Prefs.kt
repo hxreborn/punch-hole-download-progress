@@ -2,6 +2,9 @@ package eu.hxreborn.phdp.prefs
 
 import eu.hxreborn.phdp.ui.theme.MaterialPalette
 
+private val SHADOW_MODES = setOf("per_glyph", "oval")
+private val PALETTES = setOf("accent1", "accent2", "accent3", "neutral1", "neutral2")
+
 object Prefs {
     const val GROUP = "phdp_settings"
 
@@ -18,14 +21,19 @@ object Prefs {
             "gradient_colors",
             "${MaterialPalette.Blue500},${MaterialPalette.Cyan500}",
         )
-    val gradientDirection = StringPref("gradient_direction", GradientDirection.SWEEP.storedValue)
+    val gradientDirection =
+        StringPref(
+            "gradient_direction",
+            GradientDirection.SWEEP.storedValue,
+            GradientDirection.entries.map { it.storedValue }.toSet(),
+        )
     val gradientAngle = IntPref("gradient_angle", 0, 0..360)
     val strokeWidth = FloatPref("stroke_width", 2f, 0.5f..10f)
     val ringGap = FloatPref("ring_gap", 1.155f, 0.5f..3f)
     val opacity = IntPref("opacity", 90, 1..100)
     val clockwise = BoolPref("clockwise", true)
     val errorColor = IntPref("error_color", MaterialPalette.Red500)
-    val strokeCapStyle = StringPref("stroke_cap_style", "flat")
+    val strokeCapStyle = StringPref("stroke_cap_style", "flat", setOf("flat", "round", "square"))
 
     // Background ring
     val backgroundRingEnabled = BoolPref("background_ring_enabled", true)
@@ -39,7 +47,7 @@ object Prefs {
     val hdrEnabled = BoolPref("hdr_enabled", false)
     val hdrHeadroom = FloatPref("hdr_headroom", 1.5f, 1f..3f)
 
-    val percentTextShadowMode = StringPref("percent_text_shadow_mode", "per_glyph")
+    val percentTextShadowMode = StringPref("percent_text_shadow_mode", "per_glyph", SHADOW_MODES)
     val percentTextShadowColor = IntPref("percent_text_shadow_color", 0xFF000000.toInt())
     val percentTextShadowRadius = FloatPref("percent_text_shadow_radius", 2f, 0f..8f)
     val percentTextShadowDy = FloatPref("percent_text_shadow_dy", 0.5f, 0f..4f)
@@ -47,7 +55,7 @@ object Prefs {
     val percentTextStrokeWidth = FloatPref("percent_text_stroke_width", 0f, 0f..4f)
     val percentTextStrokeColor = IntPref("percent_text_stroke_color", 0xFF000000.toInt())
 
-    val filenameTextShadowMode = StringPref("filename_text_shadow_mode", "per_glyph")
+    val filenameTextShadowMode = StringPref("filename_text_shadow_mode", "per_glyph", SHADOW_MODES)
     val filenameTextShadowColor = IntPref("filename_text_shadow_color", 0xFF000000.toInt())
     val filenameTextShadowRadius = FloatPref("filename_text_shadow_radius", 2f, 0f..8f)
     val filenameTextShadowDy = FloatPref("filename_text_shadow_dy", 0.5f, 0f..4f)
@@ -69,15 +77,25 @@ object Prefs {
     val pathMode = BoolPref("path_mode", false)
 
     // Animation
-    val progressEasing = StringPref("progress_easing", "linear")
-    val finishStyle = StringPref("finish_style", "pop")
+    val progressEasing =
+        StringPref(
+            "progress_easing",
+            "linear",
+            setOf("linear", "accelerate", "decelerate", "ease_in_out"),
+        )
+    val finishStyle =
+        StringPref(
+            "finish_style",
+            "pop",
+            setOf("snap", "pop", "segmented", "wipe", "spinoff", "blink", "sweep", "rainbow"),
+        )
     val finishHoldMs = IntPref("finish_hold_ms", 500, 0..5000)
     val finishExitMs = IntPref("finish_exit_ms", 500, 50..3000)
     val finishUseFlashColor = BoolPref("finish_use_flash_color", true)
     val finishFlashColor = IntPref("finish_flash_color", MaterialPalette.White)
 
-    val effectSpeed = StringPref("effect_speed", "medium")
-    val effectIntensity = StringPref("effect_intensity", "medium")
+    val effectSpeed = StringPref("effect_speed", "medium", setOf("slow", "medium", "fast"))
+    val effectIntensity = StringPref("effect_intensity", "medium", setOf("low", "medium", "high"))
     val effectReverse = BoolPref("effect_reverse", false)
     val effectRepeat = IntPref("effect_repeat", 3, 1..6)
 
@@ -87,11 +105,12 @@ object Prefs {
 
     // Material You
     val materialYouEnabled = BoolPref("material_you_enabled", false)
-    val materialYouProgressPalette = StringPref("material_you_progress_palette", "accent1")
+    val materialYouProgressPalette =
+        StringPref("material_you_progress_palette", "accent1", PALETTES)
     val materialYouProgressShade = IntPref("material_you_progress_shade", 500)
-    val materialYouSuccessPalette = StringPref("material_you_success_palette", "accent2")
+    val materialYouSuccessPalette = StringPref("material_you_success_palette", "accent2", PALETTES)
     val materialYouSuccessShade = IntPref("material_you_success_shade", 500)
-    val materialYouErrorPalette = StringPref("material_you_error_palette", "accent3")
+    val materialYouErrorPalette = StringPref("material_you_error_palette", "accent3", PALETTES)
     val materialYouErrorShade = IntPref("material_you_error_shade", 500)
 
     // Text overlays
@@ -107,7 +126,8 @@ object Prefs {
     val percentTextItalic = BoolPref("percent_text_italic", false)
     val filenameTextBold = BoolPref("filename_text_bold", false)
     val filenameTextItalic = BoolPref("filename_text_italic", false)
-    val filenameEllipsize = StringPref("filename_ellipsize", "middle")
+    val filenameEllipsize =
+        StringPref("filename_ellipsize", "middle", setOf("start", "middle", "end"))
     val filenameVerticalText = BoolPref("filename_vertical_text", false)
 
     // App icon overlay
@@ -135,10 +155,11 @@ object Prefs {
     val badgeTextSize = FloatPref("badge_text_size", 10f, 4f..20f)
 
     // Power
-    val powerSaverMode = StringPref("power_saver_mode", "normal")
+    val powerSaverMode = StringPref("power_saver_mode", "normal", setOf("normal", "dim", "disable"))
 
     // UI-only
-    val darkThemeConfig = StringPref("dark_theme_config", "follow_system")
+    val darkThemeConfig =
+        StringPref("dark_theme_config", "follow_system", setOf("follow_system", "light", "dark"))
     val useDynamicColor = BoolPref("use_dynamic_color", true)
     val floatingNavBar = BoolPref("floating_nav_bar", false)
     val hideNavBarOnScroll = BoolPref("hide_nav_bar_on_scroll", true)
@@ -208,6 +229,17 @@ object Prefs {
     val previewTrigger = IntPref("preview_trigger", 0)
     val clearDownloadsTrigger = IntPref("clear_downloads_trigger", 0)
     val persistentPreview = BoolPref("persistent_preview", false)
+
+    // Runtime state and one-shot triggers, never written to or read from a backup file
+    val excludedFromBackup: Set<String> =
+        setOf(
+            appVisible.key,
+            testProgress.key,
+            testError.key,
+            previewTrigger.key,
+            clearDownloadsTrigger.key,
+            persistentPreview.key,
+        )
 
     // All resettable prefs (excludes enabled and triggers)
     val resettable: List<PrefSpec<*>> =

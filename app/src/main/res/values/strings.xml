@@ -288,6 +288,56 @@
     <string name="pref_verbose_logging_title">Debug logs</string>
     <string name="pref_verbose_logging_summary">Detailed log for debugging</string>
 
+    <!-- System: Backup -->
+    <string name="group_backup">Backup</string>
+    <string name="pref_export_settings_title">Export settings</string>
+    <string name="pref_export_settings_summary">Save your settings to a file</string>
+    <string name="pref_import_settings_title">Import settings</string>
+    <string name="pref_import_settings_summary">Restore settings from a backup file</string>
+    <string name="backup_export_failed">Could not write the backup file</string>
+    <string name="backup_file_unreadable">Could not read that file</string>
+    <string name="backup_file_too_large">That file is too large to be a settings backup</string>
+    <string name="backup_not_json">That file is not a settings backup</string>
+    <string name="backup_not_a_backup">That file belongs to another app or format</string>
+    <string name="backup_from_newer_app">This backup was made by a newer version of the app</string>
+    <string name="restore_title">Import result</string>
+    <string name="restore_headline">Restored %1$d of %2$d settings</string>
+    <string name="restore_nothing">The file contained no settings</string>
+    <string name="restore_source">From %1$s · %2$s</string>
+    <string name="restore_source_device">From %1$s · %2$s · %3$s</string>
+    <string name="restore_device_mismatch">Made on a different device (calibration may need adjusting)</string>
+    <string name="restore_group_applied">Restored</string>
+    <string name="restore_group_unchanged">Already set</string>
+    <string name="restore_group_migrated">Adapted</string>
+    <string name="restore_group_ignored">Ignored</string>
+    <string name="restore_group_rejected">Invalid (kept current)</string>
+    <string name="restore_group_failed">Could not be applied</string>
+    <plurals name="backup_exported">
+        <item quantity="one">Exported %1$d setting</item>
+        <item quantity="other">Exported %1$d settings</item>
+    </plurals>
+    <string name="reject_not_a_boolean">must be true or false</string>
+    <string name="reject_not_a_whole_number">must be a whole number</string>
+    <string name="reject_not_a_number">must be a number</string>
+    <string name="reject_not_text">must be text</string>
+    <string name="reject_not_a_list">must be a list</string>
+    <string name="reject_entries_not_text">every entry must be text</string>
+    <string name="reject_malformed_offsets">the offsets are malformed</string>
+    <string name="reject_too_long">longer than %1$d characters</string>
+    <string name="reject_too_many_entries">more than %1$d entries</string>
+    <string name="reject_not_allowed">must be one of %1$s</string>
+    <string name="reject_offset_out_of_range">the offsets exceed %1$s</string>
+    <string name="reject_malformed_legacy">%1$s could not be read</string>
+    <string name="adapt_clamped">%1$s was brought into %2$s to %3$s</string>
+    <string name="adapt_collapsed_duplicates">%1$d duplicates collapsed</string>
+    <string name="adapt_migrated_from">carried over from %1$s</string>
+    <string name="adapt_renamed_from">renamed from %1$s</string>
+    <string name="failure_not_saved">could not be saved</string>
+    <string name="failure_not_saved_or_restored">could not be saved and the previous value could not be restored</string>
+    <string name="failure_write_failed">could not be written (%1$s)</string>
+    <string name="result_show_details">Show details</string>
+    <string name="result_hide_details">Hide details</string>
+
     <!-- System: About -->
     <string name="pref_version_title">Version</string>
     <string name="pref_git_repo">Source code</string>

@@ -1,15 +1,20 @@
 package eu.hxreborn.phdp.ui
 
 import android.content.Context
+import android.net.Uri
+import android.os.Build
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import eu.hxreborn.phdp.BuildConfig
 import eu.hxreborn.phdp.PHDPApp
+import eu.hxreborn.phdp.backup.BackupMeta
 import eu.hxreborn.phdp.prefs.PrefSpec
 import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.prefs.PrefsRepository
 import eu.hxreborn.phdp.util.LauncherIconHelper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
@@ -17,13 +22,31 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
+import java.time.Instant
 import kotlin.time.Duration.Companion.seconds
+
+internal const val MAX_BACKUP_BYTES = 512 * 1024
+
+internal fun InputStream.readAtMost(limit: Int): ByteArray? {
+    val collected = ByteArrayOutputStream()
+    val chunk = ByteArray(DEFAULT_BUFFER_SIZE)
+    while (true) {
+        val count = read(chunk)
+        if (count < 0) return collected.toByteArray()
+        if (collected.size() + count > limit) return null
+        collected.write(chunk, 0, count)
+    }
+}
 
 class SettingsViewModelImpl(
     private val repository: PrefsRepository,
     private val applicationContext: Context,
 ) : SettingsViewModel() {
     private val launcherIconHidden = MutableStateFlow(!LauncherIconHelper.isLauncherIconVisible(applicationContext))
+
+    override val backupEvent = MutableStateFlow<BackupEvent?>(null)
 
     override val uiState: StateFlow<SettingsUiState> =
         combine(repository.state, launcherIconHidden) { prefs, hidden ->
@@ -44,6 +67,61 @@ class SettingsViewModelImpl(
     override fun resetDefaults() {
         repository.resetDefaults()
     }
+
+    override fun exportSettings(destination: Uri) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val written =
+                runCatching {
+                    val payload = repository.exportSettings(currentBackupMeta())
+                    applicationContext.contentResolver.openOutputStream(destination, "wt")?.use {
+                        it.write(payload.json.toByteArray())
+                    } ?: error("no output stream for $destination")
+                    payload
+                }
+            backupEvent.value =
+                written.fold(
+                    onSuccess = { BackupEvent.Exported(it) },
+                    onFailure = { BackupEvent.ExportFailed },
+                )
+        }
+    }
+
+    override fun importSettings(source: Uri) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val read =
+                runCatching {
+                    val stream =
+                        applicationContext.contentResolver.openInputStream(source)
+                            ?: error("no input stream for $source")
+                    stream.use { it.readAtMost(MAX_BACKUP_BYTES) }
+                }
+            val bytes = read.getOrNull()
+            val text =
+                bytes?.let {
+                    runCatching { it.decodeToString(throwOnInvalidSequence = true) }.getOrNull()
+                }
+            backupEvent.value =
+                when {
+                    read.isFailure -> BackupEvent.FileUnreadable
+                    bytes == null -> BackupEvent.FileTooLarge
+                    text == null -> BackupEvent.FileUnreadable
+                    else -> BackupEvent.Imported(repository.importSettings(text))
+                }
+        }
+    }
+
+    override fun clearBackupEvent() {
+        backupEvent.value = null
+    }
+
+    private fun currentBackupMeta() =
+        BackupMeta(
+            exportedAt = Instant.now().toString(),
+            appVersionName = BuildConfig.VERSION_NAME,
+            appVersionCode = BuildConfig.VERSION_CODE,
+            deviceModel = Build.MODEL.orEmpty(),
+            androidSdk = Build.VERSION.SDK_INT,
+        )
 
     override fun simulateSuccess() {
         viewModelScope.launch {

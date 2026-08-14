@@ -69,6 +69,7 @@ class FloatPref(
 class StringPref(
     key: String,
     default: String,
+    val values: Set<String>? = null,
 ) : PrefSpec<String>(key, default) {
     override fun read(prefs: SharedPreferences): String = prefs.getString(key, default) ?: default
 

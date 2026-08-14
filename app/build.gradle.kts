@@ -103,6 +103,10 @@ android {
         disable.addAll(listOf("PrivateApi", "DiscouragedPrivateApi"))
         ignoreTestSources = true
     }
+
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
 }
 
 base.archivesName = "phdp-v${
@@ -141,6 +145,7 @@ dependencies {
     implementation(libs.aboutlibraries.core)
     implementation(libs.aboutlibraries.compose)
     implementation(libs.colorpicker.compose)
+    testImplementation(libs.junit)
 }
 
 tasks.register<JavaExec>("ktlintCheck") {

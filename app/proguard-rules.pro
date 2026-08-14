@@ -15,6 +15,13 @@
 # This also covers IndicatorState, which holds the hook-side pref cache.
 -keep,allowobfuscation class eu.hxreborn.phdp.xposed.hook.** { *; }
 
+# SettingsBackup enumerates the Prefs fields reflectively to build its key registry.
+# Matching on the PrefSpec type does not work here, keep rules match the declared
+# field type and every pref is declared as a subclass.
+-keepclassmembers,allowobfuscation class eu.hxreborn.phdp.prefs.Prefs {
+    <fields>;
+}
+
 # Kotlin intrinsics optimization
 -assumenosideeffects class kotlin.jvm.internal.Intrinsics {
     public static void check*(...);

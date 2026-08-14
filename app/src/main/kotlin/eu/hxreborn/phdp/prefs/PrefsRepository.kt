@@ -2,6 +2,16 @@ package eu.hxreborn.phdp.prefs
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import eu.hxreborn.phdp.backup.BackupMeta
+import eu.hxreborn.phdp.backup.ExportResult
+import eu.hxreborn.phdp.backup.FailureReason
+import eu.hxreborn.phdp.backup.FileProblem
+import eu.hxreborn.phdp.backup.ParsedBackup
+import eu.hxreborn.phdp.backup.PendingWrite
+import eu.hxreborn.phdp.backup.RestoreEntry
+import eu.hxreborn.phdp.backup.RestoreOutcome
+import eu.hxreborn.phdp.backup.RestoreReport
+import eu.hxreborn.phdp.backup.SettingsBackup
 import eu.hxreborn.phdp.ui.state.AppPrefs
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import kotlinx.coroutines.channels.awaitClose
@@ -19,6 +29,20 @@ interface PrefsRepository {
     fun resetDefaults()
 
     fun syncToRemote()
+
+    fun exportSettings(meta: BackupMeta): ExportResult
+
+    fun importSettings(raw: String): ImportResult
+}
+
+sealed interface ImportResult {
+    data class Restored(
+        val report: RestoreReport,
+    ) : ImportResult
+
+    data class Unreadable(
+        val problem: FileProblem,
+    ) : ImportResult
 }
 
 class PrefsRepositoryImpl(
@@ -55,36 +79,56 @@ class PrefsRepositoryImpl(
         runCatching {
             remote.edit(commit = true) {
                 for ((key, value) in snapshot) {
-                    when (value) {
-                        is Boolean -> {
-                            putBoolean(key, value)
-                        }
-
-                        is Int -> {
-                            putInt(key, value)
-                        }
-
-                        is Long -> {
-                            putLong(key, value)
-                        }
-
-                        is Float -> {
-                            putFloat(key, value)
-                        }
-
-                        is String -> {
-                            putString(key, value)
-                        }
-
-                        is Set<*> -> {
-                            @Suppress("UNCHECKED_CAST")
-                            putStringSet(key, value as Set<String>)
-                        }
-                    }
+                    putAny(key, value)
                 }
             }
         }
     }
+
+    override fun exportSettings(meta: BackupMeta): ExportResult =
+        SettingsBackup.export(localPrefs, meta)
+
+    override fun importSettings(raw: String): ImportResult {
+        val parsed = SettingsBackup.parse(raw, localPrefs)
+        if (parsed is ParsedBackup.Unusable) return ImportResult.Unreadable(parsed.problem)
+        val usable = parsed as ParsedBackup.Usable
+
+        val outcomes = usable.entries.associate { it.key to it.outcome }.toMutableMap()
+        val rollback = usable.writes.associate { it.spec.key to localPrefs.all[it.spec.key] }
+
+        val editor = localPrefs.edit()
+        for (write in usable.writes) {
+            runCatching { write.applyTo(editor) }.onFailure { error ->
+                outcomes[write.spec.key] =
+                    RestoreOutcome.Failed(
+                        FailureReason.WriteFailed(
+                            error.message ?: error::class.java.simpleName,
+                        ),
+                    )
+            }
+        }
+
+        val committed = runCatching { editor.commit() }.getOrDefault(false)
+        if (committed) {
+            syncToRemote()
+        } else {
+            val reason =
+                if (restore(rollback)) FailureReason.NotSaved else FailureReason.NotSavedOrRestored
+            usable.writes.forEach { outcomes[it.spec.key] = RestoreOutcome.Failed(reason) }
+        }
+
+        val entries = usable.entries.map { it.copy(outcome = outcomes.getValue(it.key)) }
+        return ImportResult.Restored(RestoreReport(usable.meta, entries))
+    }
+
+    private fun restore(snapshot: Map<String, Any?>): Boolean =
+        runCatching {
+            val editor = localPrefs.edit()
+            for ((key, value) in snapshot) {
+                if (value == null) editor.remove(key) else editor.putAny(key, value)
+            }
+            editor.commit()
+        }.getOrDefault(false)
 
     private fun SharedPreferences.toAppPrefs(): AppPrefs =
         AppPrefs(
@@ -200,4 +244,41 @@ class PrefsRepositoryImpl(
             else -> DarkThemeConfig.FOLLOW_SYSTEM
         }
     }
+}
+
+private fun SharedPreferences.Editor.putAny(
+    key: String,
+    value: Any?,
+) {
+    when (value) {
+        is Boolean -> {
+            putBoolean(key, value)
+        }
+
+        is Int -> {
+            putInt(key, value)
+        }
+
+        is Long -> {
+            putLong(key, value)
+        }
+
+        is Float -> {
+            putFloat(key, value)
+        }
+
+        is String -> {
+            putString(key, value)
+        }
+
+        is Set<*> -> {
+            @Suppress("UNCHECKED_CAST")
+            putStringSet(key, value as Set<String>)
+        }
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+private fun PendingWrite.applyTo(editor: SharedPreferences.Editor) {
+    (spec as PrefSpec<Any>).write(editor, value)
 }
