@@ -72,6 +72,7 @@ object Prefs {
     val ringScaleX = FloatPref("ring_scale_x", 1f, 0.25f..3f)
     val ringScaleY = FloatPref("ring_scale_y", 1f, 0.25f..3f)
     val ringScaleLinked = BoolPref("ring_scale_linked", true)
+    val ringScales = FoldScalesPref("ring_scales_by_fold", ringScaleX, ringScaleY)
     val ringOffsetX = FloatPref("ring_offset_x", 0f, -500f..500f)
     val ringOffsetY = FloatPref("ring_offset_y", 0f, -500f..500f)
     val pathMode = BoolPref("path_mode", false)
@@ -136,7 +137,8 @@ object Prefs {
     val appIconSize = FloatPref("app_icon_size", 14f, 8f..32f)
     val appIconMonochrome = BoolPref("app_icon_monochrome", false)
 
-    // Per-rotation offset profiles: x,y|x,y|x,y|x,y for R0|R90|R180|R270
+    // Per-rotation offset profiles: x,y|x,y|x,y|x,y for closed R0|R90|R180|R270.
+    // Unfolded foldables append 4 more pairs for the inner display.
     val percentTextOffsets = RotationOffsetsPref("percent_text_offsets_by_rotation")
     val filenameTextOffsets = RotationOffsetsPref("filename_text_offsets_by_rotation")
     val appIconOffsets = RotationOffsetsPref("app_icon_offsets_by_rotation")
@@ -283,6 +285,7 @@ object Prefs {
             ringScaleX,
             ringScaleY,
             ringScaleLinked,
+            ringScales,
             ringOffsetX,
             ringOffsetY,
             ringOffsets,
@@ -377,6 +380,7 @@ object Prefs {
             badgeLockRotation.key,
             ringScaleX.key,
             ringScaleY.key,
+            ringScales.key,
             ringOffsets.key,
             pathMode.key,
             percentTextPosition.key,

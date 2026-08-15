@@ -1,6 +1,7 @@
 package eu.hxreborn.phdp.xposed.hook
 
 import android.content.SharedPreferences
+import eu.hxreborn.phdp.prefs.FoldScales
 import eu.hxreborn.phdp.prefs.GradientDirection
 import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.prefs.RotationOffsets
@@ -229,15 +230,11 @@ object IndicatorState {
         private set
 
     @Volatile
-    var ringScaleX = Prefs.ringScaleX.default
-        private set
-
-    @Volatile
-    var ringScaleY = Prefs.ringScaleY.default
-        private set
-
-    @Volatile
     var ringScaleLinked = Prefs.ringScaleLinked.default
+        private set
+
+    @Volatile
+    var ringScales = FoldScales.DEFAULT
         private set
 
     @Volatile
@@ -711,12 +708,11 @@ object IndicatorState {
                         Prefs.previewFilenameText.read(prefs)
                 }
 
-                Prefs.ringScaleX.key -> {
-                    ringScaleX = Prefs.ringScaleX.read(prefs)
-                }
-
-                Prefs.ringScaleY.key -> {
-                    ringScaleY = Prefs.ringScaleY.read(prefs)
+                Prefs.ringScaleX.key,
+                Prefs.ringScaleY.key,
+                Prefs.ringScales.key,
+                -> {
+                    ringScales = Prefs.ringScales.read(prefs)
                 }
 
                 Prefs.ringScaleLinked.key -> {
@@ -985,9 +981,8 @@ object IndicatorState {
                 appIconMonochrome = Prefs.appIconMonochrome.read(prefs)
                 appIconOffsets = Prefs.appIconOffsets.read(prefs)
                 previewFilenameText = Prefs.previewFilenameText.read(prefs)
-                ringScaleX = Prefs.ringScaleX.read(prefs)
-                ringScaleY = Prefs.ringScaleY.read(prefs)
                 ringScaleLinked = Prefs.ringScaleLinked.read(prefs)
+                ringScales = Prefs.ringScales.read(prefs)
                 ringOffsets = Prefs.ringOffsets.read(prefs)
                 pathMode = Prefs.pathMode.read(prefs)
                 strokeCapStyle = Prefs.strokeCapStyle.read(prefs)

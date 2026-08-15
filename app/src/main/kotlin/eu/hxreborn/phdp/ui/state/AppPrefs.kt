@@ -1,6 +1,7 @@
 package eu.hxreborn.phdp.ui.state
 
 import androidx.compose.runtime.Immutable
+import eu.hxreborn.phdp.prefs.FoldScales
 import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.prefs.RotationOffsets
 import eu.hxreborn.phdp.prefs.decodeGradientColors
@@ -97,9 +98,8 @@ data class AppPrefs(
     val useDynamicColor: Boolean = Prefs.useDynamicColor.default,
     val floatingNavBar: Boolean = Prefs.floatingNavBar.default,
     val hideNavBarOnScroll: Boolean = Prefs.hideNavBarOnScroll.default,
-    val ringScaleX: Float = Prefs.ringScaleX.default,
-    val ringScaleY: Float = Prefs.ringScaleY.default,
     val ringScaleLinked: Boolean = Prefs.ringScaleLinked.default,
+    val ringScales: FoldScales = FoldScales.DEFAULT,
     val ringOffsets: RotationOffsets = RotationOffsets.EMPTY,
     val pathMode: Boolean = Prefs.pathMode.default,
     val selectedPackages: Set<String> = Prefs.selectedPackages.default,

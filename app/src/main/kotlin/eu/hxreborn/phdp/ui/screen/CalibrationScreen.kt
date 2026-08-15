@@ -18,6 +18,7 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.Prefs
+import eu.hxreborn.phdp.prefs.ScaleXy
 import eu.hxreborn.phdp.ui.SettingsUiState
 import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.SectionCard
@@ -41,6 +42,8 @@ fun CalibrationScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val prefsState = (uiState as? SettingsUiState.Success)?.prefs ?: return
+    val fold = rememberFoldState()
+    val currentScale = prefsState.ringScales[fold.slot]
 
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         viewModel.savePref(Prefs.persistentPreview, true)
@@ -55,6 +58,7 @@ fun CalibrationScreen(
     SettingsScaffold(
         title = stringResource(R.string.pref_calibrate_ring_title),
         onNavigateBack = onNavigateBack,
+        actions = { FoldStateIndicator() },
         bottomPadding = bottomNavPadding,
         modifier = modifier,
     ) { innerPadding ->
@@ -107,8 +111,11 @@ fun CalibrationScreen(
                                             viewModel.savePref(Prefs.ringScaleLinked, it)
                                             if (it) {
                                                 viewModel.savePref(
-                                                    Prefs.ringScaleY,
-                                                    prefsState.ringScaleX,
+                                                    Prefs.ringScales,
+                                                    prefsState.ringScales.with(
+                                                        fold.slot,
+                                                        ScaleXy(currentScale.x, currentScale.x),
+                                                    ),
                                                 )
                                             }
                                         },
@@ -122,12 +129,18 @@ fun CalibrationScreen(
                                 },
                                 {
                                     SliderPreferenceWithStepper(
-                                        value = prefsState.ringScaleX,
+                                        value = currentScale.x,
                                         onValueChange = {
-                                            viewModel.savePref(Prefs.ringScaleX, it)
-                                            if (prefsState.ringScaleLinked) {
-                                                viewModel.savePref(Prefs.ringScaleY, it)
-                                            }
+                                            val next =
+                                                if (prefsState.ringScaleLinked) {
+                                                    ScaleXy(it, it)
+                                                } else {
+                                                    ScaleXy(it, currentScale.y)
+                                                }
+                                            viewModel.savePref(
+                                                Prefs.ringScales,
+                                                prefsState.ringScales.with(fold.slot, next),
+                                            )
                                         },
                                         title = {
                                             Text(stringResource(R.string.pref_ring_scale_x_title))
@@ -135,16 +148,19 @@ fun CalibrationScreen(
                                         valueRange = Prefs.ringScaleX.range!!,
                                         defaultValue = Prefs.ringScaleX.default,
                                         onReset = {
+                                            val next =
+                                                if (prefsState.ringScaleLinked) {
+                                                    ScaleXy(
+                                                        Prefs.ringScaleX.default,
+                                                        Prefs.ringScaleY.default,
+                                                    )
+                                                } else {
+                                                    ScaleXy(Prefs.ringScaleX.default, currentScale.y)
+                                                }
                                             viewModel.savePref(
-                                                Prefs.ringScaleX,
-                                                Prefs.ringScaleX.default,
+                                                Prefs.ringScales,
+                                                prefsState.ringScales.with(fold.slot, next),
                                             )
-                                            if (prefsState.ringScaleLinked) {
-                                                viewModel.savePref(
-                                                    Prefs.ringScaleY,
-                                                    Prefs.ringScaleY.default,
-                                                )
-                                            }
                                         },
                                         stepSize = 0.05f,
                                         decimalPlaces = 2,
@@ -153,9 +169,15 @@ fun CalibrationScreen(
                                 },
                                 {
                                     SliderPreferenceWithStepper(
-                                        value = prefsState.ringScaleY,
+                                        value = currentScale.y,
                                         onValueChange = {
-                                            viewModel.savePref(Prefs.ringScaleY, it)
+                                            viewModel.savePref(
+                                                Prefs.ringScales,
+                                                prefsState.ringScales.with(
+                                                    fold.slot,
+                                                    ScaleXy(currentScale.x, it),
+                                                ),
+                                            )
                                         },
                                         title = {
                                             Text(stringResource(R.string.pref_ring_scale_y_title))
@@ -164,8 +186,11 @@ fun CalibrationScreen(
                                         defaultValue = Prefs.ringScaleY.default,
                                         onReset = {
                                             viewModel.savePref(
-                                                Prefs.ringScaleY,
-                                                Prefs.ringScaleY.default,
+                                                Prefs.ringScales,
+                                                prefsState.ringScales.with(
+                                                    fold.slot,
+                                                    ScaleXy(currentScale.x, Prefs.ringScaleY.default),
+                                                ),
                                             )
                                         },
                                         stepSize = 0.05f,
