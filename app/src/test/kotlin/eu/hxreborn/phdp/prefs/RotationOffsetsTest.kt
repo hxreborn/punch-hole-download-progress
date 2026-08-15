@@ -66,6 +66,14 @@ class FoldScalesTest {
     }
 
     @Test
+    fun `out of range stored scales clamp to the slider range on read`() {
+        val prefs = FakePrefs(mapOf("ring_scales_by_fold" to "0.0,-2.0|9.0,1.5"))
+        val scales = Prefs.ringScales.read(prefs)
+        assertEquals(ScaleXy(0.25f, 0.25f), scales[FoldSlot.CLOSED])
+        assertEquals(ScaleXy(3f, 1.5f), scales[FoldSlot.OPEN])
+    }
+
+    @Test
     fun `legacy ring scale keys migrate into both slots`() {
         val prefs =
             FakePrefs(
