@@ -2,7 +2,12 @@ package eu.hxreborn.phdp.ui.screen
 
 import android.content.Context
 import android.content.res.Configuration
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.hardware.display.DisplayManager
+import android.os.Build
 import android.view.Display
 import android.view.Surface
 import android.view.WindowManager
@@ -14,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.DevicesFold
 import androidx.compose.material.icons.outlined.PhoneAndroid
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -22,10 +28,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,6 +44,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.BoundPref
+import eu.hxreborn.phdp.prefs.FoldPosture
+import eu.hxreborn.phdp.prefs.FoldPostureResolver
+import eu.hxreborn.phdp.prefs.FoldState
 import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.prefs.bind
 import eu.hxreborn.phdp.ui.SettingsViewModel
@@ -50,6 +62,7 @@ import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import eu.hxreborn.phdp.ui.theme.Tokens
 import me.zhanghai.compose.preference.ProvidePreferenceLocals
 import me.zhanghai.compose.preference.preferenceCategory
+import kotlin.math.abs
 
 data class TypographyConfig(
     val fontSize: BoundPref<Float>,
@@ -103,7 +116,10 @@ fun TextCalibrationScreen(
     SettingsScaffold(
         title = stringResource(titleRes),
         onNavigateBack = onNavigateBack,
-        actions = { OrientationIndicator() },
+        actions = {
+            FoldStateIndicator(modifier = Modifier.padding(end = 6.dp))
+            OrientationIndicator()
+        },
         bottomPadding = bottomNavPadding,
         modifier = modifier,
     ) { innerPadding ->
@@ -208,6 +224,65 @@ fun rememberDisplayRotation(): Int {
 }
 
 @Composable
+fun rememberFoldState(): FoldState {
+    val context = LocalContext.current
+    val configuration = LocalConfiguration.current
+    var hingeAngle by remember { mutableStateOf<Float?>(null) }
+
+    DisposableEffect(Unit) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            return@DisposableEffect onDispose {}
+        }
+        val sensors = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val sensor = sensors.getDefaultSensor(Sensor.TYPE_HINGE_ANGLE)
+        if (sensor == null) return@DisposableEffect onDispose {}
+        val listener =
+            object : SensorEventListener {
+                override fun onSensorChanged(event: SensorEvent) {
+                    val angle = event.values.firstOrNull() ?: return
+                    val previous = hingeAngle
+                    if (previous == null || abs(angle - previous) >= 1f) {
+                        hingeAngle = angle
+                    }
+                }
+
+                override fun onAccuracyChanged(
+                    sensor: Sensor?,
+                    accuracy: Int,
+                ) = Unit
+            }
+        sensors.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_UI)
+        onDispose { sensors.unregisterListener(listener) }
+    }
+
+    return remember(configuration, hingeAngle) {
+        val posture = FoldPostureResolver.resolve(context, hingeAngle)
+        FoldState(
+            applicable = posture != FoldPosture.UNAVAILABLE,
+            posture = posture,
+        )
+    }
+}
+
+@Composable
+fun FoldStateIndicator(modifier: Modifier = Modifier.padding(end = Tokens.ScreenHorizontalPadding)) {
+    val foldState = rememberFoldState()
+    if (!foldState.applicable) return
+    val labelRes =
+        when (foldState.posture) {
+            FoldPosture.CLOSED -> R.string.fold_state_closed
+            FoldPosture.HALF_OPEN -> R.string.fold_state_half_open
+            FoldPosture.OPEN -> R.string.fold_state_open
+            FoldPosture.UNAVAILABLE -> R.string.fold_state_closed
+        }
+    StatusIndicator(
+        icon = Icons.Outlined.DevicesFold,
+        label = stringResource(labelRes),
+        modifier = modifier,
+    )
+}
+
+@Composable
 private fun OrientationIndicator() {
     val rotation = rememberDisplayRotation()
     val label =
@@ -217,11 +292,23 @@ private fun OrientationIndicator() {
             Surface.ROTATION_270 -> "Landscape 90°"
             else -> "Portrait"
         }
+    StatusIndicator(
+        icon = Icons.Outlined.PhoneAndroid,
+        label = label,
+        modifier = Modifier.padding(end = Tokens.ScreenHorizontalPadding),
+    )
+}
 
+@Composable
+private fun StatusIndicator(
+    icon: ImageVector,
+    label: String,
+    modifier: Modifier = Modifier,
+) {
     androidx.compose.material3.Surface(
         shape = MaterialTheme.shapes.large,
         color = MaterialTheme.colorScheme.surfaceContainerHigh,
-        modifier = Modifier.padding(end = Tokens.ScreenHorizontalPadding),
+        modifier = modifier,
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
@@ -229,7 +316,7 @@ private fun OrientationIndicator() {
             horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             Icon(
-                imageVector = Icons.Outlined.PhoneAndroid,
+                imageVector = icon,
                 contentDescription = null,
                 modifier = Modifier.size(18.dp),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,

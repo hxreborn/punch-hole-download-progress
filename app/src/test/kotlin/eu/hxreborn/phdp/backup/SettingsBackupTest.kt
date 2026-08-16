@@ -1,6 +1,7 @@
 package eu.hxreborn.phdp.backup
 
 import eu.hxreborn.phdp.FakePrefs
+import eu.hxreborn.phdp.prefs.FoldScales
 import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.prefs.RotationOffsets
 import org.junit.Assert.assertEquals
@@ -55,6 +56,7 @@ class SettingsBackupTest {
         assertNotNull(SettingsBackup.registry["stroke_width"])
         assertNotNull(SettingsBackup.registry["selected_packages"])
         assertNotNull(SettingsBackup.registry["ring_offsets_by_rotation"])
+        assertNotNull(SettingsBackup.registry["ring_scales_by_fold"])
     }
 
     @Test
@@ -397,6 +399,39 @@ class SettingsBackupTest {
         val parsed = usable(backup(""""opacity": 99999999999999, "finish_hold_ms": 2000"""))
         assertTrue(outcomeOf(parsed, "opacity") is RestoreOutcome.Rejected)
         assertEquals(RestoreOutcome.Applied, outcomeOf(parsed, "finish_hold_ms"))
+    }
+
+    @Test
+    fun `unfolded scale slots survive import`() {
+        val parsed =
+            usable(
+                backup(
+                    """
+                    "ring_scales_by_fold": "0.65,0.65|0.85,0.9"
+                    """.trimIndent(),
+                ),
+            )
+        assertEquals(RestoreOutcome.Applied, outcomeOf(parsed, "ring_scales_by_fold"))
+        val write = parsed.writes.first { it.spec.key == "ring_scales_by_fold" }
+        assertEquals("0.65,0.65|0.85,0.9", (write.value as FoldScales).serialize())
+    }
+
+    @Test
+    fun `unfolded offset slots survive import`() {
+        val parsed =
+            usable(
+                backup(
+                    """
+                    "percent_text_offsets_by_rotation": "1.0,2.0|3.0,4.0|5.0,6.0|7.0,8.0|9.0,10.0|11.0,12.0|13.0,14.0|15.0,16.0"
+                    """.trimIndent(),
+                ),
+            )
+        assertEquals(RestoreOutcome.Applied, outcomeOf(parsed, "percent_text_offsets_by_rotation"))
+        val write = parsed.writes.first { it.spec.key == "percent_text_offsets_by_rotation" }
+        assertEquals(
+            "1.0,2.0|3.0,4.0|5.0,6.0|7.0,8.0|9.0,10.0|11.0,12.0|13.0,14.0|15.0,16.0",
+            (write.value as RotationOffsets).serialize(),
+        )
     }
 
     @Test

@@ -3,6 +3,8 @@ package eu.hxreborn.phdp.backup
 import android.content.SharedPreferences
 import eu.hxreborn.phdp.prefs.BoolPref
 import eu.hxreborn.phdp.prefs.FloatPref
+import eu.hxreborn.phdp.prefs.FoldScales
+import eu.hxreborn.phdp.prefs.FoldScalesPref
 import eu.hxreborn.phdp.prefs.IntPref
 import eu.hxreborn.phdp.prefs.OffsetPx
 import eu.hxreborn.phdp.prefs.PrefSpec
@@ -10,6 +12,7 @@ import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.prefs.RingOffsetsPref
 import eu.hxreborn.phdp.prefs.RotationOffsets
 import eu.hxreborn.phdp.prefs.RotationOffsetsPref
+import eu.hxreborn.phdp.prefs.ScaleXy
 import eu.hxreborn.phdp.prefs.SetPref
 import eu.hxreborn.phdp.prefs.StringPref
 import kotlinx.serialization.json.Json
@@ -585,6 +588,10 @@ object SettingsBackup {
             is RingOffsetsPref -> {
                 decodeOffsets(element)
             }
+
+            is FoldScalesPref -> {
+                decodeFoldScales(element)
+            }
         }
 
     private fun decodeOffsets(element: JsonElement): Decoded {
@@ -592,7 +599,7 @@ object SettingsBackup {
             (element as? JsonPrimitive)?.takeIf { it.isString }?.content
                 ?: return Decoded.Err(RejectReason.NotText)
         val slots = text.split("|")
-        if (slots.size != 4) return Decoded.Err(RejectReason.MalformedOffsets)
+        if (slots.size != 4 && slots.size != 8) return Decoded.Err(RejectReason.MalformedOffsets)
         val points =
             slots.map { slot ->
                 val parts = slot.split(",")
@@ -613,7 +620,51 @@ object SettingsBackup {
                 }
                 OffsetPx(x, y)
             }
-        val value = RotationOffsets(points[0], points[1], points[2], points[3])
+        val value =
+            if (points.size == 8) {
+                RotationOffsets(
+                    points[0],
+                    points[1],
+                    points[2],
+                    points[3],
+                    points[4],
+                    points[5],
+                    points[6],
+                    points[7],
+                )
+            } else {
+                RotationOffsets(points[0], points[1], points[2], points[3])
+            }
+        return Decoded.Ok(value, JsonPrimitive(value.serialize()))
+    }
+
+    private fun decodeFoldScales(element: JsonElement): Decoded {
+        val text =
+            (element as? JsonPrimitive)?.takeIf { it.isString }?.content
+                ?: return Decoded.Err(RejectReason.NotText)
+        val slots = text.split("|")
+        if (slots.size != 1 && slots.size != 2) return Decoded.Err(RejectReason.MalformedOffsets)
+        val points =
+            slots.map { slot ->
+                val parts = slot.split(",")
+                if (parts.size != 2) return Decoded.Err(RejectReason.MalformedOffsets)
+                val x =
+                    parts[0].trim().toFloatOrNull()
+                        ?: return Decoded.Err(RejectReason.MalformedOffsets)
+                val y =
+                    parts[1].trim().toFloatOrNull()
+                        ?: return Decoded.Err(RejectReason.MalformedOffsets)
+                if (!x.isFinite() || !y.isFinite()) {
+                    return Decoded.Err(RejectReason.MalformedOffsets)
+                }
+                ScaleXy(x, y)
+            }
+        val value =
+            if (points.size == 2) {
+                FoldScales(closed = points[0], open = points[1])
+            } else {
+                FoldScales(closed = points[0], open = points[0])
+            }
         return Decoded.Ok(value, JsonPrimitive(value.serialize()))
     }
 
@@ -653,6 +704,10 @@ object SettingsBackup {
 
             is RingOffsetsPref -> {
                 JsonPrimitive((value as RotationOffsets).serialize())
+            }
+
+            is FoldScalesPref -> {
+                JsonPrimitive((value as FoldScales).serialize())
             }
         }
     }

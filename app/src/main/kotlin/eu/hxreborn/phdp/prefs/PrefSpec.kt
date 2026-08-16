@@ -140,6 +140,36 @@ class RingOffsetsPref(
     }
 }
 
+// Migrates the legacy single ring_scale_x/y into both fold slots when the new key is absent,
+// so existing devices keep the same size until a posture-specific scale is saved.
+class FoldScalesPref(
+    key: String,
+    private val legacyX: FloatPref,
+    private val legacyY: FloatPref,
+) : PrefSpec<FoldScales>(key, FoldScales.DEFAULT) {
+    override fun read(prefs: SharedPreferences): FoldScales {
+        prefs.getString(key, null)?.let {
+            val raw = FoldScales.deserialize(it)
+            return FoldScales(closed = raw.closed.coerced(), open = raw.open.coerced())
+        }
+        val scale = ScaleXy(legacyX.read(prefs), legacyY.read(prefs))
+        return FoldScales(closed = scale, open = scale)
+    }
+
+    private fun ScaleXy.coerced(): ScaleXy =
+        ScaleXy(
+            legacyX.range?.let { x.coerceIn(it) } ?: x,
+            legacyY.range?.let { y.coerceIn(it) } ?: y,
+        )
+
+    override fun write(
+        editor: SharedPreferences.Editor,
+        value: FoldScales,
+    ) {
+        editor.putString(key, value.serialize())
+    }
+}
+
 data class BoundPref<T : Any>(
     val value: T,
     val spec: PrefSpec<T>,

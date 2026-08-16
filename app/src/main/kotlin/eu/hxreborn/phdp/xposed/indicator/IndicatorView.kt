@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.graphics.BlurMaskFilter
 import android.graphics.Canvas
 import android.graphics.Color
@@ -15,6 +16,10 @@ import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.Typeface
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Build
 import android.text.TextPaint
 import android.view.DisplayCutout
@@ -24,6 +29,10 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.withSave
+import eu.hxreborn.phdp.prefs.FoldPostureResolver
+import eu.hxreborn.phdp.prefs.FoldSlot
+import eu.hxreborn.phdp.prefs.OffsetPx
+import eu.hxreborn.phdp.prefs.RotationOffsets
 import eu.hxreborn.phdp.prefs.RotationSlot
 import eu.hxreborn.phdp.util.accessibleField
 import eu.hxreborn.phdp.util.log
@@ -56,6 +65,9 @@ class IndicatorView(
     private var downloadStartTime = 0L
     private var pendingFinishRunnable: Runnable? = null
     private var lastActivityTime = 0L
+    private var foldSlot = FoldSlot.CLOSED
+    private var hingeAngle: Float? = null
+    private var hingeListener: SensorEventListener? = null
     internal var windowParams: WindowManager.LayoutParams? = null
     private val burnInHideRunnable = Runnable { invalidate() }
     private var smoothProgress: Float = 0f
@@ -371,8 +383,7 @@ class IndicatorView(
         logDebug {
             "Paint updated: color=${Integer.toHexString(resolvedRingColor)}, " +
                 "opacity=$effectiveOpacity, stroke=${IndicatorState.strokeWidth}, " +
-                "gap=${IndicatorState.ringGap}, scaleX=${IndicatorState.ringScaleX}, " +
-                "scaleY=${IndicatorState.ringScaleY}"
+                "gap=${IndicatorState.ringGap}, scales=${IndicatorState.ringScales.serialize()}"
         }
         invalidate()
     }
@@ -522,11 +533,14 @@ class IndicatorView(
         super.onAttachedToWindow()
         log("IndicatorView: onAttachedToWindow()")
         IndicatorState.onHdrConfigChanged = { postInvalidate() }
+        refreshFoldSlot()
+        registerHingeListener()
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         log("IndicatorView: onDetachedFromWindow()")
+        unregisterHingeListener()
         animator.cancelAll()
         progressAnim?.cancel()
         progressAnim = null
@@ -586,8 +600,58 @@ class IndicatorView(
             recalculateScaledPath()
         }
 
+        refreshFoldSlot()
         invalidate()
         return super.onApplyWindowInsets(insets)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        refreshFoldSlot()
+    }
+
+    private fun registerHingeListener() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) return
+        val sensors = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val sensor = sensors.getDefaultSensor(Sensor.TYPE_HINGE_ANGLE) ?: return
+        val listener =
+            object : SensorEventListener {
+                override fun onSensorChanged(event: SensorEvent) {
+                    val angle = event.values.firstOrNull() ?: return
+                    val previous = hingeAngle
+                    if (previous != null && kotlin.math.abs(angle - previous) < 1f) return
+                    hingeAngle = angle
+                    refreshFoldSlot()
+                }
+
+                override fun onAccuracyChanged(
+                    sensor: Sensor?,
+                    accuracy: Int,
+                ) = Unit
+            }
+        hingeListener = listener
+        sensors.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_UI)
+    }
+
+    private fun unregisterHingeListener() {
+        val listener = hingeListener ?: return
+        val sensors = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        sensors.unregisterListener(listener)
+        hingeListener = null
+    }
+
+    private fun refreshFoldSlot() {
+        val next = FoldPostureResolver.resolve(context, hingeAngle).toSlot()
+        if (next == foldSlot) return
+        foldSlot = next
+        log("Fold slot: $foldSlot")
+        invalidate()
+    }
+
+    private fun RotationOffsets.forCurrent(locked: Boolean = false): OffsetPx {
+        val rotation = display?.rotation ?: Surface.ROTATION_0
+        val effRotation = if (locked) Surface.ROTATION_0 else rotation
+        return this[foldSlot, RotationSlot.fromSurfaceRotation(effRotation)]
     }
 
     // Fallback for API < 31. Manually build path since API doesn't provide it
@@ -733,9 +797,7 @@ class IndicatorView(
                 val viewDensity = this@IndicatorView.density
                 val badgeRotation = display?.rotation ?: Surface.ROTATION_0
                 val badgeLocked = IndicatorState.badgeLockRotation
-                val badgeEffRotation = if (badgeLocked) Surface.ROTATION_0 else badgeRotation
-                val badgeSlot = RotationSlot.fromSurfaceRotation(badgeEffRotation)
-                val badgeOffset = IndicatorState.badgeOffsets[badgeSlot]
+                val badgeOffset = IndicatorState.badgeOffsets.forCurrent(badgeLocked)
                 val badgeCenterX = arcBounds.centerX() + badgeOffset.x * viewDensity
                 val badgeTop =
                     arcBounds.bottom + BADGE_TOP_PADDING_DP * viewDensity +
@@ -822,8 +884,6 @@ class IndicatorView(
 
         if (IndicatorState.percentTextEnabled) {
             val locked = IndicatorState.percentTextLockRotation
-            val effRotation = if (locked) Surface.ROTATION_0 else rotation
-            val slot = RotationSlot.fromSurfaceRotation(effRotation)
             val text = "$progressVal%"
             val textWidth = percentPaint.measureText(text)
             val (baseX, baseY, align) =
@@ -837,7 +897,7 @@ class IndicatorView(
                     percentPaint.textSize,
                     textWidth,
                 )
-            val pctOffset = IndicatorState.percentTextOffsets[slot]
+            val pctOffset = IndicatorState.percentTextOffsets.forCurrent(locked)
             val x = baseX + pctOffset.x * density
             val y = baseY + pctOffset.y * density
             val stroke = if (percentStrokeWidthPx > 0f) percentStrokePaint else null
@@ -853,8 +913,6 @@ class IndicatorView(
             (activeDownloadCount <= 1 || isGeometryPreview)
         ) {
             val locked = IndicatorState.filenameTextLockRotation
-            val effRotation = if (locked) Surface.ROTATION_0 else rotation
-            val slot = RotationSlot.fromSurfaceRotation(effRotation)
             val truncated =
                 if (IndicatorState.filenameTruncateEnabled) {
                     truncateWithEllipsis(
@@ -870,7 +928,7 @@ class IndicatorView(
             if (isVertical && truncated.isNotEmpty()) {
                 filenamePaint.color = resolvedRingColor
                 filenamePaint.alpha = alpha
-                val fnOffset = IndicatorState.filenameTextOffsets[slot]
+                val fnOffset = IndicatorState.filenameTextOffsets.forCurrent(locked)
                 val fm = filenamePaint.fontMetrics
                 val charHeight = fm.descent - fm.ascent
                 val totalHeight = truncated.length * charHeight
@@ -907,7 +965,7 @@ class IndicatorView(
                         filenamePaint.textSize,
                         textWidth = null,
                     )
-                val fnOffset = IndicatorState.filenameTextOffsets[slot]
+                val fnOffset = IndicatorState.filenameTextOffsets.forCurrent(locked)
                 val x = baseX + fnOffset.x * density
                 val y = baseY + fnOffset.y * density
                 val stroke = if (filenameStrokeWidthPx > 0f) filenameStrokePaint else null
@@ -987,8 +1045,6 @@ class IndicatorView(
         val padding = LABEL_PADDING_DP * density
         val rotation = display?.rotation ?: Surface.ROTATION_0
         val locked = IndicatorState.appIconLockRotation
-        val effRotation = if (locked) Surface.ROTATION_0 else rotation
-        val slot = RotationSlot.fromSurfaceRotation(effRotation)
 
         val (baseX, baseY, _) =
             computeLabelPosition(
@@ -1002,7 +1058,7 @@ class IndicatorView(
                 sizePx,
             )
 
-        val iconOffset = IndicatorState.appIconOffsets[slot]
+        val iconOffset = IndicatorState.appIconOffsets.forCurrent(locked)
         val x = baseX + iconOffset.x * density - sizePx / 2
         val y = baseY + iconOffset.y * density - sizePx
 
@@ -1207,10 +1263,10 @@ class IndicatorView(
 
     // Apply calibration: normalize base, offset, then scale
     private fun RectF.applyCalibration() {
-        val slot = RotationSlot.fromSurfaceRotation(display?.rotation ?: Surface.ROTATION_0)
-        val perRot = IndicatorState.ringOffsets[slot]
-        val scaleX = IndicatorState.ringScaleX
-        val scaleY = IndicatorState.ringScaleY
+        val perRot = IndicatorState.ringOffsets.forCurrent()
+        val scale = IndicatorState.ringScales[foldSlot]
+        val scaleX = scale.x
+        val scaleY = scale.y
 
         if (width() == 0f && height() == 0f) return
 
