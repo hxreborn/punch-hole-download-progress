@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SIGNED: ${{ (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && github.actor != 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v7
 
@@ -19,12 +21,12 @@ jobs:
           cache: gradle
 
       - name: Decode keystore
-        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+        if: env.SIGNED == 'true'
         run: echo "${{ secrets.RELEASE_KEYSTORE }}" | base64 -d > ${{ github.workspace }}/release.keystore
 
       - name: Build
         run: |
-          if [ "${{ github.event_name }}" = "push" ] || [ "${{ github.event.pull_request.head.repo.full_name }}" = "${{ github.repository }}" ]; then
+          if [ "$SIGNED" = "true" ]; then
             ./gradlew assembleDebug assembleRelease
           else
             ./gradlew assembleDebug
