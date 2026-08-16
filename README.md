@@ -22,6 +22,7 @@ Xposed module that renders download progress as an animated ring around the came
 - Completion animations with optional haptic feedback
 - Download counter badge
 - Per-rotation calibration for text and badge offsets
+- Foldable support with separate ring calibration for each posture (folded/unfolded)
 - Material 3 Expressive settings UI
 - Test mode, battery saver rendering, and pill-cutout path support
 
