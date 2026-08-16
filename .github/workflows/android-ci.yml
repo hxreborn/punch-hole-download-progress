@@ -24,6 +24,9 @@ jobs:
         if: env.SIGNED == 'true'
         run: echo "${{ secrets.RELEASE_KEYSTORE }}" | base64 -d > ${{ github.workspace }}/release.keystore
 
+      - name: Test
+        run: ./gradlew test
+
       - name: Build
         run: |
           if [ "$SIGNED" = "true" ]; then
