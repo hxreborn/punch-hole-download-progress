@@ -1,0 +1,2 @@
+Added foldable support so the ring is positioned and sized separately on the folded and unfolded screens, switching automatically as you open and close the device
+Updated core libraries and dependencies
