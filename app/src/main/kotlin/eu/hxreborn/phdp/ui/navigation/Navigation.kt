@@ -17,12 +17,10 @@ import androidx.compose.material.icons.rounded.Apps
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingToolbarScrollBehavior
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -583,34 +581,33 @@ fun BottomNav(
     val transparentIndicatorColors =
         NavigationBarItemDefaults.colors(indicatorColor = Color.Transparent)
 
-    CompositionLocalProvider(
-        LocalNavigationBarSelectedIndex provides selectedIndex,
-        LocalNavigationBarItemCount provides bottomNavItems.size,
+    StretchingPillNavigationBar(
+        selectedIndex = selectedIndex,
+        itemCount = bottomNavItems.size,
+        modifier = modifier,
     ) {
-        NavigationBar(modifier = modifier) {
-            bottomNavItems.forEach { item ->
-                val selected = effectiveKey == item.key
-                val onSelectTab = dropUnlessResumed { selectTab(item) }
-                NavigationBarItem(
-                    selected = selected,
-                    onClick = { if (!selected) onSelectTab() },
-                    icon = {
-                        Crossfade(
-                            targetState = selected,
-                            animationSpec = tween(durationMillis = animDuration),
-                            label = "iconCrossfade",
-                        ) { isSelected ->
-                            Icon(
-                                imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
-                                contentDescription = stringResource(item.titleRes),
-                            )
-                        }
-                    },
-                    label = { Text(stringResource(item.titleRes)) },
-                    alwaysShowLabel = false,
-                    colors = transparentIndicatorColors,
-                )
-            }
+        bottomNavItems.forEach { item ->
+            val selected = effectiveKey == item.key
+            val onSelectTab = dropUnlessResumed { selectTab(item) }
+            NavigationBarItem(
+                selected = selected,
+                onClick = { if (!selected) onSelectTab() },
+                icon = {
+                    Crossfade(
+                        targetState = selected,
+                        animationSpec = tween(durationMillis = animDuration),
+                        label = "iconCrossfade",
+                    ) { isSelected ->
+                        Icon(
+                            imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
+                            contentDescription = stringResource(item.titleRes),
+                        )
+                    }
+                },
+                label = { Text(stringResource(item.titleRes)) },
+                alwaysShowLabel = false,
+                colors = transparentIndicatorColors,
+            )
         }
     }
 }

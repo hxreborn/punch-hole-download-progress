@@ -97,7 +97,7 @@ object Tokens {
     val CheckboxIconSize: Dp = 18.dp
     val CheckboxBorderWidth: Dp = 2.dp
 
-    // Navigation bar stretching pill (StretchingPillNavigationBarOverride)
+    // Navigation bar stretching pill (StretchingPillNavigationBar)
     val NavBarHeight: Dp = 80.dp
     val NavBarItemSpacing: Dp = 8.dp
     val NavBarPillWidth: Dp = 56.dp
