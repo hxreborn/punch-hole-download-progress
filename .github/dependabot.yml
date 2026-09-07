@@ -1,6 +1,8 @@
 version: 2
 updates:
   - package-ecosystem: "gradle"
+    commit-message:
+      prefix: "ci(deps)"
     directory: "/"
     schedule:
       interval: "weekly"
@@ -20,6 +22,8 @@ updates:
           - "org.jetbrains.kotlinx*"
 
   - package-ecosystem: "github-actions"
+    commit-message:
+      prefix: "ci(deps)"
     directory: "/"
     schedule:
       interval: "weekly"
