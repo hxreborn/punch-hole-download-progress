@@ -13,11 +13,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.BatterySaver
 import androidx.compose.material.icons.outlined.BugReport
+import androidx.compose.material.icons.outlined.CallToAction
+import androidx.compose.material.icons.outlined.Cancel
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.ClearAll
+import androidx.compose.material.icons.outlined.ColorLens
+import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.SwipeDown
+import androidx.compose.material.icons.outlined.Terminal
 import androidx.compose.material.icons.outlined.Upload
+import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -166,6 +176,7 @@ fun SystemScreen(
                                     SelectPreference(
                                         value = currentThemeValue,
                                         onValueChange = { viewModel.savePref(Prefs.darkThemeConfig, it) },
+                                        icon = { Icon(Icons.Outlined.DarkMode, contentDescription = null) },
                                         values = themeValues,
                                         title = { Text(stringResource(R.string.pref_theme_title)) },
                                         summary = { Text(stringResource(R.string.pref_theme_summary)) },
@@ -178,6 +189,7 @@ fun SystemScreen(
                                     TogglePreferenceWithIcon(
                                         value = prefsState.useDynamicColor,
                                         onValueChange = { viewModel.savePref(Prefs.useDynamicColor, it) },
+                                        icon = { Icon(Icons.Outlined.ColorLens, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_dynamic_color_title),
@@ -194,6 +206,7 @@ fun SystemScreen(
                                     TogglePreferenceWithIcon(
                                         value = prefsState.floatingNavBar,
                                         onValueChange = { viewModel.savePref(Prefs.floatingNavBar, it) },
+                                        icon = { Icon(Icons.Outlined.CallToAction, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_floating_nav_bar_title),
@@ -211,6 +224,7 @@ fun SystemScreen(
                                         TogglePreferenceWithIcon(
                                             value = prefsState.hideNavBarOnScroll,
                                             onValueChange = { viewModel.savePref(Prefs.hideNavBarOnScroll, it) },
+                                            icon = { Icon(Icons.Outlined.SwipeDown, contentDescription = null) },
                                             title = {
                                                 Text(
                                                     stringResource(R.string.pref_hide_nav_bar_on_scroll_title),
@@ -243,6 +257,7 @@ fun SystemScreen(
                                     SelectPreference(
                                         value = prefsState.powerSaverMode,
                                         onValueChange = { viewModel.savePref(Prefs.powerSaverMode, it) },
+                                        icon = { Icon(Icons.Outlined.BatterySaver, contentDescription = null) },
                                         values = powerSaverValues,
                                         title = {
                                             Text(
@@ -275,6 +290,7 @@ fun SystemScreen(
                                 {
                                     Preference(
                                         onClick = { viewModel.simulateSuccess() },
+                                        icon = { Icon(Icons.Outlined.CheckCircle, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_debug_completion_title),
@@ -290,6 +306,7 @@ fun SystemScreen(
                                 {
                                     Preference(
                                         onClick = { viewModel.simulateFailure() },
+                                        icon = { Icon(Icons.Outlined.Cancel, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_test_failure_title),
@@ -313,6 +330,7 @@ fun SystemScreen(
                                                     Toast.LENGTH_SHORT,
                                                 ).show()
                                         },
+                                        icon = { Icon(Icons.Outlined.ClearAll, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_clear_downloads_title),
@@ -329,6 +347,7 @@ fun SystemScreen(
                                     TogglePreferenceWithIcon(
                                         value = success.isLauncherIconHidden,
                                         onValueChange = { viewModel.setLauncherIconHidden(it) },
+                                        icon = { Icon(Icons.Outlined.VisibilityOff, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_hide_launcher_icon_title),
@@ -345,6 +364,7 @@ fun SystemScreen(
                                     TogglePreferenceWithIcon(
                                         value = prefsState.verboseLogging,
                                         onValueChange = { viewModel.savePref(Prefs.verboseLogging, it) },
+                                        icon = { Icon(Icons.Outlined.Terminal, contentDescription = null) },
                                         title = {
                                             Text(stringResource(R.string.pref_verbose_logging_title))
                                         },
