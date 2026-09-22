@@ -8,6 +8,21 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.RotateRight
+import androidx.compose.material.icons.outlined.Animation
+import androidx.compose.material.icons.outlined.Bolt
+import androidx.compose.material.icons.outlined.Celebration
+import androidx.compose.material.icons.outlined.FastForward
+import androidx.compose.material.icons.outlined.FilterTiltShift
+import androidx.compose.material.icons.outlined.HourglassEmpty
+import androidx.compose.material.icons.outlined.Numbers
+import androidx.compose.material.icons.outlined.Repeat
+import androidx.compose.material.icons.outlined.SpaceBar
+import androidx.compose.material.icons.outlined.SwapHoriz
+import androidx.compose.material.icons.outlined.Tune
+import androidx.compose.material.icons.outlined.Vibration
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -87,6 +102,7 @@ fun BehaviorScreen(
                                     TogglePreferenceWithIcon(
                                         value = prefsState.clockwise,
                                         onValueChange = { viewModel.savePref(Prefs.clockwise, it) },
+                                        icon = { Icon(Icons.AutoMirrored.Outlined.RotateRight, contentDescription = null) },
                                         title = {
                                             Text(stringResource(R.string.pref_invert_rotation_title))
                                         },
@@ -114,6 +130,7 @@ fun BehaviorScreen(
                                     SelectPreference(
                                         value = prefsState.finishStyle,
                                         onValueChange = { viewModel.savePref(Prefs.finishStyle, it) },
+                                        icon = { Icon(Icons.Outlined.Celebration, contentDescription = null) },
                                         values = finishStyleValues,
                                         title = {
                                             Text(
@@ -136,6 +153,7 @@ fun BehaviorScreen(
                                             onValueChange = {
                                                 viewModel.savePref(Prefs.effectSpeed, it)
                                             },
+                                            icon = { Icon(Icons.Outlined.FastForward, contentDescription = null) },
                                             values = effectSpeedValues,
                                             title = {
                                                 Text(stringResource(R.string.pref_effect_speed_title))
@@ -156,6 +174,7 @@ fun BehaviorScreen(
                                             onValueChange = {
                                                 viewModel.savePref(Prefs.effectIntensity, it)
                                             },
+                                            icon = { Icon(Icons.Outlined.Bolt, contentDescription = null) },
                                             values = effectIntensityValues,
                                             title = {
                                                 Text(stringResource(R.string.pref_effect_intensity_title))
@@ -176,6 +195,7 @@ fun BehaviorScreen(
                                             onValueChange = {
                                                 viewModel.savePref(Prefs.effectReverse, it)
                                             },
+                                            icon = { Icon(Icons.Outlined.SwapHoriz, contentDescription = null) },
                                             title = {
                                                 Text(stringResource(R.string.pref_effect_direction_title))
                                             },
@@ -193,6 +213,7 @@ fun BehaviorScreen(
                                             onValueChange = {
                                                 viewModel.savePref(Prefs.effectRepeat, it.toInt())
                                             },
+                                            icon = { Icon(Icons.Outlined.Repeat, contentDescription = null) },
                                             title = {
                                                 Text(stringResource(R.string.pref_effect_repeat_title))
                                             },
@@ -256,6 +277,7 @@ fun BehaviorScreen(
                                             onValueChange = {
                                                 viewModel.savePref(Prefs.segmentCount, it.toInt())
                                             },
+                                            icon = { Icon(Icons.Outlined.FilterTiltShift, contentDescription = null) },
                                             title = {
                                                 Text(
                                                     stringResource(R.string.pref_segment_count_title),
@@ -284,6 +306,7 @@ fun BehaviorScreen(
                                             onValueChange = {
                                                 viewModel.savePref(Prefs.segmentGapDegrees, it)
                                             },
+                                            icon = { Icon(Icons.Outlined.SpaceBar, contentDescription = null) },
                                             title = {
                                                 Text(
                                                     stringResource(R.string.pref_segment_gap_title),
@@ -324,6 +347,7 @@ fun BehaviorScreen(
                                     TogglePreferenceWithIcon(
                                         value = prefsState.showDownloadCount,
                                         onValueChange = { viewModel.savePref(Prefs.showDownloadCount, it) },
+                                        icon = { Icon(Icons.Outlined.Numbers, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_show_queue_count_title),
@@ -340,6 +364,7 @@ fun BehaviorScreen(
                                     NavigationPreference(
                                         onClick = onNavigateToBadgeCalibration,
                                         enabled = prefsState.showDownloadCount,
+                                        icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(
@@ -362,6 +387,7 @@ fun BehaviorScreen(
                                         onValueChange = {
                                             viewModel.savePref(Prefs.burnInHideMs, it.toInt())
                                         },
+                                        icon = { Icon(Icons.Outlined.HourglassEmpty, contentDescription = null) },
                                         values = burnInHideValues,
                                         title = {
                                             Text(stringResource(R.string.pref_burn_in_hide_title))
@@ -381,6 +407,7 @@ fun BehaviorScreen(
                                         onValueChange = {
                                             viewModel.savePref(Prefs.progressAnimMs, it.toInt())
                                         },
+                                        icon = { Icon(Icons.Outlined.Animation, contentDescription = null) },
                                         title = {
                                             Text(stringResource(R.string.pref_progress_anim_title))
                                         },
@@ -416,6 +443,7 @@ fun BehaviorScreen(
                                     TogglePreferenceWithIcon(
                                         value = prefsState.hooksFeedback,
                                         onValueChange = { viewModel.savePref(Prefs.hooksFeedback, it) },
+                                        icon = { Icon(Icons.Outlined.Vibration, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_haptic_feedback_title),
