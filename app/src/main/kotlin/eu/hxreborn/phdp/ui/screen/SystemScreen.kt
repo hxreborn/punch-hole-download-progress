@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.outlined.OpenInNew
 import androidx.compose.material.icons.outlined.BatterySaver
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.CallToAction
@@ -29,6 +31,7 @@ import androidx.compose.material.icons.outlined.Terminal
 import androidx.compose.material.icons.outlined.Upload
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +40,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
@@ -468,6 +472,7 @@ fun SystemScreen(
                                         summary = {
                                             Text(stringResource(R.string.pref_git_repo_summary))
                                         },
+                                        widgetContainer = { TrailingIcon(Icons.AutoMirrored.Outlined.OpenInNew) },
                                     )
                                 },
                                 {
@@ -483,6 +488,7 @@ fun SystemScreen(
                                         summary = {
                                             Text(stringResource(R.string.pref_licenses_summary))
                                         },
+                                        widgetContainer = { TrailingIcon(Icons.AutoMirrored.Filled.KeyboardArrowRight) },
                                     )
                                 },
                                 {
@@ -507,6 +513,7 @@ fun SystemScreen(
                                         summary = {
                                             Text(stringResource(R.string.pref_report_issue_summary))
                                         },
+                                        widgetContainer = { TrailingIcon(Icons.AutoMirrored.Outlined.OpenInNew) },
                                     )
                                 },
                             ),
@@ -520,6 +527,16 @@ fun SystemScreen(
             modifier = Modifier.align(Alignment.BottomCenter),
         )
     }
+}
+
+@Composable
+private fun TrailingIcon(imageVector: ImageVector) {
+    Icon(
+        imageVector,
+        contentDescription = null,
+        modifier = Modifier.padding(horizontal = Tokens.PreferencePadding),
+        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
 }
 
 @Suppress("ViewModelConstructorInComposable")
