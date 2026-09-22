@@ -1,11 +1,11 @@
 package eu.hxreborn.phdp.ui.component.preference
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
@@ -21,6 +21,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.ui.theme.AppTheme
@@ -41,7 +42,7 @@ fun TogglePreferenceWithIcon(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clickable(enabled = enabled) { onValueChange(!value) }
+                .toggleable(value = value, onValueChange = onValueChange, enabled = enabled, role = Role.Switch)
                 .padding(Tokens.PreferencePadding),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -65,7 +66,7 @@ fun TogglePreferenceWithIcon(
         }
         Switch(
             checked = value,
-            onCheckedChange = onValueChange,
+            onCheckedChange = null,
             enabled = enabled,
             modifier = Modifier.padding(start = Tokens.PreferenceHorizontalSpacing),
             thumbContent = {
