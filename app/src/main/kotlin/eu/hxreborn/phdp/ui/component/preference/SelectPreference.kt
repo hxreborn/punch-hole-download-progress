@@ -43,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.Prefs
+import eu.hxreborn.phdp.ui.component.verticalScrollbar
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.Tokens
 
@@ -131,6 +132,7 @@ private fun <T> SelectDialog(
                 modifier =
                     Modifier
                         .selectableGroup()
+                        .verticalScrollbar(scrollState)
                         .fadingEdges(scrollState)
                         .verticalScroll(scrollState),
             ) {

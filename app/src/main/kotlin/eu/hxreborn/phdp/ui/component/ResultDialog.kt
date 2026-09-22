@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material3.AlertDialog
@@ -70,6 +71,7 @@ fun ResultDialog(
     onDismiss: () -> Unit,
 ) {
     var expanded by rememberSaveable { mutableStateOf<String?>(null) }
+    val listState = rememberLazyListState()
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -77,7 +79,7 @@ fun ResultDialog(
         icon = { Icon(imageVector = icon, contentDescription = null) },
         title = { Text(title) },
         text = {
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            LazyColumn(state = listState, modifier = Modifier.fillMaxWidth().verticalScrollbar(listState)) {
                 item(key = "summary") {
                     Summary(headline = headline, metadata = metadata, alert = alert, divided = groups.isNotEmpty())
                 }
