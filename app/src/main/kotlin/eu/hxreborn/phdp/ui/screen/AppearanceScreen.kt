@@ -348,7 +348,6 @@ fun AppearanceScreen(
                 item(key = "design_background_ring_section") {
                     SectionCard(
                         modifier = Modifier.animateContentSize(),
-                        enabled = prefsState.backgroundRingEnabled,
                         items =
                             buildList {
                                 add {
