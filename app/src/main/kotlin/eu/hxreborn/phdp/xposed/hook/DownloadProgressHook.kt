@@ -37,7 +37,7 @@ object DownloadProgressHook {
     private var getNotificationMethod: Method? = null
 
     @Volatile
-    private var getIdMethod: Method? = null
+    private var getKeyMethod: Method? = null
 
     @Volatile
     private var sbnField: Field? = null
@@ -89,8 +89,7 @@ object DownloadProgressHook {
 
         if (pkg !in IndicatorState.selectedPackages) return
 
-        val rawId = getRawId(sbn) ?: return
-        val id = "$pkg:$rawId"
+        val id = getKey(sbn) ?: return
         val notification = getNotification(sbn) ?: return
         val extras = notification.extras ?: return
 
@@ -271,10 +270,11 @@ object DownloadProgressHook {
             method.invoke(sbn) as? Notification
         }.getOrNull()
 
-    private fun getRawId(sbn: Any): Int? =
+    private fun getKey(sbn: Any): String? =
         runCatching {
-            val method = getIdMethod ?: sbn.javaClass.getMethod("getId").also { getIdMethod = it }
-            method.invoke(sbn) as? Int
+            val method =
+                getKeyMethod ?: sbn.javaClass.getMethod("getKey").also { getKeyMethod = it }
+            method.invoke(sbn) as? String
         }.getOrNull()
 
     // NotificationEntry.mSbn handle resolved once like the StatusBarNotification accessors
@@ -289,9 +289,8 @@ object DownloadProgressHook {
         reason: Int = -1,
     ) {
         val pkg = getPackageName(sbn) ?: return
-        val rawId = getRawId(sbn) ?: return
-        val id = "$pkg:$rawId"
-        logDebug { "removed notif pkg=$pkg id=$rawId reason=$reason" }
+        val id = getKey(sbn) ?: return
+        logDebug { "removed notif key=$id reason=$reason" }
 
         val wasTracking = activeDownloads.remove(id) ?: return
         onActiveCountChanged?.invoke(activeDownloads.size)
