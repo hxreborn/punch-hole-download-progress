@@ -3,6 +3,8 @@
     <string name="app_name">Punch-hole Download Progress</string>
     <string name="app_desc">摄像头边缘的下载进度指示器</string>
     <string name="back">返回</string>
+    <string name="reload_module">重新加载模块</string>
+    <string name="reload_unsupported">热重载需要支持 libxposed API 102 的框架</string>
     <string name="restart_systemui">重启系统界面</string>
     <string name="restart_systemui_confirm">即将重启系统界面以应用修改，是否继续？</string>
     <string name="restart">重启</string>

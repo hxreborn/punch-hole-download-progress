@@ -580,6 +580,12 @@ class IndicatorView(
         registerHingeListener()
     }
 
+    fun removeFromWindow() {
+        val wm = context.getSystemService(Context.WINDOW_SERVICE) as? WindowManager ?: return
+        runCatching { wm.removeViewImmediate(this) }
+            .onFailure { log("remove failed target=overlay", it) }
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         log("IndicatorView: onDetachedFromWindow()")

@@ -490,6 +490,12 @@ object IndicatorState {
         }.onFailure { log("init failed target=indicator-state", it) }
     }
 
+    fun release() {
+        prefsListener?.let { remotePrefs?.unregisterOnSharedPreferenceChangeListener(it) }
+        prefsListener = null
+        remotePrefs = null
+    }
+
     private fun dispatchPrefChange(
         prefs: SharedPreferences,
         key: String?,

@@ -1,1 +1,2 @@
 Added an optional speed label beside the ring, showing how fast the device is downloading in bits or bytes per second, with its own size, style, shadow and per-rotation placement
+Added a Reload module action so an updated module takes effect without restarting SystemUI

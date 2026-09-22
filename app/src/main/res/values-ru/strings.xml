@@ -5,6 +5,8 @@
 
     <!-- Navigation -->
     <string name="back">Назад</string>
+    <string name="reload_module">Перезагрузить модуль</string>
+    <string name="reload_unsupported">Для горячей перезагрузки нужен фреймворк с поддержкой libxposed API 102</string>
 
     <!-- Restart SystemUI -->
     <string name="restart_systemui">Перезапустить системный интерфейс</string>

@@ -7,6 +7,8 @@
     <string name="back">Back</string>
 
     <!-- Restart SystemUI -->
+    <string name="reload_module">Reload module</string>
+    <string name="reload_unsupported">Hot reload needs a framework with libxposed API 102</string>
     <string name="restart_systemui">Restart SystemUI</string>
     <string name="restart_systemui_confirm">This will restart SystemUI to apply changes. Continue?</string>
     <string name="restart">Restart</string>

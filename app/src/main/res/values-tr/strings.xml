@@ -5,6 +5,8 @@
 
     <!-- Navigation -->
     <string name="back">Geri</string>
+    <string name="reload_module">Modülü yeniden yükle</string>
+    <string name="reload_unsupported">Sıcak yeniden yükleme için libxposed API 102 destekleyen bir framework gerekir</string>
 
     <!-- Restart SystemUI -->
     <string name="restart_systemui">SystemUI\'ı Yeniden Başlat</string>

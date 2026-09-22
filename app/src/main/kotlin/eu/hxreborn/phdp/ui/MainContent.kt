@@ -26,6 +26,8 @@ import eu.hxreborn.phdp.ui.navigation.bottomNavItems
 sealed class MenuAction {
     data object RestartSystemUI : MenuAction()
 
+    data object ReloadModule : MenuAction()
+
     data object Reset : MenuAction()
 }
 

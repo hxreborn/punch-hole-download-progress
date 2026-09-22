@@ -18,6 +18,9 @@ class PHDPApp :
     @Volatile
     private var mService: XposedService? = null
 
+    val service: XposedService?
+        get() = mService
+
     private val listeners = CopyOnWriteArrayList<XposedServiceHelper.OnServiceListener>()
 
     lateinit var prefs: PrefsRepository

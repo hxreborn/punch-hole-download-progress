@@ -21,6 +21,7 @@ import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
+import eu.hxreborn.phdp.util.HotReload
 import eu.hxreborn.phdp.util.RootUtils
 import kotlinx.coroutines.launch
 
@@ -61,6 +62,7 @@ class MainActivity : ComponentActivity() {
                         onMenuAction = { action ->
                             when (action) {
                                 MenuAction.RestartSystemUI -> showRestartDialog = true
+                                MenuAction.ReloadModule -> performHotReload()
                                 MenuAction.Reset -> showResetDialog = true
                             }
                         },
@@ -125,6 +127,17 @@ class MainActivity : ComponentActivity() {
     override fun onPause() {
         super.onPause()
         PHDPApp.from(this).prefs.save(Prefs.appVisible, false)
+    }
+
+    private fun performHotReload() {
+        val service = PHDPApp.from(this).service
+        if (service == null || !HotReload.isSupported(service)) {
+            Toast.makeText(this, R.string.reload_unsupported, Toast.LENGTH_LONG).show()
+            return
+        }
+        HotReload.reload(service) { result ->
+            runOnUiThread { Toast.makeText(this, result, Toast.LENGTH_LONG).show() }
+        }
     }
 
     private fun performRestart() {

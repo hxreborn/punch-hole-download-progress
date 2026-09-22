@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.RestartAlt
@@ -81,6 +82,14 @@ fun MainTabScaffold(
                                     onClick = {
                                         menuExpanded = false
                                         onMenuAction(MenuAction.RestartSystemUI)
+                                    },
+                                )
+                                OverflowMenuItem(
+                                    text = stringResource(R.string.reload_module),
+                                    icon = Icons.Default.Bolt,
+                                    onClick = {
+                                        menuExpanded = false
+                                        onMenuAction(MenuAction.ReloadModule)
                                     },
                                 )
                                 OverflowMenuItem(

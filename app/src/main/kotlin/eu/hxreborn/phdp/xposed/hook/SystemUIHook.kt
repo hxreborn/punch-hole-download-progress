@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Handler
+import android.os.Looper
 import android.os.PowerManager
 import androidx.core.view.HapticFeedbackConstantsCompat
 import androidx.core.view.ViewCompat
@@ -18,6 +20,8 @@ import io.github.libxposed.api.XposedInterface
 import java.lang.reflect.Field
 import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 private const val SYSTEMUI_PKG = "com.android.systemui"
 private const val CENTRAL_SURFACES_IMPL = "com.android.systemui.statusbar.phone.CentralSurfacesImpl"
@@ -25,6 +29,8 @@ private const val STATUS_BAR = "com.android.systemui.statusbar.phone.StatusBar"
 private const val NOTIF_COLLECTION =
     "com.android.systemui.statusbar.notification.collection.NotifCollection"
 private const val NOTIFICATION_LISTENER = "com.android.systemui.statusbar.NotificationListener"
+private const val REMOVE_TIMEOUT_MS = 1000L
+internal const val SAVED_CONTEXT = "context"
 
 // Scoped to process lifetime, cannot leak
 @SuppressLint("StaticFieldLeak")
@@ -37,6 +43,9 @@ object SystemUIHook {
 
     @Volatile
     private var powerSaveReceiver: BroadcastReceiver? = null
+
+    @Volatile
+    private var systemUIContext: Context? = null
 
     private val cancellationReasonField = ConcurrentHashMap<Class<*>, Optional<Field>>()
 
@@ -207,6 +216,7 @@ object SystemUIHook {
     ) {
         attached = true
         indicatorView = view
+        systemUIContext = context
         NetworkSpeedMonitor.attach(context)
         registerPowerSaveReceiver(context)
     }
@@ -239,6 +249,35 @@ object SystemUIHook {
     private fun triggerHapticFeedback() {
         if (!IndicatorState.hooksFeedback) return
         onView { ViewCompat.performHapticFeedback(this, HapticFeedbackConstantsCompat.CONFIRM) }
+    }
+
+    fun hotReloadState(): HashMap<String, Any?>? {
+        val context = systemUIContext ?: return null
+        return hashMapOf(SAVED_CONTEXT to context)
+    }
+
+    fun prepareHotReload() {
+        NetworkSpeedMonitor.shutdown()
+        val view = indicatorView ?: return
+        val removed = CountDownLatch(1)
+        view.post {
+            view.removeFromWindow()
+            removed.countDown()
+        }
+        if (!removed.await(REMOVE_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+            log("remove timed out pkg=$SYSTEMUI_PKG target=overlay")
+        }
+    }
+
+    fun rehook(context: Context) {
+        hook(context.classLoader)
+        Handler(Looper.getMainLooper()).post {
+            runCatching {
+                val view = IndicatorView.attach(context)
+                markAttached(view, context)
+                log("attached overlay pkg=$SYSTEMUI_PKG source=hot-reload")
+            }.onFailure { log("attach failed pkg=$SYSTEMUI_PKG target=overlay", it) }
+        }
     }
 
     fun isAttached(): Boolean = attached
