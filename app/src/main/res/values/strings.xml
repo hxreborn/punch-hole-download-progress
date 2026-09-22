@@ -44,6 +44,7 @@
     <string name="group_colors">Colors</string>
     <string name="group_geometry">Geometry</string>
     <string name="group_percent_text">Percentage Text</string>
+    <string name="group_speed_text">Speed Text</string>
     <string name="group_filename_text">Filename Text</string>
     <string name="group_app_icon">Source App</string>
     <string name="group_progress_ring">Progress ring</string>
@@ -130,6 +131,12 @@
     <string name="pref_show_percentage_summary">Display current progress as numeric text</string>
     <string name="pref_calibrate_percent_title">Calibrate percentage</string>
     <string name="pref_calibrate_percent_summary">Adjust percentage label placement</string>
+    <string name="pref_show_speed_title">Speed label</string>
+    <string name="pref_show_speed_summary">Display the current network download rate as text</string>
+    <string name="pref_calibrate_speed_title">Calibrate speed</string>
+    <string name="pref_calibrate_speed_summary">Adjust speed label placement</string>
+    <string name="pref_speed_unit_title">Speed units</string>
+    <string name="pref_speed_unit_summary">Bits or bytes per second</string>
 
     <!-- Design: Filename Text -->
     <string name="pref_show_filename_title">Filename label</string>
@@ -154,6 +161,7 @@
     <!-- Design: Text shadow and outline (per-element calibration screens) -->
     <string name="pref_text_shadow_nav_summary">Customize the shadow and the optional outline</string>
     <string name="pref_calibrate_percent_shadow_title">Calibrate percentage shadow</string>
+    <string name="pref_calibrate_speed_shadow_title">Calibrate speed shadow</string>
     <string name="pref_calibrate_filename_shadow_title">Calibrate filename shadow</string>
     <string name="pref_text_shadow_mode_title">Shadow shape</string>
     <string name="pref_text_shadow_mode_summary">Per glyph drops a shadow under each character. Capsule halo blurs one soft glow behind the whole label (default: Per glyph)</string>
@@ -407,6 +415,16 @@
         <item>low</item>
         <item>medium</item>
         <item>high</item>
+    </string-array>
+
+    <!-- Dialog Arrays: Speed Units -->
+    <string-array name="speed_unit_entries">
+        <item>Bits per second (Mbps)</item>
+        <item>Bytes per second (MB/s)</item>
+    </string-array>
+    <string-array name="speed_unit_values" translatable="false">
+        <item>bits</item>
+        <item>bytes</item>
     </string-array>
 
     <!-- Dialog Arrays: Power Saver -->

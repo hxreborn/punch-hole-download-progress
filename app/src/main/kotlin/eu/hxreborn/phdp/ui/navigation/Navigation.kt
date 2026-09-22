@@ -110,6 +110,12 @@ sealed interface Screen : NavKey {
     data object FilenameShadowCalibration : Screen
 
     @Serializable
+    data object SpeedCalibration : Screen
+
+    @Serializable
+    data object SpeedShadowCalibration : Screen
+
+    @Serializable
     data object Gradient : Screen
 
     @Serializable
@@ -227,6 +233,8 @@ fun MainNavDisplay(
                                         CalibrationTarget.APP_ICON -> Screen.AppIconCalibration
                                         CalibrationTarget.PERCENT_SHADOW -> Screen.PercentShadowCalibration
                                         CalibrationTarget.FILENAME_SHADOW -> Screen.FilenameShadowCalibration
+                                        CalibrationTarget.SPEED -> Screen.SpeedCalibration
+                                        CalibrationTarget.SPEED_SHADOW -> Screen.SpeedShadowCalibration
                                     },
                                 )
                             },
@@ -320,6 +328,36 @@ fun MainNavDisplay(
                                 italic = Prefs.percentTextItalic bind prefs.percentTextItalic,
                             ),
                         lockRotation = Prefs.percentTextLockRotation bind prefs.percentTextLockRotation,
+                    )
+                }
+                entry<Screen.SpeedCalibration> {
+                    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                    val prefs = (uiState as? SettingsUiState.Success)?.prefs ?: return@entry
+                    val (fold, slot, current) = rememberActiveOffset(prefs.speedTextOffsets)
+                    val saveOffset = { offset: OffsetPx ->
+                        viewModel.savePref(
+                            Prefs.speedTextOffsets,
+                            prefs.speedTextOffsets.with(fold, slot, offset),
+                        )
+                    }
+                    TextCalibrationScreen(
+                        titleRes = R.string.pref_calibrate_speed_title,
+                        offsetX = current.x,
+                        offsetY = current.y,
+                        onOffsetXChange = { saveOffset(OffsetPx(it, current.y)) },
+                        onOffsetYChange = { saveOffset(OffsetPx(current.x, it)) },
+                        onOffsetXReset = { saveOffset(OffsetPx(0f, current.y)) },
+                        onOffsetYReset = { saveOffset(OffsetPx(current.x, 0f)) },
+                        viewModel = viewModel,
+                        onNavigateBack = { backStack.removeLastOrNull() },
+                        bottomNavPadding = bottomNavPadding,
+                        typography =
+                            TypographyConfig(
+                                fontSize = Prefs.speedTextSize bind prefs.speedTextSize,
+                                bold = Prefs.speedTextBold bind prefs.speedTextBold,
+                                italic = Prefs.speedTextItalic bind prefs.speedTextItalic,
+                            ),
+                        lockRotation = Prefs.speedTextLockRotation bind prefs.speedTextLockRotation,
                     )
                 }
                 entry<Screen.FilenameCalibration> {
@@ -472,6 +510,17 @@ fun MainNavDisplay(
                         bottomNavPadding = bottomNavPadding,
                     )
                 }
+                entry<Screen.SpeedShadowCalibration> {
+                    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                    val prefs = (uiState as? SettingsUiState.Success)?.prefs ?: return@entry
+                    TextShadowCalibrationScreen(
+                        titleRes = R.string.pref_calibrate_speed_shadow_title,
+                        bindings = TextShadowBindings.forSpeed(prefs),
+                        viewModel = viewModel,
+                        onNavigateBack = { backStack.removeLastOrNull() },
+                        bottomNavPadding = bottomNavPadding,
+                    )
+                }
                 entry<Screen.Motion> {
                     MainTabScaffold(
                         onMenuAction = onMenuAction,
@@ -540,6 +589,8 @@ fun BottomNav(
             Screen.AppIconCalibration,
             Screen.PercentShadowCalibration,
             Screen.FilenameShadowCalibration,
+            Screen.SpeedCalibration,
+            Screen.SpeedShadowCalibration,
             Screen.Gradient,
             Screen.MaterialYou,
             -> Screen.Design

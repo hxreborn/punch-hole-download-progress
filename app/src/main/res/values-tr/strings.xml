@@ -44,6 +44,7 @@
     <string name="group_colors">Renkler</string>
     <string name="group_geometry">Geometri</string>
     <string name="group_percent_text">Yüzde Metni</string>
+    <string name="group_speed_text">Hız Metni</string>
     <string name="group_filename_text">Dosya Adı Metni</string>
     <string name="group_app_icon">Kaynak Uygulama</string>
     <string name="group_progress_ring">İlerleme halkası</string>
@@ -125,6 +126,12 @@
     <string name="pref_show_percentage_summary">Mevcut ilerlemeyi sayısal metin olarak göster</string>
     <string name="pref_calibrate_percent_title">Yüzdeyi kalibre et</string>
     <string name="pref_calibrate_percent_summary">Yüzde etiketinin yerleşimini ayarla</string>
+    <string name="pref_show_speed_title">Hız etiketi</string>
+    <string name="pref_show_speed_summary">Mevcut ağ indirme hızını metin olarak göster</string>
+    <string name="pref_calibrate_speed_title">Hızı kalibre et</string>
+    <string name="pref_calibrate_speed_summary">Hız etiketinin yerleşimini ayarla</string>
+    <string name="pref_speed_unit_title">Hız birimi</string>
+    <string name="pref_speed_unit_summary">Saniyede bit veya bayt</string>
 
     <!-- Design: Filename Text -->
     <string name="pref_show_filename_title">Dosya adı etiketi</string>
@@ -149,6 +156,7 @@
     <!-- Design: Text shadow and outline (per-element calibration screens) -->
     <string name="pref_text_shadow_nav_summary">Gölgeyi ve isteğe bağlı kenarlığı özelleştirin</string>
     <string name="pref_calibrate_percent_shadow_title">Yüzde gölgesini kalibre et</string>
+    <string name="pref_calibrate_speed_shadow_title">Hız gölgesini kalibre et</string>
     <string name="pref_calibrate_filename_shadow_title">Dosya adı gölgesini kalibre et</string>
     <string name="pref_text_shadow_mode_title">Gölge şekli</string>
     <string name="pref_text_shadow_mode_summary">Karakter başına her karakterin altına gölge bırakır. Kapsül halesi tüm etiketin arkasına yumuşak bir parıltı yayar (varsayılan: Karakter başına)</string>
@@ -353,5 +361,9 @@
         <item>Sistem</item>
         <item>Açık</item>
         <item>Koyu</item>
+    </string-array>
+    <string-array name="speed_unit_entries">
+        <item>Saniyede bit (Mbps)</item>
+        <item>Saniyede bayt (MB/s)</item>
     </string-array>
 </resources>

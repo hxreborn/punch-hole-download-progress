@@ -70,6 +70,21 @@ data class TextShadowBindings(
                 opacityRange = Prefs.filenameTextShadowOpacity.range!!,
                 strokeWidthRange = Prefs.filenameTextStrokeWidth.range!!,
             )
+
+        fun forSpeed(prefs: AppPrefs): TextShadowBindings =
+            TextShadowBindings(
+                mode = Prefs.speedTextShadowMode bind prefs.speedTextShadowMode,
+                color = Prefs.speedTextShadowColor bind prefs.speedTextShadowColor,
+                radius = Prefs.speedTextShadowRadius bind prefs.speedTextShadowRadius,
+                dy = Prefs.speedTextShadowDy bind prefs.speedTextShadowDy,
+                opacity = Prefs.speedTextShadowOpacity bind prefs.speedTextShadowOpacity,
+                strokeWidth = Prefs.speedTextStrokeWidth bind prefs.speedTextStrokeWidth,
+                strokeColor = Prefs.speedTextStrokeColor bind prefs.speedTextStrokeColor,
+                radiusRange = Prefs.speedTextShadowRadius.range!!,
+                dyRange = Prefs.speedTextShadowDy.range!!,
+                opacityRange = Prefs.speedTextShadowOpacity.range!!,
+                strokeWidthRange = Prefs.speedTextStrokeWidth.range!!,
+            )
     }
 }
 

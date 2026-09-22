@@ -206,6 +206,34 @@ object IndicatorState {
         private set
 
     @Volatile
+    var speedTextEnabled = Prefs.speedTextEnabled.default
+        private set
+
+    @Volatile
+    var speedTextPosition = Prefs.speedTextPosition.default
+        private set
+
+    @Volatile
+    var speedTextOffsets = RotationOffsets.EMPTY
+        private set
+
+    @Volatile
+    var speedTextSize = Prefs.speedTextSize.default
+        private set
+
+    @Volatile
+    var speedTextBold = Prefs.speedTextBold.default
+        private set
+
+    @Volatile
+    var speedTextItalic = Prefs.speedTextItalic.default
+        private set
+
+    @Volatile
+    var speedTextUnit = Prefs.speedTextUnit.default
+        private set
+
+    @Volatile
     var appIconEnabled = Prefs.appIconEnabled.default
         private set
 
@@ -339,6 +367,38 @@ object IndicatorState {
 
     @Volatile
     var filenameTextLockRotation = Prefs.filenameTextLockRotation.default
+        private set
+
+    @Volatile
+    var speedTextLockRotation = Prefs.speedTextLockRotation.default
+        private set
+
+    @Volatile
+    var speedTextShadowMode = Prefs.speedTextShadowMode.default
+        private set
+
+    @Volatile
+    var speedTextShadowColor = Prefs.speedTextShadowColor.default
+        private set
+
+    @Volatile
+    var speedTextShadowRadius = Prefs.speedTextShadowRadius.default
+        private set
+
+    @Volatile
+    var speedTextShadowDy = Prefs.speedTextShadowDy.default
+        private set
+
+    @Volatile
+    var speedTextShadowOpacity = Prefs.speedTextShadowOpacity.default
+        private set
+
+    @Volatile
+    var speedTextStrokeWidth = Prefs.speedTextStrokeWidth.default
+        private set
+
+    @Volatile
+    var speedTextStrokeColor = Prefs.speedTextStrokeColor.default
         private set
 
     @Volatile
@@ -682,6 +742,66 @@ object IndicatorState {
                         Prefs.filenameVerticalText.read(prefs)
                 }
 
+                Prefs.speedTextEnabled.key -> {
+                    speedTextEnabled = Prefs.speedTextEnabled.read(prefs)
+                }
+
+                Prefs.speedTextPosition.key -> {
+                    speedTextPosition = Prefs.speedTextPosition.read(prefs)
+                }
+
+                Prefs.speedTextOffsets.key -> {
+                    speedTextOffsets = Prefs.speedTextOffsets.read(prefs)
+                }
+
+                Prefs.speedTextSize.key -> {
+                    speedTextSize = Prefs.speedTextSize.read(prefs)
+                }
+
+                Prefs.speedTextBold.key -> {
+                    speedTextBold = Prefs.speedTextBold.read(prefs)
+                }
+
+                Prefs.speedTextItalic.key -> {
+                    speedTextItalic = Prefs.speedTextItalic.read(prefs)
+                }
+
+                Prefs.speedTextUnit.key -> {
+                    speedTextUnit = Prefs.speedTextUnit.read(prefs)
+                }
+
+                Prefs.speedTextLockRotation.key -> {
+                    speedTextLockRotation = Prefs.speedTextLockRotation.read(prefs)
+                }
+
+                Prefs.speedTextShadowMode.key -> {
+                    speedTextShadowMode = Prefs.speedTextShadowMode.read(prefs)
+                }
+
+                Prefs.speedTextShadowColor.key -> {
+                    speedTextShadowColor = Prefs.speedTextShadowColor.read(prefs)
+                }
+
+                Prefs.speedTextShadowRadius.key -> {
+                    speedTextShadowRadius = Prefs.speedTextShadowRadius.read(prefs)
+                }
+
+                Prefs.speedTextShadowDy.key -> {
+                    speedTextShadowDy = Prefs.speedTextShadowDy.read(prefs)
+                }
+
+                Prefs.speedTextShadowOpacity.key -> {
+                    speedTextShadowOpacity = Prefs.speedTextShadowOpacity.read(prefs)
+                }
+
+                Prefs.speedTextStrokeWidth.key -> {
+                    speedTextStrokeWidth = Prefs.speedTextStrokeWidth.read(prefs)
+                }
+
+                Prefs.speedTextStrokeColor.key -> {
+                    speedTextStrokeColor = Prefs.speedTextStrokeColor.read(prefs)
+                }
+
                 Prefs.appIconEnabled.key -> {
                     appIconEnabled = Prefs.appIconEnabled.read(prefs)
                 }
@@ -975,6 +1095,13 @@ object IndicatorState {
                 filenameTextItalic = Prefs.filenameTextItalic.read(prefs)
                 filenameEllipsize = Prefs.filenameEllipsize.read(prefs)
                 filenameVerticalText = Prefs.filenameVerticalText.read(prefs)
+                speedTextEnabled = Prefs.speedTextEnabled.read(prefs)
+                speedTextPosition = Prefs.speedTextPosition.read(prefs)
+                speedTextOffsets = Prefs.speedTextOffsets.read(prefs)
+                speedTextSize = Prefs.speedTextSize.read(prefs)
+                speedTextBold = Prefs.speedTextBold.read(prefs)
+                speedTextItalic = Prefs.speedTextItalic.read(prefs)
+                speedTextUnit = Prefs.speedTextUnit.read(prefs)
                 appIconEnabled = Prefs.appIconEnabled.read(prefs)
                 appIconPosition = Prefs.appIconPosition.read(prefs)
                 appIconSize = Prefs.appIconSize.read(prefs)
@@ -1007,8 +1134,16 @@ object IndicatorState {
                 filenameTextShadowOpacity = Prefs.filenameTextShadowOpacity.read(prefs)
                 filenameTextStrokeWidth = Prefs.filenameTextStrokeWidth.read(prefs)
                 filenameTextStrokeColor = Prefs.filenameTextStrokeColor.read(prefs)
+                speedTextShadowMode = Prefs.speedTextShadowMode.read(prefs)
+                speedTextShadowColor = Prefs.speedTextShadowColor.read(prefs)
+                speedTextShadowRadius = Prefs.speedTextShadowRadius.read(prefs)
+                speedTextShadowDy = Prefs.speedTextShadowDy.read(prefs)
+                speedTextShadowOpacity = Prefs.speedTextShadowOpacity.read(prefs)
+                speedTextStrokeWidth = Prefs.speedTextStrokeWidth.read(prefs)
+                speedTextStrokeColor = Prefs.speedTextStrokeColor.read(prefs)
                 percentTextLockRotation = Prefs.percentTextLockRotation.read(prefs)
                 filenameTextLockRotation = Prefs.filenameTextLockRotation.read(prefs)
+                speedTextLockRotation = Prefs.speedTextLockRotation.read(prefs)
                 appIconLockRotation = Prefs.appIconLockRotation.read(prefs)
                 badgeLockRotation = Prefs.badgeLockRotation.read(prefs)
                 materialYouEnabled = Prefs.materialYouEnabled.read(prefs)

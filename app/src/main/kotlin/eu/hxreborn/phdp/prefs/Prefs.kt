@@ -63,8 +63,17 @@ object Prefs {
     val filenameTextStrokeWidth = FloatPref("filename_text_stroke_width", 0f, 0f..4f)
     val filenameTextStrokeColor = IntPref("filename_text_stroke_color", 0xFF000000.toInt())
 
+    val speedTextShadowMode = StringPref("speed_text_shadow_mode", "per_glyph", SHADOW_MODES)
+    val speedTextShadowColor = IntPref("speed_text_shadow_color", 0xFF000000.toInt())
+    val speedTextShadowRadius = FloatPref("speed_text_shadow_radius", 2f, 0f..8f)
+    val speedTextShadowDy = FloatPref("speed_text_shadow_dy", 0.5f, 0f..4f)
+    val speedTextShadowOpacity = IntPref("speed_text_shadow_opacity", 50, 0..100)
+    val speedTextStrokeWidth = FloatPref("speed_text_stroke_width", 0f, 0f..4f)
+    val speedTextStrokeColor = IntPref("speed_text_stroke_color", 0xFF000000.toInt())
+
     val percentTextLockRotation = BoolPref("percent_text_lock_rotation", false)
     val filenameTextLockRotation = BoolPref("filename_text_lock_rotation", false)
+    val speedTextLockRotation = BoolPref("speed_text_lock_rotation", false)
     val appIconLockRotation = BoolPref("app_icon_lock_rotation", false)
     val badgeLockRotation = BoolPref("badge_lock_rotation", false)
 
@@ -130,6 +139,12 @@ object Prefs {
     val filenameEllipsize =
         StringPref("filename_ellipsize", "middle", setOf("start", "middle", "end"))
     val filenameVerticalText = BoolPref("filename_vertical_text", false)
+    val speedTextEnabled = BoolPref("speed_text_enabled", false)
+    val speedTextPosition = StringPref("speed_text_position", "bottom_right")
+    val speedTextSize = FloatPref("speed_text_size", 7f, 4f..20f)
+    val speedTextBold = BoolPref("speed_text_bold", false)
+    val speedTextItalic = BoolPref("speed_text_italic", false)
+    val speedTextUnit = StringPref("speed_text_unit", "bits", setOf("bits", "bytes"))
 
     // App icon overlay
     val appIconEnabled = BoolPref("app_icon_enabled", false)
@@ -141,6 +156,7 @@ object Prefs {
     // Unfolded foldables append 4 more pairs for the inner display.
     val percentTextOffsets = RotationOffsetsPref("percent_text_offsets_by_rotation")
     val filenameTextOffsets = RotationOffsetsPref("filename_text_offsets_by_rotation")
+    val speedTextOffsets = RotationOffsetsPref("speed_text_offsets_by_rotation")
     val appIconOffsets = RotationOffsetsPref("app_icon_offsets_by_rotation")
     val badgeOffsets = RotationOffsetsPref("badge_offsets_by_rotation")
     val ringOffsets = RingOffsetsPref("ring_offsets_by_rotation", ringOffsetX, ringOffsetY)
@@ -318,6 +334,21 @@ object Prefs {
             filenameTextItalic,
             filenameEllipsize,
             filenameVerticalText,
+            speedTextEnabled,
+            speedTextPosition,
+            speedTextOffsets,
+            speedTextSize,
+            speedTextBold,
+            speedTextItalic,
+            speedTextUnit,
+            speedTextLockRotation,
+            speedTextShadowMode,
+            speedTextShadowColor,
+            speedTextShadowRadius,
+            speedTextShadowDy,
+            speedTextShadowOpacity,
+            speedTextStrokeWidth,
+            speedTextStrokeColor,
             appIconEnabled,
             appIconPosition,
             appIconSize,
@@ -397,6 +428,21 @@ object Prefs {
             filenameTextItalic.key,
             filenameEllipsize.key,
             filenameVerticalText.key,
+            speedTextEnabled.key,
+            speedTextPosition.key,
+            speedTextOffsets.key,
+            speedTextSize.key,
+            speedTextBold.key,
+            speedTextItalic.key,
+            speedTextUnit.key,
+            speedTextLockRotation.key,
+            speedTextShadowMode.key,
+            speedTextShadowColor.key,
+            speedTextShadowRadius.key,
+            speedTextShadowDy.key,
+            speedTextShadowOpacity.key,
+            speedTextStrokeWidth.key,
+            speedTextStrokeColor.key,
             appIconEnabled.key,
             appIconPosition.key,
             appIconSize.key,

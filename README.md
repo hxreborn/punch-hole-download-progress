@@ -21,6 +21,7 @@ Xposed module that renders download progress as an animated ring around the came
 - Progress ring around the camera cutout (via native `DisplayCutout` API) with per-state color, thickness, opacity, and direction (active/completed/failed)
 - Completion animations with optional haptic feedback
 - Download counter badge
+- Download speed label reading the receive counters of the interface carrying the download (whole-device traffic, not per-download), in bits or bytes per second
 - Per-rotation calibration for text and badge offsets
 - Foldable support with separate ring calibration for each posture (folded/unfolded)
 - Material 3 Expressive settings UI

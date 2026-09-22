@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -47,6 +48,7 @@ import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import eu.hxreborn.phdp.ui.theme.MaterialPalette
 import eu.hxreborn.phdp.ui.theme.Tokens
+import eu.hxreborn.phdp.util.labelFromValues
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -54,7 +56,16 @@ import me.zhanghai.compose.preference.ProvidePreferenceLocals
 import me.zhanghai.compose.preference.preferenceCategory
 import java.util.function.Consumer
 
-enum class CalibrationTarget { RING, PERCENT, FILENAME, APP_ICON, PERCENT_SHADOW, FILENAME_SHADOW }
+enum class CalibrationTarget {
+    RING,
+    PERCENT,
+    FILENAME,
+    APP_ICON,
+    PERCENT_SHADOW,
+    FILENAME_SHADOW,
+    SPEED,
+    SPEED_SHADOW,
+}
 
 @Composable
 fun AppearanceScreen(
@@ -67,6 +78,8 @@ fun AppearanceScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val prefsState = (uiState as? SettingsUiState.Success)?.prefs ?: return
+    val speedUnitEntries = stringArrayResource(R.array.speed_unit_entries).toList()
+    val speedUnitValues = stringArrayResource(R.array.speed_unit_values).toList()
 
     ProvidePreferenceLocals {
         LazyColumn(
@@ -615,6 +628,83 @@ fun AppearanceScreen(
                                     title = {
                                         Text(
                                             stringResource(R.string.pref_calibrate_filename_shadow_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(stringResource(R.string.pref_text_shadow_nav_summary))
+                                    },
+                                )
+                            },
+                        ),
+                )
+            }
+
+            preferenceCategory(
+                key = "design_speed_header",
+                title = { Text(stringResource(R.string.group_speed_text)) },
+            )
+
+            item(key = "design_speed_section") {
+                SectionCard(
+                    items =
+                        listOf(
+                            {
+                                TogglePreferenceWithIcon(
+                                    value = prefsState.speedTextEnabled,
+                                    onValueChange = {
+                                        viewModel.savePref(Prefs.speedTextEnabled, it)
+                                    },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_show_speed_title),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(R.string.pref_show_speed_summary),
+                                        )
+                                    },
+                                )
+                            },
+                            {
+                                SelectPreference(
+                                    value = prefsState.speedTextUnit,
+                                    onValueChange = { viewModel.savePref(Prefs.speedTextUnit, it) },
+                                    values = speedUnitValues,
+                                    title = { Text(stringResource(R.string.pref_speed_unit_title)) },
+                                    summary = {
+                                        Text(stringResource(R.string.pref_speed_unit_summary))
+                                    },
+                                    valueToText = {
+                                        labelFromValues(it, speedUnitEntries, speedUnitValues) ?: it
+                                    },
+                                )
+                            },
+                            {
+                                NavigationPreference(
+                                    onClick = { onNavigateToCalibration(CalibrationTarget.SPEED) },
+                                    title = {
+                                        Text(
+                                            stringResource(
+                                                R.string.pref_calibrate_speed_title,
+                                            ),
+                                        )
+                                    },
+                                    summary = {
+                                        Text(
+                                            stringResource(
+                                                R.string.pref_calibrate_speed_summary,
+                                            ),
+                                        )
+                                    },
+                                )
+                            },
+                            {
+                                NavigationPreference(
+                                    onClick = { onNavigateToCalibration(CalibrationTarget.SPEED_SHADOW) },
+                                    title = {
+                                        Text(
+                                            stringResource(R.string.pref_calibrate_speed_shadow_title),
                                         )
                                     },
                                     summary = {

@@ -38,6 +38,7 @@ import eu.hxreborn.phdp.util.accessibleField
 import eu.hxreborn.phdp.util.log
 import eu.hxreborn.phdp.util.logDebug
 import eu.hxreborn.phdp.xposed.hook.IndicatorState
+import eu.hxreborn.phdp.xposed.hook.NetworkSpeedMonitor
 import eu.hxreborn.phdp.xposed.hook.SystemUIHook
 import eu.hxreborn.phdp.xposed.indicator.effects.EffectParams
 import eu.hxreborn.phdp.xposed.indicator.effects.FinishDrawContext
@@ -125,6 +126,15 @@ class IndicatorView(
 
     @Volatile
     var currentFilename: String? = null
+        set(value) {
+            if (field != value) {
+                field = value
+                post { invalidate() }
+            }
+        }
+
+    @Volatile
+    var currentSpeed: String? = null
         set(value) {
             if (field != value) {
                 field = value
@@ -251,12 +261,28 @@ class IndicatorView(
                     resources.displayMetrics,
                 )
         }
+    private val speedPaint =
+        TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+            textAlign = Paint.Align.LEFT
+            typeface = Typeface.DEFAULT
+            textSize =
+                android.util.TypedValue.applyDimension(
+                    android.util.TypedValue.COMPLEX_UNIT_SP,
+                    7f,
+                    resources.displayMetrics,
+                )
+        }
     private val percentStrokePaint =
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             style = Paint.Style.STROKE
             textAlign = Paint.Align.CENTER
         }
     private val filenameStrokePaint =
+        TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.STROKE
+            textAlign = Paint.Align.LEFT
+        }
+    private val speedStrokePaint =
         TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
             style = Paint.Style.STROKE
             textAlign = Paint.Align.LEFT
@@ -269,6 +295,7 @@ class IndicatorView(
 
     private val percentHalo = HaloPaint()
     private val filenameHalo = HaloPaint()
+    private val speedHalo = HaloPaint()
     private val textBoundsScratch = Rect()
     private val effectiveOpacity: Int
         get() =
@@ -375,6 +402,22 @@ class IndicatorView(
             shadowDy = IndicatorState.filenameTextShadowDy,
             strokeWidthDp = IndicatorState.filenameTextStrokeWidth,
             strokeColor = IndicatorState.filenameTextStrokeColor,
+        )
+
+        applyTextShadow(
+            fillPaint = speedPaint,
+            strokePaint = speedStrokePaint,
+            halo = speedHalo,
+            textSizeSp = IndicatorState.speedTextSize,
+            bold = IndicatorState.speedTextBold,
+            italic = IndicatorState.speedTextItalic,
+            shadowMode = IndicatorState.speedTextShadowMode,
+            shadowColor = IndicatorState.speedTextShadowColor,
+            shadowOpacity = IndicatorState.speedTextShadowOpacity,
+            shadowRadius = IndicatorState.speedTextShadowRadius,
+            shadowDy = IndicatorState.speedTextShadowDy,
+            strokeWidthDp = IndicatorState.speedTextStrokeWidth,
+            strokeColor = IndicatorState.speedTextStrokeColor,
         )
 
         badgePainter.updateColors(resolvedRingColor, IndicatorState.badgeTextSize)
@@ -881,6 +924,8 @@ class IndicatorView(
         val filenameStrokeWidthPx = IndicatorState.filenameTextStrokeWidth * density
         val percentIsOval = IndicatorState.percentTextShadowMode == "oval"
         val filenameIsOval = IndicatorState.filenameTextShadowMode == "oval"
+        val speedStrokeWidthPx = IndicatorState.speedTextStrokeWidth * density
+        val speedIsOval = IndicatorState.speedTextShadowMode == "oval"
 
         if (IndicatorState.percentTextEnabled) {
             val locked = IndicatorState.percentTextLockRotation
@@ -972,6 +1017,34 @@ class IndicatorView(
                 val halo = if (filenameIsOval) filenameHalo.paint else null
                 specs += TextSpec(truncated, filenamePaint, stroke, halo, x, y, align, locked)
             }
+        }
+
+        val speedToShow =
+            currentSpeed ?: if (isGeometryPreview) {
+                NetworkSpeedMonitor.previewText(IndicatorState.speedTextUnit)
+            } else {
+                null
+            }
+
+        if (IndicatorState.speedTextEnabled && speedToShow != null) {
+            val locked = IndicatorState.speedTextLockRotation
+            val (baseX, baseY, align) =
+                computeLabelPosition(
+                    if (locked) {
+                        IndicatorState.speedTextPosition
+                    } else {
+                        rotatePosition(IndicatorState.speedTextPosition, rotation)
+                    },
+                    padding,
+                    speedPaint.textSize,
+                    textWidth = null,
+                )
+            val speedOffset = IndicatorState.speedTextOffsets.forCurrent(locked)
+            val x = baseX + speedOffset.x * density
+            val y = baseY + speedOffset.y * density
+            val stroke = if (speedStrokeWidthPx > 0f) speedStrokePaint else null
+            val halo = if (speedIsOval) speedHalo.paint else null
+            specs += TextSpec(speedToShow, speedPaint, stroke, halo, x, y, align, locked)
         }
 
         for (spec in specs) {

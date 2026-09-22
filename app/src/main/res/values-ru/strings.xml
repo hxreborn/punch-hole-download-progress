@@ -44,6 +44,7 @@
     <string name="group_colors">Цвета</string>
     <string name="group_geometry">Геометрия</string>
     <string name="group_percent_text">Текст процента</string>
+    <string name="group_speed_text">Текст скорости</string>
     <string name="group_filename_text">Текст имени файла</string>
     <string name="group_app_icon">Исходное приложение</string>
     <string name="group_progress_ring">Кольцо прогресса</string>
@@ -125,6 +126,12 @@
     <string name="pref_show_percentage_summary">Отображение текущего прогресса в виде числового текста</string>
     <string name="pref_calibrate_percent_title">Процент калибровки</string>
     <string name="pref_calibrate_percent_summary">Настройка размещения метки процента</string>
+    <string name="pref_show_speed_title">Метка скорости</string>
+    <string name="pref_show_speed_summary">Отображение текущей скорости приёма данных по сети в виде текста</string>
+    <string name="pref_calibrate_speed_title">Калибровка скорости</string>
+    <string name="pref_calibrate_speed_summary">Настройте расположение метки скорости</string>
+    <string name="pref_speed_unit_title">Единицы скорости</string>
+    <string name="pref_speed_unit_summary">Биты или байты в секунду</string>
 
     <!-- Design: Filename Text -->
     <string name="pref_show_filename_title">Метка имени файла</string>
@@ -149,6 +156,7 @@
     <!-- Design: Text shadow and outline (per-element calibration screens) -->
     <string name="pref_text_shadow_nav_summary">Настройте тень и дополнительный контур</string>
     <string name="pref_calibrate_percent_shadow_title">Калибровка тени процента</string>
+    <string name="pref_calibrate_speed_shadow_title">Калибровка тени скорости</string>
     <string name="pref_calibrate_filename_shadow_title">Калибровка тени имени файла</string>
     <string name="pref_text_shadow_mode_title">Форма тени</string>
     <string name="pref_text_shadow_mode_summary">«По глифу» создаёт тень под каждым символом. «Капсульный ореол» создаёт мягкое свечение позади всей надписи (по умолчанию: По глифу)</string>
@@ -353,5 +361,9 @@
         <item>Система</item>
         <item>Светлая</item>
         <item>Тёмная</item>
+    </string-array>
+    <string-array name="speed_unit_entries">
+        <item>Биты в секунду (Mbps)</item>
+        <item>Байты в секунду (MB/s)</item>
     </string-array>
 </resources>

@@ -1,0 +1,1 @@
+Added an optional speed label beside the ring, showing how fast the device is downloading in bits or bytes per second, with its own size, style, shadow and per-rotation placement

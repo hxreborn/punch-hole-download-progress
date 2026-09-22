@@ -166,13 +166,16 @@ object SystemUIHook {
             onView { progress = 100 }
         }
         DownloadProgressHook.onDownloadCancelled = { onView { showError() } }
-        DownloadProgressHook.onActiveCountChanged =
-            { count -> onView { activeDownloadCount = count } }
+        DownloadProgressHook.onActiveCountChanged = { count ->
+            onView { activeDownloadCount = count }
+            if (count > 0) NetworkSpeedMonitor.start() else NetworkSpeedMonitor.stop()
+        }
         DownloadProgressHook.onFilenameChanged =
             { filename -> onView { currentFilename = filename } }
         DownloadProgressHook.onPackageChanged =
             { packageName -> onView { currentPackageName = packageName } }
         DownloadProgressHook.onActivity = { onView { touchActivity() } }
+        NetworkSpeedMonitor.onSpeedChanged = { speed -> onView { currentSpeed = speed } }
 
         IndicatorState.onAppVisibilityChanged = { visible -> onView { appVisible = visible } }
         IndicatorState.onTestProgressChanged = { progress -> onView { this.progress = progress } }
@@ -204,6 +207,7 @@ object SystemUIHook {
     ) {
         attached = true
         indicatorView = view
+        NetworkSpeedMonitor.attach(context)
         registerPowerSaveReceiver(context)
     }
 
@@ -260,6 +264,9 @@ object SystemUIHook {
         DownloadProgressHook.onFilenameChanged = null
         DownloadProgressHook.onPackageChanged = null
         DownloadProgressHook.onActivity = null
+
+        NetworkSpeedMonitor.stop()
+        NetworkSpeedMonitor.onSpeedChanged = null
 
         IndicatorState.onAppVisibilityChanged = null
         IndicatorState.onTestProgressChanged = null
