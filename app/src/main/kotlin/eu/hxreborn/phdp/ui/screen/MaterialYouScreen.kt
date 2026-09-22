@@ -8,7 +8,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,6 +24,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -55,6 +56,9 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -500,9 +504,10 @@ private fun ColorGrid(
             verticalArrangement = Arrangement.spacedBy(Tokens.GroupSpacing),
         ) {
             palettes.forEach { (palette, labelRes) ->
+                val label = stringResource(labelRes)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = stringResource(labelRes),
+                        text = label,
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.width(LABEL_WIDTH_DP.dp),
@@ -510,6 +515,7 @@ private fun ColorGrid(
                     SwatchRow(
                         scrollState = scrollState,
                         palette = palette,
+                        label = label,
                         selectedPalette = selectedPalette,
                         selectedShade = selectedShade,
                         onColorSelected = onColorSelected,
@@ -544,12 +550,13 @@ private fun ColorGrid(
 private fun SwatchRow(
     scrollState: ScrollState,
     palette: String,
+    label: String,
     selectedPalette: String,
     selectedShade: Int,
     onColorSelected: (palette: String, shade: Int) -> Unit,
 ) {
     Row(
-        modifier = Modifier.horizontalScroll(scrollState),
+        modifier = Modifier.horizontalScroll(scrollState).selectableGroup(),
         horizontalArrangement = Arrangement.spacedBy(SWATCH_SPACING_DP.dp),
     ) {
         gridShades.forEach { shade ->
@@ -557,6 +564,8 @@ private fun SwatchRow(
             val isSelected = palette == selectedPalette && shade == selectedShade
             ColorSwatch(
                 color = color,
+                label = label,
+                shade = shade,
                 selected = isSelected,
                 onClick = { onColorSelected(palette, shade) },
             )
@@ -567,6 +576,8 @@ private fun SwatchRow(
 @Composable
 private fun ColorSwatch(
     color: Color,
+    label: String,
+    shade: Int,
     selected: Boolean,
     onClick: () -> Unit,
 ) {
@@ -591,7 +602,8 @@ private fun ColorSwatch(
                 .clip(CircleShape)
                 .background(color, CircleShape)
                 .border(borderWidth, borderColor, CircleShape)
-                .clickable(onClick = onClick),
+                .selectable(selected = selected, role = Role.RadioButton, onClick = onClick)
+                .semantics { contentDescription = "$label $shade" },
         contentAlignment = Alignment.Center,
     ) {
         if (selected) {
