@@ -1,8 +1,11 @@
 package eu.hxreborn.phdp.ui.component
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -33,7 +36,7 @@ fun SettingsScaffold(
     actions: @Composable RowScope.() -> Unit = {},
     summary: String? = null,
     bottomPadding: Dp = 0.dp,
-    content: @Composable (PaddingValues) -> Unit,
+    content: @Composable BoxScope.(PaddingValues) -> Unit,
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
@@ -88,10 +91,10 @@ fun SettingsScaffold(
                             bottom = Tokens.SpacingLg,
                         ),
                 )
-                content(PaddingValues(bottom = mergedPadding.calculateBottomPadding()))
+                Box(Modifier.fillMaxSize()) { content(PaddingValues(bottom = mergedPadding.calculateBottomPadding())) }
             }
         } else {
-            content(mergedPadding)
+            Box(Modifier.fillMaxSize()) { content(mergedPadding) }
         }
     }
 }

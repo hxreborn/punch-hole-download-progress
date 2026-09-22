@@ -3,6 +3,7 @@ package eu.hxreborn.phdp.ui.screen
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -19,6 +20,7 @@ import eu.hxreborn.phdp.prefs.bind
 import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.SettingsScaffold
+import eu.hxreborn.phdp.ui.component.VerticalScrollbar
 import eu.hxreborn.phdp.ui.component.preference.ColorPreference
 import eu.hxreborn.phdp.ui.component.preference.SelectPreference
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithReset
@@ -114,7 +116,9 @@ fun TextShadowCalibrationScreen(
         modifier = modifier,
     ) { innerPadding ->
         ProvidePreferenceLocals {
+            val listState = rememberLazyListState()
             LazyColumn(
+                state = listState,
                 modifier = Modifier.fillMaxSize(),
                 contentPadding =
                     PaddingValues(
@@ -230,6 +234,7 @@ fun TextShadowCalibrationScreen(
                     )
                 }
             }
+            VerticalScrollbar(listState, innerPadding)
         }
     }
 }

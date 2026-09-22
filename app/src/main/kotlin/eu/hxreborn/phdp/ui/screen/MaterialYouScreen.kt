@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -66,6 +67,7 @@ import eu.hxreborn.phdp.ui.SettingsUiState
 import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.SettingsScaffold
 import eu.hxreborn.phdp.ui.component.TestButtonsRow
+import eu.hxreborn.phdp.ui.component.VerticalScrollbar
 import eu.hxreborn.phdp.ui.component.gradientBrush
 import eu.hxreborn.phdp.ui.state.AppPrefs
 import eu.hxreborn.phdp.ui.theme.AppTheme
@@ -254,7 +256,9 @@ fun MaterialYouScreen(
         bottomPadding = bottomNavPadding,
         modifier = modifier,
     ) { innerPadding ->
+        val listState = rememberLazyListState()
         LazyColumn(
+            state = listState,
             modifier = Modifier.fillMaxSize(),
             contentPadding =
                 PaddingValues(
@@ -354,6 +358,7 @@ fun MaterialYouScreen(
                 )
             }
         }
+        VerticalScrollbar(listState, innerPadding)
     }
 }
 

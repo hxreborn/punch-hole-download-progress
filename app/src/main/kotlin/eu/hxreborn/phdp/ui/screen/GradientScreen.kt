@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -61,6 +62,7 @@ import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.SettingsScaffold
 import eu.hxreborn.phdp.ui.component.TestButtonsRow
+import eu.hxreborn.phdp.ui.component.VerticalScrollbar
 import eu.hxreborn.phdp.ui.component.gradientBrush
 import eu.hxreborn.phdp.ui.component.preference.ColorPickerDialog
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithReset
@@ -89,7 +91,9 @@ fun GradientScreen(
         modifier = modifier,
     ) { innerPadding ->
         ProvidePreferenceLocals {
+            val listState = rememberLazyListState()
             LazyColumn(
+                state = listState,
                 modifier = Modifier.fillMaxSize(),
                 contentPadding =
                     PaddingValues(
@@ -231,6 +235,7 @@ fun GradientScreen(
                     )
                 }
             }
+            VerticalScrollbar(listState, innerPadding)
         }
     }
 }

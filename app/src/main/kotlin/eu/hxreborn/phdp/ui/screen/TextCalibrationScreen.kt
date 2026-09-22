@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DevicesFold
 import androidx.compose.material.icons.outlined.PhoneAndroid
@@ -52,6 +53,7 @@ import eu.hxreborn.phdp.prefs.bind
 import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.SettingsScaffold
+import eu.hxreborn.phdp.ui.component.VerticalScrollbar
 import eu.hxreborn.phdp.ui.component.preference.SelectPreference
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithStepper
 import eu.hxreborn.phdp.ui.component.preference.TextInputPreference
@@ -124,7 +126,9 @@ fun TextCalibrationScreen(
         modifier = modifier,
     ) { innerPadding ->
         ProvidePreferenceLocals {
+            val listState = rememberLazyListState()
             LazyColumn(
+                state = listState,
                 modifier = Modifier.fillMaxSize(),
                 contentPadding =
                     PaddingValues(
@@ -189,6 +193,7 @@ fun TextCalibrationScreen(
                     }
                 }
             }
+            VerticalScrollbar(listState, innerPadding)
         }
     }
 }
