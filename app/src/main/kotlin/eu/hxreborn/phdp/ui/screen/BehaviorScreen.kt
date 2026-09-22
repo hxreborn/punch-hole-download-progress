@@ -123,7 +123,7 @@ fun BehaviorScreen(
 
                 item(key = "completion_effect_section") {
                     SectionCard(
-                        modifier = Modifier.animateContentSize(),
+                        modifier = Modifier.animateContentSize(MaterialTheme.motionScheme.fastSpatialSpec()),
                         items =
                             buildList {
                                 add {

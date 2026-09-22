@@ -131,7 +131,7 @@ fun AppearanceScreen(
 
                 item(key = "design_colors_section") {
                     SectionCard(
-                        modifier = Modifier.animateContentSize(),
+                        modifier = Modifier.animateContentSize(MaterialTheme.motionScheme.fastSpatialSpec()),
                         items =
                             buildList {
                                 add {
@@ -387,7 +387,7 @@ fun AppearanceScreen(
 
                 item(key = "design_background_ring_section") {
                     SectionCard(
-                        modifier = Modifier.animateContentSize(),
+                        modifier = Modifier.animateContentSize(MaterialTheme.motionScheme.fastSpatialSpec()),
                         items =
                             buildList {
                                 add {
@@ -516,6 +516,7 @@ fun AppearanceScreen(
 
                     item(key = "design_hdr_section") {
                         SectionCard(
+                            modifier = Modifier.animateContentSize(MaterialTheme.motionScheme.fastSpatialSpec()),
                             items =
                                 buildList {
                                     add {
@@ -785,7 +786,7 @@ fun AppearanceScreen(
 
                 item(key = "design_app_icon_section") {
                     SectionCard(
-                        modifier = Modifier.animateContentSize(),
+                        modifier = Modifier.animateContentSize(MaterialTheme.motionScheme.fastSpatialSpec()),
                         items =
                             buildList {
                                 add {
