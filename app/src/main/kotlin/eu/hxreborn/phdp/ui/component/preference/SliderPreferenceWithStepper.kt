@@ -61,6 +61,7 @@ fun SliderPreferenceWithStepper(
     defaultValue: Float,
     onReset: () -> Unit,
     modifier: Modifier = Modifier,
+    icon: @Composable (() -> Unit)? = null,
     enabled: Boolean = true,
     stepSize: Float = 1f,
     decimalPlaces: Int = 0,
@@ -78,6 +79,7 @@ fun SliderPreferenceWithStepper(
     val isAtMin = sliderValue <= valueRange.start
     val isAtMax = sliderValue >= valueRange.endInclusive
     val contentAlpha = if (enabled) 1f else Tokens.DISABLED_ALPHA
+    val iconIndent = if (icon != null) PreferenceIconWidth else 0.dp
     val iconTint = MaterialTheme.colorScheme.onSurfaceVariant
 
     Column(
@@ -91,6 +93,7 @@ fun SliderPreferenceWithStepper(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth(),
         ) {
+            icon?.let { PreferenceIcon(it, enabled) }
             // Title (takes remaining space, pushes stepper to end)
             Box(modifier = Modifier.weight(1f)) {
                 CompositionLocalProvider(
@@ -150,12 +153,14 @@ fun SliderPreferenceWithStepper(
         }
 
         summary?.let {
-            CompositionLocalProvider(
-                LocalContentColor provides
-                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
-            ) {
-                ProvideTextStyle(MaterialTheme.typography.bodyMedium) {
-                    it()
+            Box(modifier = Modifier.padding(start = iconIndent)) {
+                CompositionLocalProvider(
+                    LocalContentColor provides
+                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
+                ) {
+                    ProvideTextStyle(MaterialTheme.typography.bodyMedium) {
+                        it()
+                    }
                 }
             }
         }
@@ -163,7 +168,7 @@ fun SliderPreferenceWithStepper(
         // Row 2: Slider + Reset button
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(top = Tokens.SpacingSm),
+            modifier = Modifier.padding(start = iconIndent, top = Tokens.SpacingSm),
         ) {
             Slider(
                 value = sliderValue,

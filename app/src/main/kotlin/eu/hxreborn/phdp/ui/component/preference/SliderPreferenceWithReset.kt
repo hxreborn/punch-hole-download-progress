@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.ui.theme.AppTheme
@@ -53,6 +54,7 @@ fun SliderPreferenceWithReset(
     defaultValue: Float,
     onReset: () -> Unit,
     modifier: Modifier = Modifier,
+    icon: @Composable (() -> Unit)? = null,
     summary: @Composable (() -> Unit)? = null,
     valueText: @Composable ((Float) -> Unit)? = null,
     enabled: Boolean = true,
@@ -68,6 +70,7 @@ fun SliderPreferenceWithReset(
 
     val isDefault = abs(sliderValue - defaultValue) < 0.001f
     val contentAlpha = if (enabled) 1f else Tokens.DISABLED_ALPHA
+    val iconIndent = if (icon != null) PreferenceIconWidth else 0.dp
 
     Column(
         modifier = modifier.fillMaxWidth().padding(Tokens.PreferencePadding),
@@ -76,6 +79,7 @@ fun SliderPreferenceWithReset(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth(),
         ) {
+            icon?.let { PreferenceIcon(it, enabled) }
             Column(modifier = Modifier.weight(1f)) {
                 CompositionLocalProvider(
                     LocalContentColor provides MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
@@ -114,7 +118,7 @@ fun SliderPreferenceWithReset(
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(top = Tokens.SpacingSm),
+            modifier = Modifier.padding(start = iconIndent, top = Tokens.SpacingSm),
         ) {
             Slider(
                 value = sliderValue,

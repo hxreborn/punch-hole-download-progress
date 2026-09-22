@@ -54,6 +54,7 @@ fun <T> SelectPreference(
     values: List<T>,
     title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    icon: @Composable (() -> Unit)? = null,
     summary: @Composable (() -> Unit)? = null,
     enabled: Boolean = true,
     valueToText: (T) -> String = { it.toString() },
@@ -85,6 +86,7 @@ fun <T> SelectPreference(
                 .padding(Tokens.PreferencePadding),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        icon?.let { PreferenceIcon(it, enabled) }
         Column(modifier = Modifier.weight(1f)) {
             CompositionLocalProvider(
                 LocalContentColor provides MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),

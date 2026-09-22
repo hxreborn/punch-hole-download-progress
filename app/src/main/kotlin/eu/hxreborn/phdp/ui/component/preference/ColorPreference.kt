@@ -72,6 +72,7 @@ fun ColorPreference(
     onValueChange: (Int) -> Unit,
     title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    icon: @Composable (() -> Unit)? = null,
     summary: @Composable (() -> Unit)? = null,
     enabled: Boolean = true,
     colors: List<Int> = MaterialPalette.materialColors,
@@ -95,6 +96,7 @@ fun ColorPreference(
         modifier = modifier.fillMaxWidth().clickable(enabled = enabled) { showDialog = true }.padding(Tokens.PreferencePadding),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        icon?.let { PreferenceIcon(it, enabled) }
         Column(modifier = Modifier.weight(1f)) {
             CompositionLocalProvider(
                 LocalContentColor provides MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
