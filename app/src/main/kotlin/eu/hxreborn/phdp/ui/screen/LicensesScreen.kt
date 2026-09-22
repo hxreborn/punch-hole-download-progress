@@ -1,6 +1,5 @@
 package eu.hxreborn.phdp.ui.screen
 
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -96,7 +95,6 @@ fun LicensesScreen(
                 scrollBehavior = scrollBehavior,
             )
         },
-        contentWindowInsets = WindowInsets(0),
     ) { innerPadding ->
         LibrariesContainer(
             libraries = filtered,
