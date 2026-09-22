@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.Download
@@ -44,6 +45,7 @@ import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.AppSnackbarHost
 import eu.hxreborn.phdp.ui.component.ImportResultDialog
 import eu.hxreborn.phdp.ui.component.SectionCard
+import eu.hxreborn.phdp.ui.component.VerticalScrollbar
 import eu.hxreborn.phdp.ui.component.preference.SelectPreference
 import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
 import eu.hxreborn.phdp.ui.theme.AppTheme
@@ -141,7 +143,9 @@ fun SystemScreen(
 
     Box(modifier = modifier.fillMaxSize()) {
         ProvidePreferenceLocals {
+            val listState = rememberLazyListState()
             LazyColumn(
+                state = listState,
                 modifier = Modifier.fillMaxSize(),
                 contentPadding =
                     PaddingValues(
@@ -489,6 +493,7 @@ fun SystemScreen(
                     )
                 }
             }
+            VerticalScrollbar(listState, contentPadding)
         }
         AppSnackbarHost(
             hostState = snackbarHostState,
