@@ -118,6 +118,11 @@
     <!-- Design: Calibration -->
     <string name="pref_calibrate_ring_title">Калибровка кольца</string>
     <string name="pref_calibrate_ring_summary">Регулировка положения и размера кольца</string>
+    <string name="pref_calibrate_ring_rotation_title">Смещение кольца (по повороту)</string>
+    <string name="pref_calibrate_ring_rotation_summary">Расположите кольцо отдельно для каждого поворота экрана и положения складывания</string>
+    <string name="fold_state_closed">Сложено</string>
+    <string name="fold_state_half_open">Полуоткрыто</string>
+    <string name="fold_state_open">Развёрнуто</string>
     <string name="group_position">Позиция</string>
     <string name="group_size">Размер</string>
     <string name="pref_ring_offset_x_title">Горизонтальное смещение</string>
@@ -278,6 +283,8 @@
     <string name="pref_dynamic_color_summary">Используйте цвета Material You из обоев</string>
     <string name="pref_floating_nav_bar_title">Плавающая панель навигации</string>
     <string name="pref_floating_nav_bar_summary">Использовать компактную плавающую панель вместо панели во всю ширину</string>
+    <string name="pref_hide_nav_bar_on_scroll_title">Скрыть при прокрутке</string>
+    <string name="pref_hide_nav_bar_on_scroll_summary">Сдвигать плавающую панель за пределы экрана во время прокрутки</string>
     <string name="pref_battery_saver_title">Режим экономии заряда батареи</string>
     <string name="pref_battery_saver_summary">Поведение индикатора во время работы в режиме экономии заряда батареи</string>
 
@@ -293,6 +300,56 @@
     <string name="pref_hide_launcher_icon_summary">Скрывает приложение в панели запуска</string>
     <string name="pref_verbose_logging_title">Журналы отладки</string>
     <string name="pref_verbose_logging_summary">Подробный журнал для отладки</string>
+    <string name="group_backup">Резервное копирование</string>
+    <string name="pref_export_settings_title">Экспорт настроек</string>
+    <string name="pref_export_settings_summary">Сохранить настройки в файл</string>
+    <string name="pref_import_settings_title">Импорт настроек</string>
+    <string name="pref_import_settings_summary">Восстановить настройки из файла резервной копии</string>
+    <string name="backup_export_failed">Не удалось записать файл резервной копии</string>
+    <string name="backup_file_unreadable">Не удалось прочитать этот файл</string>
+    <string name="backup_file_too_large">Этот файл слишком большой, чтобы быть резервной копией настроек</string>
+    <string name="backup_not_json">Этот файл не является резервной копией настроек</string>
+    <string name="backup_not_a_backup">Этот файл принадлежит другому приложению или формату</string>
+    <string name="backup_from_newer_app">Эта резервная копия создана более новой версией приложения</string>
+    <string name="restore_title">Результат импорта</string>
+    <string name="restore_headline">Восстановлено %1$d из %2$d настроек</string>
+    <string name="restore_nothing">Файл не содержит настроек</string>
+    <string name="restore_source">Версия %1$s, %2$s</string>
+    <string name="restore_source_device">Версия %1$s, %2$s, %3$s</string>
+    <string name="restore_device_mismatch">Создано на другом устройстве (может потребоваться повторная калибровка)</string>
+    <string name="restore_group_applied">Восстановлено</string>
+    <string name="restore_group_unchanged">Уже задано</string>
+    <string name="restore_group_migrated">Адаптировано</string>
+    <string name="restore_group_ignored">Игнорировано</string>
+    <string name="restore_group_rejected">Недопустимо (оставлено текущее)</string>
+    <string name="restore_group_failed">Не удалось применить</string>
+    <plurals name="backup_exported">
+        <item quantity="one">Экспортировано %1$d настройка</item>
+        <item quantity="few">Экспортировано %1$d настройки</item>
+        <item quantity="many">Экспортировано %1$d настроек</item>
+        <item quantity="other">Экспортировано %1$d настроек</item>
+    </plurals>
+    <string name="reject_not_a_boolean">должно быть true или false</string>
+    <string name="reject_not_a_whole_number">должно быть целым числом</string>
+    <string name="reject_not_a_number">должно быть числом</string>
+    <string name="reject_not_text">должно быть текстом</string>
+    <string name="reject_not_a_list">должно быть списком</string>
+    <string name="reject_entries_not_text">каждый элемент должен быть текстом</string>
+    <string name="reject_malformed_offsets">смещения имеют неверный формат</string>
+    <string name="reject_too_long">длиннее %1$d символов</string>
+    <string name="reject_too_many_entries">больше %1$d элементов</string>
+    <string name="reject_not_allowed">должно быть одним из %1$s</string>
+    <string name="reject_offset_out_of_range">смещения превышают %1$s</string>
+    <string name="reject_malformed_legacy">%1$s не удалось прочитать</string>
+    <string name="adapt_clamped">%1$s приведено к диапазону от %2$s до %3$s</string>
+    <string name="adapt_collapsed_duplicates">%1$d дубликатов объединено</string>
+    <string name="adapt_migrated_from">перенесено из %1$s</string>
+    <string name="adapt_renamed_from">переименовано из %1$s</string>
+    <string name="failure_not_saved">не удалось сохранить</string>
+    <string name="failure_not_saved_or_restored">не удалось сохранить и восстановить предыдущее значение</string>
+    <string name="failure_write_failed">не удалось записать (%1$s)</string>
+    <string name="result_show_details">Показать подробности</string>
+    <string name="result_hide_details">Скрыть подробности</string>
 
     <!-- System: About -->
     <string name="pref_version_title">Версия</string>

@@ -118,6 +118,11 @@
     <!-- Design: Calibration -->
     <string name="pref_calibrate_ring_title">Halkayı kalibre et</string>
     <string name="pref_calibrate_ring_summary">Halka konumunu ve boyutunu ayarla</string>
+    <string name="pref_calibrate_ring_rotation_title">Halka kaydırması (döndürmeye göre)</string>
+    <string name="pref_calibrate_ring_rotation_summary">Halkayı her ekran döndürmesi ve katlanma durumu için ayrı ayrı konumlandır</string>
+    <string name="fold_state_closed">Katlı</string>
+    <string name="fold_state_half_open">Yarı açık</string>
+    <string name="fold_state_open">Açık</string>
     <string name="group_position">Konum</string>
     <string name="group_size">Boyut</string>
     <string name="pref_ring_offset_x_title">Yatay kaydırma</string>
@@ -278,6 +283,8 @@
     <string name="pref_dynamic_color_summary">Duvar kağıdından Material You renklerini kullanın</string>
     <string name="pref_floating_nav_bar_title">Yüzen gezinme çubuğu</string>
     <string name="pref_floating_nav_bar_summary">Tam genişlikte çubuk yerine kompakt yüzen bir çubuk kullan</string>
+    <string name="pref_hide_nav_bar_on_scroll_title">Kaydırmada gizle</string>
+    <string name="pref_hide_nav_bar_on_scroll_summary">Kaydırma sırasında yüzen çubuğu kenara kaydır</string>
     <string name="pref_battery_saver_title">Pil tasarrufu modu</string>
     <string name="pref_battery_saver_summary">Pil tasarrufu sırasında gösterge davranışı</string>
 
@@ -293,6 +300,54 @@
     <string name="pref_hide_launcher_icon_summary">Uygulamayı başlatıcıdan gizler</string>
     <string name="pref_verbose_logging_title">Hata ayıklama günlükleri</string>
     <string name="pref_verbose_logging_summary">Hata ayıklama için ayrıntılı günlük</string>
+    <string name="group_backup">Yedekleme</string>
+    <string name="pref_export_settings_title">Ayarları dışa aktar</string>
+    <string name="pref_export_settings_summary">Ayarları bir dosyaya kaydet</string>
+    <string name="pref_import_settings_title">Ayarları içe aktar</string>
+    <string name="pref_import_settings_summary">Ayarları bir yedek dosyasından geri yükle</string>
+    <string name="backup_export_failed">Yedek dosyası yazılamadı</string>
+    <string name="backup_file_unreadable">Bu dosya okunamadı</string>
+    <string name="backup_file_too_large">Bu dosya bir ayar yedeği olamayacak kadar büyük</string>
+    <string name="backup_not_json">Bu dosya bir ayar yedeği değil</string>
+    <string name="backup_not_a_backup">Bu dosya başka bir uygulamaya veya biçime ait</string>
+    <string name="backup_from_newer_app">Bu yedek, uygulamanın daha yeni bir sürümüyle oluşturuldu</string>
+    <string name="restore_title">İçe aktarma sonucu</string>
+    <string name="restore_headline">%2$d ayardan %1$d tanesi geri yüklendi</string>
+    <string name="restore_nothing">Dosyada hiçbir ayar yoktu</string>
+    <string name="restore_source">Kaynak: %1$s, %2$s</string>
+    <string name="restore_source_device">Kaynak: %1$s, %2$s, %3$s</string>
+    <string name="restore_device_mismatch">Farklı bir cihazda oluşturuldu (kalibrasyonun yeniden ayarlanması gerekebilir)</string>
+    <string name="restore_group_applied">Geri yüklendi</string>
+    <string name="restore_group_unchanged">Zaten ayarlı</string>
+    <string name="restore_group_migrated">Uyarlandı</string>
+    <string name="restore_group_ignored">Yok sayıldı</string>
+    <string name="restore_group_rejected">Geçersiz (mevcut değer korundu)</string>
+    <string name="restore_group_failed">Uygulanamadı</string>
+    <plurals name="backup_exported">
+        <item quantity="one">%1$d ayar dışa aktarıldı</item>
+        <item quantity="other">%1$d ayar dışa aktarıldı</item>
+    </plurals>
+    <string name="reject_not_a_boolean">doğru veya yanlış olmalı</string>
+    <string name="reject_not_a_whole_number">tam sayı olmalı</string>
+    <string name="reject_not_a_number">sayı olmalı</string>
+    <string name="reject_not_text">metin olmalı</string>
+    <string name="reject_not_a_list">liste olmalı</string>
+    <string name="reject_entries_not_text">her girdi metin olmalı</string>
+    <string name="reject_malformed_offsets">kaydırma değerleri bozuk</string>
+    <string name="reject_too_long">%1$d karakterden uzun</string>
+    <string name="reject_too_many_entries">%1$d girdiden fazla</string>
+    <string name="reject_not_allowed">%1$s içinden biri olmalı</string>
+    <string name="reject_offset_out_of_range">kaydırma değerleri %1$s değerini aşıyor</string>
+    <string name="reject_malformed_legacy">%1$s okunamadı</string>
+    <string name="adapt_clamped">%1$s, %2$s ile %3$s arasına çekildi</string>
+    <string name="adapt_collapsed_duplicates">%1$d yinelenen değer birleştirildi</string>
+    <string name="adapt_migrated_from">%1$s kaynağından aktarıldı</string>
+    <string name="adapt_renamed_from">%1$s adından yeniden adlandırıldı</string>
+    <string name="failure_not_saved">kaydedilemedi</string>
+    <string name="failure_not_saved_or_restored">kaydedilemedi ve önceki değer geri yüklenemedi</string>
+    <string name="failure_write_failed">yazılamadı (%1$s)</string>
+    <string name="result_show_details">Ayrıntıları göster</string>
+    <string name="result_hide_details">Ayrıntıları gizle</string>
 
     <!-- System: About -->
     <string name="pref_version_title">Sürüm</string>
