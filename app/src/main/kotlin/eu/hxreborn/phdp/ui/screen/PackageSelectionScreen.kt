@@ -90,7 +90,7 @@ import eu.hxreborn.phdp.ui.component.ExpressiveCheckbox
 import eu.hxreborn.phdp.ui.component.OverflowMenu
 import eu.hxreborn.phdp.ui.component.OverflowMenuItem
 import eu.hxreborn.phdp.ui.component.OverflowMenuToggle
-import eu.hxreborn.phdp.ui.component.drawVerticalScrollbar
+import eu.hxreborn.phdp.ui.component.VerticalScrollbar
 import eu.hxreborn.phdp.ui.theme.Tokens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -466,7 +466,7 @@ fun PackageSelectionScreen(
     Box(modifier = modifier.fillMaxSize()) {
         LazyColumn(
             state = listState,
-            modifier = Modifier.fillMaxSize().drawVerticalScrollbar(listState),
+            modifier = Modifier.fillMaxSize(),
             contentPadding =
                 PaddingValues(
                     top = contentPadding.calculateTopPadding() + Tokens.SpacingLg,
@@ -565,6 +565,7 @@ fun PackageSelectionScreen(
                 }
             }
         }
+        VerticalScrollbar(listState, contentPadding)
 
         AppSnackbarHost(
             hostState = snackbarHostState,

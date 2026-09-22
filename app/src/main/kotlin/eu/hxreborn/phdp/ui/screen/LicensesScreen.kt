@@ -26,7 +26,7 @@ import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.ui.compose.android.produceLibraries
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import eu.hxreborn.phdp.R
-import eu.hxreborn.phdp.ui.component.drawVerticalScrollbar
+import eu.hxreborn.phdp.ui.component.verticalScrollbar
 
 private val DIRECT_DEPENDENCY_GROUPS =
     setOf(
@@ -101,7 +101,7 @@ fun LicensesScreen(
                     .fillMaxSize()
                     .padding(innerPadding)
                     .padding(bottom = bottomNavPadding)
-                    .drawVerticalScrollbar(listState),
+                    .verticalScrollbar(listState),
             lazyListState = listState,
         )
     }

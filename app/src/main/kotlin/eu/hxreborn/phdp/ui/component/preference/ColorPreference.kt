@@ -60,7 +60,7 @@ import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.Prefs
-import eu.hxreborn.phdp.ui.component.drawVerticalScrollbar
+import eu.hxreborn.phdp.ui.component.verticalScrollbar
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import eu.hxreborn.phdp.ui.theme.MaterialPalette
@@ -235,7 +235,7 @@ internal fun ColorPickerDialog(
                             Modifier
                                 .fillMaxWidth()
                                 .heightIn(max = Tokens.ColorGridMaxHeight)
-                                .drawVerticalScrollbar(presetsScroll)
+                                .verticalScrollbar(presetsScroll)
                                 .verticalScroll(presetsScroll),
                         verticalArrangement = Arrangement.spacedBy(Tokens.ColorGridSpacing),
                     ) {
