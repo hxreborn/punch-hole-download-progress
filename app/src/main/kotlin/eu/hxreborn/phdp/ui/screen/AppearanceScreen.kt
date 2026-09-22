@@ -15,6 +15,33 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AppShortcut
+import androidx.compose.material.icons.outlined.AspectRatio
+import androidx.compose.material.icons.outlined.BlurOn
+import androidx.compose.material.icons.outlined.BrightnessHigh
+import androidx.compose.material.icons.outlined.DataUsage
+import androidx.compose.material.icons.outlined.Description
+import androidx.compose.material.icons.outlined.DownloadDone
+import androidx.compose.material.icons.outlined.Downloading
+import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.material.icons.outlined.FilterBAndW
+import androidx.compose.material.icons.outlined.Flare
+import androidx.compose.material.icons.outlined.FormatColorFill
+import androidx.compose.material.icons.outlined.HdrOn
+import androidx.compose.material.icons.outlined.Insights
+import androidx.compose.material.icons.outlined.Layers
+import androidx.compose.material.icons.outlined.LineWeight
+import androidx.compose.material.icons.outlined.Opacity
+import androidx.compose.material.icons.outlined.Percent
+import androidx.compose.material.icons.outlined.RoundedCorner
+import androidx.compose.material.icons.outlined.Speed
+import androidx.compose.material.icons.outlined.Straighten
+import androidx.compose.material.icons.outlined.Tonality
+import androidx.compose.material.icons.outlined.TripOrigin
+import androidx.compose.material.icons.outlined.Tune
+import androidx.compose.material.icons.outlined.Wallpaper
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
@@ -43,6 +70,7 @@ import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.VerticalScrollbar
 import eu.hxreborn.phdp.ui.component.preference.ColorPreference
 import eu.hxreborn.phdp.ui.component.preference.NavigationPreference
+import eu.hxreborn.phdp.ui.component.preference.PreferenceIcon
 import eu.hxreborn.phdp.ui.component.preference.SelectPreference
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithReset
 import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
@@ -110,6 +138,7 @@ fun AppearanceScreen(
                                     ColorPreference(
                                         value = prefsState.color,
                                         onValueChange = { viewModel.savePref(Prefs.color, it) },
+                                        icon = { Icon(Icons.Outlined.Downloading, contentDescription = null) },
                                         enabled =
                                             !prefsState.gradientEnabled &&
                                                 !prefsState.materialYouEnabled,
@@ -129,6 +158,7 @@ fun AppearanceScreen(
                                     ColorPreference(
                                         value = prefsState.finishFlashColor,
                                         onValueChange = { viewModel.savePref(Prefs.finishFlashColor, it) },
+                                        icon = { Icon(Icons.Outlined.DownloadDone, contentDescription = null) },
                                         enabled = !prefsState.materialYouEnabled,
                                         title = {
                                             Text(
@@ -146,6 +176,7 @@ fun AppearanceScreen(
                                     ColorPreference(
                                         value = prefsState.errorColor,
                                         onValueChange = { viewModel.savePref(Prefs.errorColor, it) },
+                                        icon = { Icon(Icons.Outlined.ErrorOutline, contentDescription = null) },
                                         enabled = !prefsState.materialYouEnabled,
                                         title = { Text(stringResource(R.string.pref_error_color_title)) },
                                         summary = {
@@ -161,6 +192,7 @@ fun AppearanceScreen(
                                         onValueChange = {
                                             viewModel.savePref(Prefs.gradientEnabled, it)
                                         },
+                                        icon = { Icon(Icons.Outlined.Tonality, contentDescription = null) },
                                         enabled =
                                             prefsState.gradientEnabled ||
                                                 !prefsState.materialYouEnabled,
@@ -176,6 +208,7 @@ fun AppearanceScreen(
                                     add {
                                         NavigationPreference(
                                             onClick = onNavigateToGradient,
+                                            icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
                                             title = {
                                                 Text(
                                                     stringResource(R.string.pref_gradient_configure_title),
@@ -196,6 +229,7 @@ fun AppearanceScreen(
                                             onValueChange = {
                                                 viewModel.savePref(Prefs.materialYouEnabled, it)
                                             },
+                                            icon = { Icon(Icons.Outlined.Wallpaper, contentDescription = null) },
                                             enabled =
                                                 prefsState.materialYouEnabled ||
                                                     !prefsState.gradientEnabled,
@@ -215,6 +249,7 @@ fun AppearanceScreen(
                                         add {
                                             NavigationPreference(
                                                 onClick = onNavigateToMaterialYou,
+                                                icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
                                                 title = {
                                                     Text(
                                                         stringResource(R.string.pref_material_you_configure_title),
@@ -246,6 +281,7 @@ fun AppearanceScreen(
                                     SliderPreferenceWithReset(
                                         value = prefsState.strokeWidth,
                                         onValueChange = { viewModel.savePref(Prefs.strokeWidth, it) },
+                                        icon = { Icon(Icons.Outlined.LineWeight, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_stroke_width_title),
@@ -268,6 +304,7 @@ fun AppearanceScreen(
                                     SliderPreferenceWithReset(
                                         value = prefsState.ringGap,
                                         onValueChange = { viewModel.savePref(Prefs.ringGap, it) },
+                                        icon = { Icon(Icons.Outlined.Straighten, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_cutout_padding_title),
@@ -291,6 +328,7 @@ fun AppearanceScreen(
                                     SliderPreferenceWithReset(
                                         value = prefsState.opacity.toFloat(),
                                         onValueChange = { viewModel.savePref(Prefs.opacity, it.toInt()) },
+                                        icon = { Icon(Icons.Outlined.Opacity, contentDescription = null) },
                                         title = { Text(stringResource(R.string.pref_opacity_title)) },
                                         summary = {
                                             Text(
@@ -311,6 +349,7 @@ fun AppearanceScreen(
                                         onValueChange = {
                                             viewModel.savePref(Prefs.strokeCapStyle, it)
                                         },
+                                        icon = { Icon(Icons.Outlined.RoundedCorner, contentDescription = null) },
                                         values = listOf("flat", "round", "square"),
                                         title = {
                                             Text(
@@ -328,6 +367,7 @@ fun AppearanceScreen(
                                 {
                                     NavigationPreference(
                                         onClick = { onNavigateToCalibration(CalibrationTarget.RING) },
+                                        icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
                                         title = {
                                             Text(stringResource(R.string.pref_calibrate_ring_title))
                                         },
@@ -356,6 +396,7 @@ fun AppearanceScreen(
                                         onValueChange = {
                                             viewModel.savePref(Prefs.backgroundRingEnabled, it)
                                         },
+                                        icon = { Icon(Icons.Outlined.TripOrigin, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_background_ring_enabled_title),
@@ -374,6 +415,7 @@ fun AppearanceScreen(
                                         onValueChange = {
                                             viewModel.savePref(Prefs.backgroundRingColor, it)
                                         },
+                                        icon = { Icon(Icons.Outlined.FormatColorFill, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_background_ring_color_title),
@@ -395,6 +437,7 @@ fun AppearanceScreen(
                                         onValueChange = {
                                             viewModel.savePref(Prefs.backgroundRingOpacity, it.toInt())
                                         },
+                                        icon = { Icon(Icons.Outlined.Opacity, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_background_ring_opacity_title),
@@ -418,6 +461,7 @@ fun AppearanceScreen(
                                         onValueChange = {
                                             viewModel.savePref(Prefs.glowEnabled, it)
                                         },
+                                        icon = { Icon(Icons.Outlined.Flare, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_glow_enabled_title),
@@ -437,6 +481,7 @@ fun AppearanceScreen(
                                             onValueChange = {
                                                 viewModel.savePref(Prefs.glowRadius, it)
                                             },
+                                            icon = { Icon(Icons.Outlined.BlurOn, contentDescription = null) },
                                             title = {
                                                 Text(
                                                     stringResource(R.string.pref_glow_radius_title),
@@ -479,6 +524,7 @@ fun AppearanceScreen(
                                             onValueChange = {
                                                 viewModel.savePref(Prefs.hdrEnabled, it)
                                             },
+                                            icon = { Icon(Icons.Outlined.HdrOn, contentDescription = null) },
                                             title = {
                                                 Text(stringResource(R.string.pref_hdr_enabled_title))
                                             },
@@ -494,6 +540,7 @@ fun AppearanceScreen(
                                                 onValueChange = {
                                                     viewModel.savePref(Prefs.hdrHeadroom, it)
                                                 },
+                                                icon = { Icon(Icons.Outlined.BrightnessHigh, contentDescription = null) },
                                                 title = {
                                                     Text(stringResource(R.string.pref_hdr_headroom_title))
                                                 },
@@ -533,6 +580,7 @@ fun AppearanceScreen(
                                         onValueChange = {
                                             viewModel.savePref(Prefs.percentTextEnabled, it)
                                         },
+                                        icon = { Icon(Icons.Outlined.Percent, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_show_percentage_title),
@@ -548,6 +596,7 @@ fun AppearanceScreen(
                                 {
                                     NavigationPreference(
                                         onClick = { onNavigateToCalibration(CalibrationTarget.PERCENT) },
+                                        icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(
@@ -567,6 +616,7 @@ fun AppearanceScreen(
                                 {
                                     NavigationPreference(
                                         onClick = { onNavigateToCalibration(CalibrationTarget.PERCENT_SHADOW) },
+                                        icon = { Icon(Icons.Outlined.Layers, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_calibrate_percent_shadow_title),
@@ -596,6 +646,7 @@ fun AppearanceScreen(
                                         onValueChange = {
                                             viewModel.savePref(Prefs.filenameTextEnabled, it)
                                         },
+                                        icon = { Icon(Icons.Outlined.Description, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_show_filename_title),
@@ -611,6 +662,7 @@ fun AppearanceScreen(
                                 {
                                     NavigationPreference(
                                         onClick = { onNavigateToCalibration(CalibrationTarget.FILENAME) },
+                                        icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(
@@ -630,6 +682,7 @@ fun AppearanceScreen(
                                 {
                                     NavigationPreference(
                                         onClick = { onNavigateToCalibration(CalibrationTarget.FILENAME_SHADOW) },
+                                        icon = { Icon(Icons.Outlined.Layers, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_calibrate_filename_shadow_title),
@@ -659,6 +712,7 @@ fun AppearanceScreen(
                                         onValueChange = {
                                             viewModel.savePref(Prefs.speedTextEnabled, it)
                                         },
+                                        icon = { Icon(Icons.Outlined.Speed, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_show_speed_title),
@@ -675,6 +729,7 @@ fun AppearanceScreen(
                                     SelectPreference(
                                         value = prefsState.speedTextUnit,
                                         onValueChange = { viewModel.savePref(Prefs.speedTextUnit, it) },
+                                        icon = { Icon(Icons.Outlined.DataUsage, contentDescription = null) },
                                         values = speedUnitValues,
                                         title = { Text(stringResource(R.string.pref_speed_unit_title)) },
                                         summary = {
@@ -688,6 +743,7 @@ fun AppearanceScreen(
                                 {
                                     NavigationPreference(
                                         onClick = { onNavigateToCalibration(CalibrationTarget.SPEED) },
+                                        icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(
@@ -707,6 +763,7 @@ fun AppearanceScreen(
                                 {
                                     NavigationPreference(
                                         onClick = { onNavigateToCalibration(CalibrationTarget.SPEED_SHADOW) },
+                                        icon = { Icon(Icons.Outlined.Layers, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_calibrate_speed_shadow_title),
@@ -737,6 +794,7 @@ fun AppearanceScreen(
                                         onValueChange = {
                                             viewModel.savePref(Prefs.appIconEnabled, it)
                                         },
+                                        icon = { Icon(Icons.Outlined.AppShortcut, contentDescription = null) },
                                         title = {
                                             Text(
                                                 stringResource(R.string.pref_app_icon_enabled_title),
@@ -757,6 +815,7 @@ fun AppearanceScreen(
                                                 onValueChange = {
                                                     viewModel.savePref(Prefs.appIconMonochrome, it)
                                                 },
+                                                icon = { Icon(Icons.Outlined.FilterBAndW, contentDescription = null) },
                                                 title = {
                                                     Text(
                                                         stringResource(R.string.pref_app_icon_monochrome_title),
@@ -776,6 +835,7 @@ fun AppearanceScreen(
                                             onValueChange = {
                                                 viewModel.savePref(Prefs.appIconSize, it)
                                             },
+                                            icon = { Icon(Icons.Outlined.AspectRatio, contentDescription = null) },
                                             title = {
                                                 Text(
                                                     stringResource(R.string.pref_app_icon_size_title),
@@ -802,6 +862,7 @@ fun AppearanceScreen(
                                             onClick = {
                                                 onNavigateToCalibration(CalibrationTarget.APP_ICON)
                                             },
+                                            icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
                                             title = {
                                                 Text(
                                                     stringResource(R.string.pref_calibrate_app_icon_title),
@@ -913,6 +974,7 @@ private fun HdrRatioReadout(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxWidth().padding(Tokens.PreferencePadding),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        PreferenceIcon(icon = { Icon(Icons.Outlined.Insights, contentDescription = null) }, enabled = true)
         Column(modifier = Modifier.weight(1f)) {
             ProvideTextStyle(MaterialTheme.typography.bodyLarge) {
                 Text(stringResource(R.string.pref_hdr_ratio_title))
