@@ -109,7 +109,7 @@ fun <T> SelectPreference(
             LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
         ) {
             ProvideTextStyle(MaterialTheme.typography.bodyMedium) {
-                Text(valueToText(value))
+                Text(valueToText(value), modifier = Modifier.padding(start = Tokens.PreferenceHorizontalSpacing))
             }
         }
     }
