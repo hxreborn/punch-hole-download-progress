@@ -409,51 +409,51 @@ fun AppearanceScreen(
                                         },
                                     )
                                 }
-                                add {
-                                    ColorPreference(
-                                        value = prefsState.backgroundRingColor,
-                                        onValueChange = {
-                                            viewModel.savePref(Prefs.backgroundRingColor, it)
-                                        },
-                                        icon = { Icon(Icons.Outlined.FormatColorFill, contentDescription = null) },
-                                        title = {
-                                            Text(
-                                                stringResource(R.string.pref_background_ring_color_title),
-                                            )
-                                        },
-                                        summary = {
-                                            Text(
-                                                stringResource(R.string.pref_background_ring_color_summary),
-                                            )
-                                        },
-                                        enabled = prefsState.backgroundRingEnabled,
-                                        colors = MaterialPalette.backgroundColors,
-                                    )
-                                }
-                                add {
-                                    val opacityRange = Prefs.backgroundRingOpacity.range!!
-                                    SliderPreferenceWithReset(
-                                        value = prefsState.backgroundRingOpacity.toFloat(),
-                                        onValueChange = {
-                                            viewModel.savePref(Prefs.backgroundRingOpacity, it.toInt())
-                                        },
-                                        icon = { Icon(Icons.Outlined.Opacity, contentDescription = null) },
-                                        title = {
-                                            Text(
-                                                stringResource(R.string.pref_background_ring_opacity_title),
-                                            )
-                                        },
-                                        valueRange = opacityRange.first.toFloat()..opacityRange.last.toFloat(),
-                                        defaultValue = Prefs.backgroundRingOpacity.default.toFloat(),
-                                        onReset = {
-                                            viewModel.savePref(
-                                                Prefs.backgroundRingOpacity,
-                                                Prefs.backgroundRingOpacity.default,
-                                            )
-                                        },
-                                        valueText = { Text("${it.toInt()}%") },
-                                        enabled = prefsState.backgroundRingEnabled,
-                                    )
+                                if (prefsState.backgroundRingEnabled) {
+                                    add {
+                                        ColorPreference(
+                                            value = prefsState.backgroundRingColor,
+                                            onValueChange = {
+                                                viewModel.savePref(Prefs.backgroundRingColor, it)
+                                            },
+                                            icon = { Icon(Icons.Outlined.FormatColorFill, contentDescription = null) },
+                                            title = {
+                                                Text(
+                                                    stringResource(R.string.pref_background_ring_color_title),
+                                                )
+                                            },
+                                            summary = {
+                                                Text(
+                                                    stringResource(R.string.pref_background_ring_color_summary),
+                                                )
+                                            },
+                                            colors = MaterialPalette.backgroundColors,
+                                        )
+                                    }
+                                    add {
+                                        val opacityRange = Prefs.backgroundRingOpacity.range!!
+                                        SliderPreferenceWithReset(
+                                            value = prefsState.backgroundRingOpacity.toFloat(),
+                                            onValueChange = {
+                                                viewModel.savePref(Prefs.backgroundRingOpacity, it.toInt())
+                                            },
+                                            icon = { Icon(Icons.Outlined.Opacity, contentDescription = null) },
+                                            title = {
+                                                Text(
+                                                    stringResource(R.string.pref_background_ring_opacity_title),
+                                                )
+                                            },
+                                            valueRange = opacityRange.first.toFloat()..opacityRange.last.toFloat(),
+                                            defaultValue = Prefs.backgroundRingOpacity.default.toFloat(),
+                                            onReset = {
+                                                viewModel.savePref(
+                                                    Prefs.backgroundRingOpacity,
+                                                    Prefs.backgroundRingOpacity.default,
+                                                )
+                                            },
+                                            valueText = { Text("${it.toInt()}%") },
+                                        )
+                                    }
                                 }
                                 add {
                                     TogglePreferenceWithIcon(
