@@ -5,10 +5,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -27,6 +28,7 @@ import com.mikepenz.aboutlibraries.ui.compose.android.produceLibraries
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.ui.component.verticalScrollbar
+import eu.hxreborn.phdp.ui.theme.Tokens
 
 private val DIRECT_DEPENDENCY_GROUPS =
     setOf(
@@ -45,13 +47,16 @@ private val DIRECT_DEPENDENCY_GROUPS =
         "androidx.navigation3",
     )
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun LicensesScreen(
     onBack: () -> Unit = {},
     bottomNavPadding: Dp = 0.dp,
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+            snapAnimationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+        )
     val libs by produceLibraries(R.raw.aboutlibraries)
     val listState = rememberLazyListState()
 
@@ -73,22 +78,21 @@ fun LicensesScreen(
                 title = {
                     Text(
                         stringResource(R.string.pref_licenses),
-                        style =
-                            if (scrollBehavior.state.collapsedFraction < 0.5f) {
-                                MaterialTheme.typography.headlineLarge
-                            } else {
-                                MaterialTheme.typography.titleLarge
-                            },
+                        modifier = Modifier.padding(start = Tokens.SpacingSm),
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    FilledTonalIconButton(
+                        onClick = onBack,
+                        modifier = Modifier.padding(start = Tokens.ScreenHorizontalPadding),
+                    ) {
                         Icon(
-                            Icons.AutoMirrored.Outlined.ArrowBack,
+                            Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.back),
                         )
                     }
                 },
+                expandedHeight = Tokens.LargeAppBarExpandedHeight,
                 scrollBehavior = scrollBehavior,
             )
         },
