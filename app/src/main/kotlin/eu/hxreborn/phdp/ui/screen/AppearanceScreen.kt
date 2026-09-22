@@ -573,9 +573,10 @@ fun AppearanceScreen(
 
                 item(key = "design_percent_section") {
                     SectionCard(
+                        modifier = Modifier.animateContentSize(MaterialTheme.motionScheme.fastSpatialSpec()),
                         items =
-                            listOf(
-                                {
+                            buildList {
+                                add {
                                     TogglePreferenceWithIcon(
                                         value = prefsState.percentTextEnabled,
                                         onValueChange = {
@@ -593,42 +594,44 @@ fun AppearanceScreen(
                                             )
                                         },
                                     )
-                                },
-                                {
-                                    NavigationPreference(
-                                        onClick = { onNavigateToCalibration(CalibrationTarget.PERCENT) },
-                                        icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
-                                        title = {
-                                            Text(
-                                                stringResource(
-                                                    R.string.pref_calibrate_percent_title,
-                                                ),
-                                            )
-                                        },
-                                        summary = {
-                                            Text(
-                                                stringResource(
-                                                    R.string.pref_calibrate_percent_summary,
-                                                ),
-                                            )
-                                        },
-                                    )
-                                },
-                                {
-                                    NavigationPreference(
-                                        onClick = { onNavigateToCalibration(CalibrationTarget.PERCENT_SHADOW) },
-                                        icon = { Icon(Icons.Outlined.Layers, contentDescription = null) },
-                                        title = {
-                                            Text(
-                                                stringResource(R.string.pref_calibrate_percent_shadow_title),
-                                            )
-                                        },
-                                        summary = {
-                                            Text(stringResource(R.string.pref_text_shadow_nav_summary))
-                                        },
-                                    )
-                                },
-                            ),
+                                }
+                                if (prefsState.percentTextEnabled) {
+                                    add {
+                                        NavigationPreference(
+                                            onClick = { onNavigateToCalibration(CalibrationTarget.PERCENT) },
+                                            icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
+                                            title = {
+                                                Text(
+                                                    stringResource(
+                                                        R.string.pref_calibrate_percent_title,
+                                                    ),
+                                                )
+                                            },
+                                            summary = {
+                                                Text(
+                                                    stringResource(
+                                                        R.string.pref_calibrate_percent_summary,
+                                                    ),
+                                                )
+                                            },
+                                        )
+                                    }
+                                    add {
+                                        NavigationPreference(
+                                            onClick = { onNavigateToCalibration(CalibrationTarget.PERCENT_SHADOW) },
+                                            icon = { Icon(Icons.Outlined.Layers, contentDescription = null) },
+                                            title = {
+                                                Text(
+                                                    stringResource(R.string.pref_calibrate_percent_shadow_title),
+                                                )
+                                            },
+                                            summary = {
+                                                Text(stringResource(R.string.pref_text_shadow_nav_summary))
+                                            },
+                                        )
+                                    }
+                                }
+                            },
                     )
                 }
 
@@ -639,9 +642,10 @@ fun AppearanceScreen(
 
                 item(key = "design_filename_section") {
                     SectionCard(
+                        modifier = Modifier.animateContentSize(MaterialTheme.motionScheme.fastSpatialSpec()),
                         items =
-                            listOf(
-                                {
+                            buildList {
+                                add {
                                     TogglePreferenceWithIcon(
                                         value = prefsState.filenameTextEnabled,
                                         onValueChange = {
@@ -659,42 +663,44 @@ fun AppearanceScreen(
                                             )
                                         },
                                     )
-                                },
-                                {
-                                    NavigationPreference(
-                                        onClick = { onNavigateToCalibration(CalibrationTarget.FILENAME) },
-                                        icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
-                                        title = {
-                                            Text(
-                                                stringResource(
-                                                    R.string.pref_calibrate_filename_title,
-                                                ),
-                                            )
-                                        },
-                                        summary = {
-                                            Text(
-                                                stringResource(
-                                                    R.string.pref_calibrate_filename_summary,
-                                                ),
-                                            )
-                                        },
-                                    )
-                                },
-                                {
-                                    NavigationPreference(
-                                        onClick = { onNavigateToCalibration(CalibrationTarget.FILENAME_SHADOW) },
-                                        icon = { Icon(Icons.Outlined.Layers, contentDescription = null) },
-                                        title = {
-                                            Text(
-                                                stringResource(R.string.pref_calibrate_filename_shadow_title),
-                                            )
-                                        },
-                                        summary = {
-                                            Text(stringResource(R.string.pref_text_shadow_nav_summary))
-                                        },
-                                    )
-                                },
-                            ),
+                                }
+                                if (prefsState.filenameTextEnabled) {
+                                    add {
+                                        NavigationPreference(
+                                            onClick = { onNavigateToCalibration(CalibrationTarget.FILENAME) },
+                                            icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
+                                            title = {
+                                                Text(
+                                                    stringResource(
+                                                        R.string.pref_calibrate_filename_title,
+                                                    ),
+                                                )
+                                            },
+                                            summary = {
+                                                Text(
+                                                    stringResource(
+                                                        R.string.pref_calibrate_filename_summary,
+                                                    ),
+                                                )
+                                            },
+                                        )
+                                    }
+                                    add {
+                                        NavigationPreference(
+                                            onClick = { onNavigateToCalibration(CalibrationTarget.FILENAME_SHADOW) },
+                                            icon = { Icon(Icons.Outlined.Layers, contentDescription = null) },
+                                            title = {
+                                                Text(
+                                                    stringResource(R.string.pref_calibrate_filename_shadow_title),
+                                                )
+                                            },
+                                            summary = {
+                                                Text(stringResource(R.string.pref_text_shadow_nav_summary))
+                                            },
+                                        )
+                                    }
+                                }
+                            },
                     )
                 }
 
@@ -705,9 +711,10 @@ fun AppearanceScreen(
 
                 item(key = "design_speed_section") {
                     SectionCard(
+                        modifier = Modifier.animateContentSize(MaterialTheme.motionScheme.fastSpatialSpec()),
                         items =
-                            listOf(
-                                {
+                            buildList {
+                                add {
                                     TogglePreferenceWithIcon(
                                         value = prefsState.speedTextEnabled,
                                         onValueChange = {
@@ -725,57 +732,59 @@ fun AppearanceScreen(
                                             )
                                         },
                                     )
-                                },
-                                {
-                                    SelectPreference(
-                                        value = prefsState.speedTextUnit,
-                                        onValueChange = { viewModel.savePref(Prefs.speedTextUnit, it) },
-                                        icon = { Icon(Icons.Outlined.DataUsage, contentDescription = null) },
-                                        values = speedUnitValues,
-                                        title = { Text(stringResource(R.string.pref_speed_unit_title)) },
-                                        summary = {
-                                            Text(stringResource(R.string.pref_speed_unit_summary))
-                                        },
-                                        valueToText = {
-                                            labelFromValues(it, speedUnitEntries, speedUnitValues) ?: it
-                                        },
-                                    )
-                                },
-                                {
-                                    NavigationPreference(
-                                        onClick = { onNavigateToCalibration(CalibrationTarget.SPEED) },
-                                        icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
-                                        title = {
-                                            Text(
-                                                stringResource(
-                                                    R.string.pref_calibrate_speed_title,
-                                                ),
-                                            )
-                                        },
-                                        summary = {
-                                            Text(
-                                                stringResource(
-                                                    R.string.pref_calibrate_speed_summary,
-                                                ),
-                                            )
-                                        },
-                                    )
-                                },
-                                {
-                                    NavigationPreference(
-                                        onClick = { onNavigateToCalibration(CalibrationTarget.SPEED_SHADOW) },
-                                        icon = { Icon(Icons.Outlined.Layers, contentDescription = null) },
-                                        title = {
-                                            Text(
-                                                stringResource(R.string.pref_calibrate_speed_shadow_title),
-                                            )
-                                        },
-                                        summary = {
-                                            Text(stringResource(R.string.pref_text_shadow_nav_summary))
-                                        },
-                                    )
-                                },
-                            ),
+                                }
+                                if (prefsState.speedTextEnabled) {
+                                    add {
+                                        SelectPreference(
+                                            value = prefsState.speedTextUnit,
+                                            onValueChange = { viewModel.savePref(Prefs.speedTextUnit, it) },
+                                            icon = { Icon(Icons.Outlined.DataUsage, contentDescription = null) },
+                                            values = speedUnitValues,
+                                            title = { Text(stringResource(R.string.pref_speed_unit_title)) },
+                                            summary = {
+                                                Text(stringResource(R.string.pref_speed_unit_summary))
+                                            },
+                                            valueToText = {
+                                                labelFromValues(it, speedUnitEntries, speedUnitValues) ?: it
+                                            },
+                                        )
+                                    }
+                                    add {
+                                        NavigationPreference(
+                                            onClick = { onNavigateToCalibration(CalibrationTarget.SPEED) },
+                                            icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
+                                            title = {
+                                                Text(
+                                                    stringResource(
+                                                        R.string.pref_calibrate_speed_title,
+                                                    ),
+                                                )
+                                            },
+                                            summary = {
+                                                Text(
+                                                    stringResource(
+                                                        R.string.pref_calibrate_speed_summary,
+                                                    ),
+                                                )
+                                            },
+                                        )
+                                    }
+                                    add {
+                                        NavigationPreference(
+                                            onClick = { onNavigateToCalibration(CalibrationTarget.SPEED_SHADOW) },
+                                            icon = { Icon(Icons.Outlined.Layers, contentDescription = null) },
+                                            title = {
+                                                Text(
+                                                    stringResource(R.string.pref_calibrate_speed_shadow_title),
+                                                )
+                                            },
+                                            summary = {
+                                                Text(stringResource(R.string.pref_text_shadow_nav_summary))
+                                            },
+                                        )
+                                    }
+                                }
+                            },
                     )
                 }
 
