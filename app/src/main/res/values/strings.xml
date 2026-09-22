@@ -45,10 +45,10 @@
     <!-- Group Headers -->
     <string name="group_colors">Colors</string>
     <string name="group_geometry">Geometry</string>
-    <string name="group_percent_text">Percentage Text</string>
-    <string name="group_speed_text">Speed Text</string>
-    <string name="group_filename_text">Filename Text</string>
-    <string name="group_app_icon">Source App</string>
+    <string name="group_percent_text">Percentage text</string>
+    <string name="group_speed_text">Speed text</string>
+    <string name="group_filename_text">Filename text</string>
+    <string name="group_app_icon">Source app</string>
     <string name="group_progress_ring">Progress ring</string>
     <string name="group_completion_effect">Completion effect</string>
     <string name="group_indicators">Indicators</string>
@@ -87,7 +87,7 @@
     <string name="pref_stroke_cap_style_summary">Shape of ring edges</string>
 
     <!-- Design: Background Ring -->
-    <string name="group_background_ring">Background Ring</string>
+    <string name="group_background_ring">Background ring</string>
     <string name="pref_background_ring_enabled_title">Show background ring</string>
     <string name="pref_background_ring_enabled_summary">Dimmed ring behind the progress ring</string>
     <string name="pref_background_ring_color_title">Background ring color</string>
@@ -296,7 +296,7 @@
     <string name="pref_clear_downloads_title">Clear downloads</string>
     <string name="pref_clear_downloads_summary">Reset stuck download indicators</string>
     <string name="clear_downloads_done">Downloads cleared</string>
-    <string name="pref_hide_launcher_icon_title">Hide Launcher Icon</string>
+    <string name="pref_hide_launcher_icon_title">Hide launcher icon</string>
     <string name="pref_hide_launcher_icon_summary">Hides app from launcher</string>
     <string name="pref_verbose_logging_title">Debug logs</string>
     <string name="pref_verbose_logging_summary">Detailed log for debugging</string>
@@ -361,7 +361,7 @@
     <string name="pref_report_issue_summary">Report a bug or suggest a feature on GitHub</string>
 
     <!-- Color Picker -->
-    <string name="pick_color">Pick Color</string>
+    <string name="pick_color">Pick color</string>
     <string name="presets">Presets</string>
 
     <!-- Reset -->
@@ -432,8 +432,8 @@
     <!-- Dialog Arrays: Power Saver -->
     <string-array name="power_saver_entries">
         <item>Normal</item>
-        <item>Dim Ring</item>
-        <item>Disable Animations</item>
+        <item>Dim ring</item>
+        <item>Disable animations</item>
     </string-array>
     <string-array name="power_saver_values" translatable="false">
         <item>normal</item>
