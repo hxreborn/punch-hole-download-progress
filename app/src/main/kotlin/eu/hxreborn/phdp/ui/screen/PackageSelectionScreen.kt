@@ -18,7 +18,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -33,6 +32,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.HelpOutline
@@ -76,6 +76,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
@@ -300,7 +301,14 @@ private fun AppListItem(
         color = MaterialTheme.colorScheme.surfaceContainerHigh,
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().clickable { onCheckedChange(!isChecked) }.padding(Tokens.PreferencePadding),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .toggleable(
+                        value = isChecked,
+                        onValueChange = onCheckedChange,
+                        role = Role.Checkbox,
+                    ).padding(Tokens.PreferencePadding),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             AppIcon(icon = icon, modifier = Modifier.size(Tokens.AppIconSize))
@@ -323,10 +331,7 @@ private fun AppListItem(
                 AppTypeChip(isSystem = app.isSystem)
             }
             Spacer(modifier = Modifier.width(Tokens.PreferenceHorizontalSpacing))
-            ExpressiveCheckbox(
-                checked = isChecked,
-                onCheckedChange = onCheckedChange,
-            )
+            ExpressiveCheckbox(checked = isChecked)
         }
     }
 }
