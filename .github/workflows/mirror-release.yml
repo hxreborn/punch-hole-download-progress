@@ -69,6 +69,18 @@ jobs:
           echo "Found $apk_count release APK(s)"
           [ "$apk_count" -gt 0 ] || { echo "::error::No release APK found"; exit 1; }
 
+      - name: Tag the mirror head
+        env:
+          GH_TOKEN: ${{ secrets.XPOSED_REPO_PAT }}
+          MIRROR_TAG: ${{ steps.mirror_tag.outputs.mirror_tag }}
+        run: |
+          git clone --depth 1 "https://x-access-token:${GH_TOKEN}@github.com/Xposed-Modules-Repo/eu.hxreborn.phdp.git" mirror
+          cd mirror
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$MIRROR_TAG" -m "$MIRROR_TAG"
+          git push origin "$MIRROR_TAG"
+
       - name: Create mirror release
         uses: softprops/action-gh-release@v3
         with:
