@@ -1,10 +1,12 @@
 package eu.hxreborn.phdp.xposed.hook
 
+import android.content.Intent
 import android.content.SharedPreferences
 import eu.hxreborn.phdp.prefs.FoldScales
 import eu.hxreborn.phdp.prefs.GradientDirection
 import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.prefs.RotationOffsets
+import eu.hxreborn.phdp.prefs.SettingsPush
 import eu.hxreborn.phdp.prefs.decodeGradientColors
 import eu.hxreborn.phdp.util.Logger
 import eu.hxreborn.phdp.util.log
@@ -19,6 +21,10 @@ object IndicatorState {
     // Cached values
     @Volatile
     var enabled = Prefs.enabled.default
+        private set
+
+    @Volatile
+    var duoStatusBarMode = Prefs.duoStatusBarMode.default
         private set
 
     @Volatile
@@ -468,6 +474,7 @@ object IndicatorState {
     var onClearDownloadsTriggered: (() -> Unit)? = null
     var onPersistentPreviewChanged: ((Boolean) -> Unit)? = null
     var onHdrConfigChanged: (() -> Unit)? = null
+    var onDuoModeChanged: ((Boolean) -> Unit)? = null
 
     fun init(xposed: XposedInterface) {
         prefsListener?.let { remotePrefs?.unregisterOnSharedPreferenceChangeListener(it) }
@@ -495,6 +502,202 @@ object IndicatorState {
         prefsListener = null
         remotePrefs = null
     }
+
+    fun dispatchPushedPref(intent: Intent?) {
+        intent ?: return
+        val key = intent.getStringExtra(SettingsPush.EXTRA_KEY) ?: return
+        runCatching {
+            when (key) {
+                Prefs.duoStatusBarMode.key -> {
+                    duoStatusBarMode = SettingsPush.bool(intent)
+                    log("duo mode pushed value=$duoStatusBarMode")
+                    onDuoModeChanged?.invoke(duoStatusBarMode)
+                    onPrefsChanged?.invoke()
+                }
+
+                Prefs.testProgress.key -> {
+                    val progress = SettingsPush.int(intent, -1)
+                    if (progress >= 0) {
+                        onTestProgressChanged?.invoke(progress)
+                        if (progress == 100) onDownloadComplete?.invoke()
+                    }
+                }
+
+                Prefs.testError.key -> {
+                    onTestErrorChanged?.invoke(SettingsPush.bool(intent))
+                }
+
+                Prefs.previewTrigger.key -> {
+                    onPreviewTriggered?.invoke()
+                }
+
+                Prefs.clearDownloadsTrigger.key -> {
+                    onClearDownloadsTriggered?.invoke()
+                }
+
+                else -> {
+                    if (applyPushedDuoPref(key, intent)) {
+                        log("duo setting pushed key=$key")
+                        onPrefsChanged?.invoke()
+                        if (key in Prefs.visualKeys) {
+                            onGeometryPreviewTriggered?.invoke()
+                        }
+                    }
+                }
+            }
+        }.onFailure { log("settings-push failed key=$key", it) }
+    }
+
+    private fun applyPushedDuoPref(
+        key: String,
+        intent: Intent,
+    ): Boolean =
+        when (key) {
+            Prefs.color.key -> {
+                color = SettingsPush.int(intent, Prefs.color.default)
+                true
+            }
+
+            Prefs.gradientEnabled.key -> {
+                gradientEnabled = SettingsPush.bool(intent)
+                true
+            }
+
+            Prefs.gradientColors.key -> {
+                gradientColors =
+                    decodeGradientColors(
+                        SettingsPush.string(intent, Prefs.gradientColors.default),
+                    ).toIntArray()
+                true
+            }
+
+            Prefs.gradientDirection.key -> {
+                gradientDirection =
+                    GradientDirection
+                        .fromStoredValue(
+                            SettingsPush.string(intent, Prefs.gradientDirection.default),
+                        ).storedValue
+                true
+            }
+
+            Prefs.gradientAngle.key -> {
+                gradientAngle =
+                    SettingsPush
+                        .int(intent, Prefs.gradientAngle.default)
+                        .coerceIn(0, 360)
+                true
+            }
+
+            Prefs.clockwise.key -> {
+                clockwise = SettingsPush.bool(intent)
+                true
+            }
+
+            Prefs.errorColor.key -> {
+                errorColor = SettingsPush.int(intent, Prefs.errorColor.default)
+                true
+            }
+
+            Prefs.percentTextEnabled.key -> {
+                percentTextEnabled = SettingsPush.bool(intent)
+                true
+            }
+
+            Prefs.materialYouEnabled.key -> {
+                materialYouEnabled = SettingsPush.bool(intent)
+                true
+            }
+
+            Prefs.materialYouProgressPalette.key -> {
+                materialYouProgressPalette =
+                    SettingsPush.string(intent, Prefs.materialYouProgressPalette.default)
+                true
+            }
+
+            Prefs.materialYouProgressShade.key -> {
+                materialYouProgressShade =
+                    SettingsPush.int(intent, Prefs.materialYouProgressShade.default)
+                true
+            }
+
+            Prefs.materialYouSuccessPalette.key -> {
+                materialYouSuccessPalette =
+                    SettingsPush.string(intent, Prefs.materialYouSuccessPalette.default)
+                true
+            }
+
+            Prefs.materialYouSuccessShade.key -> {
+                materialYouSuccessShade =
+                    SettingsPush.int(intent, Prefs.materialYouSuccessShade.default)
+                true
+            }
+
+            Prefs.materialYouErrorPalette.key -> {
+                materialYouErrorPalette =
+                    SettingsPush.string(intent, Prefs.materialYouErrorPalette.default)
+                true
+            }
+
+            Prefs.materialYouErrorShade.key -> {
+                materialYouErrorShade =
+                    SettingsPush.int(intent, Prefs.materialYouErrorShade.default)
+                true
+            }
+
+            Prefs.powerSaverMode.key -> {
+                powerSaverMode = SettingsPush.string(intent, Prefs.powerSaverMode.default)
+                true
+            }
+
+            Prefs.progressEasing.key -> {
+                progressEasing = SettingsPush.string(intent, Prefs.progressEasing.default)
+                true
+            }
+
+            Prefs.progressAnimMs.key -> {
+                progressAnimMs = SettingsPush.int(intent, Prefs.progressAnimMs.default)
+                true
+            }
+
+            Prefs.finishUseFlashColor.key -> {
+                finishUseFlashColor = SettingsPush.bool(intent)
+                true
+            }
+
+            Prefs.finishFlashColor.key -> {
+                finishFlashColor = SettingsPush.int(intent, Prefs.finishFlashColor.default)
+                true
+            }
+
+            Prefs.finishHoldMs.key -> {
+                finishHoldMs = SettingsPush.int(intent, Prefs.finishHoldMs.default)
+                true
+            }
+
+            Prefs.finishExitMs.key -> {
+                finishExitMs = SettingsPush.int(intent, Prefs.finishExitMs.default)
+                true
+            }
+
+            Prefs.minVisibilityEnabled.key -> {
+                minVisibilityEnabled = SettingsPush.bool(intent)
+                true
+            }
+
+            Prefs.minVisibilityMs.key -> {
+                minVisibilityMs = SettingsPush.int(intent, Prefs.minVisibilityMs.default)
+                true
+            }
+
+            Prefs.burnInHideMs.key -> {
+                burnInHideMs = SettingsPush.int(intent, Prefs.burnInHideMs.default)
+                true
+            }
+
+            else -> {
+                false
+            }
+        }
 
     private fun dispatchPrefChange(
         prefs: SharedPreferences,
@@ -531,6 +734,12 @@ object IndicatorState {
                 onPersistentPreviewChanged?.invoke(enabled)
             }
 
+            Prefs.duoStatusBarMode.key -> {
+                log("duo mode pref changed value=$duoStatusBarMode")
+                onDuoModeChanged?.invoke(duoStatusBarMode)
+                onPrefsChanged?.invoke()
+            }
+
             Prefs.hdrEnabled.key, Prefs.hdrHeadroom.key -> {
                 onHdrConfigChanged?.invoke()
                 onPrefsChanged?.invoke()
@@ -557,6 +766,10 @@ object IndicatorState {
             when (key) {
                 Prefs.enabled.key -> {
                     enabled = Prefs.enabled.read(prefs)
+                }
+
+                Prefs.duoStatusBarMode.key -> {
+                    duoStatusBarMode = Prefs.duoStatusBarMode.read(prefs)
                 }
 
                 Prefs.color.key -> {
@@ -1051,6 +1264,7 @@ object IndicatorState {
         runCatching {
             remotePrefs?.let { prefs ->
                 enabled = Prefs.enabled.read(prefs)
+                duoStatusBarMode = Prefs.duoStatusBarMode.read(prefs)
                 color = Prefs.color.read(prefs)
                 gradientEnabled = Prefs.gradientEnabled.read(prefs)
                 gradientColors =

@@ -31,6 +31,7 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -83,6 +84,21 @@ fun GradientScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val prefsState = (uiState as? SettingsUiState.Success)?.prefs ?: return
+
+    LaunchedEffect(
+        prefsState.duoStatusBarMode,
+        prefsState.gradientEnabled,
+        prefsState.gradientDirection,
+    ) {
+        if (
+            prefsState.duoStatusBarMode &&
+            prefsState.gradientEnabled &&
+            GradientDirection.fromStoredValue(prefsState.gradientDirection) ==
+            GradientDirection.SWEEP
+        ) {
+            viewModel.savePref(Prefs.gradientDirection, GradientDirection.LINEAR.storedValue)
+        }
+    }
 
     SettingsScaffold(
         title = stringResource(R.string.pref_gradient_title),
@@ -153,6 +169,9 @@ fun GradientScreen(
                         GradientDirection.entries.forEachIndexed { index, direction ->
                             SegmentedButton(
                                 selected = selected == direction,
+                                enabled =
+                                    direction != GradientDirection.SWEEP ||
+                                        !prefsState.duoStatusBarMode,
                                 onClick = {
                                     viewModel.savePref(
                                         Prefs.gradientDirection,

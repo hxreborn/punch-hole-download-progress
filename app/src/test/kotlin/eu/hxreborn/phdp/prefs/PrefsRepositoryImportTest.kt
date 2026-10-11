@@ -32,6 +32,26 @@ class PrefsRepositoryImportTest {
     }
 
     @Test
+    fun `duo mode forces an enabled sweep gradient to linear`() {
+        val local =
+            FakePrefs(
+                mapOf(
+                    Prefs.gradientEnabled.key to true,
+                    Prefs.gradientDirection.key to GradientDirection.SWEEP.storedValue,
+                ),
+            )
+        val repository = PrefsRepositoryImpl(local) { null }
+
+        repository.save(Prefs.duoStatusBarMode, true)
+
+        assertEquals(true, local.values[Prefs.duoStatusBarMode.key])
+        assertEquals(
+            GradientDirection.LINEAR.storedValue,
+            local.values[Prefs.gradientDirection.key],
+        )
+    }
+
+    @Test
     fun `import writes valid settings to local and remote`() {
         val local = FakePrefs(mapOf("opacity" to 90))
         val remote = FakePrefs()

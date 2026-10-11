@@ -10,6 +10,7 @@ object Prefs {
 
     // Core
     val enabled = BoolPref("enabled", true)
+    val duoStatusBarMode = BoolPref("duo_status_bar_mode", false)
     val hooksFeedback = BoolPref("hooks_feedback", false)
     val appVisible = BoolPref("app_visible", false)
 
@@ -262,6 +263,7 @@ object Prefs {
     // All resettable prefs (excludes enabled and triggers)
     val resettable: List<PrefSpec<*>> =
         listOf(
+            duoStatusBarMode,
             color,
             gradientEnabled,
             gradientColors,

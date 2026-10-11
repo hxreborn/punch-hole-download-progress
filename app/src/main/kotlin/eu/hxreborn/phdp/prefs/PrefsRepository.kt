@@ -1,6 +1,8 @@
 package eu.hxreborn.phdp.prefs
 
+import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.core.content.edit
 import eu.hxreborn.phdp.backup.BackupMeta
 import eu.hxreborn.phdp.backup.ExportResult
@@ -17,6 +19,8 @@ import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+
+private const val TAG = "PHDP"
 
 interface PrefsRepository {
     val state: Flow<AppPrefs>
@@ -46,9 +50,15 @@ sealed interface ImportResult {
 }
 
 class PrefsRepositoryImpl(
+    private val context: Context?,
     private val localPrefs: SharedPreferences,
     private val remotePrefsProvider: () -> SharedPreferences?,
 ) : PrefsRepository {
+    internal constructor(
+        localPrefs: SharedPreferences,
+        remotePrefsProvider: () -> SharedPreferences?,
+    ) : this(null, localPrefs, remotePrefsProvider)
+
     override val state: Flow<AppPrefs> =
         callbackFlow {
             val listener =
@@ -64,8 +74,33 @@ class PrefsRepositoryImpl(
         pref: PrefSpec<T>,
         value: T,
     ) {
-        localPrefs.edit { pref.write(this, value) }
-        remotePrefsProvider()?.edit(commit = true) { pref.write(this, value) }
+        val forceLinear = shouldForceLinearGradient(pref, value)
+        localPrefs.edit {
+            pref.write(this, value)
+            if (forceLinear) {
+                Prefs.gradientDirection.write(this, GradientDirection.LINEAR.storedValue)
+            }
+        }
+        val remote = remotePrefsProvider()
+        if (pref.key == Prefs.duoStatusBarMode.key) {
+            Log.i(TAG, "duo mode app save value=$value remoteAvailable=${remote != null}")
+        }
+        remote?.edit(commit = true) {
+            pref.write(this, value)
+            if (forceLinear) {
+                Prefs.gradientDirection.write(this, GradientDirection.LINEAR.storedValue)
+            }
+        }
+        context?.let { SettingsPush.send(it, pref, value) }
+        if (forceLinear) {
+            context?.let {
+                SettingsPush.send(
+                    it,
+                    Prefs.gradientDirection,
+                    GradientDirection.LINEAR.storedValue,
+                )
+            }
+        }
     }
 
     override fun resetDefaults() {
@@ -74,6 +109,7 @@ class PrefsRepositoryImpl(
     }
 
     override fun syncToRemote() {
+        context?.let { SettingsPush.sendSnapshot(it, localPrefs) }
         val remote = remotePrefsProvider() ?: return
         val current = remote.all
         val changed = localPrefs.all.filter { (key, value) -> current[key] != value }
@@ -112,6 +148,7 @@ class PrefsRepositoryImpl(
 
         val committed = runCatching { editor.commit() }.getOrDefault(false)
         if (committed) {
+            normalizeDuoGradient()
             syncToRemote()
         } else {
             val reason =
@@ -132,9 +169,46 @@ class PrefsRepositoryImpl(
             editor.commit()
         }.getOrDefault(false)
 
+    private fun <T : Any> shouldForceLinearGradient(
+        pref: PrefSpec<T>,
+        value: T,
+    ): Boolean =
+        when (pref.key) {
+            Prefs.duoStatusBarMode.key -> {
+                value == true && Prefs.gradientEnabled.read(localPrefs)
+            }
+
+            Prefs.gradientEnabled.key -> {
+                value == true && Prefs.duoStatusBarMode.read(localPrefs)
+            }
+
+            Prefs.gradientDirection.key -> {
+                value == GradientDirection.SWEEP.storedValue &&
+                    Prefs.duoStatusBarMode.read(localPrefs) &&
+                    Prefs.gradientEnabled.read(localPrefs)
+            }
+
+            else -> {
+                false
+            }
+        }
+
+    private fun normalizeDuoGradient() {
+        if (
+            Prefs.duoStatusBarMode.read(localPrefs) &&
+            Prefs.gradientEnabled.read(localPrefs) &&
+            Prefs.gradientDirection.read(localPrefs) != GradientDirection.LINEAR.storedValue
+        ) {
+            localPrefs.edit {
+                Prefs.gradientDirection.write(this, GradientDirection.LINEAR.storedValue)
+            }
+        }
+    }
+
     private fun SharedPreferences.toAppPrefs(): AppPrefs =
         AppPrefs(
             enabled = Prefs.enabled.read(this),
+            duoStatusBarMode = Prefs.duoStatusBarMode.read(this),
             color = Prefs.color.read(this),
             gradientEnabled = Prefs.gradientEnabled.read(this),
             gradientColors = decodeGradientColors(Prefs.gradientColors.read(this)),

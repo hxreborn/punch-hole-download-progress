@@ -30,9 +30,10 @@ class PHDPApp :
         super.onCreate()
         val local = getSharedPreferences(Prefs.GROUP, MODE_PRIVATE)
         prefs =
-            PrefsRepositoryImpl(local) {
+            PrefsRepositoryImpl(this, local) {
                 runCatching { mService?.getRemotePreferences(Prefs.GROUP) }.getOrNull()
             }
+        prefs.syncToRemote()
         XposedServiceHelper.registerListener(this)
     }
 

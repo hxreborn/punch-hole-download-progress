@@ -1,5 +1,6 @@
 package eu.hxreborn.phdp.ui.screen
 
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.outlined.BlurOn
 import androidx.compose.material.icons.outlined.BrightnessHigh
 import androidx.compose.material.icons.outlined.DataUsage
 import androidx.compose.material.icons.outlined.Description
+import androidx.compose.material.icons.outlined.DonutLarge
 import androidx.compose.material.icons.outlined.DownloadDone
 import androidx.compose.material.icons.outlined.Downloading
 import androidx.compose.material.icons.outlined.ErrorOutline
@@ -61,6 +63,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.hxreborn.phdp.R
+import eu.hxreborn.phdp.prefs.GradientDirection
 import eu.hxreborn.phdp.prefs.PrefSpec
 import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.ui.BackupEvent
@@ -69,6 +72,7 @@ import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.VerticalScrollbar
 import eu.hxreborn.phdp.ui.component.preference.ColorPreference
+import eu.hxreborn.phdp.ui.component.preference.IrrelevantPreferences
 import eu.hxreborn.phdp.ui.component.preference.NavigationPreference
 import eu.hxreborn.phdp.ui.component.preference.PreferenceIcon
 import eu.hxreborn.phdp.ui.component.preference.SelectPreference
@@ -111,6 +115,8 @@ fun AppearanceScreen(
     val prefsState = (uiState as? SettingsUiState.Success)?.prefs ?: return
     val speedUnitEntries = stringArrayResource(R.array.speed_unit_entries).toList()
     val speedUnitValues = stringArrayResource(R.array.speed_unit_values).toList()
+    val context = LocalContext.current
+    val isDuoStatusBarInstalled = remember(context) { context.packageManager.isPackageInstalled(DUO_STATUS_BAR_PACKAGE) }
 
     val listState = rememberLazyListState()
     Box(modifier = modifier.fillMaxSize()) {
@@ -124,6 +130,38 @@ fun AppearanceScreen(
                         bottom = contentPadding.calculateBottomPadding() + Tokens.SpacingLg,
                     ),
             ) {
+                if (isDuoStatusBarInstalled) {
+                    preferenceCategory(
+                        key = "design_duo_header",
+                        title = { Text(stringResource(R.string.group_duo_status_bar)) },
+                    )
+
+                    item(key = "design_duo_section") {
+                        SectionCard(
+                            items =
+                                listOf(
+                                    {
+                                        TogglePreferenceWithIcon(
+                                            value = prefsState.duoStatusBarMode,
+                                            onValueChange = { enabled ->
+                                                if (enabled && prefsState.gradientEnabled) {
+                                                    viewModel.savePref(
+                                                        Prefs.gradientDirection,
+                                                        GradientDirection.LINEAR.storedValue,
+                                                    )
+                                                }
+                                                viewModel.savePref(Prefs.duoStatusBarMode, enabled)
+                                            },
+                                            icon = { Icon(Icons.Outlined.DonutLarge, contentDescription = null) },
+                                            title = { Text(stringResource(R.string.pref_duo_status_bar_title)) },
+                                            summary = { Text(stringResource(R.string.pref_duo_status_bar_summary)) },
+                                        )
+                                    },
+                                ),
+                        )
+                    }
+                }
+
                 preferenceCategory(
                     key = "design_colors_header",
                     title = { Text(stringResource(R.string.group_colors)) },
@@ -189,8 +227,14 @@ fun AppearanceScreen(
                                 add {
                                     TogglePreferenceWithIcon(
                                         value = prefsState.gradientEnabled,
-                                        onValueChange = {
-                                            viewModel.savePref(Prefs.gradientEnabled, it)
+                                        onValueChange = { enabled ->
+                                            if (enabled && prefsState.duoStatusBarMode) {
+                                                viewModel.savePref(
+                                                    Prefs.gradientDirection,
+                                                    GradientDirection.LINEAR.storedValue,
+                                                )
+                                            }
+                                            viewModel.savePref(Prefs.gradientEnabled, enabled)
                                         },
                                         icon = { Icon(Icons.Outlined.Tonality, contentDescription = null) },
                                         enabled =
@@ -274,110 +318,112 @@ fun AppearanceScreen(
                 )
 
                 item(key = "design_geometry_section") {
-                    SectionCard(
-                        items =
-                            listOf(
-                                {
-                                    SliderPreferenceWithReset(
-                                        value = prefsState.strokeWidth,
-                                        onValueChange = { viewModel.savePref(Prefs.strokeWidth, it) },
-                                        icon = { Icon(Icons.Outlined.LineWeight, contentDescription = null) },
-                                        title = {
-                                            Text(
-                                                stringResource(R.string.pref_stroke_width_title),
-                                            )
-                                        },
-                                        summary = {
-                                            Text(
-                                                stringResource(R.string.pref_stroke_width_summary),
-                                            )
-                                        },
-                                        valueRange = Prefs.strokeWidth.range!!,
-                                        defaultValue = Prefs.strokeWidth.default,
-                                        onReset = {
-                                            viewModel.savePref(Prefs.strokeWidth, Prefs.strokeWidth.default)
-                                        },
-                                        valueText = { Text("%.1fdp".format(it)) },
-                                    )
-                                },
-                                {
-                                    SliderPreferenceWithReset(
-                                        value = prefsState.ringGap,
-                                        onValueChange = { viewModel.savePref(Prefs.ringGap, it) },
-                                        icon = { Icon(Icons.Outlined.Straighten, contentDescription = null) },
-                                        title = {
-                                            Text(
-                                                stringResource(R.string.pref_cutout_padding_title),
-                                            )
-                                        },
-                                        summary = {
-                                            Text(
-                                                stringResource(R.string.pref_cutout_padding_summary),
-                                            )
-                                        },
-                                        valueRange = Prefs.ringGap.range!!,
-                                        defaultValue = Prefs.ringGap.default,
-                                        onReset = {
-                                            viewModel.savePref(Prefs.ringGap, Prefs.ringGap.default)
-                                        },
-                                        valueText = { Text("%.2fx".format(it)) },
-                                    )
-                                },
-                                {
-                                    val opacityRange = Prefs.opacity.range!!
-                                    SliderPreferenceWithReset(
-                                        value = prefsState.opacity.toFloat(),
-                                        onValueChange = { viewModel.savePref(Prefs.opacity, it.toInt()) },
-                                        icon = { Icon(Icons.Outlined.Opacity, contentDescription = null) },
-                                        title = { Text(stringResource(R.string.pref_opacity_title)) },
-                                        summary = {
-                                            Text(
-                                                stringResource(R.string.pref_opacity_summary),
-                                            )
-                                        },
-                                        valueRange = opacityRange.first.toFloat()..opacityRange.last.toFloat(),
-                                        defaultValue = Prefs.opacity.default.toFloat(),
-                                        onReset = {
-                                            viewModel.savePref(Prefs.opacity, Prefs.opacity.default)
-                                        },
-                                        valueText = { Text("${it.toInt()}%") },
-                                    )
-                                },
-                                {
-                                    SelectPreference(
-                                        value = prefsState.strokeCapStyle,
-                                        onValueChange = {
-                                            viewModel.savePref(Prefs.strokeCapStyle, it)
-                                        },
-                                        icon = { Icon(Icons.Outlined.RoundedCorner, contentDescription = null) },
-                                        values = listOf("flat", "round", "square"),
-                                        title = {
-                                            Text(
-                                                stringResource(R.string.pref_stroke_cap_style_title),
-                                            )
-                                        },
-                                        summary = {
-                                            Text(
-                                                stringResource(R.string.pref_stroke_cap_style_summary),
-                                            )
-                                        },
-                                        valueToText = { strokeCapLabel(it) },
-                                    )
-                                },
-                                {
-                                    NavigationPreference(
-                                        onClick = { onNavigateToCalibration(CalibrationTarget.RING) },
-                                        icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
-                                        title = {
-                                            Text(stringResource(R.string.pref_calibrate_ring_title))
-                                        },
-                                        summary = {
-                                            Text(stringResource(R.string.pref_calibrate_ring_summary))
-                                        },
-                                    )
-                                },
-                            ),
-                    )
+                    IrrelevantPreferences(enabled = !prefsState.duoStatusBarMode) {
+                        SectionCard(
+                            items =
+                                listOf(
+                                    {
+                                        SliderPreferenceWithReset(
+                                            value = prefsState.strokeWidth,
+                                            onValueChange = { viewModel.savePref(Prefs.strokeWidth, it) },
+                                            icon = { Icon(Icons.Outlined.LineWeight, contentDescription = null) },
+                                            title = {
+                                                Text(
+                                                    stringResource(R.string.pref_stroke_width_title),
+                                                )
+                                            },
+                                            summary = {
+                                                Text(
+                                                    stringResource(R.string.pref_stroke_width_summary),
+                                                )
+                                            },
+                                            valueRange = Prefs.strokeWidth.range!!,
+                                            defaultValue = Prefs.strokeWidth.default,
+                                            onReset = {
+                                                viewModel.savePref(Prefs.strokeWidth, Prefs.strokeWidth.default)
+                                            },
+                                            valueText = { Text("%.1fdp".format(it)) },
+                                        )
+                                    },
+                                    {
+                                        SliderPreferenceWithReset(
+                                            value = prefsState.ringGap,
+                                            onValueChange = { viewModel.savePref(Prefs.ringGap, it) },
+                                            icon = { Icon(Icons.Outlined.Straighten, contentDescription = null) },
+                                            title = {
+                                                Text(
+                                                    stringResource(R.string.pref_cutout_padding_title),
+                                                )
+                                            },
+                                            summary = {
+                                                Text(
+                                                    stringResource(R.string.pref_cutout_padding_summary),
+                                                )
+                                            },
+                                            valueRange = Prefs.ringGap.range!!,
+                                            defaultValue = Prefs.ringGap.default,
+                                            onReset = {
+                                                viewModel.savePref(Prefs.ringGap, Prefs.ringGap.default)
+                                            },
+                                            valueText = { Text("%.2fx".format(it)) },
+                                        )
+                                    },
+                                    {
+                                        val opacityRange = Prefs.opacity.range!!
+                                        SliderPreferenceWithReset(
+                                            value = prefsState.opacity.toFloat(),
+                                            onValueChange = { viewModel.savePref(Prefs.opacity, it.toInt()) },
+                                            icon = { Icon(Icons.Outlined.Opacity, contentDescription = null) },
+                                            title = { Text(stringResource(R.string.pref_opacity_title)) },
+                                            summary = {
+                                                Text(
+                                                    stringResource(R.string.pref_opacity_summary),
+                                                )
+                                            },
+                                            valueRange = opacityRange.first.toFloat()..opacityRange.last.toFloat(),
+                                            defaultValue = Prefs.opacity.default.toFloat(),
+                                            onReset = {
+                                                viewModel.savePref(Prefs.opacity, Prefs.opacity.default)
+                                            },
+                                            valueText = { Text("${it.toInt()}%") },
+                                        )
+                                    },
+                                    {
+                                        SelectPreference(
+                                            value = prefsState.strokeCapStyle,
+                                            onValueChange = {
+                                                viewModel.savePref(Prefs.strokeCapStyle, it)
+                                            },
+                                            icon = { Icon(Icons.Outlined.RoundedCorner, contentDescription = null) },
+                                            values = listOf("flat", "round", "square"),
+                                            title = {
+                                                Text(
+                                                    stringResource(R.string.pref_stroke_cap_style_title),
+                                                )
+                                            },
+                                            summary = {
+                                                Text(
+                                                    stringResource(R.string.pref_stroke_cap_style_summary),
+                                                )
+                                            },
+                                            valueToText = { strokeCapLabel(it) },
+                                        )
+                                    },
+                                    {
+                                        NavigationPreference(
+                                            onClick = { onNavigateToCalibration(CalibrationTarget.RING) },
+                                            icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
+                                            title = {
+                                                Text(stringResource(R.string.pref_calibrate_ring_title))
+                                            },
+                                            summary = {
+                                                Text(stringResource(R.string.pref_calibrate_ring_summary))
+                                            },
+                                        )
+                                    },
+                                ),
+                        )
+                    }
                 }
 
                 preferenceCategory(
@@ -386,126 +432,128 @@ fun AppearanceScreen(
                 )
 
                 item(key = "design_background_ring_section") {
-                    SectionCard(
-                        modifier = Modifier.animateContentSize(MaterialTheme.motionScheme.fastSpatialSpec()),
-                        items =
-                            buildList {
-                                add {
-                                    TogglePreferenceWithIcon(
-                                        value = prefsState.backgroundRingEnabled,
-                                        onValueChange = {
-                                            viewModel.savePref(Prefs.backgroundRingEnabled, it)
-                                        },
-                                        icon = { Icon(Icons.Outlined.TripOrigin, contentDescription = null) },
-                                        title = {
-                                            Text(
-                                                stringResource(R.string.pref_background_ring_enabled_title),
-                                            )
-                                        },
-                                        summary = {
-                                            Text(
-                                                stringResource(R.string.pref_background_ring_enabled_summary),
-                                            )
-                                        },
-                                    )
-                                }
-                                if (prefsState.backgroundRingEnabled) {
+                    IrrelevantPreferences(enabled = !prefsState.duoStatusBarMode) {
+                        SectionCard(
+                            modifier = Modifier.animateContentSize(MaterialTheme.motionScheme.fastSpatialSpec()),
+                            items =
+                                buildList {
                                     add {
-                                        ColorPreference(
-                                            value = prefsState.backgroundRingColor,
+                                        TogglePreferenceWithIcon(
+                                            value = prefsState.backgroundRingEnabled,
                                             onValueChange = {
-                                                viewModel.savePref(Prefs.backgroundRingColor, it)
+                                                viewModel.savePref(Prefs.backgroundRingEnabled, it)
                                             },
-                                            icon = { Icon(Icons.Outlined.FormatColorFill, contentDescription = null) },
+                                            icon = { Icon(Icons.Outlined.TripOrigin, contentDescription = null) },
                                             title = {
                                                 Text(
-                                                    stringResource(R.string.pref_background_ring_color_title),
+                                                    stringResource(R.string.pref_background_ring_enabled_title),
                                                 )
                                             },
                                             summary = {
                                                 Text(
-                                                    stringResource(R.string.pref_background_ring_color_summary),
+                                                    stringResource(R.string.pref_background_ring_enabled_summary),
                                                 )
                                             },
-                                            colors = MaterialPalette.backgroundColors,
                                         )
                                     }
-                                    add {
-                                        val opacityRange = Prefs.backgroundRingOpacity.range!!
-                                        SliderPreferenceWithReset(
-                                            value = prefsState.backgroundRingOpacity.toFloat(),
-                                            onValueChange = {
-                                                viewModel.savePref(Prefs.backgroundRingOpacity, it.toInt())
-                                            },
-                                            icon = { Icon(Icons.Outlined.Opacity, contentDescription = null) },
-                                            title = {
-                                                Text(
-                                                    stringResource(R.string.pref_background_ring_opacity_title),
-                                                )
-                                            },
-                                            valueRange = opacityRange.first.toFloat()..opacityRange.last.toFloat(),
-                                            defaultValue = Prefs.backgroundRingOpacity.default.toFloat(),
-                                            onReset = {
-                                                viewModel.savePref(
-                                                    Prefs.backgroundRingOpacity,
-                                                    Prefs.backgroundRingOpacity.default,
-                                                )
-                                            },
-                                            valueText = { Text("${it.toInt()}%") },
-                                        )
+                                    if (prefsState.backgroundRingEnabled) {
+                                        add {
+                                            ColorPreference(
+                                                value = prefsState.backgroundRingColor,
+                                                onValueChange = {
+                                                    viewModel.savePref(Prefs.backgroundRingColor, it)
+                                                },
+                                                icon = { Icon(Icons.Outlined.FormatColorFill, contentDescription = null) },
+                                                title = {
+                                                    Text(
+                                                        stringResource(R.string.pref_background_ring_color_title),
+                                                    )
+                                                },
+                                                summary = {
+                                                    Text(
+                                                        stringResource(R.string.pref_background_ring_color_summary),
+                                                    )
+                                                },
+                                                colors = MaterialPalette.backgroundColors,
+                                            )
+                                        }
+                                        add {
+                                            val opacityRange = Prefs.backgroundRingOpacity.range!!
+                                            SliderPreferenceWithReset(
+                                                value = prefsState.backgroundRingOpacity.toFloat(),
+                                                onValueChange = {
+                                                    viewModel.savePref(Prefs.backgroundRingOpacity, it.toInt())
+                                                },
+                                                icon = { Icon(Icons.Outlined.Opacity, contentDescription = null) },
+                                                title = {
+                                                    Text(
+                                                        stringResource(R.string.pref_background_ring_opacity_title),
+                                                    )
+                                                },
+                                                valueRange = opacityRange.first.toFloat()..opacityRange.last.toFloat(),
+                                                defaultValue = Prefs.backgroundRingOpacity.default.toFloat(),
+                                                onReset = {
+                                                    viewModel.savePref(
+                                                        Prefs.backgroundRingOpacity,
+                                                        Prefs.backgroundRingOpacity.default,
+                                                    )
+                                                },
+                                                valueText = { Text("${it.toInt()}%") },
+                                            )
+                                        }
                                     }
-                                }
-                                add {
-                                    TogglePreferenceWithIcon(
-                                        value = prefsState.glowEnabled,
-                                        onValueChange = {
-                                            viewModel.savePref(Prefs.glowEnabled, it)
-                                        },
-                                        icon = { Icon(Icons.Outlined.Flare, contentDescription = null) },
-                                        title = {
-                                            Text(
-                                                stringResource(R.string.pref_glow_enabled_title),
-                                            )
-                                        },
-                                        summary = {
-                                            Text(
-                                                stringResource(R.string.pref_glow_enabled_summary),
-                                            )
-                                        },
-                                    )
-                                }
-                                if (prefsState.glowEnabled) {
                                     add {
-                                        SliderPreferenceWithReset(
-                                            value = prefsState.glowRadius,
+                                        TogglePreferenceWithIcon(
+                                            value = prefsState.glowEnabled,
                                             onValueChange = {
-                                                viewModel.savePref(Prefs.glowRadius, it)
+                                                viewModel.savePref(Prefs.glowEnabled, it)
                                             },
-                                            icon = { Icon(Icons.Outlined.BlurOn, contentDescription = null) },
+                                            icon = { Icon(Icons.Outlined.Flare, contentDescription = null) },
                                             title = {
                                                 Text(
-                                                    stringResource(R.string.pref_glow_radius_title),
+                                                    stringResource(R.string.pref_glow_enabled_title),
                                                 )
                                             },
                                             summary = {
                                                 Text(
-                                                    stringResource(R.string.pref_glow_radius_summary),
+                                                    stringResource(R.string.pref_glow_enabled_summary),
                                                 )
                                             },
-                                            valueRange = Prefs.glowRadius.range!!,
-                                            defaultValue = Prefs.glowRadius.default,
-                                            onReset = {
-                                                viewModel.savePref(
-                                                    Prefs.glowRadius,
-                                                    Prefs.glowRadius.default,
-                                                )
-                                            },
-                                            valueText = { Text("%.1fdp".format(it)) },
                                         )
                                     }
-                                }
-                            },
-                    )
+                                    if (prefsState.glowEnabled) {
+                                        add {
+                                            SliderPreferenceWithReset(
+                                                value = prefsState.glowRadius,
+                                                onValueChange = {
+                                                    viewModel.savePref(Prefs.glowRadius, it)
+                                                },
+                                                icon = { Icon(Icons.Outlined.BlurOn, contentDescription = null) },
+                                                title = {
+                                                    Text(
+                                                        stringResource(R.string.pref_glow_radius_title),
+                                                    )
+                                                },
+                                                summary = {
+                                                    Text(
+                                                        stringResource(R.string.pref_glow_radius_summary),
+                                                    )
+                                                },
+                                                valueRange = Prefs.glowRadius.range!!,
+                                                defaultValue = Prefs.glowRadius.default,
+                                                onReset = {
+                                                    viewModel.savePref(
+                                                        Prefs.glowRadius,
+                                                        Prefs.glowRadius.default,
+                                                    )
+                                                },
+                                                valueText = { Text("%.1fdp".format(it)) },
+                                            )
+                                        }
+                                    }
+                                },
+                        )
+                    }
                 }
 
                 if (Build.VERSION.SDK_INT >= 35) {
@@ -515,54 +563,56 @@ fun AppearanceScreen(
                     )
 
                     item(key = "design_hdr_section") {
-                        SectionCard(
-                            modifier = Modifier.animateContentSize(MaterialTheme.motionScheme.fastSpatialSpec()),
-                            items =
-                                buildList {
-                                    add {
-                                        TogglePreferenceWithIcon(
-                                            value = prefsState.hdrEnabled,
-                                            onValueChange = {
-                                                viewModel.savePref(Prefs.hdrEnabled, it)
-                                            },
-                                            icon = { Icon(Icons.Outlined.HdrOn, contentDescription = null) },
-                                            title = {
-                                                Text(stringResource(R.string.pref_hdr_enabled_title))
-                                            },
-                                            summary = {
-                                                Text(stringResource(R.string.pref_hdr_enabled_summary))
-                                            },
-                                        )
-                                    }
-                                    if (prefsState.hdrEnabled) {
+                        IrrelevantPreferences(enabled = !prefsState.duoStatusBarMode) {
+                            SectionCard(
+                                modifier = Modifier.animateContentSize(MaterialTheme.motionScheme.fastSpatialSpec()),
+                                items =
+                                    buildList {
                                         add {
-                                            SliderPreferenceWithReset(
-                                                value = prefsState.hdrHeadroom,
+                                            TogglePreferenceWithIcon(
+                                                value = prefsState.hdrEnabled,
                                                 onValueChange = {
-                                                    viewModel.savePref(Prefs.hdrHeadroom, it)
+                                                    viewModel.savePref(Prefs.hdrEnabled, it)
                                                 },
-                                                icon = { Icon(Icons.Outlined.BrightnessHigh, contentDescription = null) },
+                                                icon = { Icon(Icons.Outlined.HdrOn, contentDescription = null) },
                                                 title = {
-                                                    Text(stringResource(R.string.pref_hdr_headroom_title))
+                                                    Text(stringResource(R.string.pref_hdr_enabled_title))
                                                 },
                                                 summary = {
-                                                    Text(stringResource(R.string.pref_hdr_headroom_summary))
+                                                    Text(stringResource(R.string.pref_hdr_enabled_summary))
                                                 },
-                                                valueRange = Prefs.hdrHeadroom.range!!,
-                                                defaultValue = Prefs.hdrHeadroom.default,
-                                                onReset = {
-                                                    viewModel.savePref(
-                                                        Prefs.hdrHeadroom,
-                                                        Prefs.hdrHeadroom.default,
-                                                    )
-                                                },
-                                                valueText = { Text("%.1f×".format(it)) },
                                             )
                                         }
-                                        add { HdrRatioReadout() }
-                                    }
-                                },
-                        )
+                                        if (prefsState.hdrEnabled) {
+                                            add {
+                                                SliderPreferenceWithReset(
+                                                    value = prefsState.hdrHeadroom,
+                                                    onValueChange = {
+                                                        viewModel.savePref(Prefs.hdrHeadroom, it)
+                                                    },
+                                                    icon = { Icon(Icons.Outlined.BrightnessHigh, contentDescription = null) },
+                                                    title = {
+                                                        Text(stringResource(R.string.pref_hdr_headroom_title))
+                                                    },
+                                                    summary = {
+                                                        Text(stringResource(R.string.pref_hdr_headroom_summary))
+                                                    },
+                                                    valueRange = Prefs.hdrHeadroom.range!!,
+                                                    defaultValue = Prefs.hdrHeadroom.default,
+                                                    onReset = {
+                                                        viewModel.savePref(
+                                                            Prefs.hdrHeadroom,
+                                                            Prefs.hdrHeadroom.default,
+                                                        )
+                                                    },
+                                                    valueText = { Text("%.1f×".format(it)) },
+                                                )
+                                            }
+                                            add { HdrRatioReadout() }
+                                        }
+                                    },
+                            )
+                        }
                     }
                 }
 
@@ -599,6 +649,7 @@ fun AppearanceScreen(
                                     add {
                                         NavigationPreference(
                                             onClick = { onNavigateToCalibration(CalibrationTarget.PERCENT) },
+                                            enabled = !prefsState.duoStatusBarMode,
                                             icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
                                             title = {
                                                 Text(
@@ -619,6 +670,7 @@ fun AppearanceScreen(
                                     add {
                                         NavigationPreference(
                                             onClick = { onNavigateToCalibration(CalibrationTarget.PERCENT_SHADOW) },
+                                            enabled = !prefsState.duoStatusBarMode,
                                             icon = { Icon(Icons.Outlined.Layers, contentDescription = null) },
                                             title = {
                                                 Text(
@@ -901,6 +953,21 @@ private fun strokeCapLabel(style: String): String =
         "round" -> "Semicircle"
         "square" -> "Square"
         else -> style
+    }
+
+private const val DUO_STATUS_BAR_PACKAGE = "io.github.kvmy666.duostatusbar"
+
+private fun PackageManager.isPackageInstalled(packageName: String): Boolean =
+    try {
+        if (Build.VERSION.SDK_INT >= 33) {
+            getApplicationInfo(packageName, PackageManager.ApplicationInfoFlags.of(0))
+        } else {
+            @Suppress("DEPRECATION")
+            getApplicationInfo(packageName, 0)
+        }
+        true
+    } catch (_: PackageManager.NameNotFoundException) {
+        false
     }
 
 @Suppress("ViewModelConstructorInComposable")

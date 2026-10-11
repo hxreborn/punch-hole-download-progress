@@ -43,6 +43,9 @@
     <string name="packages_help">This module detects downloads by reading the app\'s notifications.\n\nTo see the progress ring, the app must actively show a notification with a progress bar. If notifications are disabled or hidden, the ring will not appear.</string>
 
     <!-- Group Headers -->
+    <string name="group_duo_status_bar">Duo Status Bar</string>
+    <string name="pref_duo_status_bar_title">Duo Status Bar mode</string>
+    <string name="pref_duo_status_bar_summary">Draw downloads on the Duo Status Bar ring.</string>
     <string name="group_colors">Colors</string>
     <string name="group_geometry">Geometry</string>
     <string name="group_percent_text">Percentage text</string>
