@@ -1,0 +1,22 @@
+language: "en-US"
+
+reviews:
+  profile: "chill"
+  poem: false
+  high_level_summary: true
+  path_filters:
+    - "!**/build/**"
+    - "!fastlane/**"
+    - "!**/*.lock"
+  path_instructions:
+    - path: "app/src/main/kotlin/**/xposed/**"
+      instructions: |
+        libxposed API 101 hook form only: module.hook(method).intercept { chain -> chain.proceed() }.
+        Flag @XposedHooker, @AfterInvocation, or hook(method, HookerClass::class.java).
+        SystemUI internals vary by Android version, so reflection lookups must be guarded by runCatching.
+        Anything the hooked process owns must be released in onHotReloading.
+  auto_review:
+    enabled: true
+    drafts: false
+    ignore_usernames:
+      - "dependabot[bot]"
