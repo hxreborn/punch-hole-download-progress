@@ -368,7 +368,7 @@
         <item>圆环形状</item>
         <item>发光</item>
         <item>HDR</item>
-        <item>文本标签</item>
+        <item>进度百分比</item>
         <item>完成特效</item>
         <item>下载角标</item>
     </string-array>
@@ -380,5 +380,6 @@
         <item>进度平滑度（通知）</item>
         <item>无活动时隐藏（通知）</item>
         <item>省电模式（系统）</item>
+        <item>文件名、网速和来源应用（外观）</item>
     </string-array>
 </resources>

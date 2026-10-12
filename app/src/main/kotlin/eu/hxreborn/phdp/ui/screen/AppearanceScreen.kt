@@ -660,261 +660,261 @@ fun AppearanceScreen(
                                 },
                         )
                     }
+                }
 
-                    preferenceCategory(
-                        key = "design_filename_header",
-                        title = { Text(stringResource(R.string.group_filename_text)) },
-                    )
+                preferenceCategory(
+                    key = "design_filename_header",
+                    title = { Text(stringResource(R.string.group_filename_text)) },
+                )
 
-                    item(key = "design_filename_section") {
-                        SectionCard(
-                            modifier = Modifier.animateContentSize(MaterialTheme.motionScheme.fastSpatialSpec()),
-                            items =
-                                buildList {
+                item(key = "design_filename_section") {
+                    SectionCard(
+                        modifier = Modifier.animateContentSize(MaterialTheme.motionScheme.fastSpatialSpec()),
+                        items =
+                            buildList {
+                                add {
+                                    TogglePreferenceWithIcon(
+                                        value = prefsState.filenameTextEnabled,
+                                        onValueChange = {
+                                            viewModel.savePref(Prefs.filenameTextEnabled, it)
+                                        },
+                                        icon = { Icon(Icons.Outlined.Description, contentDescription = null) },
+                                        title = {
+                                            Text(
+                                                stringResource(R.string.pref_show_filename_title),
+                                            )
+                                        },
+                                        summary = {
+                                            Text(
+                                                stringResource(R.string.pref_show_filename_summary),
+                                            )
+                                        },
+                                    )
+                                }
+                                if (prefsState.filenameTextEnabled) {
                                     add {
-                                        TogglePreferenceWithIcon(
-                                            value = prefsState.filenameTextEnabled,
-                                            onValueChange = {
-                                                viewModel.savePref(Prefs.filenameTextEnabled, it)
-                                            },
-                                            icon = { Icon(Icons.Outlined.Description, contentDescription = null) },
+                                        NavigationPreference(
+                                            onClick = { onNavigateToCalibration(CalibrationTarget.FILENAME) },
+                                            icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
                                             title = {
                                                 Text(
-                                                    stringResource(R.string.pref_show_filename_title),
+                                                    stringResource(
+                                                        R.string.pref_calibrate_filename_title,
+                                                    ),
                                                 )
                                             },
                                             summary = {
                                                 Text(
-                                                    stringResource(R.string.pref_show_filename_summary),
+                                                    stringResource(
+                                                        R.string.pref_calibrate_filename_summary,
+                                                    ),
                                                 )
                                             },
                                         )
                                     }
-                                    if (prefsState.filenameTextEnabled) {
-                                        add {
-                                            NavigationPreference(
-                                                onClick = { onNavigateToCalibration(CalibrationTarget.FILENAME) },
-                                                icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
-                                                title = {
-                                                    Text(
-                                                        stringResource(
-                                                            R.string.pref_calibrate_filename_title,
-                                                        ),
-                                                    )
-                                                },
-                                                summary = {
-                                                    Text(
-                                                        stringResource(
-                                                            R.string.pref_calibrate_filename_summary,
-                                                        ),
-                                                    )
-                                                },
-                                            )
-                                        }
-                                        add {
-                                            NavigationPreference(
-                                                onClick = { onNavigateToCalibration(CalibrationTarget.FILENAME_SHADOW) },
-                                                icon = { Icon(Icons.Outlined.Layers, contentDescription = null) },
-                                                title = {
-                                                    Text(
-                                                        stringResource(R.string.pref_calibrate_filename_shadow_title),
-                                                    )
-                                                },
-                                                summary = {
-                                                    Text(stringResource(R.string.pref_text_shadow_nav_summary))
-                                                },
-                                            )
-                                        }
-                                    }
-                                },
-                        )
-                    }
-
-                    preferenceCategory(
-                        key = "design_speed_header",
-                        title = { Text(stringResource(R.string.group_speed_text)) },
-                    )
-
-                    item(key = "design_speed_section") {
-                        SectionCard(
-                            modifier = Modifier.animateContentSize(MaterialTheme.motionScheme.fastSpatialSpec()),
-                            items =
-                                buildList {
                                     add {
-                                        TogglePreferenceWithIcon(
-                                            value = prefsState.speedTextEnabled,
-                                            onValueChange = {
-                                                viewModel.savePref(Prefs.speedTextEnabled, it)
-                                            },
-                                            icon = { Icon(Icons.Outlined.Speed, contentDescription = null) },
+                                        NavigationPreference(
+                                            onClick = { onNavigateToCalibration(CalibrationTarget.FILENAME_SHADOW) },
+                                            icon = { Icon(Icons.Outlined.Layers, contentDescription = null) },
                                             title = {
                                                 Text(
-                                                    stringResource(R.string.pref_show_speed_title),
+                                                    stringResource(R.string.pref_calibrate_filename_shadow_title),
+                                                )
+                                            },
+                                            summary = {
+                                                Text(stringResource(R.string.pref_text_shadow_nav_summary))
+                                            },
+                                        )
+                                    }
+                                }
+                            },
+                    )
+                }
+
+                preferenceCategory(
+                    key = "design_speed_header",
+                    title = { Text(stringResource(R.string.group_speed_text)) },
+                )
+
+                item(key = "design_speed_section") {
+                    SectionCard(
+                        modifier = Modifier.animateContentSize(MaterialTheme.motionScheme.fastSpatialSpec()),
+                        items =
+                            buildList {
+                                add {
+                                    TogglePreferenceWithIcon(
+                                        value = prefsState.speedTextEnabled,
+                                        onValueChange = {
+                                            viewModel.savePref(Prefs.speedTextEnabled, it)
+                                        },
+                                        icon = { Icon(Icons.Outlined.Speed, contentDescription = null) },
+                                        title = {
+                                            Text(
+                                                stringResource(R.string.pref_show_speed_title),
+                                            )
+                                        },
+                                        summary = {
+                                            Text(
+                                                stringResource(R.string.pref_show_speed_summary),
+                                            )
+                                        },
+                                    )
+                                }
+                                if (prefsState.speedTextEnabled) {
+                                    add {
+                                        SelectPreference(
+                                            value = prefsState.speedTextUnit,
+                                            onValueChange = { viewModel.savePref(Prefs.speedTextUnit, it) },
+                                            icon = { Icon(Icons.Outlined.DataUsage, contentDescription = null) },
+                                            values = speedUnitValues,
+                                            title = { Text(stringResource(R.string.pref_speed_unit_title)) },
+                                            summary = {
+                                                Text(stringResource(R.string.pref_speed_unit_summary))
+                                            },
+                                            valueToText = {
+                                                labelFromValues(it, speedUnitEntries, speedUnitValues) ?: it
+                                            },
+                                        )
+                                    }
+                                    add {
+                                        NavigationPreference(
+                                            onClick = { onNavigateToCalibration(CalibrationTarget.SPEED) },
+                                            icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
+                                            title = {
+                                                Text(
+                                                    stringResource(
+                                                        R.string.pref_calibrate_speed_title,
+                                                    ),
                                                 )
                                             },
                                             summary = {
                                                 Text(
-                                                    stringResource(R.string.pref_show_speed_summary),
+                                                    stringResource(
+                                                        R.string.pref_calibrate_speed_summary,
+                                                    ),
                                                 )
                                             },
                                         )
                                     }
-                                    if (prefsState.speedTextEnabled) {
-                                        add {
-                                            SelectPreference(
-                                                value = prefsState.speedTextUnit,
-                                                onValueChange = { viewModel.savePref(Prefs.speedTextUnit, it) },
-                                                icon = { Icon(Icons.Outlined.DataUsage, contentDescription = null) },
-                                                values = speedUnitValues,
-                                                title = { Text(stringResource(R.string.pref_speed_unit_title)) },
-                                                summary = {
-                                                    Text(stringResource(R.string.pref_speed_unit_summary))
-                                                },
-                                                valueToText = {
-                                                    labelFromValues(it, speedUnitEntries, speedUnitValues) ?: it
-                                                },
-                                            )
-                                        }
-                                        add {
-                                            NavigationPreference(
-                                                onClick = { onNavigateToCalibration(CalibrationTarget.SPEED) },
-                                                icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
-                                                title = {
-                                                    Text(
-                                                        stringResource(
-                                                            R.string.pref_calibrate_speed_title,
-                                                        ),
-                                                    )
-                                                },
-                                                summary = {
-                                                    Text(
-                                                        stringResource(
-                                                            R.string.pref_calibrate_speed_summary,
-                                                        ),
-                                                    )
-                                                },
-                                            )
-                                        }
-                                        add {
-                                            NavigationPreference(
-                                                onClick = { onNavigateToCalibration(CalibrationTarget.SPEED_SHADOW) },
-                                                icon = { Icon(Icons.Outlined.Layers, contentDescription = null) },
-                                                title = {
-                                                    Text(
-                                                        stringResource(R.string.pref_calibrate_speed_shadow_title),
-                                                    )
-                                                },
-                                                summary = {
-                                                    Text(stringResource(R.string.pref_text_shadow_nav_summary))
-                                                },
-                                            )
-                                        }
-                                    }
-                                },
-                        )
-                    }
-
-                    preferenceCategory(
-                        key = "design_app_icon_header",
-                        title = { Text(stringResource(R.string.group_app_icon)) },
-                    )
-
-                    item(key = "design_app_icon_section") {
-                        SectionCard(
-                            modifier = Modifier.animateContentSize(MaterialTheme.motionScheme.fastSpatialSpec()),
-                            items =
-                                buildList {
                                     add {
-                                        TogglePreferenceWithIcon(
-                                            value = prefsState.appIconEnabled,
-                                            onValueChange = {
-                                                viewModel.savePref(Prefs.appIconEnabled, it)
-                                            },
-                                            icon = { Icon(Icons.Outlined.AppShortcut, contentDescription = null) },
+                                        NavigationPreference(
+                                            onClick = { onNavigateToCalibration(CalibrationTarget.SPEED_SHADOW) },
+                                            icon = { Icon(Icons.Outlined.Layers, contentDescription = null) },
                                             title = {
                                                 Text(
-                                                    stringResource(R.string.pref_app_icon_enabled_title),
+                                                    stringResource(R.string.pref_calibrate_speed_shadow_title),
                                                 )
                                             },
                                             summary = {
-                                                Text(
-                                                    stringResource(R.string.pref_app_icon_enabled_summary),
-                                                )
+                                                Text(stringResource(R.string.pref_text_shadow_nav_summary))
                                             },
                                         )
                                     }
-                                    if (prefsState.appIconEnabled) {
-                                        if (Build.VERSION.SDK_INT >= 33) {
-                                            add {
-                                                TogglePreferenceWithIcon(
-                                                    value = prefsState.appIconMonochrome,
-                                                    onValueChange = {
-                                                        viewModel.savePref(Prefs.appIconMonochrome, it)
-                                                    },
-                                                    icon = { Icon(Icons.Outlined.FilterBAndW, contentDescription = null) },
-                                                    title = {
-                                                        Text(
-                                                            stringResource(R.string.pref_app_icon_monochrome_title),
-                                                        )
-                                                    },
-                                                    summary = {
-                                                        Text(
-                                                            stringResource(R.string.pref_app_icon_monochrome_summary),
-                                                        )
-                                                    },
-                                                )
-                                            }
-                                        }
+                                }
+                            },
+                    )
+                }
+
+                preferenceCategory(
+                    key = "design_app_icon_header",
+                    title = { Text(stringResource(R.string.group_app_icon)) },
+                )
+
+                item(key = "design_app_icon_section") {
+                    SectionCard(
+                        modifier = Modifier.animateContentSize(MaterialTheme.motionScheme.fastSpatialSpec()),
+                        items =
+                            buildList {
+                                add {
+                                    TogglePreferenceWithIcon(
+                                        value = prefsState.appIconEnabled,
+                                        onValueChange = {
+                                            viewModel.savePref(Prefs.appIconEnabled, it)
+                                        },
+                                        icon = { Icon(Icons.Outlined.AppShortcut, contentDescription = null) },
+                                        title = {
+                                            Text(
+                                                stringResource(R.string.pref_app_icon_enabled_title),
+                                            )
+                                        },
+                                        summary = {
+                                            Text(
+                                                stringResource(R.string.pref_app_icon_enabled_summary),
+                                            )
+                                        },
+                                    )
+                                }
+                                if (prefsState.appIconEnabled) {
+                                    if (Build.VERSION.SDK_INT >= 33) {
                                         add {
-                                            SliderPreferenceWithReset(
-                                                value = prefsState.appIconSize,
+                                            TogglePreferenceWithIcon(
+                                                value = prefsState.appIconMonochrome,
                                                 onValueChange = {
-                                                    viewModel.savePref(Prefs.appIconSize, it)
+                                                    viewModel.savePref(Prefs.appIconMonochrome, it)
                                                 },
-                                                icon = { Icon(Icons.Outlined.AspectRatio, contentDescription = null) },
+                                                icon = { Icon(Icons.Outlined.FilterBAndW, contentDescription = null) },
                                                 title = {
                                                     Text(
-                                                        stringResource(R.string.pref_app_icon_size_title),
+                                                        stringResource(R.string.pref_app_icon_monochrome_title),
                                                     )
                                                 },
                                                 summary = {
                                                     Text(
-                                                        stringResource(R.string.pref_app_icon_size_summary),
-                                                    )
-                                                },
-                                                valueRange = Prefs.appIconSize.range!!,
-                                                defaultValue = Prefs.appIconSize.default,
-                                                onReset = {
-                                                    viewModel.savePref(
-                                                        Prefs.appIconSize,
-                                                        Prefs.appIconSize.default,
-                                                    )
-                                                },
-                                                valueText = { Text("%.0fdp".format(it)) },
-                                            )
-                                        }
-                                        add {
-                                            NavigationPreference(
-                                                onClick = {
-                                                    onNavigateToCalibration(CalibrationTarget.APP_ICON)
-                                                },
-                                                icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
-                                                title = {
-                                                    Text(
-                                                        stringResource(R.string.pref_calibrate_app_icon_title),
-                                                    )
-                                                },
-                                                summary = {
-                                                    Text(
-                                                        stringResource(R.string.pref_calibrate_app_icon_summary),
+                                                        stringResource(R.string.pref_app_icon_monochrome_summary),
                                                     )
                                                 },
                                             )
                                         }
                                     }
-                                },
-                        )
-                    }
+                                    add {
+                                        SliderPreferenceWithReset(
+                                            value = prefsState.appIconSize,
+                                            onValueChange = {
+                                                viewModel.savePref(Prefs.appIconSize, it)
+                                            },
+                                            icon = { Icon(Icons.Outlined.AspectRatio, contentDescription = null) },
+                                            title = {
+                                                Text(
+                                                    stringResource(R.string.pref_app_icon_size_title),
+                                                )
+                                            },
+                                            summary = {
+                                                Text(
+                                                    stringResource(R.string.pref_app_icon_size_summary),
+                                                )
+                                            },
+                                            valueRange = Prefs.appIconSize.range!!,
+                                            defaultValue = Prefs.appIconSize.default,
+                                            onReset = {
+                                                viewModel.savePref(
+                                                    Prefs.appIconSize,
+                                                    Prefs.appIconSize.default,
+                                                )
+                                            },
+                                            valueText = { Text("%.0fdp".format(it)) },
+                                        )
+                                    }
+                                    add {
+                                        NavigationPreference(
+                                            onClick = {
+                                                onNavigateToCalibration(CalibrationTarget.APP_ICON)
+                                            },
+                                            icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
+                                            title = {
+                                                Text(
+                                                    stringResource(R.string.pref_calibrate_app_icon_title),
+                                                )
+                                            },
+                                            summary = {
+                                                Text(
+                                                    stringResource(R.string.pref_calibrate_app_icon_summary),
+                                                )
+                                            },
+                                        )
+                                    }
+                                }
+                            },
+                    )
                 }
             }
         }

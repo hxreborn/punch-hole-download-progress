@@ -444,7 +444,7 @@
         <item>Halka şekli</item>
         <item>Parlama</item>
         <item>HDR</item>
-        <item>Metin etiketleri</item>
+        <item>Yüzde metni</item>
         <item>Tamamlanma efektleri</item>
         <item>İndirme rozeti</item>
     </string-array>
@@ -456,5 +456,6 @@
         <item>İlerleme yumuşatma (Davranış)</item>
         <item>Hareketsizlikte gizle (Davranış)</item>
         <item>Pil tasarrufu modu (Sistem)</item>
+        <item>Dosya adı, hız ve kaynak uygulama (Görünüm)</item>
     </string-array>
 </resources>

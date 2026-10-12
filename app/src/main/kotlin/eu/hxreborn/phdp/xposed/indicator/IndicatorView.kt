@@ -753,6 +753,7 @@ class IndicatorView(
 
         if (IndicatorState.duoStatusBarMode && !animator.isGeometryPreviewActive) {
             updateHdrWindow(false)
+            drawDuoLabels(canvas)
             return
         }
 
@@ -925,6 +926,22 @@ class IndicatorView(
         val locked: Boolean = false,
     )
 
+    private fun drawDuoLabels(canvas: Canvas) {
+        if (progress !in 1..99 || animator.isErrorAnimating) return
+        val hideDelay = IndicatorState.burnInHideMs
+        if (hideDelay > 0 && lastActivityTime > 0 &&
+            System.currentTimeMillis() - lastActivityTime >= hideDelay
+        ) {
+            return
+        }
+        canvas.withSave {
+            scaledPath.computeBounds(arcBounds, true)
+            arcBounds.applyCalibration()
+            drawLabels(this, progress)
+            drawAppIcon(this)
+        }
+    }
+
     private fun drawLabels(
         canvas: Canvas,
         progressVal: Int,
@@ -940,7 +957,7 @@ class IndicatorView(
         val speedStrokeWidthPx = IndicatorState.speedTextStrokeWidth * density
         val speedIsOval = IndicatorState.speedTextShadowMode == "oval"
 
-        if (IndicatorState.percentTextEnabled) {
+        if (IndicatorState.percentTextEnabled && !IndicatorState.duoStatusBarMode) {
             val locked = IndicatorState.percentTextLockRotation
             val text = "$progressVal%"
             val textWidth = percentPaint.measureText(text)

@@ -64,7 +64,7 @@
         <item>Ring shape</item>
         <item>Glow</item>
         <item>HDR</item>
-        <item>Text labels</item>
+        <item>Percentage text</item>
         <item>Completion effects</item>
         <item>Download badge</item>
     </string-array>
@@ -76,6 +76,7 @@
         <item>Progress smoothness (Behavior)</item>
         <item>Hide after inactivity (Behavior)</item>
         <item>Battery saver mode (System)</item>
+        <item>Filename, speed and source app (Appearance)</item>
     </string-array>
     <string name="group_colors">Colors</string>
     <string name="group_geometry">Geometry</string>

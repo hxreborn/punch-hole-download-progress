@@ -181,28 +181,19 @@ object SystemUIHook {
                 "download progress route progress=$progress " +
                     "duoMode=${IndicatorState.duoStatusBarMode}"
             }
-            if (IndicatorState.duoStatusBarMode) {
-                DuoDownloadPublisher.onProgress(progress)
-            } else {
-                onView { this.progress = progress }
-            }
+            onView { this.progress = progress }
+            if (IndicatorState.duoStatusBarMode) DuoDownloadPublisher.onProgress(progress)
         }
         DownloadProgressHook.onDownloadComplete = {
             triggerHapticFeedback()
             logDebug { "download complete route duoMode=${IndicatorState.duoStatusBarMode}" }
-            if (IndicatorState.duoStatusBarMode) {
-                DuoDownloadPublisher.onComplete()
-            } else {
-                onView { progress = 100 }
-            }
+            onView { progress = 100 }
+            if (IndicatorState.duoStatusBarMode) DuoDownloadPublisher.onComplete()
         }
         DownloadProgressHook.onDownloadCancelled = {
             logDebug { "download cancelled route duoMode=${IndicatorState.duoStatusBarMode}" }
-            if (IndicatorState.duoStatusBarMode) {
-                DuoDownloadPublisher.onFailed()
-            } else {
-                onView { showError() }
-            }
+            onView { showError() }
+            if (IndicatorState.duoStatusBarMode) DuoDownloadPublisher.onFailed()
         }
         DownloadProgressHook.onActiveCountChanged = { count ->
             onView { activeDownloadCount = count }
