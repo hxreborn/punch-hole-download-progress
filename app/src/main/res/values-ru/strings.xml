@@ -425,4 +425,38 @@
         <item>Биты в секунду (Mbps)</item>
         <item>Байты в секунду (MB/s)</item>
     </string-array>
+    <string name="group_duo_status_bar">Duo Status Bar</string>
+    <string name="group_integrations">Интеграции</string>
+    <string name="group_duo_ring">Кольцо</string>
+    <string name="group_duo_preview">Предпросмотр</string>
+    <string name="pref_duo_status_bar_title">Режим Duo Status Bar</string>
+    <string name="pref_duo_status_bar_summary">Показывать загрузки на кольце Duo Status Bar</string>
+    <string name="pref_duo_status_bar_unavailable">Нужен Duo Status Bar с поддержкой загрузок</string>
+    <string name="pref_duo_progress_color_summary">Цвет заливки кольца Duo Status Bar</string>
+    <string name="pref_duo_progress_color_material_you">Задаётся Material You</string>
+    <string name="pref_duo_progress_color_gradient">Задаётся градиентом</string>
+    <string name="pref_duo_percent_summary">Показывать процент загрузки на кольце Duo Status Bar</string>
+    <string name="duo_footer_hidden_title">Duo рисует своё кольцо. Эти настройки скрыты, пока включён режим Duo Status Bar:</string>
+    <string name="duo_footer_used_title">Эти настройки по-прежнему меняют кольцо Duo:</string>
+    <string name="duo_about_title">Duo Status Bar</string>
+    <string name="duo_about_body">Duo Status Bar — отдельный модуль Xposed от kvmy666. Он заменяет значки батареи, Wi-Fi и сигнала одним кольцом. В режиме Duo этот модуль показывает загрузки на этом кольце.</string>
+    <string name="duo_about_open_github">Открыть на GitHub</string>
+    <string name="duo_about_close">Закрыть</string>
+    <string-array name="duo_footer_hidden_items">
+        <item>Форма кольца</item>
+        <item>Свечение</item>
+        <item>HDR</item>
+        <item>Текстовые метки</item>
+        <item>Эффекты завершения</item>
+        <item>Значок загрузок</item>
+    </string-array>
+    <string-array name="duo_footer_used_items">
+        <item>Градиент (Интерфейс)</item>
+        <item>Material You (Интерфейс)</item>
+        <item>Цвет завершения (Интерфейс)</item>
+        <item>Направление прогресса (Поведение)</item>
+        <item>Плавность прогресса (Поведение)</item>
+        <item>Скрыть при бездействии (Поведение)</item>
+        <item>Режим экономии заряда батареи (Система)</item>
+    </string-array>
 </resources>
