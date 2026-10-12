@@ -221,10 +221,10 @@ object SystemUIHook {
         IndicatorState.onAppVisibilityChanged = { visible -> onView { appVisible = visible } }
         IndicatorState.onTestProgressChanged = { progress ->
             log("test progress route progress=$progress duoMode=${IndicatorState.duoStatusBarMode}")
-            if (IndicatorState.duoStatusBarMode) {
-                DuoDownloadPublisher.onProgress(progress)
-            } else {
-                onView { this.progress = progress }
+            when {
+                !IndicatorState.duoStatusBarMode -> onView { this.progress = progress }
+                progress >= 100 -> DuoDownloadPublisher.onComplete()
+                else -> DuoDownloadPublisher.onProgress(progress)
             }
         }
         IndicatorState.onPreviewTriggered = { onView { startDynamicPreviewAnim() } }
