@@ -509,7 +509,9 @@ object IndicatorState {
         runCatching {
             when (key) {
                 Prefs.duoStatusBarMode.key -> {
-                    duoStatusBarMode = SettingsPush.bool(intent)
+                    val enabled = SettingsPush.bool(intent)
+                    if (enabled == duoStatusBarMode) return@runCatching
+                    duoStatusBarMode = enabled
                     log("duo mode pushed value=$duoStatusBarMode")
                     onDuoModeChanged?.invoke(duoStatusBarMode)
                     onPrefsChanged?.invoke()
@@ -536,7 +538,8 @@ object IndicatorState {
                 }
 
                 else -> {
-                    if (applyPushedDuoPref(key, intent)) {
+                    val before = pushedDuoState()
+                    if (applyPushedDuoPref(key, intent) && pushedDuoState() != before) {
                         log("duo setting pushed key=$key")
                         onPrefsChanged?.invoke()
                         if (key in Prefs.visualKeys) {
@@ -547,6 +550,35 @@ object IndicatorState {
             }
         }.onFailure { log("settings-push failed key=$key", it) }
     }
+
+    private fun pushedDuoState(): List<Any> =
+        listOf(
+            color,
+            gradientEnabled,
+            gradientColors.toList(),
+            gradientDirection,
+            gradientAngle,
+            clockwise,
+            errorColor,
+            percentTextEnabled,
+            materialYouEnabled,
+            materialYouProgressPalette,
+            materialYouProgressShade,
+            materialYouSuccessPalette,
+            materialYouSuccessShade,
+            materialYouErrorPalette,
+            materialYouErrorShade,
+            powerSaverMode,
+            progressEasing,
+            progressAnimMs,
+            finishUseFlashColor,
+            finishFlashColor,
+            finishHoldMs,
+            finishExitMs,
+            minVisibilityEnabled,
+            minVisibilityMs,
+            burnInHideMs,
+        )
 
     private fun applyPushedDuoPref(
         key: String,
