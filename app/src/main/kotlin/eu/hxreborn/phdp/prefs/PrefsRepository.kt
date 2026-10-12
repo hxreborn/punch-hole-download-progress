@@ -75,10 +75,12 @@ class PrefsRepositoryImpl(
 
     override fun syncToRemote() {
         val remote = remotePrefsProvider() ?: return
-        val snapshot = localPrefs.all
+        val current = remote.all
+        val changed = localPrefs.all.filter { (key, value) -> current[key] != value }
+        if (changed.isEmpty()) return
         runCatching {
             remote.edit(commit = true) {
-                for ((key, value) in snapshot) {
+                for ((key, value) in changed) {
                     putAny(key, value)
                 }
             }
