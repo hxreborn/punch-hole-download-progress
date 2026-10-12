@@ -71,6 +71,7 @@ commit_parsers = [
   { body = ".*[Ss]ecurity", group = "<!-- 03 -->Security" },
   { message = "^refactor", group = "<!-- 04 -->Refactor" },
   { message = "^[Rr]evert", group = "<!-- 05 -->Reverts" },
+  { message = '^build\(deps\): bump (gradle-wrapper|com\.android\.application) ', skip = true },
   { message = '^(build|chore)\(deps(-dev)?\)', group = "<!-- 10 -->Dependencies" },
   { message = "^doc", skip = true },
   { message = "^style", skip = true },
