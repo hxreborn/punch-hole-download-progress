@@ -427,7 +427,7 @@ object DuoDownloadPublisher {
             when {
                 failed -> IndicatorState.errorColor
                 holding && IndicatorState.finishUseFlashColor -> IndicatorState.finishFlashColor
-                else -> IndicatorState.color
+                else -> IndicatorState.duoProgressColor
             }
         if (!IndicatorState.materialYouEnabled || Build.VERSION.SDK_INT < 31) return base
         val palette =

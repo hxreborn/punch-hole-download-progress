@@ -24,6 +24,7 @@ object SettingsPush {
     private val pushedKeys =
         setOf(
             Prefs.duoStatusBarMode.key,
+            Prefs.duoProgressColor.key,
             Prefs.color.key,
             Prefs.gradientEnabled.key,
             Prefs.gradientColors.key,
@@ -94,6 +95,7 @@ object SettingsPush {
         prefs: SharedPreferences,
     ) {
         send(context, Prefs.duoStatusBarMode, Prefs.duoStatusBarMode.read(prefs))
+        send(context, Prefs.duoProgressColor, Prefs.duoProgressColor.read(prefs))
         send(context, Prefs.color, Prefs.color.read(prefs))
         send(context, Prefs.gradientEnabled, Prefs.gradientEnabled.read(prefs))
         send(context, Prefs.gradientColors, Prefs.gradientColors.read(prefs))

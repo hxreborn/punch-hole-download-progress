@@ -28,6 +28,10 @@ object IndicatorState {
         private set
 
     @Volatile
+    var duoProgressColor = Prefs.duoProgressColor.default
+        private set
+
+    @Volatile
     var color = Prefs.color.default
         private set
 
@@ -553,6 +557,7 @@ object IndicatorState {
 
     private fun pushedDuoState(): List<Any> =
         listOf(
+            duoProgressColor,
             color,
             gradientEnabled,
             gradientColors.toList(),
@@ -585,6 +590,11 @@ object IndicatorState {
         intent: Intent,
     ): Boolean =
         when (key) {
+            Prefs.duoProgressColor.key -> {
+                duoProgressColor = SettingsPush.int(intent, Prefs.duoProgressColor.default)
+                true
+            }
+
             Prefs.color.key -> {
                 color = SettingsPush.int(intent, Prefs.color.default)
                 true
@@ -802,6 +812,10 @@ object IndicatorState {
 
                 Prefs.duoStatusBarMode.key -> {
                     duoStatusBarMode = Prefs.duoStatusBarMode.read(prefs)
+                }
+
+                Prefs.duoProgressColor.key -> {
+                    duoProgressColor = Prefs.duoProgressColor.read(prefs)
                 }
 
                 Prefs.color.key -> {
@@ -1297,6 +1311,7 @@ object IndicatorState {
             remotePrefs?.let { prefs ->
                 enabled = Prefs.enabled.read(prefs)
                 duoStatusBarMode = Prefs.duoStatusBarMode.read(prefs)
+                duoProgressColor = Prefs.duoProgressColor.read(prefs)
                 color = Prefs.color.read(prefs)
                 gradientEnabled = Prefs.gradientEnabled.read(prefs)
                 gradientColors =

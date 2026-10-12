@@ -11,6 +11,7 @@ import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 data class AppPrefs(
     val enabled: Boolean = Prefs.enabled.default,
     val duoStatusBarMode: Boolean = Prefs.duoStatusBarMode.default,
+    val duoProgressColor: Int = Prefs.duoProgressColor.default,
     val color: Int = Prefs.color.default,
     val gradientEnabled: Boolean = Prefs.gradientEnabled.default,
     val gradientColors: List<Int> = decodeGradientColors(Prefs.gradientColors.default),

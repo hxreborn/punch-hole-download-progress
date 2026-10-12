@@ -210,6 +210,7 @@ class PrefsRepositoryImpl(
         AppPrefs(
             enabled = Prefs.enabled.read(this),
             duoStatusBarMode = Prefs.duoStatusBarMode.read(this),
+            duoProgressColor = Prefs.duoProgressColor.read(this),
             color = Prefs.color.read(this),
             gradientEnabled = Prefs.gradientEnabled.read(this),
             gradientColors = decodeGradientColors(Prefs.gradientColors.read(this)),
