@@ -48,9 +48,10 @@ object DuoDownloadPublisher {
     private var powerSave = false
     private var burnedIn = false
     private var previewing = false
+    private var exitFade = 1f
     private var lastPublishTrace: String? = null
 
-    private val clearRunnable = Runnable { clearNow() }
+    private val clearRunnable = Runnable { if (holding) fadeOutThenClear() else clearNow() }
     private val previewClearRunnable = Runnable { clearPreviewNow() }
     private val burnInRunnable =
         Runnable {
@@ -285,8 +286,22 @@ object DuoDownloadPublisher {
         return true
     }
 
+    private fun fadeOutThenClear() {
+        animator?.cancel()
+        animator =
+            ValueAnimator.ofFloat(1f, 0f).apply {
+                duration = IndicatorState.finishExitMs.toLong()
+                addUpdateListener {
+                    exitFade = it.animatedValue as Float
+                    if (it.animatedFraction >= 1f) clearNow() else publish()
+                }
+                start()
+            }
+    }
+
     private fun clearNow() {
         animator?.cancel()
+        exitFade = 1f
         handler.removeCallbacks(clearRunnable)
         handler.removeCallbacks(previewClearRunnable)
         handler.removeCallbacks(burnInRunnable)
@@ -316,6 +331,7 @@ object DuoDownloadPublisher {
     private fun animateTo(target: Int) {
         val from = displayed
         animator?.cancel()
+        exitFade = 1f
         val duration = IndicatorState.progressAnimMs.toLong()
         if (duration <= 0L || from == target.toFloat()) {
             displayed = target.toFloat()
@@ -350,7 +366,7 @@ object DuoDownloadPublisher {
                 !showing -> 0f
                 powerSave && IndicatorState.powerSaverMode == "dim" -> DIM
                 else -> 1f
-            }
+            } * exitFade
         val progress =
             if (previewing) {
                 PREVIEW_PROGRESS
