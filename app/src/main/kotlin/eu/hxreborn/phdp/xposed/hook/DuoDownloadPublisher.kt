@@ -240,6 +240,7 @@ object DuoDownloadPublisher {
                 "active=$active progress=$lastProgress",
         )
         if (!IndicatorState.duoStatusBarMode) return
+        if (keepActiveDownloads()) return
         handler.removeCallbacks(clearRunnable)
         handler.removeCallbacks(burnInRunnable)
         burnedIn = false
@@ -266,6 +267,7 @@ object DuoDownloadPublisher {
                 "active=$active progress=$lastProgress",
         )
         if (!IndicatorState.duoStatusBarMode) return
+        if (keepActiveDownloads()) return
         handler.removeCallbacks(clearRunnable)
         handler.removeCallbacks(burnInRunnable)
         burnedIn = false
@@ -275,6 +277,12 @@ object DuoDownloadPublisher {
         displayed = lastProgress.toFloat()
         publish()
         handler.postDelayed(clearRunnable, IndicatorState.finishExitMs.toLong())
+    }
+
+    private fun keepActiveDownloads(): Boolean {
+        if (!DownloadProgressHook.hasActiveDownloads()) return false
+        onProgressMain(DownloadProgressHook.currentAverage())
+        return true
     }
 
     private fun clearNow() {
