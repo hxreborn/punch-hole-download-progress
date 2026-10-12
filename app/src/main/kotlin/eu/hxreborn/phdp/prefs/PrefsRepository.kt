@@ -106,6 +106,7 @@ class PrefsRepositoryImpl(
     override fun resetDefaults() {
         localPrefs.edit { Prefs.resettable.forEach { it.reset(this) } }
         remotePrefsProvider()?.edit(commit = true) { Prefs.resettable.forEach { it.reset(this) } }
+        context?.let { SettingsPush.sendSnapshot(it, localPrefs) }
     }
 
     override fun syncToRemote() {
