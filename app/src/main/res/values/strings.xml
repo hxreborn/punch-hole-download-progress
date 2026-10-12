@@ -50,8 +50,25 @@
     <string name="pref_duo_progress_color_material_you">Set by Material You</string>
     <string name="pref_duo_progress_color_gradient">Set by the gradient</string>
     <string name="pref_duo_percent_summary">Show the download percentage on the Duo Status Bar ring</string>
-    <string name="duo_footer_hidden">Duo Status Bar draws the ring. Appearance and Behavior hide the settings it doesn\'t use: ring shape, glow, HDR, text labels, completion effects and the download badge.</string>
-    <string name="duo_footer_shared">Gradient, Material You, Completion color, Ring fill direction, Progress smoothness, Hide after inactivity and Battery saver mode still change the Duo ring.</string>
+    <string name="duo_footer_hidden_title">Hidden in Appearance and Behavior</string>
+    <string name="duo_footer_used_title">Used by Duo</string>
+    <string-array name="duo_footer_hidden_items">
+        <item>Ring shape</item>
+        <item>Glow</item>
+        <item>HDR</item>
+        <item>Text labels</item>
+        <item>Completion effects</item>
+        <item>Download badge</item>
+    </string-array>
+    <string-array name="duo_footer_used_items">
+        <item>Gradient</item>
+        <item>Material You</item>
+        <item>Completion color</item>
+        <item>Ring fill direction</item>
+        <item>Progress smoothness</item>
+        <item>Hide after inactivity</item>
+        <item>Battery saver mode</item>
+    </string-array>
     <string name="group_colors">Colors</string>
     <string name="group_geometry">Geometry</string>
     <string name="group_percent_text">Percentage text</string>

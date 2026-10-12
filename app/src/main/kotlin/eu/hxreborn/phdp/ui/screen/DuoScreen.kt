@@ -3,6 +3,8 @@ package eu.hxreborn.phdp.ui.screen
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.annotation.ArrayRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -154,14 +157,27 @@ private fun DuoFooter() {
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        Column(verticalArrangement = Arrangement.spacedBy(Tokens.SpacingSm)) {
+        Column(verticalArrangement = Arrangement.spacedBy(Tokens.SpacingLg)) {
+            DuoFooterGroup(R.string.duo_footer_hidden_title, R.array.duo_footer_hidden_items)
+            DuoFooterGroup(R.string.duo_footer_used_title, R.array.duo_footer_used_items)
+        }
+    }
+}
+
+@Composable
+private fun DuoFooterGroup(
+    @StringRes title: Int,
+    @ArrayRes items: Int,
+) {
+    Column {
+        Text(
+            text = stringResource(title),
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        stringArrayResource(items).forEach { item ->
             Text(
-                text = stringResource(R.string.duo_footer_hidden),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Text(
-                text = stringResource(R.string.duo_footer_shared),
+                text = "• $item",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
