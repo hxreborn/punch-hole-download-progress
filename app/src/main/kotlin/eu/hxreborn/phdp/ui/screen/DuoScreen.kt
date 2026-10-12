@@ -3,7 +3,10 @@ package eu.hxreborn.phdp.ui.screen
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,6 +14,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DonutLarge
 import androidx.compose.material.icons.outlined.Downloading
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Percent
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -90,7 +94,17 @@ fun DuoScreen(
                                                 !prefsState.gradientEnabled &&
                                                     !prefsState.materialYouEnabled,
                                             title = { Text(stringResource(R.string.pref_progress_color_title)) },
-                                            summary = { Text(stringResource(R.string.pref_duo_progress_color_summary)) },
+                                            summary = {
+                                                Text(
+                                                    stringResource(
+                                                        when {
+                                                            prefsState.materialYouEnabled -> R.string.pref_duo_progress_color_material_you
+                                                            prefsState.gradientEnabled -> R.string.pref_duo_progress_color_gradient
+                                                            else -> R.string.pref_duo_progress_color_summary
+                                                        },
+                                                    ),
+                                                )
+                                            },
                                         )
                                     }
                                     add {
@@ -108,19 +122,6 @@ fun DuoScreen(
                 }
 
                 if (prefsState.duoStatusBarMode) {
-                    item(key = "duo_note") {
-                        Text(
-                            text = stringResource(R.string.duo_shared_settings_note),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier =
-                                Modifier.padding(
-                                    horizontal = Tokens.SectionHorizontalMargin,
-                                    vertical = Tokens.SpacingSm,
-                                ),
-                        )
-                    }
-
                     item(key = "duo_test_buttons") {
                         TestButtonsRow(
                             onSimulateSuccess = { viewModel.simulateSuccess() },
@@ -128,8 +129,42 @@ fun DuoScreen(
                         )
                     }
                 }
+
+                item(key = "duo_footer") {
+                    DuoFooter()
+                }
             }
             VerticalScrollbar(listState, innerPadding)
+        }
+    }
+}
+
+@Composable
+private fun DuoFooter() {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(Tokens.SpacingLg),
+        modifier =
+            Modifier.padding(
+                horizontal = Tokens.SectionHorizontalMargin + Tokens.SpacingLg,
+                vertical = Tokens.SpacingLg,
+            ),
+    ) {
+        Icon(
+            Icons.Outlined.Info,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Column(verticalArrangement = Arrangement.spacedBy(Tokens.SpacingSm)) {
+            Text(
+                text = stringResource(R.string.duo_footer_hidden),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                text = stringResource(R.string.duo_footer_shared),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }

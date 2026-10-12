@@ -143,17 +143,7 @@ fun AppearanceScreen(
                                             onClick = onNavigateToDuo,
                                             icon = { Icon(Icons.Outlined.DonutLarge, contentDescription = null) },
                                             title = { Text(stringResource(R.string.pref_duo_status_bar_title)) },
-                                            summary = {
-                                                Text(
-                                                    stringResource(
-                                                        if (prefsState.duoStatusBarMode) {
-                                                            R.string.pref_duo_status_bar_on_summary
-                                                        } else {
-                                                            R.string.pref_duo_status_bar_summary
-                                                        },
-                                                    ),
-                                                )
-                                            },
+                                            summary = { Text(stringResource(R.string.pref_duo_status_bar_summary)) },
                                         )
                                     },
                                 ),
