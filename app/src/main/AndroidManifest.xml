@@ -2,7 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <permission
+        android:name="eu.hxreborn.phdp.permission.PUSH_SETTINGS"
+        android:protectionLevel="signature" />
+
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="eu.hxreborn.phdp.permission.PUSH_SETTINGS" />
 
     <queries>
         <package android:name="io.github.kvmy666.duostatusbar" />

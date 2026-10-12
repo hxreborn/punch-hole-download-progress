@@ -339,10 +339,17 @@ object SystemUIHook {
                 context.registerReceiver(
                     receiver,
                     IntentFilter(SettingsPush.ACTION),
+                    SettingsPush.PERMISSION,
+                    null,
                     Context.RECEIVER_EXPORTED,
                 )
             } else {
-                context.registerReceiver(receiver, IntentFilter(SettingsPush.ACTION))
+                context.registerReceiver(
+                    receiver,
+                    IntentFilter(SettingsPush.ACTION),
+                    SettingsPush.PERMISSION,
+                    null,
+                )
             }
             log("settings push receiver registered ctxPkg=${context.packageName}")
         }.onFailure { log("register failed pkg=$SYSTEMUI_PKG target=settings-push", it) }

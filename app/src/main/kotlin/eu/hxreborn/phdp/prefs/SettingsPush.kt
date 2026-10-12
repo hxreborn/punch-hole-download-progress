@@ -9,6 +9,7 @@ private const val TAG = "PHDP"
 
 object SettingsPush {
     const val ACTION = "eu.hxreborn.phdp.action.SETTING_CHANGED"
+    const val PERMISSION = "eu.hxreborn.phdp.permission.PUSH_SETTINGS"
     const val EXTRA_KEY = "key"
     const val EXTRA_TYPE = "type"
     const val EXTRA_BOOL = "bool"
