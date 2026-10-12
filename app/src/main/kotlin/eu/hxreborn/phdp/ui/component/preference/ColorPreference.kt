@@ -77,7 +77,6 @@ fun ColorPreference(
     enabled: Boolean = true,
     colors: List<Int> = MaterialPalette.materialColors,
 ) {
-    val enabled = preferenceEnabled(enabled)
     var showDialog by remember { mutableStateOf(false) }
     val contentAlpha = if (enabled) 1f else Tokens.DISABLED_ALPHA
 

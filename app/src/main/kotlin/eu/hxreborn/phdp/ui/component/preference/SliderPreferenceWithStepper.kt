@@ -68,7 +68,6 @@ fun SliderPreferenceWithStepper(
     suffix: String = "",
     summary: @Composable (() -> Unit)? = null,
 ) {
-    val enabled = preferenceEnabled(enabled)
     var isDragging by remember { mutableStateOf(false) }
     var sliderValue by remember { mutableFloatStateOf(value) }
 

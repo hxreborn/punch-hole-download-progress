@@ -60,7 +60,6 @@ fun SliderPreferenceWithReset(
     enabled: Boolean = true,
     stepSize: Float = 0f,
 ) {
-    val enabled = preferenceEnabled(enabled)
     // Track dragging state to avoid resetting slider during drag
     var isDragging by remember { mutableStateOf(false) }
     var sliderValue by remember { mutableFloatStateOf(value) }

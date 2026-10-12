@@ -60,7 +60,6 @@ fun <T> SelectPreference(
     valueToText: (T) -> String = { it.toString() },
     valueToDescription: (T) -> String? = { null },
 ) {
-    val enabled = preferenceEnabled(enabled)
     var showDialog by remember { mutableStateOf(false) }
     val contentAlpha = if (enabled) 1f else Tokens.DISABLED_ALPHA
 

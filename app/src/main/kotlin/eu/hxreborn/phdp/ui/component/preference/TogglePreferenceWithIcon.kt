@@ -37,7 +37,6 @@ fun TogglePreferenceWithIcon(
     summary: @Composable (() -> Unit)? = null,
     enabled: Boolean = true,
 ) {
-    val enabled = preferenceEnabled(enabled)
     val contentAlpha = if (enabled) 1f else Tokens.DISABLED_ALPHA
 
     Row(

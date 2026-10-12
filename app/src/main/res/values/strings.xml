@@ -46,6 +46,10 @@
     <string name="group_duo_status_bar">Duo Status Bar</string>
     <string name="pref_duo_status_bar_title">Duo Status Bar mode</string>
     <string name="pref_duo_status_bar_summary">Draw downloads on the Duo Status Bar ring.</string>
+    <string name="pref_duo_status_bar_on_summary">On. Ring shape, HDR, label and completion effect settings are hidden.</string>
+    <string name="pref_duo_progress_color_summary">Fill color on the Duo Status Bar ring</string>
+    <string name="pref_duo_percent_summary">Show the download percentage on the Duo Status Bar ring</string>
+    <string name="duo_shared_settings_note">Gradient, Material You, completion color, rotation direction, animation speed, burn-in and power saver settings also apply to the Duo Status Bar ring.</string>
     <string name="group_colors">Colors</string>
     <string name="group_geometry">Geometry</string>
     <string name="group_percent_text">Percentage text</string>

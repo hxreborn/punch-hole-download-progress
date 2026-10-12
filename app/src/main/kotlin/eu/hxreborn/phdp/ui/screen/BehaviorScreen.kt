@@ -43,7 +43,6 @@ import eu.hxreborn.phdp.ui.SettingsUiState
 import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.VerticalScrollbar
-import eu.hxreborn.phdp.ui.component.preference.IrrelevantPreferences
 import eu.hxreborn.phdp.ui.component.preference.NavigationPreference
 import eu.hxreborn.phdp.ui.component.preference.SelectPreference
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithReset
@@ -117,13 +116,13 @@ fun BehaviorScreen(
                     )
                 }
 
-                preferenceCategory(
-                    key = "completion_effect_header",
-                    title = { Text(stringResource(R.string.group_completion_effect)) },
-                )
+                if (!prefsState.duoStatusBarMode) {
+                    preferenceCategory(
+                        key = "completion_effect_header",
+                        title = { Text(stringResource(R.string.group_completion_effect)) },
+                    )
 
-                item(key = "completion_effect_section") {
-                    IrrelevantPreferences(enabled = !prefsState.duoStatusBarMode) {
+                    item(key = "completion_effect_section") {
                         SectionCard(
                             modifier = Modifier.animateContentSize(MaterialTheme.motionScheme.fastSpatialSpec()),
                             items =
@@ -345,46 +344,48 @@ fun BehaviorScreen(
                 item(key = "behavior_indicators_section") {
                     SectionCard(
                         items =
-                            listOf(
-                                {
-                                    TogglePreferenceWithIcon(
-                                        value = prefsState.showDownloadCount,
-                                        onValueChange = { viewModel.savePref(Prefs.showDownloadCount, it) },
-                                        icon = { Icon(Icons.Outlined.Numbers, contentDescription = null) },
-                                        title = {
-                                            Text(
-                                                stringResource(R.string.pref_show_queue_count_title),
-                                            )
-                                        },
-                                        summary = {
-                                            Text(
-                                                stringResource(R.string.pref_show_queue_count_summary),
-                                            )
-                                        },
-                                    )
-                                },
-                                {
-                                    NavigationPreference(
-                                        onClick = onNavigateToBadgeCalibration,
-                                        enabled = prefsState.showDownloadCount,
-                                        icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
-                                        title = {
-                                            Text(
-                                                stringResource(
-                                                    R.string.pref_calibrate_badge_title,
-                                                ),
-                                            )
-                                        },
-                                        summary = {
-                                            Text(
-                                                stringResource(
-                                                    R.string.pref_calibrate_badge_summary,
-                                                ),
-                                            )
-                                        },
-                                    )
-                                },
-                                {
+                            buildList {
+                                if (!prefsState.duoStatusBarMode) {
+                                    add {
+                                        TogglePreferenceWithIcon(
+                                            value = prefsState.showDownloadCount,
+                                            onValueChange = { viewModel.savePref(Prefs.showDownloadCount, it) },
+                                            icon = { Icon(Icons.Outlined.Numbers, contentDescription = null) },
+                                            title = {
+                                                Text(
+                                                    stringResource(R.string.pref_show_queue_count_title),
+                                                )
+                                            },
+                                            summary = {
+                                                Text(
+                                                    stringResource(R.string.pref_show_queue_count_summary),
+                                                )
+                                            },
+                                        )
+                                    }
+                                    add {
+                                        NavigationPreference(
+                                            onClick = onNavigateToBadgeCalibration,
+                                            enabled = prefsState.showDownloadCount,
+                                            icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
+                                            title = {
+                                                Text(
+                                                    stringResource(
+                                                        R.string.pref_calibrate_badge_title,
+                                                    ),
+                                                )
+                                            },
+                                            summary = {
+                                                Text(
+                                                    stringResource(
+                                                        R.string.pref_calibrate_badge_summary,
+                                                    ),
+                                                )
+                                            },
+                                        )
+                                    }
+                                }
+                                add {
                                     SelectPreference(
                                         value = prefsState.burnInHideMs.toString(),
                                         onValueChange = {
@@ -403,8 +404,8 @@ fun BehaviorScreen(
                                                 ?: "${(raw.toIntOrNull() ?: 0) / 1000}s"
                                         },
                                     )
-                                },
-                                {
+                                }
+                                add {
                                     SliderPreferenceWithStepper(
                                         value = prefsState.progressAnimMs.toFloat(),
                                         onValueChange = {
@@ -428,8 +429,8 @@ fun BehaviorScreen(
                                             Text(stringResource(R.string.pref_progress_anim_summary))
                                         },
                                     )
-                                },
-                            ),
+                                }
+                            },
                     )
                 }
 
