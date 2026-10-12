@@ -1,6 +1,7 @@
 package eu.hxreborn.phdp.ui.screen
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.ArrayRes
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.OpenInNew
 import androidx.compose.material.icons.outlined.DonutLarge
 import androidx.compose.material.icons.outlined.Downloading
 import androidx.compose.material.icons.outlined.Info
@@ -26,10 +28,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.Prefs
@@ -42,6 +46,7 @@ import eu.hxreborn.phdp.ui.component.VerticalScrollbar
 import eu.hxreborn.phdp.ui.component.preference.ColorPreference
 import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
 import eu.hxreborn.phdp.ui.theme.Tokens
+import me.zhanghai.compose.preference.Preference
 import me.zhanghai.compose.preference.ProvidePreferenceLocals
 
 @Composable
@@ -124,6 +129,26 @@ fun DuoScreen(
                     )
                 }
 
+                item(key = "duo_link") {
+                    SectionCard(
+                        items =
+                            listOf(
+                                {
+                                    Preference(
+                                        onClick = {
+                                            context.startActivity(Intent(Intent.ACTION_VIEW, DUO_STATUS_BAR_URL.toUri()))
+                                        },
+                                        icon = { Icon(painterResource(R.drawable.ic_github_24), contentDescription = null) },
+                                        title = { Text(stringResource(R.string.pref_duo_github_title)) },
+                                        summary = { Text(stringResource(R.string.pref_duo_github_summary)) },
+                                        widgetContainer = { TrailingIcon(Icons.AutoMirrored.Outlined.OpenInNew) },
+                                    )
+                                },
+                            ),
+                        modifier = Modifier.padding(top = Tokens.SpacingLg),
+                    )
+                }
+
                 if (prefsState.duoStatusBarMode) {
                     item(key = "duo_test_buttons") {
                         TestButtonsRow(
@@ -186,6 +211,7 @@ private fun DuoFooterGroup(
 }
 
 private const val DUO_STATUS_BAR_PACKAGE = "io.github.kvmy666.duostatusbar"
+private const val DUO_STATUS_BAR_URL = "https://github.com/kvmy666/duoStatusBar"
 
 internal fun Context.isDuoStatusBarInstalled(): Boolean =
     try {

@@ -52,6 +52,8 @@
     <string name="pref_duo_percent_summary">Show the download percentage on the Duo Status Bar ring</string>
     <string name="duo_footer_hidden_title">Hidden in Appearance and Behavior</string>
     <string name="duo_footer_used_title">Used by Duo</string>
+    <string name="pref_duo_github_title">Duo Status Bar on GitHub</string>
+    <string name="pref_duo_github_summary">kvmy666/duoStatusBar</string>
     <string-array name="duo_footer_hidden_items">
         <item>Ring shape</item>
         <item>Glow</item>

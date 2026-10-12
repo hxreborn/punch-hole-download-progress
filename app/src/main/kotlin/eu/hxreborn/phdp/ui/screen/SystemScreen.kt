@@ -530,7 +530,7 @@ fun SystemScreen(
 }
 
 @Composable
-private fun TrailingIcon(imageVector: ImageVector) {
+internal fun TrailingIcon(imageVector: ImageVector) {
     Icon(
         imageVector,
         contentDescription = null,
