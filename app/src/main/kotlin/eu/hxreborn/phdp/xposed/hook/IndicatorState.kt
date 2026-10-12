@@ -10,6 +10,7 @@ import eu.hxreborn.phdp.prefs.SettingsPush
 import eu.hxreborn.phdp.prefs.decodeGradientColors
 import eu.hxreborn.phdp.util.Logger
 import eu.hxreborn.phdp.util.log
+import eu.hxreborn.phdp.util.logDebug
 import io.github.libxposed.api.XposedInterface
 
 object IndicatorState {
@@ -544,7 +545,7 @@ object IndicatorState {
                 else -> {
                     val before = pushedDuoState()
                     if (applyPushedDuoPref(key, intent) && pushedDuoState() != before) {
-                        log("duo setting pushed key=$key")
+                        logDebug { "duo setting pushed key=$key" }
                         onPrefsChanged?.invoke()
                         if (key in Prefs.visualKeys) {
                             onGeometryPreviewTriggered?.invoke()

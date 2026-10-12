@@ -13,7 +13,9 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
+import eu.hxreborn.phdp.util.Logger
 import eu.hxreborn.phdp.util.log
+import eu.hxreborn.phdp.util.logDebug
 
 /**
  * Tells Duo Status Bar about the download this module is tracking.
@@ -77,12 +79,12 @@ object DuoDownloadPublisher {
                     ctx: Context?,
                     intent: Intent?,
                 ) {
-                    log(
+                    logDebug {
                         "duo query received ctxPkg=${ctx?.packageName} " +
                             "storedPkg=${context.packageName} " +
                             "mode=${IndicatorState.duoStatusBarMode} " +
-                            "active=$active progress=${displayed.toInt()}",
-                    )
+                            "active=$active progress=${displayed.toInt()}"
+                    }
                     publish()
                 }
             }
@@ -127,7 +129,7 @@ object DuoDownloadPublisher {
         handler.post {
             if (powerSave == on) return@post
             powerSave = on
-            log("duo power-save -> $on mode=${IndicatorState.duoStatusBarMode}")
+            logDebug { "duo power-save -> $on mode=${IndicatorState.duoStatusBarMode}" }
             publish()
         }
     }
@@ -152,11 +154,11 @@ object DuoDownloadPublisher {
     /** Mode flipped, or a colour / direction the wash reads changed. */
     fun refresh() {
         handler.post {
-            log(
+            logDebug {
                 "duo refresh mode=${IndicatorState.duoStatusBarMode} " +
                     "activeDownloads=${DownloadProgressHook.hasActiveDownloads()} " +
-                    "avg=${DownloadProgressHook.currentAverage()}",
-            )
+                    "avg=${DownloadProgressHook.currentAverage()}"
+            }
             if (!IndicatorState.duoStatusBarMode) {
                 clearNow()
                 return@post
@@ -171,10 +173,10 @@ object DuoDownloadPublisher {
 
     fun showStaticPreview(autoHide: Boolean = true) {
         handler.post {
-            log(
+            logDebug {
                 "duo preview show autoHide=$autoHide mode=${IndicatorState.duoStatusBarMode} " +
-                    "activeDownloads=${DownloadProgressHook.hasActiveDownloads()}",
-            )
+                    "activeDownloads=${DownloadProgressHook.hasActiveDownloads()}"
+            }
             if (!IndicatorState.duoStatusBarMode) {
                 clearPreviewNow()
                 return@post
@@ -205,10 +207,10 @@ object DuoDownloadPublisher {
         val hadPreview = previewing
         previewing = false
         handler.removeCallbacks(previewClearRunnable)
-        log(
+        logDebug {
             "duo progress event progress=$progress mode=${IndicatorState.duoStatusBarMode} " +
-                "active=$active holding=$holding",
-        )
+                "active=$active holding=$holding"
+        }
         if (!IndicatorState.duoStatusBarMode) {
             clearNow()
             return
@@ -220,7 +222,7 @@ object DuoDownloadPublisher {
             if (hadPreview && !active) publish()
             handler.removeCallbacks(clearRunnable)
             handler.postDelayed(clearRunnable, 100L)
-            log("duo progress <=0 scheduled clear")
+            logDebug { "duo progress <=0 scheduled clear" }
             return
         }
         handler.removeCallbacks(clearRunnable)
@@ -236,10 +238,10 @@ object DuoDownloadPublisher {
     private fun onCompleteMain() {
         previewing = false
         handler.removeCallbacks(previewClearRunnable)
-        log(
+        logDebug {
             "duo complete event mode=${IndicatorState.duoStatusBarMode} " +
-                "active=$active progress=$lastProgress",
-        )
+                "active=$active progress=$lastProgress"
+        }
         if (!IndicatorState.duoStatusBarMode) return
         if (keepActiveDownloads()) return
         handler.removeCallbacks(clearRunnable)
@@ -263,10 +265,10 @@ object DuoDownloadPublisher {
     private fun onFailedMain() {
         previewing = false
         handler.removeCallbacks(previewClearRunnable)
-        log(
+        logDebug {
             "duo failed event mode=${IndicatorState.duoStatusBarMode} " +
-                "active=$active progress=$lastProgress",
-        )
+                "active=$active progress=$lastProgress"
+        }
         if (!IndicatorState.duoStatusBarMode) return
         if (keepActiveDownloads()) return
         handler.removeCallbacks(clearRunnable)
@@ -315,7 +317,7 @@ object DuoDownloadPublisher {
         lastProgress = 0
         startedAt = 0L
         if (was) {
-            log("duo clear")
+            logDebug { "duo clear" }
             publish()
         }
     }
@@ -324,7 +326,7 @@ object DuoDownloadPublisher {
         handler.removeCallbacks(previewClearRunnable)
         if (!previewing) return
         previewing = false
-        log("duo preview clear")
+        logDebug { "duo preview clear" }
         publish()
     }
 
@@ -388,15 +390,17 @@ object DuoDownloadPublisher {
                 putExtra(EXTRA_GRADIENT_COLORS, IndicatorState.gradientColors)
                 putExtra(EXTRA_GRADIENT_ANGLE, IndicatorState.gradientAngle)
             }
-        val trace =
-            "target=${ctx.packageName} mode=$mode active=$active " +
-                "showing=$showing progress=$progress " +
-                "suppressed=$suppressed burnedIn=$burnedIn previewing=$previewing " +
-                "holding=$holding failed=$failed " +
-                "opacity=$opacity"
-        if (trace != lastPublishTrace && shouldLogPublish(progress, showing)) {
-            lastPublishTrace = trace
-            log("duo publish $trace")
+        if (Logger.verboseEnabled && shouldLogPublish(progress, showing)) {
+            val trace =
+                "target=${ctx.packageName} mode=$mode active=$active " +
+                    "showing=$showing progress=$progress " +
+                    "suppressed=$suppressed burnedIn=$burnedIn previewing=$previewing " +
+                    "holding=$holding failed=$failed " +
+                    "opacity=$opacity"
+            if (trace != lastPublishTrace) {
+                lastPublishTrace = trace
+                logDebug { "duo publish $trace" }
+            }
         }
         runCatching { ctx.sendBroadcast(intent) }
             .onFailure { log("duo download broadcast failed", it) }

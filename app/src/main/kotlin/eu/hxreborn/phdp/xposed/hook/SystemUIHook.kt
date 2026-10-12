@@ -177,10 +177,10 @@ object SystemUIHook {
 
     private fun wireCallbacks() {
         DownloadProgressHook.onProgressChanged = { progress ->
-            log(
+            logDebug {
                 "download progress route progress=$progress " +
-                    "duoMode=${IndicatorState.duoStatusBarMode}",
-            )
+                    "duoMode=${IndicatorState.duoStatusBarMode}"
+            }
             if (IndicatorState.duoStatusBarMode) {
                 DuoDownloadPublisher.onProgress(progress)
             } else {
@@ -189,7 +189,7 @@ object SystemUIHook {
         }
         DownloadProgressHook.onDownloadComplete = {
             triggerHapticFeedback()
-            log("download complete route duoMode=${IndicatorState.duoStatusBarMode}")
+            logDebug { "download complete route duoMode=${IndicatorState.duoStatusBarMode}" }
             if (IndicatorState.duoStatusBarMode) {
                 DuoDownloadPublisher.onComplete()
             } else {
@@ -197,7 +197,7 @@ object SystemUIHook {
             }
         }
         DownloadProgressHook.onDownloadCancelled = {
-            log("download cancelled route duoMode=${IndicatorState.duoStatusBarMode}")
+            logDebug { "download cancelled route duoMode=${IndicatorState.duoStatusBarMode}" }
             if (IndicatorState.duoStatusBarMode) {
                 DuoDownloadPublisher.onFailed()
             } else {
@@ -220,7 +220,9 @@ object SystemUIHook {
 
         IndicatorState.onAppVisibilityChanged = { visible -> onView { appVisible = visible } }
         IndicatorState.onTestProgressChanged = { progress ->
-            log("test progress route progress=$progress duoMode=${IndicatorState.duoStatusBarMode}")
+            logDebug {
+                "test progress route progress=$progress duoMode=${IndicatorState.duoStatusBarMode}"
+            }
             when {
                 !IndicatorState.duoStatusBarMode -> onView { this.progress = progress }
                 progress >= 100 -> DuoDownloadPublisher.onComplete()
@@ -326,10 +328,10 @@ object SystemUIHook {
                     ctx: Context?,
                     intent: Intent?,
                 ) {
-                    log(
+                    logDebug {
                         "settings push received ctxPkg=${ctx?.packageName} " +
-                            "key=${intent?.getStringExtra(SettingsPush.EXTRA_KEY)}",
-                    )
+                            "key=${intent?.getStringExtra(SettingsPush.EXTRA_KEY)}"
+                    }
                     IndicatorState.dispatchPushedPref(intent)
                 }
             }
