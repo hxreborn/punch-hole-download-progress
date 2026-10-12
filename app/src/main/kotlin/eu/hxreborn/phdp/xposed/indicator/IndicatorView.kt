@@ -751,9 +751,10 @@ class IndicatorView(
         if (!IndicatorState.enabled) return
         if (isPowerSaveActive && IndicatorState.powerSaverMode == "disable") return
 
-        val duoLabelsOnly =
-            IndicatorState.duoStatusBarMode && !animator.isGeometryPreviewActive
-        if (duoLabelsOnly && animator.isErrorAnimating) return
+        if (IndicatorState.duoStatusBarMode && !animator.isGeometryPreviewActive) {
+            updateHdrWindow(false)
+            return
+        }
 
         if (animator.isErrorAnimating) {
             computeCalibratedArcBounds()
@@ -784,72 +785,62 @@ class IndicatorView(
                 pendingFinishRunnable != null -> true
                 else -> false
             }
-        updateHdrWindow(IndicatorState.hdrEnabled && shouldDraw && !duoLabelsOnly)
+        updateHdrWindow(IndicatorState.hdrEnabled && shouldDraw)
         if (!shouldDraw) {
             if (drawCount == 1) log("IndicatorView: not drawing (disabled or no visibility)")
             return
         }
 
         canvas.withSave {
-            if (duoLabelsOnly) {
+            animatedPaint.set(glowPaint)
+            animatedPaint.alpha = effectiveOpacity * 255 / 100
+            animatedPaint.strokeCap = strokeCap
+
+            val isActiveProgress =
+                effectiveProgress in 1..99 || animator.isGeometryPreviewActive ||
+                    animator.isPreviewAnimating
+            val showBackgroundRing =
+                IndicatorState.backgroundRingEnabled && !animator.isFinishAnimating &&
+                    !animator.isErrorAnimating &&
+                    isActiveProgress
+
+            if (showBackgroundRing) {
                 scaledPath.computeBounds(arcBounds, true)
                 arcBounds.applyCalibration()
+                renderer.updateBounds(arcBounds)
+                val bgOpacityBase =
+                    if (isPowerSaveActive && IndicatorState.powerSaverMode == "dim") {
+                        (IndicatorState.backgroundRingOpacity * POWER_SAVER_DIM_FACTOR).toInt()
+                    } else {
+                        IndicatorState.backgroundRingOpacity
+                    }
+                backgroundRingPaint.alpha = bgOpacityBase * 255 / 100
+                renderer.drawFullRing(this, backgroundRingPaint)
+            }
+
+            if (animator.isFinishAnimating) {
+                drawFinishAnimation(this)
+            } else {
+                scaledPath.computeBounds(arcBounds, true)
+                arcBounds.applyCalibration()
+                renderer.updateBounds(arcBounds)
+                val fraction = smoothProgressFor(effectiveProgress)
+                animatedPaint.shader =
+                    progressShaderCache.shaderFor(
+                        bounds = arcBounds,
+                        colors = IndicatorState.gradientColors,
+                        direction = IndicatorState.gradientDirection,
+                        angle = IndicatorState.gradientAngle,
+                        hdrEnabled = IndicatorState.hdrEnabled,
+                        hdrHeadroom = IndicatorState.hdrHeadroom,
+                        enabled = IndicatorState.gradientEnabled,
+                    )
+                renderer.drawProgress(this, fraction, IndicatorState.clockwise, animatedPaint)
+
                 val showLabels = effectiveProgress in 1..99 || animator.isGeometryPreviewActive
                 if (showLabels) {
                     drawLabels(this, effectiveProgress)
                     drawAppIcon(this)
-                }
-            } else {
-                animatedPaint.set(glowPaint)
-                animatedPaint.alpha = effectiveOpacity * 255 / 100
-                animatedPaint.strokeCap = strokeCap
-
-                val isActiveProgress =
-                    effectiveProgress in 1..99 || animator.isGeometryPreviewActive ||
-                        animator.isPreviewAnimating
-                val showBackgroundRing =
-                    IndicatorState.backgroundRingEnabled && !animator.isFinishAnimating &&
-                        !animator.isErrorAnimating &&
-                        isActiveProgress
-
-                if (showBackgroundRing) {
-                    scaledPath.computeBounds(arcBounds, true)
-                    arcBounds.applyCalibration()
-                    renderer.updateBounds(arcBounds)
-                    val bgOpacityBase =
-                        if (isPowerSaveActive && IndicatorState.powerSaverMode == "dim") {
-                            (IndicatorState.backgroundRingOpacity * POWER_SAVER_DIM_FACTOR).toInt()
-                        } else {
-                            IndicatorState.backgroundRingOpacity
-                        }
-                    backgroundRingPaint.alpha = bgOpacityBase * 255 / 100
-                    renderer.drawFullRing(this, backgroundRingPaint)
-                }
-
-                if (animator.isFinishAnimating) {
-                    drawFinishAnimation(this)
-                } else {
-                    scaledPath.computeBounds(arcBounds, true)
-                    arcBounds.applyCalibration()
-                    renderer.updateBounds(arcBounds)
-                    val fraction = smoothProgressFor(effectiveProgress)
-                    animatedPaint.shader =
-                        progressShaderCache.shaderFor(
-                            bounds = arcBounds,
-                            colors = IndicatorState.gradientColors,
-                            direction = IndicatorState.gradientDirection,
-                            angle = IndicatorState.gradientAngle,
-                            hdrEnabled = IndicatorState.hdrEnabled,
-                            hdrHeadroom = IndicatorState.hdrHeadroom,
-                            enabled = IndicatorState.gradientEnabled,
-                        )
-                    renderer.drawProgress(this, fraction, IndicatorState.clockwise, animatedPaint)
-
-                    val showLabels = effectiveProgress in 1..99 || animator.isGeometryPreviewActive
-                    if (showLabels) {
-                        drawLabels(this, effectiveProgress)
-                        drawAppIcon(this)
-                    }
                 }
             }
 
@@ -949,7 +940,7 @@ class IndicatorView(
         val speedStrokeWidthPx = IndicatorState.speedTextStrokeWidth * density
         val speedIsOval = IndicatorState.speedTextShadowMode == "oval"
 
-        if (IndicatorState.percentTextEnabled && !IndicatorState.duoStatusBarMode) {
+        if (IndicatorState.percentTextEnabled) {
             val locked = IndicatorState.percentTextLockRotation
             val text = "$progressVal%"
             val textWidth = percentPaint.measureText(text)
