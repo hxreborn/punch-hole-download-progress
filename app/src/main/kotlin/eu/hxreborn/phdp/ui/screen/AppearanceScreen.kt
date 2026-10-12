@@ -130,7 +130,7 @@ fun AppearanceScreen(
                         bottom = contentPadding.calculateBottomPadding() + Tokens.SpacingLg,
                     ),
             ) {
-                if (isDuoStatusBarInstalled) {
+                if (isDuoStatusBarInstalled || prefsState.duoStatusBarMode) {
                     preferenceCategory(
                         key = "design_duo_header",
                         title = { Text(stringResource(R.string.group_duo_status_bar)) },
