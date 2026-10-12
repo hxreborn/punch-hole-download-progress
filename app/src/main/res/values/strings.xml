@@ -49,6 +49,7 @@
     <string name="group_duo_preview">Preview</string>
     <string name="pref_duo_status_bar_title">Duo Status Bar mode</string>
     <string name="pref_duo_status_bar_summary">Draw downloads on the Duo Status Bar ring</string>
+    <string name="pref_duo_status_bar_unavailable">Needs Duo Status Bar with download support</string>
     <string name="pref_duo_progress_color_summary">Fill color on the Duo Status Bar ring</string>
     <string name="pref_duo_progress_color_material_you">Set by Material You</string>
     <string name="pref_duo_progress_color_gradient">Set by the gradient</string>

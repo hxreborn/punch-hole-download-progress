@@ -116,7 +116,17 @@ fun DuoScreen(
                                         icon = { Icon(Icons.Outlined.DonutLarge, contentDescription = null) },
                                         enabled = isSupported || prefsState.duoStatusBarMode,
                                         title = { Text(stringResource(R.string.pref_duo_status_bar_title)) },
-                                        summary = { Text(stringResource(R.string.pref_duo_status_bar_summary)) },
+                                        summary = {
+                                            Text(
+                                                stringResource(
+                                                    if (isSupported) {
+                                                        R.string.pref_duo_status_bar_summary
+                                                    } else {
+                                                        R.string.pref_duo_status_bar_unavailable
+                                                    },
+                                                ),
+                                            )
+                                        },
                                     )
                                 },
                             ),

@@ -286,27 +286,35 @@ fun SystemScreen(
                     )
                 }
 
-                if (isDuoStatusBarSupported || prefsState.duoStatusBarMode) {
-                    preferenceCategory(
-                        key = "system_integrations_header",
-                        title = { Text(stringResource(R.string.group_integrations)) },
-                    )
+                preferenceCategory(
+                    key = "system_integrations_header",
+                    title = { Text(stringResource(R.string.group_integrations)) },
+                )
 
-                    item(key = "system_integrations_section") {
-                        SectionCard(
-                            items =
-                                listOf(
-                                    {
-                                        NavigationPreference(
-                                            onClick = onNavigateToDuo,
-                                            icon = { Icon(Icons.Outlined.DonutLarge, contentDescription = null) },
-                                            title = { Text(stringResource(R.string.pref_duo_status_bar_title)) },
-                                            summary = { Text(stringResource(R.string.pref_duo_status_bar_summary)) },
-                                        )
-                                    },
-                                ),
-                        )
-                    }
+                item(key = "system_integrations_section") {
+                    SectionCard(
+                        items =
+                            listOf(
+                                {
+                                    NavigationPreference(
+                                        onClick = onNavigateToDuo,
+                                        icon = { Icon(Icons.Outlined.DonutLarge, contentDescription = null) },
+                                        title = { Text(stringResource(R.string.pref_duo_status_bar_title)) },
+                                        summary = {
+                                            Text(
+                                                stringResource(
+                                                    if (isDuoStatusBarSupported) {
+                                                        R.string.pref_duo_status_bar_summary
+                                                    } else {
+                                                        R.string.pref_duo_status_bar_unavailable
+                                                    },
+                                                ),
+                                            )
+                                        },
+                                    )
+                                },
+                            ),
+                    )
                 }
 
                 preferenceCategory(
@@ -557,7 +565,7 @@ fun SystemScreen(
 }
 
 @Composable
-internal fun TrailingIcon(imageVector: ImageVector) {
+private fun TrailingIcon(imageVector: ImageVector) {
     Icon(
         imageVector,
         contentDescription = null,
