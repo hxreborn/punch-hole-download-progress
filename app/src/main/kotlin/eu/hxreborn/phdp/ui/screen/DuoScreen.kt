@@ -59,7 +59,7 @@ fun DuoScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val prefsState = (uiState as? SettingsUiState.Success)?.prefs ?: return
     val context = LocalContext.current
-    val isInstalled = remember(context) { context.isDuoStatusBarInstalled() }
+    val isSupported = remember(context) { context.isDuoStatusBarSupported() }
 
     SettingsScaffold(
         title = stringResource(R.string.group_duo_status_bar),
@@ -87,7 +87,7 @@ fun DuoScreen(
                                         value = prefsState.duoStatusBarMode,
                                         onValueChange = { viewModel.savePref(Prefs.duoStatusBarMode, it) },
                                         icon = { Icon(Icons.Outlined.DonutLarge, contentDescription = null) },
-                                        enabled = isInstalled || prefsState.duoStatusBarMode,
+                                        enabled = isSupported || prefsState.duoStatusBarMode,
                                         title = { Text(stringResource(R.string.pref_duo_status_bar_title)) },
                                         summary = { Text(stringResource(R.string.pref_duo_status_bar_summary)) },
                                     )
@@ -212,19 +212,21 @@ private fun DuoFooterGroup(
 
 private const val DUO_STATUS_BAR_PACKAGE = "io.github.kvmy666.duostatusbar"
 private const val DUO_STATUS_BAR_URL = "https://github.com/kvmy666/duoStatusBar"
+private const val DUO_DOWNLOAD_PROGRESS_META = "io.github.kvmy666.duostatusbar.DOWNLOAD_PROGRESS"
 
-internal fun Context.isDuoStatusBarInstalled(): Boolean =
+internal fun Context.isDuoStatusBarSupported(): Boolean =
     try {
-        if (Build.VERSION.SDK_INT >= 33) {
-            packageManager.getApplicationInfo(
-                DUO_STATUS_BAR_PACKAGE,
-                PackageManager.ApplicationInfoFlags.of(0),
-            )
-        } else {
-            @Suppress("DEPRECATION")
-            packageManager.getApplicationInfo(DUO_STATUS_BAR_PACKAGE, 0)
-        }
-        true
+        val info =
+            if (Build.VERSION.SDK_INT >= 33) {
+                packageManager.getApplicationInfo(
+                    DUO_STATUS_BAR_PACKAGE,
+                    PackageManager.ApplicationInfoFlags.of(PackageManager.GET_META_DATA.toLong()),
+                )
+            } else {
+                @Suppress("DEPRECATION")
+                packageManager.getApplicationInfo(DUO_STATUS_BAR_PACKAGE, PackageManager.GET_META_DATA)
+            }
+        info.metaData?.getBoolean(DUO_DOWNLOAD_PROGRESS_META, false) == true
     } catch (_: PackageManager.NameNotFoundException) {
         false
     }

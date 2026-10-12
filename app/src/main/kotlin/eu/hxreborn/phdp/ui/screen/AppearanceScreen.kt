@@ -113,8 +113,6 @@ fun AppearanceScreen(
     val prefsState = (uiState as? SettingsUiState.Success)?.prefs ?: return
     val speedUnitEntries = stringArrayResource(R.array.speed_unit_entries).toList()
     val speedUnitValues = stringArrayResource(R.array.speed_unit_values).toList()
-    val context = LocalContext.current
-    val isDuoStatusBarInstalled = remember(context) { context.isDuoStatusBarInstalled() }
 
     val listState = rememberLazyListState()
     Box(modifier = modifier.fillMaxSize()) {
@@ -128,7 +126,7 @@ fun AppearanceScreen(
                         bottom = contentPadding.calculateBottomPadding() + Tokens.SpacingLg,
                     ),
             ) {
-                if (isDuoStatusBarInstalled || prefsState.duoStatusBarMode) {
+                if (prefsState.duoStatusBarMode) {
                     preferenceCategory(
                         key = "design_duo_header",
                         title = { Text(stringResource(R.string.group_duo_status_bar)) },

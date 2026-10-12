@@ -568,6 +568,7 @@ fun MainNavDisplay(
                         SystemScreen(
                             viewModel = viewModel,
                             onNavigateToLicenses = { backStack.add(Screen.Licenses) },
+                            onNavigateToDuo = { backStack.add(Screen.Duo) },
                             contentPadding = contentPadding,
                         )
                     }
@@ -607,8 +608,9 @@ fun BottomNav(
             Screen.SpeedShadowCalibration,
             Screen.Gradient,
             Screen.MaterialYou,
-            Screen.Duo,
             -> Screen.Design
+
+            Screen.Duo -> if (Screen.System in backStack) Screen.System else Screen.Design
 
             Screen.BadgeCalibration -> Screen.Motion
 

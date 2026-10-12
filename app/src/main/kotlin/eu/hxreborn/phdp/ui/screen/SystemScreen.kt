@@ -23,6 +23,7 @@ import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.ClearAll
 import androidx.compose.material.icons.outlined.ColorLens
 import androidx.compose.material.icons.outlined.DarkMode
+import androidx.compose.material.icons.outlined.DonutLarge
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.Info
@@ -60,6 +61,7 @@ import eu.hxreborn.phdp.ui.component.AppSnackbarHost
 import eu.hxreborn.phdp.ui.component.ImportResultDialog
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.VerticalScrollbar
+import eu.hxreborn.phdp.ui.component.preference.NavigationPreference
 import eu.hxreborn.phdp.ui.component.preference.SelectPreference
 import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
 import eu.hxreborn.phdp.ui.theme.AppTheme
@@ -116,11 +118,13 @@ fun SystemScreen(
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
     onNavigateToLicenses: () -> Unit = {},
+    onNavigateToDuo: () -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val success = uiState as? SettingsUiState.Success ?: return
     val prefsState = success.prefs
     val context = LocalContext.current
+    val isDuoStatusBarSupported = remember(context) { context.isDuoStatusBarSupported() }
     val backupEvent by viewModel.backupEvent.collectAsStateWithLifecycle()
 
     val exportLauncher =
@@ -280,6 +284,29 @@ fun SystemScreen(
                                 },
                             ),
                     )
+                }
+
+                if (isDuoStatusBarSupported || prefsState.duoStatusBarMode) {
+                    preferenceCategory(
+                        key = "system_integrations_header",
+                        title = { Text(stringResource(R.string.group_integrations)) },
+                    )
+
+                    item(key = "system_integrations_section") {
+                        SectionCard(
+                            items =
+                                listOf(
+                                    {
+                                        NavigationPreference(
+                                            onClick = onNavigateToDuo,
+                                            icon = { Icon(Icons.Outlined.DonutLarge, contentDescription = null) },
+                                            title = { Text(stringResource(R.string.pref_duo_status_bar_title)) },
+                                            summary = { Text(stringResource(R.string.pref_duo_status_bar_summary)) },
+                                        )
+                                    },
+                                ),
+                        )
+                    }
                 }
 
                 preferenceCategory(
