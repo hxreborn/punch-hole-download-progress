@@ -48,6 +48,7 @@ import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
 import eu.hxreborn.phdp.ui.theme.Tokens
 import me.zhanghai.compose.preference.Preference
 import me.zhanghai.compose.preference.ProvidePreferenceLocals
+import me.zhanghai.compose.preference.preferenceCategory
 
 @Composable
 fun DuoScreen(
@@ -78,11 +79,11 @@ fun DuoScreen(
                         bottom = innerPadding.calculateBottomPadding() + Tokens.SpacingLg,
                     ),
             ) {
-                item(key = "duo_section") {
+                item(key = "duo_mode_section") {
                     SectionCard(
                         items =
-                            buildList {
-                                add {
+                            listOf(
+                                {
                                     TogglePreferenceWithIcon(
                                         value = prefsState.duoStatusBarMode,
                                         onValueChange = { viewModel.savePref(Prefs.duoStatusBarMode, it) },
@@ -91,9 +92,22 @@ fun DuoScreen(
                                         title = { Text(stringResource(R.string.pref_duo_status_bar_title)) },
                                         summary = { Text(stringResource(R.string.pref_duo_status_bar_summary)) },
                                     )
-                                }
-                                if (prefsState.duoStatusBarMode) {
-                                    add {
+                                },
+                            ),
+                    )
+                }
+
+                if (prefsState.duoStatusBarMode) {
+                    preferenceCategory(
+                        key = "duo_ring_header",
+                        title = { Text(stringResource(R.string.group_duo_ring)) },
+                    )
+
+                    item(key = "duo_ring_section") {
+                        SectionCard(
+                            items =
+                                listOf(
+                                    {
                                         ColorPreference(
                                             value = prefsState.duoProgressColor,
                                             onValueChange = { viewModel.savePref(Prefs.duoProgressColor, it) },
@@ -114,8 +128,8 @@ fun DuoScreen(
                                                 )
                                             },
                                         )
-                                    }
-                                    add {
+                                    },
+                                    {
                                         TogglePreferenceWithIcon(
                                             value = prefsState.percentTextEnabled,
                                             onValueChange = { viewModel.savePref(Prefs.percentTextEnabled, it) },
@@ -123,11 +137,28 @@ fun DuoScreen(
                                             title = { Text(stringResource(R.string.pref_show_percentage_title)) },
                                             summary = { Text(stringResource(R.string.pref_duo_percent_summary)) },
                                         )
-                                    }
-                                }
-                            },
+                                    },
+                                ),
+                        )
+                    }
+
+                    preferenceCategory(
+                        key = "duo_preview_header",
+                        title = { Text(stringResource(R.string.group_duo_preview)) },
                     )
+
+                    item(key = "duo_test_buttons") {
+                        TestButtonsRow(
+                            onSimulateSuccess = { viewModel.simulateSuccess() },
+                            onSimulateFailure = { viewModel.simulateFailure() },
+                        )
+                    }
                 }
+
+                preferenceCategory(
+                    key = "duo_about_header",
+                    title = { Text(stringResource(R.string.group_about)) },
+                )
 
                 item(key = "duo_link") {
                     SectionCard(
@@ -145,17 +176,7 @@ fun DuoScreen(
                                     )
                                 },
                             ),
-                        modifier = Modifier.padding(top = Tokens.SpacingLg),
                     )
-                }
-
-                if (prefsState.duoStatusBarMode) {
-                    item(key = "duo_test_buttons") {
-                        TestButtonsRow(
-                            onSimulateSuccess = { viewModel.simulateSuccess() },
-                            onSimulateFailure = { viewModel.simulateFailure() },
-                        )
-                    }
                 }
 
                 item(key = "duo_footer") {

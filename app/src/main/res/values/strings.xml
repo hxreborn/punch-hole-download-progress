@@ -45,6 +45,8 @@
     <!-- Group Headers -->
     <string name="group_duo_status_bar">Duo Status Bar</string>
     <string name="group_integrations">Integrations</string>
+    <string name="group_duo_ring">Ring</string>
+    <string name="group_duo_preview">Preview</string>
     <string name="pref_duo_status_bar_title">Duo Status Bar mode</string>
     <string name="pref_duo_status_bar_summary">Draw downloads on the Duo Status Bar ring</string>
     <string name="pref_duo_progress_color_summary">Fill color on the Duo Status Bar ring</string>
