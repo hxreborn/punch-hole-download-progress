@@ -2,7 +2,7 @@ version: 2
 updates:
   - package-ecosystem: "gradle"
     commit-message:
-      prefix: "ci(deps)"
+      prefix: "build(deps)"
     directory: "/"
     schedule:
       interval: "weekly"
