@@ -89,7 +89,7 @@ object DownloadProgressHook {
         val pkg = getPackageName(sbn) ?: return
         logDebug { "seen notif pkg=$pkg" }
 
-        if (pkg !in IndicatorState.selectedPackages) return
+        if (!IndicatorState.enabled || pkg !in IndicatorState.selectedPackages) return
 
         val id = getKey(sbn) ?: return
         val notification = getNotification(sbn) ?: return

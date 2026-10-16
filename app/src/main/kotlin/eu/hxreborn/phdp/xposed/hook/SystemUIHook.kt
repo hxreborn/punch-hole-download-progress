@@ -349,7 +349,7 @@ object SystemUIHook {
     }
 
     private fun triggerHapticFeedback() {
-        if (!IndicatorState.hooksFeedback) return
+        if (!IndicatorState.enabled || !IndicatorState.hooksFeedback) return
         onView { ViewCompat.performHapticFeedback(this, HapticFeedbackConstantsCompat.CONFIRM) }
     }
 
