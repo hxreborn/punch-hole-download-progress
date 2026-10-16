@@ -60,7 +60,7 @@ echo ""
 
 # Check fastlane changelog exists
 IFS='.' read -r MAJOR MINOR PATCH _ <<< "$VERSION"
-VERSION_CODE=$((MAJOR * 10000 + MINOR * 1000 + PATCH))
+VERSION_CODE=$((MAJOR * 100000 + MINOR * 1000 + PATCH))
 CHANGELOG_FILE="fastlane/metadata/android/en-US/changelogs/${VERSION_CODE}.txt"
 
 if [[ ! -f "$CHANGELOG_FILE" ]]; then
