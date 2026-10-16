@@ -22,7 +22,6 @@ import androidx.compose.material.icons.outlined.BlurOn
 import androidx.compose.material.icons.outlined.BrightnessHigh
 import androidx.compose.material.icons.outlined.DataUsage
 import androidx.compose.material.icons.outlined.Description
-import androidx.compose.material.icons.outlined.DonutLarge
 import androidx.compose.material.icons.outlined.DownloadDone
 import androidx.compose.material.icons.outlined.Downloading
 import androidx.compose.material.icons.outlined.ErrorOutline
@@ -105,7 +104,6 @@ fun AppearanceScreen(
     onNavigateToCalibration: (CalibrationTarget) -> Unit,
     onNavigateToGradient: () -> Unit,
     onNavigateToMaterialYou: () -> Unit,
-    onNavigateToDuo: () -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
@@ -126,29 +124,6 @@ fun AppearanceScreen(
                         bottom = contentPadding.calculateBottomPadding() + Tokens.SpacingLg,
                     ),
             ) {
-                if (prefsState.duoStatusBarMode) {
-                    preferenceCategory(
-                        key = "design_duo_header",
-                        title = { Text(stringResource(R.string.group_duo_status_bar)) },
-                    )
-
-                    item(key = "design_duo_section") {
-                        SectionCard(
-                            items =
-                                listOf(
-                                    {
-                                        NavigationPreference(
-                                            onClick = onNavigateToDuo,
-                                            icon = { Icon(Icons.Outlined.DonutLarge, contentDescription = null) },
-                                            title = { Text(stringResource(R.string.pref_duo_status_bar_title)) },
-                                            summary = { Text(stringResource(R.string.pref_duo_status_bar_summary)) },
-                                        )
-                                    },
-                                ),
-                        )
-                    }
-                }
-
                 preferenceCategory(
                     key = "design_colors_header",
                     title = { Text(stringResource(R.string.group_colors)) },
@@ -940,7 +915,6 @@ private fun AppearanceScreenPreview() {
             onNavigateToCalibration = {},
             onNavigateToGradient = {},
             onNavigateToMaterialYou = {},
-            onNavigateToDuo = {},
             contentPadding = PaddingValues(),
         )
     }

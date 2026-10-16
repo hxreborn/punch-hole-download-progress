@@ -248,9 +248,6 @@ fun MainNavDisplay(
                             onNavigateToMaterialYou = {
                                 backStack.add(Screen.MaterialYou)
                             },
-                            onNavigateToDuo = {
-                                backStack.add(Screen.Duo)
-                            },
                             contentPadding = contentPadding,
                         )
                     }
@@ -610,7 +607,7 @@ fun BottomNav(
             Screen.MaterialYou,
             -> Screen.Design
 
-            Screen.Duo -> if (Screen.System in backStack) Screen.System else Screen.Design
+            Screen.Duo -> Screen.System
 
             Screen.BadgeCalibration -> Screen.Motion
 
