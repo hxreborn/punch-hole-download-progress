@@ -9,9 +9,9 @@
     <string name="reload_unsupported">Sıcak yeniden yükleme için libxposed API 102 destekleyen bir framework gerekir</string>
 
     <!-- Restart SystemUI -->
-    <string name="restart_systemui">SystemUI\'ı Yeniden Başlat</string>
+    <string name="restart_systemui">SystemUI\'ı yeniden başlat</string>
     <string name="restart_systemui_confirm">Bu işlem değişiklikleri uygulamak için SystemUI\'ı yeniden başlatacak. Devam edilsin mi?</string>
-    <string name="restart">Yeniden Başlat</string>
+    <string name="restart">Yeniden başlat</string>
     <string name="restart_failed_detail">SystemUI yeniden başlatılamadı: %1$s</string>
     <string name="root_not_granted">Kök (Root) izni verilmedi. Lütfen Punch-hole Download Progress uygulamasına kök erişimi verin.</string>
 
@@ -39,21 +39,21 @@
     <string name="defaults_applied">%1$d uygulama eklendi</string>
     <string name="defaults_none_added">Tüm varsayılan uygulamalar zaten seçili</string>
     <string name="undo">Geri al</string>
-    <string name="help">Sorun Giderme</string>
+    <string name="help">Sorun giderme</string>
     <string name="packages_help">Bu modül, indirmeleri uygulamanın bildirimlerini okuyarak algılar.\n\nİlerleme halkasını görmek için uygulamanın etkin bir şekilde ilerleme çubuğu içeren bir bildirim göstermesi gerekir. Bildirimler devre dışı bırakılır veya gizlenirse halka görünmez.</string>
 
     <!-- Group Headers -->
     <string name="group_colors">Renkler</string>
     <string name="group_geometry">Geometri</string>
-    <string name="group_percent_text">Yüzde Metni</string>
-    <string name="group_speed_text">Hız Metni</string>
-    <string name="group_filename_text">Dosya Adı Metni</string>
-    <string name="group_app_icon">Kaynak Uygulama</string>
+    <string name="group_percent_text">Yüzde metni</string>
+    <string name="group_speed_text">Hız metni</string>
+    <string name="group_filename_text">Dosya adı metni</string>
+    <string name="group_app_icon">Kaynak uygulama</string>
     <string name="group_progress_ring">İlerleme halkası</string>
     <string name="group_completion_effect">Tamamlanma efekti</string>
     <string name="group_indicators">Göstergeler</string>
-    <string name="group_feedback">Geri Bildirim</string>
-    <string name="group_app_theme">Uygulama Teması</string>
+    <string name="group_feedback">Geri bildirim</string>
+    <string name="group_app_theme">Uygulama teması</string>
     <string name="group_power">Güç</string>
     <string name="group_diagnostics">Teşhis</string>
     <string name="group_about">Hakkında</string>
@@ -87,7 +87,7 @@
     <string name="pref_stroke_cap_style_summary">Halka kenarlarının şekli</string>
 
     <!-- Design: Background Ring -->
-    <string name="group_background_ring">Arka Plan Halkası</string>
+    <string name="group_background_ring">Arka plan halkası</string>
     <string name="pref_background_ring_enabled_title">Arka plan halkasını göster</string>
     <string name="pref_background_ring_enabled_summary">İlerleme halkasının arkasındaki soluk halka</string>
     <string name="pref_background_ring_color_title">Arka plan halkası rengi</string>
@@ -253,7 +253,7 @@
     <string name="pref_filename_vertical_title">Dikey metin</string>
     <string name="pref_filename_vertical_summary">Yatay yöndeyken her karakteri dikey bir çizgi halinde çiz</string>
     <string name="pref_preview_text_title">Önizleme metni</string>
-    <string name="pref_invert_rotation_title">İlerleme yönü</string>
+    <string name="pref_invert_rotation_title">Halka dolum yönü</string>
     <string name="clockwise">Saat yönü</string>
     <string name="counter_clockwise">Saat yönünün tersi</string>
 
@@ -359,7 +359,7 @@
     <string name="pref_report_issue_summary">GitHub\'da bir hata bildirin veya özellik önerin</string>
 
     <!-- Color Picker -->
-    <string name="pick_color">Renk Seç</string>
+    <string name="pick_color">Renk seç</string>
     <string name="presets">Ön ayarlar</string>
 
     <!-- Reset -->
@@ -400,8 +400,8 @@
     <!-- Dialog Arrays: Power Saver -->
     <string-array name="power_saver_entries">
         <item>Normal</item>
-        <item>Soluk Halka</item>
-        <item>Animasyonları Kapat</item>
+        <item>Soluk halka</item>
+        <item>Animasyonları kapat</item>
     </string-array>
     <!-- Dialog Arrays: Burn-in hide timeout -->
     <string-array name="burn_in_hide_entries">

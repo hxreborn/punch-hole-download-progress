@@ -253,7 +253,7 @@
     <string name="pref_filename_vertical_title">Вертикальный текст</string>
     <string name="pref_filename_vertical_summary">Рисуйте каждый символ по вертикальной линии в альбомной ориентации.</string>
     <string name="pref_preview_text_title">Предпросмотр текста</string>
-    <string name="pref_invert_rotation_title">Направление прогресса</string>
+    <string name="pref_invert_rotation_title">Направление заполнения кольца</string>
     <string name="clockwise">По часовой стрелке</string>
     <string name="counter_clockwise">Против часовой стрелки</string>
 
