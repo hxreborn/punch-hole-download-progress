@@ -11,8 +11,12 @@ class PathRingRenderer : RingRenderer {
     private val ringMeasure = PathMeasure()
     private val segment = Path()
     private var ringLength = 0f
+    private val lastBounds = RectF()
+    private val highlightPaint = Paint()
 
     override fun updateBounds(bounds: RectF) {
+        if (bounds == lastBounds) return
+        lastBounds.set(bounds)
         buildCapsulePath(bounds)
         ringMeasure.setPath(ringPath, false)
         ringLength = ringMeasure.length
@@ -131,9 +135,12 @@ class PathRingRenderer : RingRenderer {
         for (i in 0 until segments) {
             val paint =
                 if (i == highlight || i == highlight - 1) {
-                    Paint(shinePaint).apply { this.alpha = (255 * alpha).toInt() }
+                    highlightPaint.apply {
+                        set(shinePaint)
+                        this.alpha = (255 * alpha).toInt()
+                    }
                 } else {
-                    Paint(basePaint)
+                    basePaint
                 }
             val segStart = i * (segLen + gapLen)
             segment.reset()

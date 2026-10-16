@@ -6,6 +6,7 @@ import android.graphics.RectF
 
 class ArcRingRenderer : RingRenderer {
     private val bounds = RectF()
+    private val highlightPaint = Paint()
 
     override fun updateBounds(bounds: RectF) {
         this.bounds.set(bounds)
@@ -43,9 +44,12 @@ class ArcRingRenderer : RingRenderer {
             val startAngle = -90f + i * (arcDeg + gapDeg)
             val paint =
                 if (i == highlight || i == highlight - 1) {
-                    Paint(shinePaint).apply { this.alpha = (255 * alpha).toInt() }
+                    highlightPaint.apply {
+                        set(shinePaint)
+                        this.alpha = (255 * alpha).toInt()
+                    }
                 } else {
-                    Paint(basePaint)
+                    basePaint
                 }
             canvas.drawArc(bounds, startAngle, arcDeg, false, paint)
         }
