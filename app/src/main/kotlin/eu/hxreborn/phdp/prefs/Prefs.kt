@@ -10,6 +10,8 @@ object Prefs {
 
     // Core
     val enabled = BoolPref("enabled", true)
+    val duoStatusBarMode = BoolPref("duo_status_bar_mode", false)
+    val duoProgressColor = IntPref("duo_progress_color", MaterialPalette.Blue500)
     val hooksFeedback = BoolPref("hooks_feedback", false)
     val appVisible = BoolPref("app_visible", false)
 
@@ -262,6 +264,8 @@ object Prefs {
     // All resettable prefs (excludes enabled and triggers)
     val resettable: List<PrefSpec<*>> =
         listOf(
+            duoStatusBarMode,
+            duoProgressColor,
             color,
             gradientEnabled,
             gradientColors,
@@ -374,6 +378,7 @@ object Prefs {
     // Keys that trigger geometry preview
     val visualKeys: Set<String> =
         setOf(
+            duoProgressColor.key,
             color.key,
             gradientEnabled.key,
             gradientColors.key,

@@ -347,4 +347,39 @@
         <item>比特每秒（Mbps）</item>
         <item>字节每秒（MB/s）</item>
     </string-array>
+    <string name="group_duo_status_bar">Duo Status Bar</string>
+    <string name="group_integrations">集成</string>
+    <string name="group_duo_ring">进度环</string>
+    <string name="group_duo_preview">预览</string>
+    <string name="pref_duo_status_bar_title">Duo Status Bar 模式</string>
+    <string name="pref_duo_status_bar_summary">在 Duo Status Bar 的圆环上显示下载</string>
+    <string name="pref_duo_status_bar_unavailable">需要支持下载的 Duo Status Bar</string>
+    <string name="pref_duo_progress_color_summary">Duo Status Bar 圆环的填充颜色</string>
+    <string name="pref_duo_progress_color_material_you">由 Material You 决定</string>
+    <string name="pref_duo_progress_color_gradient">由渐变决定</string>
+    <string name="pref_duo_percent_summary">在 Duo Status Bar 圆环上显示下载百分比</string>
+    <string name="duo_footer_hidden_title">Duo 会绘制自己的圆环。开启 Duo Status Bar 模式时，以下设置会隐藏：</string>
+    <string name="duo_footer_used_title">以下设置仍会改变 Duo 圆环：</string>
+    <string name="duo_about_title">Duo Status Bar</string>
+    <string name="duo_about_body">Duo Status Bar 是 kvmy666 开发的独立 Xposed 模块。它用一个圆环取代电池、Wi-Fi 和信号图标。开启 Duo 模式后，本模块会在该圆环上显示下载。</string>
+    <string name="duo_about_open_github">在 GitHub 上打开</string>
+    <string name="duo_about_close">关闭</string>
+    <string-array name="duo_footer_hidden_items">
+        <item>圆环形状</item>
+        <item>发光</item>
+        <item>HDR</item>
+        <item>进度百分比</item>
+        <item>完成特效</item>
+        <item>下载角标</item>
+    </string-array>
+    <string-array name="duo_footer_used_items">
+        <item>渐变（外观）</item>
+        <item>Material You（外观）</item>
+        <item>完成颜色（外观）</item>
+        <item>进度环方向（通知）</item>
+        <item>进度平滑度（通知）</item>
+        <item>无活动时隐藏（通知）</item>
+        <item>省电模式（系统）</item>
+        <item>文件名、网速和来源应用（外观）</item>
+    </string-array>
 </resources>

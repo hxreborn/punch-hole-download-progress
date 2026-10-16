@@ -37,6 +37,7 @@ import eu.hxreborn.phdp.prefs.RotationSlot
 import eu.hxreborn.phdp.util.accessibleField
 import eu.hxreborn.phdp.util.log
 import eu.hxreborn.phdp.util.logDebug
+import eu.hxreborn.phdp.xposed.hook.DuoDownloadPublisher
 import eu.hxreborn.phdp.xposed.hook.IndicatorState
 import eu.hxreborn.phdp.xposed.hook.NetworkSpeedMonitor
 import eu.hxreborn.phdp.xposed.hook.SystemUIHook
@@ -318,6 +319,7 @@ class IndicatorView(
         updateRenderer()
 
         IndicatorState.onPrefsChanged = {
+            if (IndicatorState.duoStatusBarMode) DuoDownloadPublisher.refresh()
             post {
                 logDebug { "IndicatorView: prefs changed, updating..." }
                 updatePaintFromPrefs()
@@ -749,6 +751,12 @@ class IndicatorView(
         if (!IndicatorState.enabled) return
         if (isPowerSaveActive && IndicatorState.powerSaverMode == "disable") return
 
+        if (IndicatorState.duoStatusBarMode && !animator.isGeometryPreviewActive) {
+            updateHdrWindow(false)
+            drawDuoLabels(canvas)
+            return
+        }
+
         if (animator.isErrorAnimating) {
             computeCalibratedArcBounds()
             renderer.updateBounds(arcBounds)
@@ -918,6 +926,22 @@ class IndicatorView(
         val locked: Boolean = false,
     )
 
+    private fun drawDuoLabels(canvas: Canvas) {
+        if (progress !in 1..99 || animator.isErrorAnimating) return
+        val hideDelay = IndicatorState.burnInHideMs
+        if (hideDelay > 0 && lastActivityTime > 0 &&
+            System.currentTimeMillis() - lastActivityTime >= hideDelay
+        ) {
+            return
+        }
+        canvas.withSave {
+            scaledPath.computeBounds(arcBounds, true)
+            arcBounds.applyCalibration()
+            drawLabels(this, progress)
+            drawAppIcon(this)
+        }
+    }
+
     private fun drawLabels(
         canvas: Canvas,
         progressVal: Int,
@@ -933,7 +957,7 @@ class IndicatorView(
         val speedStrokeWidthPx = IndicatorState.speedTextStrokeWidth * density
         val speedIsOval = IndicatorState.speedTextShadowMode == "oval"
 
-        if (IndicatorState.percentTextEnabled) {
+        if (IndicatorState.percentTextEnabled && !IndicatorState.duoStatusBarMode) {
             val locked = IndicatorState.percentTextLockRotation
             val text = "$progressVal%"
             val textWidth = percentPaint.measureText(text)

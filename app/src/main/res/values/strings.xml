@@ -43,6 +43,41 @@
     <string name="packages_help">This module detects downloads by reading the app\'s notifications.\n\nTo see the progress ring, the app must actively show a notification with a progress bar. If notifications are disabled or hidden, the ring will not appear.</string>
 
     <!-- Group Headers -->
+    <string name="group_duo_status_bar">Duo Status Bar</string>
+    <string name="group_integrations">Integrations</string>
+    <string name="group_duo_ring">Ring</string>
+    <string name="group_duo_preview">Preview</string>
+    <string name="pref_duo_status_bar_title">Duo Status Bar mode</string>
+    <string name="pref_duo_status_bar_summary">Draw downloads on the Duo Status Bar ring</string>
+    <string name="pref_duo_status_bar_unavailable">Needs Duo Status Bar with download support</string>
+    <string name="pref_duo_progress_color_summary">Fill color on the Duo Status Bar ring</string>
+    <string name="pref_duo_progress_color_material_you">Set by Material You</string>
+    <string name="pref_duo_progress_color_gradient">Set by the gradient</string>
+    <string name="pref_duo_percent_summary">Show the download percentage on the Duo Status Bar ring</string>
+    <string name="duo_footer_hidden_title">Duo draws its own ring. These settings are hidden while Duo Status Bar mode is on:</string>
+    <string name="duo_footer_used_title">These settings still change the Duo ring:</string>
+    <string name="duo_about_title">Duo Status Bar</string>
+    <string name="duo_about_body">Duo Status Bar is a separate Xposed module by kvmy666. It replaces the battery, Wi-Fi and signal icons with one ring. With Duo mode on, this module draws downloads on that ring.</string>
+    <string name="duo_about_open_github">Open on GitHub</string>
+    <string name="duo_about_close">Close</string>
+    <string-array name="duo_footer_hidden_items">
+        <item>Ring shape</item>
+        <item>Glow</item>
+        <item>HDR</item>
+        <item>Percentage text</item>
+        <item>Completion effects</item>
+        <item>Download badge</item>
+    </string-array>
+    <string-array name="duo_footer_used_items">
+        <item>Gradient (Appearance)</item>
+        <item>Material You (Appearance)</item>
+        <item>Completion color (Appearance)</item>
+        <item>Ring fill direction (Behavior)</item>
+        <item>Progress smoothness (Behavior)</item>
+        <item>Hide after inactivity (Behavior)</item>
+        <item>Battery saver mode (System)</item>
+        <item>Filename, speed and source app (Appearance)</item>
+    </string-array>
     <string name="group_colors">Colors</string>
     <string name="group_geometry">Geometry</string>
     <string name="group_percent_text">Percentage text</string>

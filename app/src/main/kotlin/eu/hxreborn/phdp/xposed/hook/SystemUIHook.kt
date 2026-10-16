@@ -5,11 +5,14 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
+import android.view.View
 import androidx.core.view.HapticFeedbackConstantsCompat
 import androidx.core.view.ViewCompat
+import eu.hxreborn.phdp.prefs.SettingsPush
 import eu.hxreborn.phdp.util.accessibleField
 import eu.hxreborn.phdp.util.accessibleFieldFromHierarchy
 import eu.hxreborn.phdp.util.log
@@ -43,6 +46,9 @@ object SystemUIHook {
 
     @Volatile
     private var powerSaveReceiver: BroadcastReceiver? = null
+
+    @Volatile
+    private var settingsPushReceiver: BroadcastReceiver? = null
 
     @Volatile
     private var systemUIContext: Context? = null
@@ -111,6 +117,8 @@ object SystemUIHook {
                     return@intercept result
                 }
                 runCatching {
+                    systemUIContext = context
+                    DuoDownloadPublisher.attach(context)
                     val view = IndicatorView.attach(context)
                     markAttached(view, context)
                     log("attached overlay pkg=$SYSTEMUI_PKG")
@@ -168,13 +176,25 @@ object SystemUIHook {
     }
 
     private fun wireCallbacks() {
-        DownloadProgressHook.onProgressChanged =
-            { progress -> onView { this.progress = progress } }
+        DownloadProgressHook.onProgressChanged = { progress ->
+            logDebug {
+                "download progress route progress=$progress " +
+                    "duoMode=${IndicatorState.duoStatusBarMode}"
+            }
+            onView { this.progress = progress }
+            if (IndicatorState.duoStatusBarMode) DuoDownloadPublisher.onProgress(progress)
+        }
         DownloadProgressHook.onDownloadComplete = {
             triggerHapticFeedback()
+            logDebug { "download complete route duoMode=${IndicatorState.duoStatusBarMode}" }
             onView { progress = 100 }
+            if (IndicatorState.duoStatusBarMode) DuoDownloadPublisher.onComplete()
         }
-        DownloadProgressHook.onDownloadCancelled = { onView { showError() } }
+        DownloadProgressHook.onDownloadCancelled = {
+            logDebug { "download cancelled route duoMode=${IndicatorState.duoStatusBarMode}" }
+            onView { showError() }
+            if (IndicatorState.duoStatusBarMode) DuoDownloadPublisher.onFailed()
+        }
         DownloadProgressHook.onActiveCountChanged = { count ->
             onView { activeDownloadCount = count }
             if (count > 0) NetworkSpeedMonitor.start() else NetworkSpeedMonitor.stop()
@@ -183,28 +203,69 @@ object SystemUIHook {
             { filename -> onView { currentFilename = filename } }
         DownloadProgressHook.onPackageChanged =
             { packageName -> onView { currentPackageName = packageName } }
-        DownloadProgressHook.onActivity = { onView { touchActivity() } }
+        DownloadProgressHook.onActivity = {
+            onView { touchActivity() }
+            DuoDownloadPublisher.onActivity()
+        }
         NetworkSpeedMonitor.onSpeedChanged = { speed -> onView { currentSpeed = speed } }
 
         IndicatorState.onAppVisibilityChanged = { visible -> onView { appVisible = visible } }
-        IndicatorState.onTestProgressChanged = { progress -> onView { this.progress = progress } }
+        IndicatorState.onTestProgressChanged = { progress ->
+            logDebug {
+                "test progress route progress=$progress duoMode=${IndicatorState.duoStatusBarMode}"
+            }
+            when {
+                !IndicatorState.duoStatusBarMode -> onView { this.progress = progress }
+                progress >= 100 -> DuoDownloadPublisher.onComplete()
+                else -> DuoDownloadPublisher.onProgress(progress)
+            }
+        }
         IndicatorState.onPreviewTriggered = { onView { startDynamicPreviewAnim() } }
         IndicatorState.onGeometryPreviewTriggered = {
             // Keep preview persistent if calibration screen is open
             val autoHide = !IndicatorState.persistentPreviewActive
-            onView { showStaticPreviewAnim(autoHide) }
+            if (IndicatorState.duoStatusBarMode) {
+                onView { cancelStaticPreviewAnim() }
+                DuoDownloadPublisher.showStaticPreview(autoHide)
+            } else {
+                DuoDownloadPublisher.cancelStaticPreview()
+                onView { showStaticPreviewAnim(autoHide) }
+            }
         }
         IndicatorState.onDownloadComplete = { triggerHapticFeedback() }
-        IndicatorState.onTestErrorChanged = { isError -> if (isError) onView { showError() } }
+        IndicatorState.onTestErrorChanged = { isError ->
+            if (isError) {
+                if (IndicatorState.duoStatusBarMode) {
+                    DuoDownloadPublisher.onFailed()
+                } else {
+                    onView { showError() }
+                }
+            }
+        }
+        IndicatorState.onDuoModeChanged = { enabled ->
+            log("duo mode callback enabled=$enabled ctxPkg=${systemUIContext?.packageName}")
+            applyDuoMode(enabled)
+        }
+        IndicatorState.onPrefsChanged = { DuoDownloadPublisher.refresh() }
         IndicatorState.onClearDownloadsTriggered = { DownloadProgressHook.clearActiveDownloads() }
         IndicatorState.onPersistentPreviewChanged = { enabled ->
-            onView {
+            if (IndicatorState.duoStatusBarMode) {
+                onView { cancelStaticPreviewAnim() }
                 if (enabled) {
-                    showStaticPreviewAnim(
-                        autoHide = false,
-                    )
+                    DuoDownloadPublisher.showStaticPreview(autoHide = false)
                 } else {
-                    cancelStaticPreviewAnim()
+                    DuoDownloadPublisher.cancelStaticPreview()
+                }
+            } else {
+                DuoDownloadPublisher.cancelStaticPreview()
+                onView {
+                    if (enabled) {
+                        showStaticPreviewAnim(
+                            autoHide = false,
+                        )
+                    } else {
+                        cancelStaticPreviewAnim()
+                    }
                 }
             }
         }
@@ -219,6 +280,7 @@ object SystemUIHook {
         systemUIContext = context
         NetworkSpeedMonitor.attach(context)
         registerPowerSaveReceiver(context)
+        registerSettingsPushReceiver(context)
     }
 
     private fun registerPowerSaveReceiver(context: Context) {
@@ -233,6 +295,7 @@ object SystemUIHook {
                     val isPowerSave =
                         ctx.getSystemService(PowerManager::class.java)?.isPowerSaveMode == true
                     indicatorView?.let { it.post { it.isPowerSaveActive = isPowerSave } }
+                    DuoDownloadPublisher.setPowerSave(isPowerSave)
                 }
             }
 
@@ -241,9 +304,48 @@ object SystemUIHook {
                 powerSaveReceiver,
                 IntentFilter(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED),
             )
-            indicatorView?.isPowerSaveActive =
+            val powerSave =
                 context.getSystemService(PowerManager::class.java)?.isPowerSaveMode == true
+            indicatorView?.isPowerSaveActive = powerSave
+            DuoDownloadPublisher.setPowerSave(powerSave)
         }.onFailure { log("register failed pkg=$SYSTEMUI_PKG target=power-save-receiver", it) }
+    }
+
+    private fun registerSettingsPushReceiver(context: Context) {
+        if (settingsPushReceiver != null) return
+        val receiver =
+            object : BroadcastReceiver() {
+                override fun onReceive(
+                    ctx: Context?,
+                    intent: Intent?,
+                ) {
+                    logDebug {
+                        "settings push received ctxPkg=${ctx?.packageName} " +
+                            "key=${intent?.getStringExtra(SettingsPush.EXTRA_KEY)}"
+                    }
+                    IndicatorState.dispatchPushedPref(intent)
+                }
+            }
+        settingsPushReceiver = receiver
+        runCatching {
+            if (Build.VERSION.SDK_INT >= 33) {
+                context.registerReceiver(
+                    receiver,
+                    IntentFilter(SettingsPush.ACTION),
+                    SettingsPush.PERMISSION,
+                    null,
+                    Context.RECEIVER_EXPORTED,
+                )
+            } else {
+                context.registerReceiver(
+                    receiver,
+                    IntentFilter(SettingsPush.ACTION),
+                    SettingsPush.PERMISSION,
+                    null,
+                )
+            }
+            log("settings push receiver registered ctxPkg=${context.packageName}")
+        }.onFailure { log("register failed pkg=$SYSTEMUI_PKG target=settings-push", it) }
     }
 
     private fun triggerHapticFeedback() {
@@ -273,6 +375,8 @@ object SystemUIHook {
         hook(context.classLoader)
         Handler(Looper.getMainLooper()).post {
             runCatching {
+                systemUIContext = context
+                DuoDownloadPublisher.attach(context)
                 val view = IndicatorView.attach(context)
                 markAttached(view, context)
                 log("attached overlay pkg=$SYSTEMUI_PKG source=hot-reload")
@@ -283,9 +387,10 @@ object SystemUIHook {
     fun isAttached(): Boolean = attached
 
     fun detach() {
+        val receiverContext = indicatorView?.context ?: systemUIContext
         powerSaveReceiver?.let { receiver ->
             runCatching {
-                indicatorView?.context?.unregisterReceiver(receiver)
+                receiverContext?.unregisterReceiver(receiver)
             }.onFailure {
                 log(
                     "unregister failed pkg=$SYSTEMUI_PKG target=power-save-receiver",
@@ -294,6 +399,17 @@ object SystemUIHook {
             }
         }
         powerSaveReceiver = null
+        settingsPushReceiver?.let { receiver ->
+            runCatching {
+                receiverContext?.unregisterReceiver(receiver)
+            }.onFailure {
+                log(
+                    "unregister failed pkg=$SYSTEMUI_PKG target=settings-push",
+                    it,
+                )
+            }
+        }
+        settingsPushReceiver = null
         indicatorView = null
 
         DownloadProgressHook.onProgressChanged = null
@@ -315,8 +431,44 @@ object SystemUIHook {
         IndicatorState.onTestErrorChanged = null
         IndicatorState.onClearDownloadsTriggered = null
         IndicatorState.onPersistentPreviewChanged = null
+        IndicatorState.onDuoModeChanged = null
+        IndicatorState.onPrefsChanged = null
+        DuoDownloadPublisher.detach()
+        systemUIContext = null
 
         attached = false
+    }
+
+    private fun applyDuoMode(enabled: Boolean) {
+        val context = systemUIContext ?: return
+        log(
+            "apply duo mode enabled=$enabled ctxPkg=${context.packageName} " +
+                "hasView=${indicatorView != null} activeDownloads=${DownloadProgressHook.hasActiveDownloads()}",
+        )
+        if (indicatorView == null) {
+            runCatching {
+                val view = IndicatorView.attach(context)
+                markAttached(view, context)
+                log("attached overlay pkg=$SYSTEMUI_PKG")
+            }.onFailure { log("attach failed pkg=$SYSTEMUI_PKG target=overlay", it) }
+        } else {
+            indicatorView?.post {
+                if (enabled) indicatorView?.cancelStaticPreviewAnim()
+                indicatorView?.visibility = View.VISIBLE
+                indicatorView?.invalidate()
+            }
+        }
+        if (!enabled && DownloadProgressHook.hasActiveDownloads()) {
+            val progress = DownloadProgressHook.currentAverage()
+            onView { this.progress = progress }
+            NetworkSpeedMonitor.start()
+        }
+        DuoDownloadPublisher.refresh()
+        if (enabled && IndicatorState.persistentPreviewActive) {
+            DuoDownloadPublisher.showStaticPreview(autoHide = false)
+        } else if (!enabled) {
+            DuoDownloadPublisher.cancelStaticPreview()
+        }
     }
 
     private val notificationAddHooker =

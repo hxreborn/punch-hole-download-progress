@@ -320,6 +320,14 @@ object DownloadProgressHook {
     internal fun isStatusBarNotification(obj: Any): Boolean =
         obj.javaClass.name.contains("StatusBarNotification")
 
+    fun hasActiveDownloads(): Boolean = activeDownloads.isNotEmpty()
+
+    fun currentAverage(): Int {
+        val size = activeDownloads.size
+        if (size == 0) return 0
+        return activeDownloads.values.sumOf { it.progress } / size
+    }
+
     internal inline fun processNotificationArg(
         arg: Any?,
         action: (Any) -> Unit,

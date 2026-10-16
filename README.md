@@ -21,6 +21,7 @@ Xposed module that renders download progress as an animated ring around the came
 - Progress ring around the camera cutout (via native `DisplayCutout` API) with per-state color, thickness, opacity, and direction (active/completed/failed)
 - Completion animations with optional haptic feedback
 - Download counter badge
+- [Duo Status Bar](https://github.com/kvmy666/duoStatusBar) integration: download progress drawn on the Duo ring (System > Integrations, needs Duo [1.4.3-beta.1](https://github.com/kvmy666/duoStatusBar/releases/tag/24-1.4.3-beta.1) or newer)
 - Download speed label reading the receive counters of the interface carrying the download (whole-device traffic, not per-download), in bits or bytes per second
 - Per-rotation calibration for text and badge offsets
 - Foldable support with separate ring calibration for each posture (folded/unfolded)

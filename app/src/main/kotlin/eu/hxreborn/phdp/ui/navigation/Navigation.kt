@@ -54,6 +54,7 @@ import eu.hxreborn.phdp.ui.screen.AppearanceScreen
 import eu.hxreborn.phdp.ui.screen.BehaviorScreen
 import eu.hxreborn.phdp.ui.screen.CalibrationScreen
 import eu.hxreborn.phdp.ui.screen.CalibrationTarget
+import eu.hxreborn.phdp.ui.screen.DuoScreen
 import eu.hxreborn.phdp.ui.screen.GradientScreen
 import eu.hxreborn.phdp.ui.screen.LayoutConfig
 import eu.hxreborn.phdp.ui.screen.LicensesScreen
@@ -120,6 +121,9 @@ sealed interface Screen : NavKey {
 
     @Serializable
     data object MaterialYou : Screen
+
+    @Serializable
+    data object Duo : Screen
 
     @Serializable
     data object Licenses : Screen
@@ -447,6 +451,13 @@ fun MainNavDisplay(
                         bottomNavPadding = bottomNavPadding,
                     )
                 }
+                entry<Screen.Duo> {
+                    DuoScreen(
+                        viewModel = viewModel,
+                        onNavigateBack = { backStack.removeLastOrNull() },
+                        bottomNavPadding = bottomNavPadding,
+                    )
+                }
                 entry<Screen.Gradient> {
                     GradientScreen(
                         viewModel = viewModel,
@@ -554,6 +565,7 @@ fun MainNavDisplay(
                         SystemScreen(
                             viewModel = viewModel,
                             onNavigateToLicenses = { backStack.add(Screen.Licenses) },
+                            onNavigateToDuo = { backStack.add(Screen.Duo) },
                             contentPadding = contentPadding,
                         )
                     }
@@ -594,6 +606,8 @@ fun BottomNav(
             Screen.Gradient,
             Screen.MaterialYou,
             -> Screen.Design
+
+            Screen.Duo -> Screen.System
 
             Screen.BadgeCalibration -> Screen.Motion
 

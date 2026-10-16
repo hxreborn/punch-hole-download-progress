@@ -423,4 +423,39 @@
         <item>Saniyede bit (Mbps)</item>
         <item>Saniyede bayt (MB/s)</item>
     </string-array>
+    <string name="group_duo_status_bar">Duo Status Bar</string>
+    <string name="group_integrations">Entegrasyonlar</string>
+    <string name="group_duo_ring">Halka</string>
+    <string name="group_duo_preview">Önizleme</string>
+    <string name="pref_duo_status_bar_title">Duo Status Bar modu</string>
+    <string name="pref_duo_status_bar_summary">İndirmeleri Duo Status Bar halkasında göster</string>
+    <string name="pref_duo_status_bar_unavailable">İndirme desteği olan Duo Status Bar gerekir</string>
+    <string name="pref_duo_progress_color_summary">Duo Status Bar halkasının dolgu rengi</string>
+    <string name="pref_duo_progress_color_material_you">Material You belirler</string>
+    <string name="pref_duo_progress_color_gradient">Gradyan belirler</string>
+    <string name="pref_duo_percent_summary">İndirme yüzdesini Duo Status Bar halkasında göster</string>
+    <string name="duo_footer_hidden_title">Duo kendi halkasını çizer. Duo Status Bar modu açıkken bu ayarlar gizlenir:</string>
+    <string name="duo_footer_used_title">Bu ayarlar Duo halkasını hâlâ değiştirir:</string>
+    <string name="duo_about_title">Duo Status Bar</string>
+    <string name="duo_about_body">Duo Status Bar, kvmy666 tarafından geliştirilen ayrı bir Xposed modülüdür. Pil, Wi-Fi ve sinyal simgelerini tek bir halkayla değiştirir. Duo modu açıkken bu modül indirmeleri o halkada gösterir.</string>
+    <string name="duo_about_open_github">GitHub\'da aç</string>
+    <string name="duo_about_close">Kapat</string>
+    <string-array name="duo_footer_hidden_items">
+        <item>Halka şekli</item>
+        <item>Parlama</item>
+        <item>HDR</item>
+        <item>Yüzde metni</item>
+        <item>Tamamlanma efektleri</item>
+        <item>İndirme rozeti</item>
+    </string-array>
+    <string-array name="duo_footer_used_items">
+        <item>Gradyan (Görünüm)</item>
+        <item>Material You (Görünüm)</item>
+        <item>Tamamlanma rengi (Görünüm)</item>
+        <item>İlerleme yönü (Davranış)</item>
+        <item>İlerleme yumuşatma (Davranış)</item>
+        <item>Hareketsizlikte gizle (Davranış)</item>
+        <item>Pil tasarrufu modu (Sistem)</item>
+        <item>Dosya adı, hız ve kaynak uygulama (Görünüm)</item>
+    </string-array>
 </resources>
