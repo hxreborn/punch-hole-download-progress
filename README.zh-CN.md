@@ -7,7 +7,7 @@
 <div align="center">
 
 ![Android CI](https://github.com/hxreborn/punch-hole-download-progress/actions/workflows/android-ci.yml/badge.svg)
-![Kotlin](https://img.shields.io/badge/Kotlin-2.3.21-7F52FF?style=flat&logo=kotlin&logoColor=white)
+![Kotlin](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fhxreborn%2Fpunch-hole-download-progress%2Fmain%2Fgradle%2Flibs.versions.toml&query=%24.versions.kotlin&label=Kotlin&color=7F52FF&style=flat&logo=kotlin&logoColor=white)
 ![Android](https://img.shields.io/badge/API-28%2B-3DDC84?logo=android&logoColor=white)
 
 </div>
@@ -21,14 +21,17 @@
 - 摄像头镂空处进度环（基于原生 `DisplayCutout` API），按状态（进行中/完成/失败）独立配置颜色、弧宽、不透明度和方向
 - 完成动效，支持可选触觉反馈
 - 下载数角标
+- [Duo Status Bar](https://github.com/kvmy666/duoStatusBar) 联动：在 Duo 圆环上绘制下载进度（系统 > 集成，需要 Duo [1.4.3-beta.1](https://github.com/kvmy666/duoStatusBar/releases/tag/24-1.4.3-beta.1) 或更新版本）
+- 下载速度标签：读取承载下载的网络接口的接收计数（统计整机流量，而非单个下载），以比特或字节每秒显示
 - 按旋转方向独立校准文字和角标位置
-- Material 3 Expressive 设置界面
+- 折叠屏支持，折叠/展开姿态分别校准进度环
+- 应用内重载模块：在支持 libxposed API 102 的框架上无需重启系统界面即可应用模块更新
 - 测试模式、省电渲染及药丸形镂空路径支持
 
 ## 要求
 
 - Android 9+（API 28）
-- 支持 API 101 的 Xposed Manager（推荐官方 LSPosed）
+- 支持 libxposed API 101 的 Xposed Manager（推荐官方 LSPosed）
 - Root 可选（仅「重启系统界面」功能需要）
 
 ## 安装
