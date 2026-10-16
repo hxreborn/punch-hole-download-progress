@@ -42,7 +42,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -77,7 +77,7 @@ fun ColorPreference(
     enabled: Boolean = true,
     colors: List<Int> = MaterialPalette.materialColors,
 ) {
-    var showDialog by remember { mutableStateOf(false) }
+    var showDialog by rememberSaveable { mutableStateOf(false) }
     val contentAlpha = if (enabled) 1f else Tokens.DISABLED_ALPHA
 
     if (showDialog) {
@@ -139,9 +139,9 @@ internal fun ColorPickerDialog(
     onColorSelected: (Int) -> Unit,
 ) {
     val controller = rememberColorPickerController()
-    var selectedColor by remember { mutableIntStateOf(initialColor) }
-    var hexText by remember { mutableStateOf(initialColor.toHex()) }
-    var showPresets by remember { mutableStateOf(false) }
+    var selectedColor by rememberSaveable { mutableIntStateOf(initialColor) }
+    var hexText by rememberSaveable { mutableStateOf(initialColor.toHex()) }
+    var showPresets by rememberSaveable { mutableStateOf(false) }
     val presetsScroll = rememberScrollState()
     val chevronRotation by animateFloatAsState(
         targetValue = if (showPresets) 180f else 0f,
@@ -157,7 +157,7 @@ internal fun ColorPickerDialog(
                 HsvColorPicker(
                     modifier = Modifier.size(180.dp),
                     controller = controller,
-                    initialColor = Color(initialColor),
+                    initialColor = Color(selectedColor),
                     onColorChanged = { envelope ->
                         if (envelope.fromUser) {
                             val argb = envelope.color.toArgb()

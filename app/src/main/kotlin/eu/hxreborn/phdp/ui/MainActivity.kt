@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -28,9 +29,6 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     private val viewModel: SettingsViewModel by viewModels<SettingsViewModelImpl> { SettingsViewModelImpl.Factory }
 
-    private var showRestartDialog by mutableStateOf(false)
-    private var showResetDialog by mutableStateOf(false)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         enableEdgeToEdge()
@@ -38,6 +36,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            var showRestartDialog by rememberSaveable { mutableStateOf(false) }
+            var showResetDialog by rememberSaveable { mutableStateOf(false) }
 
             val (darkThemeConfig, useDynamicColor) =
                 when (uiState) {
