@@ -1,0 +1,8 @@
+- Added Duo Status Bar integration: progress draws on the Duo ring with Duo 1.4.3-beta.1 or newer (System > Integrations)
+- Fixed the completion effect and vibration firing twice
+- Turning the module off now stops download tracking and vibration
+- Dialogs, color picks and app search now survive rotation
+- Opening the app no longer replays the ring preview
+- Tabs slide toward the tab you pick, and a double tap opens a screen once
+- Smoother ring drawing
+- Updated core libraries and dependencies
