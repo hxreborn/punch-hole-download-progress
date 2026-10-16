@@ -221,7 +221,7 @@ fun MainNavDisplay(
         predictivePopTransitionSpec = { sharedAxisX(forward = false) },
         entryProvider =
             entryProvider {
-                entry<Screen.Design> {
+                entry<Screen.Design>(clazzContentKey = { it.toString() }) {
                     MainTabScaffold(
                         onMenuAction = onMenuAction,
                         bottomNavPadding = bottomNavPadding,
@@ -532,7 +532,7 @@ fun MainNavDisplay(
                         bottomNavPadding = bottomNavPadding,
                     )
                 }
-                entry<Screen.Motion> {
+                entry<Screen.Motion>(clazzContentKey = { it.toString() }) {
                     MainTabScaffold(
                         onMenuAction = onMenuAction,
                         bottomNavPadding = bottomNavPadding,
@@ -546,7 +546,7 @@ fun MainNavDisplay(
                         )
                     }
                 }
-                entry<Screen.Packages> {
+                entry<Screen.Packages>(clazzContentKey = { it.toString() }) {
                     MainTabScaffold(
                         onMenuAction = onMenuAction,
                         bottomNavPadding = bottomNavPadding,
@@ -557,7 +557,7 @@ fun MainNavDisplay(
                         )
                     }
                 }
-                entry<Screen.System> {
+                entry<Screen.System>(clazzContentKey = { it.toString() }) {
                     MainTabScaffold(
                         onMenuAction = onMenuAction,
                         bottomNavPadding = bottomNavPadding,
