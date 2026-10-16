@@ -136,6 +136,10 @@ data class BottomNavItem(
     val unselectedIcon: ImageVector,
 )
 
+private fun NavBackStack<NavKey>.navigateTo(key: NavKey) {
+    if (lastOrNull() != key) add(key)
+}
+
 private fun tabIndexOf(contentKey: Any?): Int = bottomNavItems.indexOfFirst { it.key.toString() == contentKey }
 
 private fun isForwardTabTransition(
@@ -229,7 +233,7 @@ fun MainNavDisplay(
                         AppearanceScreen(
                             viewModel = viewModel,
                             onNavigateToCalibration = { target ->
-                                backStack.add(
+                                backStack.navigateTo(
                                     when (target) {
                                         CalibrationTarget.RING -> Screen.Calibration
                                         CalibrationTarget.PERCENT -> Screen.PercentCalibration
@@ -243,10 +247,10 @@ fun MainNavDisplay(
                                 )
                             },
                             onNavigateToGradient = {
-                                backStack.add(Screen.Gradient)
+                                backStack.navigateTo(Screen.Gradient)
                             },
                             onNavigateToMaterialYou = {
-                                backStack.add(Screen.MaterialYou)
+                                backStack.navigateTo(Screen.MaterialYou)
                             },
                             contentPadding = contentPadding,
                         )
@@ -257,7 +261,7 @@ fun MainNavDisplay(
                         viewModel = viewModel,
                         onNavigateBack = { backStack.removeLastOrNull() },
                         onNavigateToRingRotation = {
-                            backStack.add(Screen.RingRotationCalibration)
+                            backStack.navigateTo(Screen.RingRotationCalibration)
                         },
                         bottomNavPadding = bottomNavPadding,
                     )
@@ -540,7 +544,7 @@ fun MainNavDisplay(
                         BehaviorScreen(
                             viewModel = viewModel,
                             onNavigateToBadgeCalibration = {
-                                backStack.add(Screen.BadgeCalibration)
+                                backStack.navigateTo(Screen.BadgeCalibration)
                             },
                             contentPadding = contentPadding,
                         )
@@ -564,8 +568,8 @@ fun MainNavDisplay(
                     ) { contentPadding ->
                         SystemScreen(
                             viewModel = viewModel,
-                            onNavigateToLicenses = { backStack.add(Screen.Licenses) },
-                            onNavigateToDuo = { backStack.add(Screen.Duo) },
+                            onNavigateToLicenses = { backStack.navigateTo(Screen.Licenses) },
+                            onNavigateToDuo = { backStack.navigateTo(Screen.Duo) },
                             contentPadding = contentPadding,
                         )
                     }
