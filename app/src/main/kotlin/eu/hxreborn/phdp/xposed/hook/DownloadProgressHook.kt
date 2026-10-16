@@ -51,6 +51,7 @@ object DownloadProgressHook {
     )
 
     private val activeDownloads = ConcurrentHashMap<String, DownloadState>()
+    private val completedIds = ConcurrentHashMap.newKeySet<String>()
 
     var onProgressChanged: ((Int) -> Unit)? = null
     var onDownloadComplete: (() -> Unit)? = null
@@ -62,6 +63,7 @@ object DownloadProgressHook {
 
     fun clearActiveDownloads() {
         activeDownloads.clear()
+        completedIds.clear()
         onActiveCountChanged?.invoke(0)
         onProgressChanged?.invoke(0)
         onFilenameChanged?.invoke(null)
@@ -112,6 +114,11 @@ object DownloadProgressHook {
             }
 
         val percent = (progress * 100 / max).coerceIn(0, 100)
+        if (percent < 100) {
+            completedIds.remove(id)
+        } else if (!completedIds.add(id)) {
+            return
+        }
         onActivity?.invoke()
         val oldState = activeDownloads[id]
         val reset = oldState != null && oldState.progress - percent >= SIGNIFICANT_DROP_PERCENT
@@ -291,6 +298,7 @@ object DownloadProgressHook {
         val pkg = getPackageName(sbn) ?: return
         val id = getKey(sbn) ?: return
         logDebug { "removed notif key=$id reason=$reason" }
+        completedIds.remove(id)
 
         val wasTracking = activeDownloads.remove(id) ?: return
         onActiveCountChanged?.invoke(activeDownloads.size)
