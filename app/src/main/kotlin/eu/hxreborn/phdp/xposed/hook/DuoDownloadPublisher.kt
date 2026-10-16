@@ -52,6 +52,7 @@ object DuoDownloadPublisher {
     private var previewing = false
     private var exitFade = 1f
     private var lastPublishTrace: String? = null
+    private var lastPayload: List<Any>? = null
 
     private val clearRunnable = Runnable { if (holding) fadeOutThenClear() else clearNow() }
     private val previewClearRunnable = Runnable { clearPreviewNow() }
@@ -70,7 +71,7 @@ object DuoDownloadPublisher {
                 "receiver=${queryReceiver != null}",
         )
         if (queryReceiver != null) {
-            publish()
+            publish(force = true)
             return
         }
         val receiver =
@@ -85,7 +86,7 @@ object DuoDownloadPublisher {
                             "mode=${IndicatorState.duoStatusBarMode} " +
                             "active=$active progress=${displayed.toInt()}"
                     }
-                    publish()
+                    publish(force = true)
                 }
             }
         queryReceiver = receiver
@@ -98,7 +99,7 @@ object DuoDownloadPublisher {
             }
             log("duo query receiver registered ctxPkg=${context.packageName}")
         }.onFailure { log("duo download query receiver failed", it) }
-        publish()
+        publish(force = true)
     }
 
     fun detach() {
@@ -358,7 +359,7 @@ object DuoDownloadPublisher {
             }
     }
 
-    private fun publish() {
+    private fun publish(force: Boolean = false) {
         val ctx = context ?: return
         val mode = IndicatorState.duoStatusBarMode
         val suppressed = powerSave && IndicatorState.powerSaverMode == "disable"
@@ -375,19 +376,32 @@ object DuoDownloadPublisher {
             } else {
                 displayed.toInt().coerceIn(0, 100)
             }
+        val color = washColor(ctx)
+        val gradientEnabled = IndicatorState.gradientEnabled && !failed && !holding
+        val gradientColors = IndicatorState.gradientColors
+        val payload =
+            listOf(
+                showing,
+                progress,
+                IndicatorState.clockwise,
+                color,
+                opacity,
+                IndicatorState.percentTextEnabled,
+                gradientEnabled,
+                gradientColors.toList(),
+                IndicatorState.gradientAngle,
+            )
+        if (!force && payload == lastPayload) return
         val intent =
             Intent(ACTION).setPackage(ctx.packageName).apply {
                 putExtra(EXTRA_ACTIVE, showing)
                 putExtra(EXTRA_PROGRESS, progress)
                 putExtra(EXTRA_CLOCKWISE, IndicatorState.clockwise)
-                putExtra(EXTRA_COLOR, washColor(ctx))
+                putExtra(EXTRA_COLOR, color)
                 putExtra(EXTRA_OPACITY, opacity)
                 putExtra(EXTRA_SHOW_LABEL, IndicatorState.percentTextEnabled)
-                putExtra(
-                    EXTRA_GRADIENT_ENABLED,
-                    IndicatorState.gradientEnabled && !failed && !holding,
-                )
-                putExtra(EXTRA_GRADIENT_COLORS, IndicatorState.gradientColors)
+                putExtra(EXTRA_GRADIENT_ENABLED, gradientEnabled)
+                putExtra(EXTRA_GRADIENT_COLORS, gradientColors)
                 putExtra(EXTRA_GRADIENT_ANGLE, IndicatorState.gradientAngle)
             }
         if (Logger.verboseEnabled && shouldLogPublish(progress, showing)) {
@@ -403,7 +417,11 @@ object DuoDownloadPublisher {
             }
         }
         runCatching { ctx.sendBroadcast(intent) }
-            .onFailure { log("duo download broadcast failed", it) }
+            .onSuccess { lastPayload = payload }
+            .onFailure {
+                lastPayload = null
+                log("duo download broadcast failed", it)
+            }
     }
 
     private fun shouldLogPublish(
