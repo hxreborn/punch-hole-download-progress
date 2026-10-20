@@ -84,6 +84,7 @@ import eu.hxreborn.phdp.ui.component.MorphingLogo
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.SettingsScaffold
 import eu.hxreborn.phdp.ui.component.VerticalScrollbar
+import eu.hxreborn.phdp.ui.component.sectionPreferenceTheme
 import eu.hxreborn.phdp.ui.state.ModuleStatus
 import eu.hxreborn.phdp.ui.theme.Tokens
 import me.zhanghai.compose.preference.Preference
@@ -142,7 +143,7 @@ fun AboutScreen(
         bottomPadding = bottomNavPadding,
         modifier = modifier,
     ) { innerPadding ->
-        ProvidePreferenceLocals {
+        ProvidePreferenceLocals(theme = sectionPreferenceTheme()) {
             val listState = rememberLazyListState()
             LazyColumn(
                 state = listState,

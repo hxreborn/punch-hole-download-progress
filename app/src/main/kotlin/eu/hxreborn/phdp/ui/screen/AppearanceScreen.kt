@@ -69,12 +69,13 @@ import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.ModuleStatusSection
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.VerticalScrollbar
+import eu.hxreborn.phdp.ui.component.preference.ChoicePreference
 import eu.hxreborn.phdp.ui.component.preference.ColorPreference
 import eu.hxreborn.phdp.ui.component.preference.NavigationPreference
 import eu.hxreborn.phdp.ui.component.preference.PreferenceIcon
-import eu.hxreborn.phdp.ui.component.preference.SelectPreference
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithReset
 import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
+import eu.hxreborn.phdp.ui.component.sectionPreferenceTheme
 import eu.hxreborn.phdp.ui.state.AppPrefs
 import eu.hxreborn.phdp.ui.state.ModuleStatus
 import eu.hxreborn.phdp.ui.state.SystemUiHook
@@ -119,7 +120,7 @@ fun AppearanceScreen(
 
     val listState = rememberLazyListState()
     Box(modifier = modifier.fillMaxSize()) {
-        ProvidePreferenceLocals {
+        ProvidePreferenceLocals(theme = sectionPreferenceTheme()) {
             LazyColumn(
                 state = listState,
                 modifier = Modifier.fillMaxSize(),
@@ -359,7 +360,7 @@ fun AppearanceScreen(
                                         )
                                     },
                                     {
-                                        SelectPreference(
+                                        ChoicePreference(
                                             value = prefsState.strokeCapStyle,
                                             onValueChange = {
                                                 viewModel.savePref(Prefs.strokeCapStyle, it)
@@ -751,7 +752,7 @@ fun AppearanceScreen(
                                 }
                                 if (prefsState.speedTextEnabled) {
                                     add {
-                                        SelectPreference(
+                                        ChoicePreference(
                                             value = prefsState.speedTextUnit,
                                             onValueChange = { viewModel.savePref(Prefs.speedTextUnit, it) },
                                             icon = { Icon(Icons.Outlined.DataUsage, contentDescription = null) },

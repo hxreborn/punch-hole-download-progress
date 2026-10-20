@@ -57,7 +57,7 @@ import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.prefs.encodeGradientColors
 import eu.hxreborn.phdp.ui.SettingsUiState
 import eu.hxreborn.phdp.ui.SettingsViewModel
-import eu.hxreborn.phdp.ui.component.ConnectedChoiceRow
+import eu.hxreborn.phdp.ui.component.ChoiceButtonGroup
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.SettingsScaffold
 import eu.hxreborn.phdp.ui.component.TestButtonsRow
@@ -65,6 +65,7 @@ import eu.hxreborn.phdp.ui.component.VerticalScrollbar
 import eu.hxreborn.phdp.ui.component.gradientBrush
 import eu.hxreborn.phdp.ui.component.preference.ColorPickerDialog
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithReset
+import eu.hxreborn.phdp.ui.component.sectionPreferenceTheme
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import eu.hxreborn.phdp.ui.theme.MaterialPalette
@@ -104,7 +105,7 @@ fun GradientScreen(
         bottomPadding = bottomNavPadding,
         modifier = modifier,
     ) { innerPadding ->
-        ProvidePreferenceLocals {
+        ProvidePreferenceLocals(theme = sectionPreferenceTheme()) {
             val listState = rememberLazyListState()
             LazyColumn(
                 state = listState,
@@ -155,24 +156,28 @@ fun GradientScreen(
                 )
 
                 item(key = "gradient_direction") {
-                    ConnectedChoiceRow(
-                        options = GradientDirection.entries,
-                        selected = GradientDirection.fromStoredValue(prefsState.gradientDirection),
-                        onSelect = { viewModel.savePref(Prefs.gradientDirection, it.storedValue) },
-                        label = {
-                            stringResource(
-                                when (it) {
-                                    GradientDirection.SWEEP -> R.string.gradient_type_sweep
-                                    GradientDirection.LINEAR -> R.string.gradient_type_linear
+                    SectionCard(
+                        items =
+                            listOf(
+                                {
+                                    ChoiceButtonGroup(
+                                        options = GradientDirection.entries,
+                                        selected = GradientDirection.fromStoredValue(prefsState.gradientDirection),
+                                        onSelect = { viewModel.savePref(Prefs.gradientDirection, it.storedValue) },
+                                        label = {
+                                            stringResource(
+                                                when (it) {
+                                                    GradientDirection.SWEEP -> R.string.gradient_type_sweep
+                                                    GradientDirection.LINEAR -> R.string.gradient_type_linear
+                                                },
+                                            )
+                                        },
+                                        enabled = { it != GradientDirection.SWEEP || !prefsState.duoStatusBarMode },
+                                        modifier = Modifier.padding(top = Tokens.SpacingLg),
+                                    )
                                 },
-                            )
-                        },
-                        enabled = { it != GradientDirection.SWEEP || !prefsState.duoStatusBarMode },
-                        modifier =
-                            Modifier.padding(
-                                horizontal = Tokens.SectionHorizontalMargin,
-                                vertical = Tokens.SpacingSm,
                             ),
+                        modifier = Modifier.padding(bottom = Tokens.SpacingSm),
                     )
                 }
 

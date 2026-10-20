@@ -57,9 +57,11 @@ import eu.hxreborn.phdp.ui.component.AppSnackbarHost
 import eu.hxreborn.phdp.ui.component.ImportResultDialog
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.VerticalScrollbar
+import eu.hxreborn.phdp.ui.component.preference.ChoicePreference
 import eu.hxreborn.phdp.ui.component.preference.NavigationPreference
 import eu.hxreborn.phdp.ui.component.preference.SelectPreference
 import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
+import eu.hxreborn.phdp.ui.component.sectionPreferenceTheme
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import eu.hxreborn.phdp.ui.theme.Tokens
@@ -177,7 +179,7 @@ fun SystemScreen(
         }
 
     Box(modifier = modifier.fillMaxSize()) {
-        ProvidePreferenceLocals {
+        ProvidePreferenceLocals(theme = sectionPreferenceTheme()) {
             val listState = rememberLazyListState()
             LazyColumn(
                 state = listState,
@@ -279,7 +281,7 @@ fun SystemScreen(
                         items =
                             listOf(
                                 {
-                                    SelectPreference(
+                                    ChoicePreference(
                                         value = prefsState.powerSaverMode,
                                         onValueChange = { viewModel.savePref(Prefs.powerSaverMode, it) },
                                         icon = { Icon(Icons.Outlined.BatterySaver, contentDescription = null) },

@@ -68,7 +68,7 @@ import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.prefs.StringPref
 import eu.hxreborn.phdp.ui.SettingsUiState
 import eu.hxreborn.phdp.ui.SettingsViewModel
-import eu.hxreborn.phdp.ui.component.ConnectedChoiceRow
+import eu.hxreborn.phdp.ui.component.ChoiceButtonGroup
 import eu.hxreborn.phdp.ui.component.SettingsScaffold
 import eu.hxreborn.phdp.ui.component.TestButtonsRow
 import eu.hxreborn.phdp.ui.component.VerticalScrollbar
@@ -319,16 +319,12 @@ fun MaterialYouScreen(
             }
 
             item(key = "section_selector") {
-                ConnectedChoiceRow(
+                ChoiceButtonGroup(
                     options = colorSections.indices.toList(),
                     selected = selectedSection,
                     onSelect = { selectedSection = it },
                     label = { stringResource(colorSections[it].labelRes) },
-                    modifier =
-                        Modifier.padding(
-                            horizontal = Tokens.SectionHorizontalMargin,
-                            vertical = Tokens.SpacingSm,
-                        ),
+                    modifier = Modifier.padding(top = Tokens.SpacingSm),
                 )
             }
 
