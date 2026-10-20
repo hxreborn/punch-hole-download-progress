@@ -13,8 +13,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -46,7 +46,7 @@ fun SettingsScaffold(
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            LargeTopAppBar(
+            MediumFlexibleTopAppBar(
                 title = {
                     Text(
                         text = title,
@@ -67,7 +67,6 @@ fun SettingsScaffold(
                     }
                 },
                 actions = actions,
-                expandedHeight = Tokens.LargeAppBarExpandedHeight,
                 scrollBehavior = scrollBehavior,
             )
         },

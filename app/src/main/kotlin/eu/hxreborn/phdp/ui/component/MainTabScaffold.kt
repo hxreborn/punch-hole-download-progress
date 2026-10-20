@@ -19,10 +19,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -45,10 +44,7 @@ fun MainTabScaffold(
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
             snapAnimationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
         )
-    var menuExpanded by remember { mutableStateOf(false) }
-    val isCollapsed by remember {
-        derivedStateOf { scrollBehavior.state.collapsedFraction >= 1f }
-    }
+    var menuExpanded by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -64,43 +60,41 @@ fun MainTabScaffold(
                 expandedHeight = Tokens.LargeAppBarExpandedHeight,
                 scrollBehavior = scrollBehavior,
                 actions = {
-                    if (isCollapsed) {
-                        Box {
-                            IconButton(onClick = { menuExpanded = true }) {
-                                Icon(
-                                    imageVector = Icons.Default.MoreVert,
-                                    contentDescription = stringResource(R.string.more_options),
-                                )
-                            }
-                            OverflowMenu(
-                                expanded = menuExpanded,
-                                onDismiss = { menuExpanded = false },
-                            ) {
-                                OverflowMenuItem(
-                                    text = stringResource(R.string.restart_systemui),
-                                    icon = Icons.Default.Refresh,
-                                    onClick = {
-                                        menuExpanded = false
-                                        onMenuAction(MenuAction.RestartSystemUI)
-                                    },
-                                )
-                                OverflowMenuItem(
-                                    text = stringResource(R.string.reload_module),
-                                    icon = Icons.Default.Bolt,
-                                    onClick = {
-                                        menuExpanded = false
-                                        onMenuAction(MenuAction.ReloadModule)
-                                    },
-                                )
-                                OverflowMenuItem(
-                                    text = stringResource(R.string.reset_defaults),
-                                    icon = Icons.Default.RestartAlt,
-                                    onClick = {
-                                        menuExpanded = false
-                                        onMenuAction(MenuAction.Reset)
-                                    },
-                                )
-                            }
+                    Box {
+                        IconButton(onClick = { menuExpanded = true }) {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = stringResource(R.string.more_options),
+                            )
+                        }
+                        OverflowMenu(
+                            expanded = menuExpanded,
+                            onDismiss = { menuExpanded = false },
+                        ) {
+                            OverflowMenuItem(
+                                text = stringResource(R.string.restart_systemui),
+                                icon = Icons.Default.Refresh,
+                                onClick = {
+                                    menuExpanded = false
+                                    onMenuAction(MenuAction.RestartSystemUI)
+                                },
+                            )
+                            OverflowMenuItem(
+                                text = stringResource(R.string.reload_module),
+                                icon = Icons.Default.Bolt,
+                                onClick = {
+                                    menuExpanded = false
+                                    onMenuAction(MenuAction.ReloadModule)
+                                },
+                            )
+                            OverflowMenuItem(
+                                text = stringResource(R.string.reset_defaults),
+                                icon = Icons.Default.RestartAlt,
+                                onClick = {
+                                    menuExpanded = false
+                                    onMenuAction(MenuAction.Reset)
+                                },
+                            )
                         }
                     }
                 },

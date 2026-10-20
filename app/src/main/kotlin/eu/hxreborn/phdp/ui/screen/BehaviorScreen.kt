@@ -43,11 +43,13 @@ import eu.hxreborn.phdp.ui.SettingsUiState
 import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.VerticalScrollbar
+import eu.hxreborn.phdp.ui.component.preference.ChoicePreference
 import eu.hxreborn.phdp.ui.component.preference.NavigationPreference
 import eu.hxreborn.phdp.ui.component.preference.SelectPreference
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithReset
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithStepper
 import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
+import eu.hxreborn.phdp.ui.component.sectionPreferenceTheme
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import eu.hxreborn.phdp.ui.theme.Tokens
@@ -79,7 +81,7 @@ fun BehaviorScreen(
 
     val listState = rememberLazyListState()
     Box(modifier = modifier.fillMaxSize()) {
-        ProvidePreferenceLocals {
+        ProvidePreferenceLocals(theme = sectionPreferenceTheme()) {
             LazyColumn(
                 state = listState,
                 modifier = Modifier.fillMaxSize(),
@@ -149,7 +151,7 @@ fun BehaviorScreen(
                                     }
                                     if (EffectOption.SPEED in effectOptions) {
                                         add {
-                                            SelectPreference(
+                                            ChoicePreference(
                                                 value = prefsState.effectSpeed,
                                                 onValueChange = {
                                                     viewModel.savePref(Prefs.effectSpeed, it)
@@ -170,7 +172,7 @@ fun BehaviorScreen(
                                     }
                                     if (EffectOption.INTENSITY in effectOptions) {
                                         add {
-                                            SelectPreference(
+                                            ChoicePreference(
                                                 value = prefsState.effectIntensity,
                                                 onValueChange = {
                                                     viewModel.savePref(Prefs.effectIntensity, it)

@@ -21,9 +21,10 @@ import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.SettingsScaffold
 import eu.hxreborn.phdp.ui.component.VerticalScrollbar
+import eu.hxreborn.phdp.ui.component.preference.ChoicePreference
 import eu.hxreborn.phdp.ui.component.preference.ColorPreference
-import eu.hxreborn.phdp.ui.component.preference.SelectPreference
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithReset
+import eu.hxreborn.phdp.ui.component.sectionPreferenceTheme
 import eu.hxreborn.phdp.ui.state.AppPrefs
 import eu.hxreborn.phdp.ui.theme.MaterialPalette
 import eu.hxreborn.phdp.ui.theme.Tokens
@@ -115,7 +116,7 @@ fun TextShadowCalibrationScreen(
         bottomPadding = bottomNavPadding,
         modifier = modifier,
     ) { innerPadding ->
-        ProvidePreferenceLocals {
+        ProvidePreferenceLocals(theme = sectionPreferenceTheme()) {
             val listState = rememberLazyListState()
             LazyColumn(
                 state = listState,
@@ -133,7 +134,7 @@ fun TextShadowCalibrationScreen(
                                 add {
                                     val perGlyph = stringResource(R.string.pref_text_shadow_mode_per_glyph)
                                     val oval = stringResource(R.string.pref_text_shadow_mode_oval)
-                                    SelectPreference(
+                                    ChoicePreference(
                                         value = bindings.mode.value,
                                         onValueChange = { viewModel.savePref(bindings.mode.spec, it) },
                                         values = listOf("per_glyph", "oval"),

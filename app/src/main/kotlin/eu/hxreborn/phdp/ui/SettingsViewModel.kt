@@ -6,12 +6,19 @@ import eu.hxreborn.phdp.backup.ExportResult
 import eu.hxreborn.phdp.prefs.ImportResult
 import eu.hxreborn.phdp.prefs.PrefSpec
 import eu.hxreborn.phdp.ui.state.AppPrefs
+import eu.hxreborn.phdp.ui.state.ModuleStatus
 import kotlinx.coroutines.flow.StateFlow
 
 abstract class SettingsViewModel : ViewModel() {
     abstract val uiState: StateFlow<SettingsUiState>
 
     abstract val backupEvent: StateFlow<BackupEvent?>
+
+    abstract val moduleStatus: StateFlow<ModuleStatus>
+
+    abstract fun refreshModuleStatus()
+
+    abstract fun requestSystemUiScope(onResult: (failure: String?) -> Unit)
 
     abstract fun <T : Any> savePref(
         pref: PrefSpec<T>,
@@ -26,9 +33,9 @@ abstract class SettingsViewModel : ViewModel() {
 
     abstract fun clearBackupEvent()
 
-    abstract fun simulateSuccess()
+    abstract fun simulateSuccess(onFinished: () -> Unit = {})
 
-    abstract fun simulateFailure()
+    abstract fun simulateFailure(onFinished: () -> Unit = {})
 
     abstract fun clearDownloads()
 

@@ -26,6 +26,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -41,6 +43,7 @@ fun TextInputPreference(
     defaultValue: String,
     modifier: Modifier = Modifier,
 ) {
+    val haptics = LocalHapticFeedback.current
     var showDialog by rememberSaveable { mutableStateOf(false) }
 
     if (showDialog) {
@@ -49,6 +52,7 @@ fun TextInputPreference(
             current = value,
             defaultValue = defaultValue,
             onConfirm = {
+                haptics.performHapticFeedback(HapticFeedbackType.Confirm)
                 onValueChange(it)
                 showDialog = false
             },

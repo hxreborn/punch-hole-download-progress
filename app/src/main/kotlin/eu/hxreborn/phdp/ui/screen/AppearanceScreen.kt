@@ -66,15 +66,19 @@ import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.ui.BackupEvent
 import eu.hxreborn.phdp.ui.SettingsUiState
 import eu.hxreborn.phdp.ui.SettingsViewModel
+import eu.hxreborn.phdp.ui.component.ModuleStatusSection
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.VerticalScrollbar
+import eu.hxreborn.phdp.ui.component.preference.ChoicePreference
 import eu.hxreborn.phdp.ui.component.preference.ColorPreference
 import eu.hxreborn.phdp.ui.component.preference.NavigationPreference
 import eu.hxreborn.phdp.ui.component.preference.PreferenceIcon
-import eu.hxreborn.phdp.ui.component.preference.SelectPreference
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithReset
 import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
+import eu.hxreborn.phdp.ui.component.sectionPreferenceTheme
 import eu.hxreborn.phdp.ui.state.AppPrefs
+import eu.hxreborn.phdp.ui.state.ModuleStatus
+import eu.hxreborn.phdp.ui.state.SystemUiHook
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import eu.hxreborn.phdp.ui.theme.MaterialPalette
@@ -104,6 +108,8 @@ fun AppearanceScreen(
     onNavigateToCalibration: (CalibrationTarget) -> Unit,
     onNavigateToGradient: () -> Unit,
     onNavigateToMaterialYou: () -> Unit,
+    onRestartSystemUI: () -> Unit,
+    onReloadModule: () -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
@@ -114,7 +120,7 @@ fun AppearanceScreen(
 
     val listState = rememberLazyListState()
     Box(modifier = modifier.fillMaxSize()) {
-        ProvidePreferenceLocals {
+        ProvidePreferenceLocals(theme = sectionPreferenceTheme()) {
             LazyColumn(
                 state = listState,
                 modifier = Modifier.fillMaxSize(),
@@ -124,6 +130,15 @@ fun AppearanceScreen(
                         bottom = contentPadding.calculateBottomPadding() + Tokens.SpacingLg,
                     ),
             ) {
+                item(key = "module_status") {
+                    ModuleStatusSection(
+                        viewModel = viewModel,
+                        onRestartSystemUI = onRestartSystemUI,
+                        onReloadModule = onReloadModule,
+                        modifier = Modifier.padding(bottom = Tokens.SpacingSm),
+                    )
+                }
+
                 preferenceCategory(
                     key = "design_colors_header",
                     title = { Text(stringResource(R.string.group_colors)) },
@@ -345,7 +360,7 @@ fun AppearanceScreen(
                                         )
                                     },
                                     {
-                                        SelectPreference(
+                                        ChoicePreference(
                                             value = prefsState.strokeCapStyle,
                                             onValueChange = {
                                                 viewModel.savePref(Prefs.strokeCapStyle, it)
@@ -737,7 +752,7 @@ fun AppearanceScreen(
                                 }
                                 if (prefsState.speedTextEnabled) {
                                     add {
-                                        SelectPreference(
+                                        ChoicePreference(
                                             value = prefsState.speedTextUnit,
                                             onValueChange = { viewModel.savePref(Prefs.speedTextUnit, it) },
                                             icon = { Icon(Icons.Outlined.DataUsage, contentDescription = null) },
@@ -915,6 +930,8 @@ private fun AppearanceScreenPreview() {
             onNavigateToCalibration = {},
             onNavigateToGradient = {},
             onNavigateToMaterialYou = {},
+            onRestartSystemUI = {},
+            onReloadModule = {},
             contentPadding = PaddingValues(),
         )
     }
@@ -936,6 +953,13 @@ internal class PreviewViewModel : SettingsViewModel() {
 
     override val backupEvent: StateFlow<BackupEvent?> = MutableStateFlow(null).asStateFlow()
 
+    override val moduleStatus: StateFlow<ModuleStatus> =
+        MutableStateFlow(ModuleStatus.Active("LSPosed", "2.0.0", 102, SystemUiHook.RUNNING))
+
+    override fun refreshModuleStatus() = Unit
+
+    override fun requestSystemUiScope(onResult: (failure: String?) -> Unit) = Unit
+
     override fun exportSettings(destination: Uri) {
         // no-op preview stub
     }
@@ -948,11 +972,11 @@ internal class PreviewViewModel : SettingsViewModel() {
         // no-op preview stub
     }
 
-    override fun simulateSuccess() {
+    override fun simulateSuccess(onFinished: () -> Unit) {
         // no-op preview stub
     }
 
-    override fun simulateFailure() {
+    override fun simulateFailure(onFinished: () -> Unit) {
         // no-op preview stub
     }
 
