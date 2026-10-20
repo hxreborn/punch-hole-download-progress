@@ -1,14 +1,17 @@
 package eu.hxreborn.phdp.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -22,9 +25,13 @@ import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
+import eu.hxreborn.phdp.ui.theme.isDark
 import eu.hxreborn.phdp.util.HotReload
 import eu.hxreborn.phdp.util.RootUtils
 import kotlinx.coroutines.launch
+
+private val LIGHT_NAV_SCRIM = Color.argb(0xe6, 0xFF, 0xFF, 0xFF)
+private val DARK_NAV_SCRIM = Color.argb(0x80, 0x1b, 0x1b, 0x1b)
 
 class MainActivity : ComponentActivity() {
     private val viewModel: SettingsViewModel by viewModels<SettingsViewModelImpl> { SettingsViewModelImpl.Factory }
@@ -50,6 +57,15 @@ class MainActivity : ComponentActivity() {
                         prefs.darkThemeConfig to prefs.useDynamicColor
                     }
                 }
+
+            val darkTheme = darkThemeConfig.isDark()
+            DisposableEffect(darkTheme) {
+                enableEdgeToEdge(
+                    statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT) { darkTheme },
+                    navigationBarStyle = SystemBarStyle.auto(LIGHT_NAV_SCRIM, DARK_NAV_SCRIM) { darkTheme },
+                )
+                onDispose {}
+            }
 
             AppTheme(
                 darkThemeConfig = darkThemeConfig,

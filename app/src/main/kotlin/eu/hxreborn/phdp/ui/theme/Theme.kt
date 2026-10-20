@@ -1,7 +1,6 @@
 package eu.hxreborn.phdp.ui.theme
 
 import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MotionScheme
@@ -99,12 +98,7 @@ fun AppTheme(
     useDynamicColor: Boolean = false,
     content: @Composable () -> Unit,
 ) {
-    val darkTheme =
-        when (darkThemeConfig) {
-            DarkThemeConfig.FOLLOW_SYSTEM -> isSystemInDarkTheme()
-            DarkThemeConfig.LIGHT -> false
-            DarkThemeConfig.DARK -> true
-        }
+    val darkTheme = darkThemeConfig.isDark()
 
     val colorScheme =
         when {
