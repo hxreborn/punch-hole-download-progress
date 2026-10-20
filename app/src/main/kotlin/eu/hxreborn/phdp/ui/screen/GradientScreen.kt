@@ -25,9 +25,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
@@ -60,6 +57,7 @@ import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.prefs.encodeGradientColors
 import eu.hxreborn.phdp.ui.SettingsUiState
 import eu.hxreborn.phdp.ui.SettingsViewModel
+import eu.hxreborn.phdp.ui.component.ConnectedChoiceRow
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.SettingsScaffold
 import eu.hxreborn.phdp.ui.component.TestButtonsRow
@@ -157,49 +155,25 @@ fun GradientScreen(
                 )
 
                 item(key = "gradient_direction") {
-                    SingleChoiceSegmentedButtonRow(
+                    ConnectedChoiceRow(
+                        options = GradientDirection.entries,
+                        selected = GradientDirection.fromStoredValue(prefsState.gradientDirection),
+                        onSelect = { viewModel.savePref(Prefs.gradientDirection, it.storedValue) },
+                        label = {
+                            stringResource(
+                                when (it) {
+                                    GradientDirection.SWEEP -> R.string.gradient_type_sweep
+                                    GradientDirection.LINEAR -> R.string.gradient_type_linear
+                                },
+                            )
+                        },
+                        enabled = { it != GradientDirection.SWEEP || !prefsState.duoStatusBarMode },
                         modifier =
-                            Modifier.fillMaxWidth().padding(
+                            Modifier.padding(
                                 horizontal = Tokens.SectionHorizontalMargin,
                                 vertical = Tokens.SpacingSm,
                             ),
-                    ) {
-                        val selected =
-                            GradientDirection.fromStoredValue(prefsState.gradientDirection)
-                        GradientDirection.entries.forEachIndexed { index, direction ->
-                            SegmentedButton(
-                                selected = selected == direction,
-                                enabled =
-                                    direction != GradientDirection.SWEEP ||
-                                        !prefsState.duoStatusBarMode,
-                                onClick = {
-                                    viewModel.savePref(
-                                        Prefs.gradientDirection,
-                                        direction.storedValue,
-                                    )
-                                },
-                                shape =
-                                    SegmentedButtonDefaults.itemShape(
-                                        index = index,
-                                        count = GradientDirection.entries.size,
-                                    ),
-                            ) {
-                                Text(
-                                    stringResource(
-                                        when (direction) {
-                                            GradientDirection.SWEEP -> {
-                                                R.string.gradient_type_sweep
-                                            }
-
-                                            GradientDirection.LINEAR -> {
-                                                R.string.gradient_type_linear
-                                            }
-                                        },
-                                    ),
-                                )
-                            }
-                        }
-                    }
+                    )
                 }
 
                 item(key = "gradient_angle") {

@@ -32,9 +32,6 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -71,6 +68,7 @@ import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.prefs.StringPref
 import eu.hxreborn.phdp.ui.SettingsUiState
 import eu.hxreborn.phdp.ui.SettingsViewModel
+import eu.hxreborn.phdp.ui.component.ConnectedChoiceRow
 import eu.hxreborn.phdp.ui.component.SettingsScaffold
 import eu.hxreborn.phdp.ui.component.TestButtonsRow
 import eu.hxreborn.phdp.ui.component.VerticalScrollbar
@@ -328,27 +326,17 @@ fun MaterialYouScreen(
             }
 
             item(key = "section_selector") {
-                SingleChoiceSegmentedButtonRow(
+                ConnectedChoiceRow(
+                    options = colorSections.indices.toList(),
+                    selected = selectedSection,
+                    onSelect = { selectedSection = it },
+                    label = { stringResource(colorSections[it].labelRes) },
                     modifier =
-                        Modifier.fillMaxWidth().padding(
+                        Modifier.padding(
                             horizontal = Tokens.SectionHorizontalMargin,
                             vertical = Tokens.SpacingSm,
                         ),
-                ) {
-                    colorSections.forEachIndexed { index, section ->
-                        SegmentedButton(
-                            selected = selectedSection == index,
-                            onClick = { selectedSection = index },
-                            shape =
-                                SegmentedButtonDefaults.itemShape(
-                                    index = index,
-                                    count = colorSections.size,
-                                ),
-                        ) {
-                            Text(stringResource(section.labelRes))
-                        }
-                    }
-                }
+                )
             }
 
             item(key = "color_grid") {
