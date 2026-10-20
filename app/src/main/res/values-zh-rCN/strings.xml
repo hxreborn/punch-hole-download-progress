@@ -3,13 +3,13 @@
     <string name="app_name">Punch-hole Download Progress</string>
     <string name="app_desc">摄像头边缘的下载进度指示器</string>
     <string name="back">返回</string>
-    <string name="reload_module">重新加载模块</string>
+    <string name="reload_module">热重载</string>
     <string name="reload_unsupported">热重载需要支持 libxposed API 102 的框架</string>
     <string name="restart_systemui">重启系统界面</string>
-    <string name="restart_systemui_confirm">即将重启系统界面以应用修改，是否继续？</string>
+    <string name="restart_systemui_confirm">状态栏和通知栏会重新加载，已打开的应用不受影响。</string>
     <string name="restart">重启</string>
     <string name="restart_failed_detail">重启系统界面失败：%1$s</string>
-    <string name="root_not_granted">未授予 Root 权限。请先授予Punch-hole Download Progress Root权限。</string>
+    <string name="root_not_granted">重启 SystemUI 需要 Root 权限</string>
     <string name="color_selected">已选择</string>
     <string name="more_options">更多选项</string>
     <string name="tab_design">外观</string>
@@ -27,10 +27,10 @@
     <string name="selection_cleared">选项已清理</string>
     <string name="apply_defaults">勾选推荐项</string>
     <string name="defaults_applied">新增%1$d项应用</string>
-    <string name="defaults_none_added">已勾选默认应用</string>
+    <string name="defaults_none_added">推荐的应用均已选中</string>
     <string name="undo">撤销</string>
     <string name="help">故障排除</string>
-    <string name="packages_help">此模块通过读取应用的通知来检测下载。要显示进度环，应用必须主动显示带有进度条的通知。如果通知被禁用或隐藏，则进度环不会显示。</string>
+    <string name="packages_help">进度环跟随应用下载通知中的进度条。\n\n如果应用不显示进度通知，或其通知已关闭，进度环不会出现。</string>
     <string name="group_colors">颜色</string>
     <string name="group_geometry">尺寸缩放</string>
     <string name="group_percent_text">进度百分比</string>
@@ -48,11 +48,11 @@
     <string name="pref_progress_color_title">加载</string>
     <string name="pref_progress_color_summary">下载过程中进度环的颜色</string>
     <string name="pref_success_color_title">完成</string>
-    <string name="pref_success_color_summary">下载完成后进度环的颜色</string>
+    <string name="pref_success_color_summary">下载完成时进度环的颜色</string>
     <string name="pref_error_color_title">错误</string>
     <string name="pref_error_color_summary">下载失败时进度环的颜色</string>
     <string name="pref_gradient_title">渐变</string>
-    <string name="pref_gradient_summary">在下载进度中混合两种颜色</string>
+    <string name="pref_gradient_summary">沿进度环混合颜色</string>
     <string name="pref_gradient_configure_title">渐变设置</string>
     <string name="pref_gradient_configure_summary">选择渐变颜色和方向</string>
     <string name="gradient_colors_title">渐变颜色</string>
@@ -82,7 +82,7 @@
     <string name="pref_stroke_width_title">宽度</string>
     <string name="pref_stroke_width_summary">进度环的弧宽</string>
     <string name="pref_cutout_padding_title">间距</string>
-    <string name="pref_cutout_padding_summary">进度环递增时的间距</string>
+    <string name="pref_cutout_padding_summary">进度环与摄像头之间的间距</string>
     <string name="pref_opacity_title">不透明度</string>
     <string name="pref_opacity_summary">进度环的不透明度</string>
     <string name="pref_ring_scale_linked_title">缩放</string>
@@ -91,7 +91,7 @@
     <string name="pref_ring_scale_y_title">高度缩放</string>
     <string name="group_advanced">高级</string>
     <string name="pref_path_mode_title">跑道风格</string>
-    <string name="pref_path_mode_summary">使用另一种环形绘制方法，如果您的相机区域是药丸形的，请启用它</string>
+    <string name="pref_path_mode_summary">绘制胶囊形而非圆形，适用于药丸形挖孔</string>
     <string name="pref_calibrate_ring_title">校准</string>
     <string name="pref_calibrate_ring_summary">调整进度环位置大小</string>
     <string name="pref_calibrate_ring_rotation_title">进度环偏移（按屏幕旋转）</string>
@@ -104,11 +104,11 @@
     <string name="pref_ring_offset_x_title">水平偏移</string>
     <string name="pref_ring_offset_y_title">垂直偏移</string>
     <string name="pref_show_percentage_title">显示文本百分比</string>
-    <string name="pref_show_percentage_summary">以数字文本形式显示当前进度</string>
+    <string name="pref_show_percentage_summary">以数字显示进度</string>
     <string name="pref_calibrate_percent_title">校准</string>
     <string name="pref_calibrate_percent_summary">调整百分比标签位置</string>
     <string name="pref_show_speed_title">显示网速</string>
-    <string name="pref_show_speed_summary">以文本形式显示当前网络下载速率</string>
+    <string name="pref_show_speed_summary">显示当前下载速度</string>
     <string name="pref_calibrate_speed_title">校准</string>
     <string name="pref_calibrate_speed_summary">调整网速标签位置</string>
     <string name="pref_speed_unit_title">网速单位</string>
@@ -120,13 +120,13 @@
     <string name="pref_app_icon_enabled_title">来源图标</string>
     <string name="pref_app_icon_enabled_summary">显示什么应用启动的下载</string>
     <string name="pref_app_icon_monochrome_title">色系风格</string>
-    <string name="pref_app_icon_monochrome_summary">提取图标主体轮廓，着色为进度环颜色</string>
+    <string name="pref_app_icon_monochrome_summary">用进度环颜色为主题图标着色</string>
     <string name="pref_app_icon_size_title">图标大小</string>
     <string name="pref_app_icon_size_summary">调整来源应用图标大小</string>
     <string name="pref_calibrate_app_icon_title">校准</string>
     <string name="pref_calibrate_app_icon_summary">调整来源应用图标位置</string>
     <string name="pref_lock_rotation_title">保持竖屏</string>
-    <string name="pref_lock_rotation_summary">将该项锁定为竖屏方向，屏幕旋转时仍保持直立</string>
+    <string name="pref_lock_rotation_summary">屏幕旋转时保持此项直立</string>
     <string name="pref_text_shadow_nav_summary">自定义阴影和可选描边</string>
     <string name="pref_calibrate_percent_shadow_title">校准百分比阴影</string>
     <string name="pref_calibrate_speed_shadow_title">校准网速阴影</string>
@@ -149,7 +149,7 @@
     <string name="pref_text_stroke_color_summary">描边颜色（默认：黑色）</string>
     <string name="group_hdr">HDR 亮度</string>
     <string name="pref_hdr_enabled_title">使用 HDR</string>
-    <string name="pref_hdr_enabled_summary">在 HDR 屏幕上以高于标准 SDR 的亮度渲染进度环。需要 Android 15 或更高版本（默认：关闭）</string>
+    <string name="pref_hdr_enabled_summary">在 HDR 屏幕上以高于 SDR 的亮度绘制进度环（Android 15 或更高版本）</string>
     <string name="pref_hdr_headroom_title">HDR 强度</string>
     <string name="pref_hdr_headroom_summary">目标 HDR/SDR 比例。1.0× 为 SDR，3.0× 为请求的最大值。实际数值由屏幕限制</string>
     <string name="pref_hdr_ratio_title">实时 HDR/SDR 比例</string>
@@ -182,13 +182,13 @@
     <string name="pref_haptic_feedback_title">触觉反馈</string>
     <string name="pref_haptic_feedback_summary">下载完成后震动提醒</string>
     <string name="pref_show_queue_count_title">下载数角标</string>
-    <string name="pref_show_queue_count_summary">显示同时进行的下载数量</string>
+    <string name="pref_show_queue_count_summary">显示正在进行的下载数量</string>
     <string name="pref_calibrate_badge_title">校准</string>
     <string name="pref_calibrate_badge_summary">调整下载数角标的位置</string>
     <string name="pref_burn_in_hide_title">无活动时隐藏</string>
     <string name="pref_burn_in_hide_summary">无活动或进度更新后，指示器自动隐藏的等待时长</string>
     <string name="pref_progress_anim_title">进度平滑度</string>
-    <string name="pref_progress_anim_summary">进度变化时弧形过渡的时长。取决于应用向 SystemUI 上报进度的频率。</string>
+    <string name="pref_progress_anim_summary">进度变化时弧线跟上所需的时间</string>
     <string name="pref_font_size_title">字体大小</string>
     <string name="pref_bold_title">加粗</string>
     <string name="pref_italic_title">斜体</string>
@@ -199,15 +199,15 @@
     <string name="pref_filename_truncate_title">字符限制</string>
     <string name="pref_filename_max_chars_title">最大字符数量</string>
     <string name="pref_filename_vertical_title">竖排文字</string>
-    <string name="pref_filename_vertical_summary">横屏时将文字竖向显示</string>
+    <string name="pref_filename_vertical_summary">横屏时将字符竖排</string>
     <string name="pref_preview_text_title">预览文本</string>
     <string name="pref_invert_rotation_title">进度环方向</string>
     <string name="clockwise">顺时针</string>
     <string name="counter_clockwise">逆时针</string>
     <string name="pref_material_you_title">Material调色板</string>
-    <string name="pref_material_you_summary">从您的壁纸中选择进度环颜色</string>
+    <string name="pref_material_you_summary">从壁纸中选取进度环颜色</string>
     <string name="pref_material_you_configure_title">色彩分配</string>
-    <string name="pref_material_you_configure_summary">按系统主题色分别设置指示器</string>
+    <string name="pref_material_you_configure_summary">为进度、完成和错误选择壁纸颜色</string>
     <string name="group_material_you_progress">加载</string>
     <string name="group_material_you_success">完成</string>
     <string name="group_material_you_error">错误</string>
@@ -223,24 +223,24 @@
     <string name="pref_theme_title">主题</string>
     <string name="pref_theme_summary">可设置浅色、深色或系统默认主题</string>
     <string name="pref_dynamic_color_title">动态取色</string>
-    <string name="pref_dynamic_color_summary">根据壁纸自动生成主题颜色</string>
+    <string name="pref_dynamic_color_summary">使用壁纸中的颜色</string>
     <string name="pref_floating_nav_bar_title">悬浮导航栏</string>
     <string name="pref_floating_nav_bar_summary">使用紧凑的悬浮导航栏，替代全宽导航栏</string>
     <string name="pref_hide_nav_bar_on_scroll_title">滚动时隐藏</string>
     <string name="pref_hide_nav_bar_on_scroll_summary">滚动时将悬浮导航栏滑出屏幕</string>
     <string name="pref_battery_saver_title">省电模式</string>
-    <string name="pref_battery_saver_summary">可设置省电模式下进度环表现</string>
+    <string name="pref_battery_saver_summary">省电模式下进度环的表现</string>
     <string name="pref_debug_completion_title">测试完成效果</string>
-    <string name="pref_debug_completion_summary">下载完成的效果测试</string>
+    <string name="pref_debug_completion_summary">在进度环上播放完成效果</string>
     <string name="pref_test_failure_title">测试失败效果</string>
-    <string name="pref_test_failure_summary">下载失败的效果测试</string>
+    <string name="pref_test_failure_summary">在进度环上播放失败效果</string>
     <string name="pref_clear_downloads_title">重置指示器</string>
-    <string name="pref_clear_downloads_summary">清除下载队列，同时重置卡住的指示器</string>
+    <string name="pref_clear_downloads_summary">移除下载后残留在屏幕上的进度环</string>
     <string name="clear_downloads_done">指示器已重置</string>
     <string name="pref_hide_launcher_icon_title">隐藏桌面图标</string>
-    <string name="pref_hide_launcher_icon_summary">隐藏桌面应用图标</string>
+    <string name="pref_hide_launcher_icon_summary">改为从 LSPosed 打开应用</string>
     <string name="pref_verbose_logging_title">调试日志</string>
-    <string name="pref_verbose_logging_summary">用于调试的详细日志</string>
+    <string name="pref_verbose_logging_summary">为问题报告记录详细日志</string>
     <string name="group_backup">备份</string>
     <string name="pref_export_settings_title">导出设置</string>
     <string name="pref_export_settings_summary">将设置保存到文件</string>
@@ -362,6 +362,24 @@
     <string name="duo_about_body">Duo Status Bar 是 kvmy666 开发的独立 Xposed 模块。它用一个圆环取代电池、Wi-Fi 和信号图标。开启 Duo 模式后，本模块会在该圆环上显示下载。</string>
     <string name="duo_about_open_github">在 GitHub 上打开</string>
     <string name="duo_about_close">关闭</string>
+    <string-array name="duo_footer_hidden_items">
+        <item>圆环形状</item>
+        <item>发光</item>
+        <item>HDR</item>
+        <item>进度百分比</item>
+        <item>完成特效</item>
+        <item>下载角标</item>
+    </string-array>
+    <string-array name="duo_footer_used_items">
+        <item>渐变（外观）</item>
+        <item>Material You（外观）</item>
+        <item>完成颜色（外观）</item>
+        <item>进度环方向（通知）</item>
+        <item>进度平滑度（通知）</item>
+        <item>无活动时隐藏（通知）</item>
+        <item>省电模式（系统）</item>
+        <item>文件名、网速和来源应用（外观）</item>
+    </string-array>
     <string name="status_checking">正在检查模块</string>
     <string name="status_inactive_title">模块未启用</string>
     <string name="status_inactive_body">在 LSPosed 中启用模块并将 SystemUI 加入作用域</string>
@@ -393,22 +411,4 @@
     <string name="device_android_version">Android %1$s（API %2$d）</string>
     <string name="device_framework">Xposed 框架</string>
     <string name="device_framework_none">未检测到</string>
-    <string-array name="duo_footer_hidden_items">
-        <item>圆环形状</item>
-        <item>发光</item>
-        <item>HDR</item>
-        <item>进度百分比</item>
-        <item>完成特效</item>
-        <item>下载角标</item>
-    </string-array>
-    <string-array name="duo_footer_used_items">
-        <item>渐变（外观）</item>
-        <item>Material You（外观）</item>
-        <item>完成颜色（外观）</item>
-        <item>进度环方向（通知）</item>
-        <item>进度平滑度（通知）</item>
-        <item>无活动时隐藏（通知）</item>
-        <item>省电模式（系统）</item>
-        <item>文件名、网速和来源应用（外观）</item>
-    </string-array>
 </resources>
