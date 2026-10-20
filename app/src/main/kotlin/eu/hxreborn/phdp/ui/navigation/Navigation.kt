@@ -5,6 +5,7 @@ import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesomeMotion
 import androidx.compose.material.icons.filled.Palette
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.rounded.Apps
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingToolbarScrollBehavior
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
@@ -32,6 +34,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation3.runtime.NavBackStack
@@ -698,7 +701,13 @@ fun BottomNav(
                         )
                     }
                 },
-                label = { Text(stringResource(item.titleRes)) },
+                label = {
+                    Text(
+                        text = stringResource(item.titleRes),
+                        maxLines = 1,
+                        autoSize = TextAutoSize.StepBased(minFontSize = 6.sp, maxFontSize = LocalTextStyle.current.fontSize),
+                    )
+                },
                 alwaysShowLabel = false,
                 colors = transparentIndicatorColors,
             )
