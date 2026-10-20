@@ -54,7 +54,9 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -219,6 +221,7 @@ fun MaterialYouScreen(
     modifier: Modifier = Modifier,
     bottomNavPadding: Dp = 0.dp,
 ) {
+    val haptics = LocalHapticFeedback.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val prefsState = (uiState as? SettingsUiState.Success)?.prefs ?: return
 
@@ -305,7 +308,12 @@ fun MaterialYouScreen(
                     presets.forEachIndexed { index, preset ->
                         FilterChip(
                             selected = activePreset == index,
-                            onClick = { viewModel.applyPreset(preset) },
+                            onClick = {
+                                if (activePreset != index) {
+                                    haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
+                                    viewModel.applyPreset(preset)
+                                }
+                            },
                             label = { Text(stringResource(preset.labelRes)) },
                         )
                     }
@@ -357,8 +365,8 @@ fun MaterialYouScreen(
 
             item(key = "test_buttons") {
                 TestButtonsRow(
-                    onSimulateSuccess = { viewModel.simulateSuccess() },
-                    onSimulateFailure = { viewModel.simulateFailure() },
+                    onSimulateSuccess = viewModel::simulateSuccess,
+                    onSimulateFailure = viewModel::simulateFailure,
                 )
             }
         }
@@ -555,6 +563,7 @@ private fun SwatchRow(
     selectedShade: Int,
     onColorSelected: (palette: String, shade: Int) -> Unit,
 ) {
+    val haptics = LocalHapticFeedback.current
     Row(
         modifier = Modifier.horizontalScroll(scrollState).selectableGroup(),
         horizontalArrangement = Arrangement.spacedBy(SWATCH_SPACING_DP.dp),
@@ -567,7 +576,10 @@ private fun SwatchRow(
                 label = label,
                 shade = shade,
                 selected = isSelected,
-                onClick = { onColorSelected(palette, shade) },
+                onClick = {
+                    if (!isSelected) haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
+                    onColorSelected(palette, shade)
+                },
             )
         }
     }

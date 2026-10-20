@@ -16,8 +16,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.HapticFeedbackConstantsCompat
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import eu.hxreborn.phdp.PHDPApp
@@ -28,6 +32,7 @@ import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import eu.hxreborn.phdp.ui.theme.isDark
 import eu.hxreborn.phdp.util.HotReload
 import eu.hxreborn.phdp.util.RootUtils
+import io.github.libxposed.service.HotReloadResult
 import kotlinx.coroutines.launch
 
 private val LIGHT_NAV_SCRIM = Color.argb(0xe6, 0xFF, 0xFF, 0xFF)
@@ -45,6 +50,7 @@ class MainActivity : ComponentActivity() {
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             var showRestartDialog by rememberSaveable { mutableStateOf(false) }
             var showResetDialog by rememberSaveable { mutableStateOf(false) }
+            val haptics = LocalHapticFeedback.current
 
             val (darkThemeConfig, useDynamicColor) =
                 when (uiState) {
@@ -118,6 +124,7 @@ class MainActivity : ComponentActivity() {
                                 onClick = {
                                     showResetDialog = false
                                     viewModel.resetDefaults()
+                                    haptics.performHapticFeedback(HapticFeedbackType.Confirm)
                                     Toast.makeText(this@MainActivity, R.string.reset_done, Toast.LENGTH_SHORT).show()
                                 },
                             ) {
@@ -151,8 +158,21 @@ class MainActivity : ComponentActivity() {
             Toast.makeText(this, R.string.reload_unsupported, Toast.LENGTH_LONG).show()
             return
         }
-        HotReload.reload(service) { result ->
-            runOnUiThread { Toast.makeText(this, result, Toast.LENGTH_LONG).show() }
+        HotReload.reload(service) { result, status ->
+            runOnUiThread {
+                Toast.makeText(this, result, Toast.LENGTH_LONG).show()
+                when (status) {
+                    HotReloadResult.Status.SUCCEEDED -> {
+                        ViewCompat.performHapticFeedback(window.decorView, HapticFeedbackConstantsCompat.CONFIRM)
+                    }
+
+                    HotReloadResult.Status.IN_PROGRESS -> {}
+
+                    else -> {
+                        ViewCompat.performHapticFeedback(window.decorView, HapticFeedbackConstantsCompat.REJECT)
+                    }
+                }
+            }
         }
     }
 

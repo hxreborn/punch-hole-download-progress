@@ -948,11 +948,11 @@ internal class PreviewViewModel : SettingsViewModel() {
         // no-op preview stub
     }
 
-    override fun simulateSuccess() {
+    override fun simulateSuccess(onFinished: () -> Unit) {
         // no-op preview stub
     }
 
-    override fun simulateFailure() {
+    override fun simulateFailure(onFinished: () -> Unit) {
         // no-op preview stub
     }
 

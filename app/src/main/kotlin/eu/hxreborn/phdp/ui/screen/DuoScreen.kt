@@ -185,8 +185,8 @@ fun DuoScreen(
 
                     item(key = "duo_test_buttons") {
                         TestButtonsRow(
-                            onSimulateSuccess = { viewModel.simulateSuccess() },
-                            onSimulateFailure = { viewModel.simulateFailure() },
+                            onSimulateSuccess = viewModel::simulateSuccess,
+                            onSimulateFailure = viewModel::simulateFailure,
                         )
                     }
                 }

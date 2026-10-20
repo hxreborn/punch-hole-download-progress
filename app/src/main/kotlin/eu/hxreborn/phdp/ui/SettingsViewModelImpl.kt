@@ -126,8 +126,8 @@ class SettingsViewModelImpl(
             androidSdk = Build.VERSION.SDK_INT,
         )
 
-    override fun simulateSuccess() {
-        simulate {
+    override fun simulateSuccess(onFinished: () -> Unit) {
+        simulate(onFinished) {
             for (progress in 0..100 step 5) {
                 savePref(Prefs.testProgress, progress)
                 delay(100)
@@ -135,8 +135,8 @@ class SettingsViewModelImpl(
         }
     }
 
-    override fun simulateFailure() {
-        simulate {
+    override fun simulateFailure(onFinished: () -> Unit) {
+        simulate(onFinished) {
             for (progress in 0..60 step 10) {
                 savePref(Prefs.testProgress, progress)
                 delay(100)
@@ -146,11 +146,15 @@ class SettingsViewModelImpl(
         }
     }
 
-    private fun simulate(steps: suspend () -> Unit) {
+    private fun simulate(
+        onFinished: () -> Unit,
+        steps: suspend () -> Unit,
+    ) {
         if (!simulating.compareAndSet(false, true)) return
         viewModelScope.launch {
             try {
                 steps()
+                onFinished()
             } finally {
                 savePref(Prefs.testProgress, -1)
                 savePref(Prefs.testError, false)

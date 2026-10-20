@@ -26,9 +26,9 @@ abstract class SettingsViewModel : ViewModel() {
 
     abstract fun clearBackupEvent()
 
-    abstract fun simulateSuccess()
+    abstract fun simulateSuccess(onFinished: () -> Unit = {})
 
-    abstract fun simulateFailure()
+    abstract fun simulateFailure(onFinished: () -> Unit = {})
 
     abstract fun clearDownloads()
 

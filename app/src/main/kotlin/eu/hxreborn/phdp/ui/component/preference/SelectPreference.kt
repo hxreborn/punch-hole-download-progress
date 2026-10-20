@@ -37,6 +37,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
@@ -61,6 +63,7 @@ fun <T> SelectPreference(
     valueToDescription: (T) -> String? = { null },
 ) {
     var showDialog by rememberSaveable { mutableStateOf(false) }
+    val haptics = LocalHapticFeedback.current
     val contentAlpha = if (enabled) 1f else Tokens.DISABLED_ALPHA
 
     if (showDialog) {
@@ -71,6 +74,7 @@ fun <T> SelectPreference(
             valueToText = valueToText,
             valueToDescription = valueToDescription,
             onValueChange = {
+                if (it != value) haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
                 onValueChange(it)
                 showDialog = false
             },

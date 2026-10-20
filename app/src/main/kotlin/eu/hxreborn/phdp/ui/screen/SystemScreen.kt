@@ -38,12 +38,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -124,6 +127,7 @@ fun SystemScreen(
     val success = uiState as? SettingsUiState.Success ?: return
     val prefsState = success.prefs
     val context = LocalContext.current
+    val haptics = LocalHapticFeedback.current
     val isDuoStatusBarSupported = remember(context) { context.isDuoStatusBarSupported() }
     val backupEvent by viewModel.backupEvent.collectAsStateWithLifecycle()
 
@@ -137,16 +141,36 @@ fun SystemScreen(
         }
 
     val snackbarHostState = remember { SnackbarHostState() }
+    var importAnnounced by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         viewModel.backupEvent.collect { event ->
-            val message = event?.snackbarMessage(context) ?: return@collect
+            event ?: return@collect
+            val message = event.snackbarMessage(context)
+            if (message == null) {
+                if (!importAnnounced) {
+                    haptics.performHapticFeedback(HapticFeedbackType.Confirm)
+                    importAnnounced = true
+                }
+                return@collect
+            }
+            haptics.performHapticFeedback(
+                if (event is BackupEvent.Exported) HapticFeedbackType.Confirm else HapticFeedbackType.Reject,
+            )
             viewModel.clearBackupEvent()
             snackbarHostState.showSnackbar(message)
         }
     }
 
     ((backupEvent as? BackupEvent.Imported)?.result as? ImportResult.Restored)
-        ?.let { ImportResultDialog(report = it.report, onDismiss = { viewModel.clearBackupEvent() }) }
+        ?.let {
+            ImportResultDialog(
+                report = it.report,
+                onDismiss = {
+                    viewModel.clearBackupEvent()
+                    importAnnounced = false
+                },
+            )
+        }
 
     val themeEntries = stringArrayResource(R.array.theme_entries).toList()
     val themeValues = stringArrayResource(R.array.theme_values).toList()
@@ -328,7 +352,13 @@ fun SystemScreen(
                             listOf(
                                 {
                                     Preference(
-                                        onClick = { viewModel.simulateSuccess() },
+                                        onClick = {
+                                            viewModel.simulateSuccess {
+                                                haptics.performHapticFeedback(
+                                                    HapticFeedbackType.Confirm,
+                                                )
+                                            }
+                                        },
                                         icon = { Icon(Icons.Outlined.CheckCircle, contentDescription = null) },
                                         title = {
                                             Text(
@@ -344,7 +374,13 @@ fun SystemScreen(
                                 },
                                 {
                                     Preference(
-                                        onClick = { viewModel.simulateFailure() },
+                                        onClick = {
+                                            viewModel.simulateFailure {
+                                                haptics.performHapticFeedback(
+                                                    HapticFeedbackType.Reject,
+                                                )
+                                            }
+                                        },
                                         icon = { Icon(Icons.Outlined.Cancel, contentDescription = null) },
                                         title = {
                                             Text(
@@ -362,6 +398,7 @@ fun SystemScreen(
                                     Preference(
                                         onClick = {
                                             viewModel.clearDownloads()
+                                            haptics.performHapticFeedback(HapticFeedbackType.Confirm)
                                             Toast
                                                 .makeText(
                                                     context,

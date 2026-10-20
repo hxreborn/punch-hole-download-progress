@@ -249,8 +249,8 @@ fun GradientScreen(
 
                 item(key = "test_buttons") {
                     TestButtonsRow(
-                        onSimulateSuccess = { viewModel.simulateSuccess() },
-                        onSimulateFailure = { viewModel.simulateFailure() },
+                        onSimulateSuccess = viewModel::simulateSuccess,
+                        onSimulateFailure = viewModel::simulateFailure,
                     )
                 }
             }
