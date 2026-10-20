@@ -1,7 +1,6 @@
 package eu.hxreborn.phdp.ui.screen
 
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -13,10 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.automirrored.outlined.OpenInNew
 import androidx.compose.material.icons.outlined.BatterySaver
-import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.CallToAction
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.CheckCircle
@@ -25,14 +21,12 @@ import androidx.compose.material.icons.outlined.ColorLens
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.DonutLarge
 import androidx.compose.material.icons.outlined.Download
-import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.SwipeDown
 import androidx.compose.material.icons.outlined.Terminal
 import androidx.compose.material.icons.outlined.Upload
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,7 +44,6 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.hxreborn.phdp.BuildConfig
 import eu.hxreborn.phdp.R
@@ -120,7 +113,7 @@ fun SystemScreen(
     viewModel: SettingsViewModel,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
-    onNavigateToLicenses: () -> Unit = {},
+    onNavigateToAbout: () -> Unit = {},
     onNavigateToDuo: () -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -502,90 +495,19 @@ fun SystemScreen(
                     )
                 }
 
-                preferenceCategory(
-                    key = "system_about_header",
-                    title = { Text(stringResource(R.string.group_about)) },
-                )
-
                 item(key = "system_about_section") {
-                    val versionString = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
                     SectionCard(
+                        modifier = Modifier.padding(top = Tokens.SpacingLg),
                         items =
                             listOf(
                                 {
-                                    Preference(
-                                        icon = {
-                                            Icon(
-                                                Icons.Outlined.Info,
-                                                contentDescription = null,
-                                            )
-                                        },
-                                        title = { Text(stringResource(R.string.pref_version_title)) },
-                                        summary = { Text(versionString) },
-                                    )
-                                },
-                                {
-                                    Preference(
-                                        onClick = {
-                                            context.startActivity(
-                                                Intent(
-                                                    Intent.ACTION_VIEW,
-                                                    "https://github.com/hxreborn/punch-hole-download-progress".toUri(),
-                                                ),
-                                            )
-                                        },
-                                        icon = {
-                                            Icon(
-                                                painterResource(R.drawable.ic_github_24),
-                                                contentDescription = null,
-                                            )
-                                        },
-                                        title = { Text(stringResource(R.string.pref_git_repo)) },
+                                    NavigationPreference(
+                                        onClick = onNavigateToAbout,
+                                        icon = { Icon(Icons.Outlined.Info, contentDescription = null) },
+                                        title = { Text(stringResource(R.string.group_about)) },
                                         summary = {
-                                            Text(stringResource(R.string.pref_git_repo_summary))
+                                            Text(stringResource(R.string.about_summary, BuildConfig.VERSION_NAME))
                                         },
-                                        widgetContainer = { TrailingIcon(Icons.AutoMirrored.Outlined.OpenInNew) },
-                                    )
-                                },
-                                {
-                                    Preference(
-                                        onClick = onNavigateToLicenses,
-                                        icon = {
-                                            Icon(
-                                                Icons.Outlined.Gavel,
-                                                contentDescription = null,
-                                            )
-                                        },
-                                        title = { Text(stringResource(R.string.pref_licenses)) },
-                                        summary = {
-                                            Text(stringResource(R.string.pref_licenses_summary))
-                                        },
-                                        widgetContainer = { TrailingIcon(Icons.AutoMirrored.Filled.KeyboardArrowRight) },
-                                    )
-                                },
-                                {
-                                    Preference(
-                                        onClick = {
-                                            context.startActivity(
-                                                Intent(
-                                                    Intent.ACTION_VIEW,
-                                                    "https://github.com/hxreborn/punch-hole-download-progress/issues/new/choose".toUri(),
-                                                ),
-                                            )
-                                        },
-                                        icon = {
-                                            Icon(
-                                                Icons.Outlined.BugReport,
-                                                contentDescription = null,
-                                            )
-                                        },
-                                        title = {
-                                            Text(stringResource(R.string.pref_report_issue))
-                                        },
-                                        summary = {
-                                            Text(stringResource(R.string.pref_report_issue_summary))
-                                        },
-                                        widgetContainer = { TrailingIcon(Icons.AutoMirrored.Outlined.OpenInNew) },
                                     )
                                 },
                             ),
@@ -599,16 +521,6 @@ fun SystemScreen(
             modifier = Modifier.align(Alignment.BottomCenter),
         )
     }
-}
-
-@Composable
-private fun TrailingIcon(imageVector: ImageVector) {
-    Icon(
-        imageVector,
-        contentDescription = null,
-        modifier = Modifier.padding(horizontal = Tokens.PreferencePadding),
-        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-    )
 }
 
 @Suppress("ViewModelConstructorInComposable")

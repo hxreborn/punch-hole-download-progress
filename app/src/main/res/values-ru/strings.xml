@@ -56,7 +56,7 @@
     <string name="group_app_theme">Тема приложения</string>
     <string name="group_power">Мощность</string>
     <string name="group_diagnostics">Диагностика</string>
-    <string name="group_about">О нас</string>
+    <string name="group_about">О приложении</string>
 
     <!-- Design: Colors -->
     <string name="pref_progress_color_title">Цвет прогресса</string>
@@ -351,13 +351,12 @@
     <string name="result_hide_details">Скрыть подробности</string>
 
     <!-- System: About -->
-    <string name="pref_version_title">Версия</string>
     <string name="pref_git_repo">Исходный код</string>
-    <string name="pref_git_repo_summary">Просмотрите проект на GitHub</string>
-    <string name="pref_licenses">Сторонние лицензии</string>
-    <string name="pref_licenses_summary">Библиотеки, используемые этим приложением, и их лицензии</string>
-    <string name="pref_report_issue">Сообщите о проблеме</string>
-    <string name="pref_report_issue_summary">Сообщите об ошибке или предложите функцию на GitHub</string>
+    <string name="pref_git_repo_summary">Код проекта на GitHub</string>
+    <string name="pref_licenses">Лицензии открытого ПО</string>
+    <string name="pref_licenses_summary">Библиотеки приложения и их лицензии</string>
+    <string name="pref_report_issue">Предложить функцию или сообщить об ошибке</string>
+    <string name="pref_report_issue_summary">Открывает форму на GitHub</string>
 
     <!-- Color Picker -->
     <string name="pick_color">Выбрать цвет</string>
@@ -456,6 +455,22 @@
     <string name="status_outdated_body">Модуль обновлён после запуска SystemUI</string>
     <string name="status_failed_title">Модуль не загрузился</string>
     <string name="status_failed_body">SystemUI не смог запустить модуль</string>
+    <string name="about_summary">Версия %1$s</string>
+    <string name="whats_new">Что нового</string>
+    <string name="whats_new_summary">Изменения в версии %1$s</string>
+    <string name="whats_new_title">Что нового в %1$s</string>
+    <string name="changelog">Список изменений</string>
+    <string name="changelog_summary">Изменения во всех версиях</string>
+    <string name="changelog_installed">Установлена</string>
+    <string name="changelog_jump_top">К новым</string>
+    <string name="changelog_jump_bottom">К старым</string>
+    <string name="star_on_github">Звезда на GitHub</string>
+    <string name="buy_me_a_coffee">Угостить кофе</string>
+    <string name="group_this_device">Это устройство</string>
+    <string name="device_android">Android</string>
+    <string name="device_android_version">Android %1$s (API %2$d)</string>
+    <string name="device_framework">Фреймворк Xposed</string>
+    <string name="device_framework_none">Не обнаружен</string>
     <string-array name="duo_footer_hidden_items">
         <item>Форма кольца</item>
         <item>Свечение</item>

@@ -288,13 +288,12 @@
     <string name="failure_write_failed">写入失败（%1$s）</string>
     <string name="result_show_details">显示详情</string>
     <string name="result_hide_details">隐藏详情</string>
-    <string name="pref_version_title">版本</string>
     <string name="pref_git_repo">源代码</string>
-    <string name="pref_git_repo_summary">在GitHub上浏览该项目</string>
-    <string name="pref_licenses">第三方许可</string>
-    <string name="pref_licenses_summary">本应用使用的库及其许可协议</string>
-    <string name="pref_report_issue">报告问题</string>
-    <string name="pref_report_issue_summary">在GitHub上报告错误或提出功能建议</string>
+    <string name="pref_git_repo_summary">在 GitHub 上查看代码</string>
+    <string name="pref_licenses">开源许可</string>
+    <string name="pref_licenses_summary">本应用使用的库及其许可</string>
+    <string name="pref_report_issue">建议功能或报告问题</string>
+    <string name="pref_report_issue_summary">打开 GitHub 上的问题表单</string>
     <string name="pick_color">选色板</string>
     <string name="presets">预设</string>
     <string name="reset_defaults">恢复默认设置</string>
@@ -378,6 +377,22 @@
     <string name="status_outdated_body">模块在 SystemUI 启动后更新过</string>
     <string name="status_failed_title">模块加载失败</string>
     <string name="status_failed_body">SystemUI 无法启动模块</string>
+    <string name="about_summary">版本 %1$s</string>
+    <string name="whats_new">新功能</string>
+    <string name="whats_new_summary">%1$s 版本的变化</string>
+    <string name="whats_new_title">%1$s 新功能</string>
+    <string name="changelog">更新日志</string>
+    <string name="changelog_summary">所有版本的变化</string>
+    <string name="changelog_installed">已安装</string>
+    <string name="changelog_jump_top">跳到最新</string>
+    <string name="changelog_jump_bottom">跳到最早</string>
+    <string name="star_on_github">在 GitHub 上点星</string>
+    <string name="buy_me_a_coffee">请我喝杯咖啡</string>
+    <string name="group_this_device">本设备</string>
+    <string name="device_android">Android</string>
+    <string name="device_android_version">Android %1$s（API %2$d）</string>
+    <string name="device_framework">Xposed 框架</string>
+    <string name="device_framework_none">未检测到</string>
     <string-array name="duo_footer_hidden_items">
         <item>圆环形状</item>
         <item>发光</item>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Punch-hole Download Progress</string>
-    <string name="app_desc">Activity indicator ring around camera cutout</string>
+    <string name="app_desc">Download progress ring around the camera cutout</string>
     <string name="status_checking">Checking the module</string>
     <string name="status_inactive_title">Module is off</string>
     <string name="status_inactive_body">Turn it on in LSPosed with SystemUI in its scope</string>
@@ -400,15 +400,30 @@
     <string name="failure_write_failed">could not be written (%1$s)</string>
     <string name="result_show_details">Show details</string>
     <string name="result_hide_details">Hide details</string>
+    <string name="about_summary">Version %1$s</string>
 
     <!-- System: About -->
-    <string name="pref_version_title">Version</string>
     <string name="pref_git_repo">Source code</string>
-    <string name="pref_git_repo_summary">Browse the project on GitHub</string>
-    <string name="pref_licenses">Third-party licenses</string>
-    <string name="pref_licenses_summary">Libraries used by this app and their licenses</string>
-    <string name="pref_report_issue">Report an issue</string>
-    <string name="pref_report_issue_summary">Report a bug or suggest a feature on GitHub</string>
+    <string name="pref_git_repo_summary">View the code on GitHub</string>
+    <string name="pref_licenses">Open source licenses</string>
+    <string name="pref_licenses_summary">Libraries this app uses and their licenses</string>
+    <string name="pref_report_issue">Suggest a feature or report a bug</string>
+    <string name="pref_report_issue_summary">Opens the issue form on GitHub</string>
+    <string name="whats_new">What\'s new</string>
+    <string name="whats_new_summary">Changes in version %1$s</string>
+    <string name="whats_new_title">What\'s new in %1$s</string>
+    <string name="changelog">Changelog</string>
+    <string name="changelog_summary">Changes in every release</string>
+    <string name="changelog_installed">Installed</string>
+    <string name="changelog_jump_top">Jump to newest</string>
+    <string name="changelog_jump_bottom">Jump to oldest</string>
+    <string name="star_on_github">Star on GitHub</string>
+    <string name="buy_me_a_coffee">Buy me a coffee</string>
+    <string name="group_this_device">This device</string>
+    <string name="device_android">Android</string>
+    <string name="device_android_version">Android %1$s (API %2$d)</string>
+    <string name="device_framework">Xposed framework</string>
+    <string name="device_framework_none">Not detected</string>
 
     <!-- Color Picker -->
     <string name="pick_color">Pick color</string>

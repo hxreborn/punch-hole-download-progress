@@ -349,13 +349,12 @@
     <string name="result_hide_details">Ayrıntıları gizle</string>
 
     <!-- System: About -->
-    <string name="pref_version_title">Sürüm</string>
     <string name="pref_git_repo">Kaynak kodu</string>
-    <string name="pref_git_repo_summary">Projeyi GitHub\'da inceleyin</string>
-    <string name="pref_licenses">Üçüncü taraf lisansları</string>
-    <string name="pref_licenses_summary">Bu uygulama tarafından kullanılan kütüphaneler ve lisansları</string>
-    <string name="pref_report_issue">Sorun bildir</string>
-    <string name="pref_report_issue_summary">GitHub\'da bir hata bildirin veya özellik önerin</string>
+    <string name="pref_git_repo_summary">Kodu GitHub\'da görüntüleyin</string>
+    <string name="pref_licenses">Açık kaynak lisansları</string>
+    <string name="pref_licenses_summary">Uygulamanın kullandığı kütüphaneler ve lisansları</string>
+    <string name="pref_report_issue">Özellik öner veya hata bildir</string>
+    <string name="pref_report_issue_summary">GitHub\'daki formu açar</string>
 
     <!-- Color Picker -->
     <string name="pick_color">Renk seç</string>
@@ -454,6 +453,22 @@
     <string name="status_outdated_body">Modül, SystemUI başladıktan sonra güncellendi</string>
     <string name="status_failed_title">Modül yüklenemedi</string>
     <string name="status_failed_body">SystemUI modülü başlatamadı</string>
+    <string name="about_summary">Sürüm %1$s</string>
+    <string name="whats_new">Yenilikler</string>
+    <string name="whats_new_summary">%1$s sürümündeki değişiklikler</string>
+    <string name="whats_new_title">%1$s yenilikleri</string>
+    <string name="changelog">Değişiklik günlüğü</string>
+    <string name="changelog_summary">Tüm sürümlerdeki değişiklikler</string>
+    <string name="changelog_installed">Yüklü</string>
+    <string name="changelog_jump_top">En yeniye git</string>
+    <string name="changelog_jump_bottom">En eskiye git</string>
+    <string name="star_on_github">GitHub\'da yıldızla</string>
+    <string name="buy_me_a_coffee">Bana bir kahve ısmarla</string>
+    <string name="group_this_device">Bu cihaz</string>
+    <string name="device_android">Android</string>
+    <string name="device_android_version">Android %1$s (API %2$d)</string>
+    <string name="device_framework">Xposed çerçevesi</string>
+    <string name="device_framework_none">Algılanmadı</string>
     <string-array name="duo_footer_hidden_items">
         <item>Halka şekli</item>
         <item>Parlama</item>
