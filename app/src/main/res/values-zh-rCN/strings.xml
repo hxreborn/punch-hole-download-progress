@@ -363,6 +363,21 @@
     <string name="duo_about_body">Duo Status Bar 是 kvmy666 开发的独立 Xposed 模块。它用一个圆环取代电池、Wi-Fi 和信号图标。开启 Duo 模式后，本模块会在该圆环上显示下载。</string>
     <string name="duo_about_open_github">在 GitHub 上打开</string>
     <string name="duo_about_close">关闭</string>
+    <string name="status_checking">正在检查模块</string>
+    <string name="status_inactive_title">模块未启用</string>
+    <string name="status_inactive_body">在 LSPosed 中启用模块并将 SystemUI 加入作用域</string>
+    <string name="status_running_title">正在 SystemUI 中运行</string>
+    <string name="status_active_title">模块已启用</string>
+    <string name="status_scope_title">SystemUI 不在作用域中</string>
+    <string name="status_scope_body">模块通过 SystemUI 绘制进度环</string>
+    <string name="status_scope_action">添加 SystemUI</string>
+    <string name="status_scope_failed">无法添加 SystemUI：%1$s</string>
+    <string name="status_not_loaded_title">SystemUI 尚未加载模块</string>
+    <string name="status_not_loaded_body">SystemUI 会在启动时加载模块</string>
+    <string name="status_outdated_title">SystemUI 运行的是旧版本</string>
+    <string name="status_outdated_body">模块在 SystemUI 启动后更新过</string>
+    <string name="status_failed_title">模块加载失败</string>
+    <string name="status_failed_body">SystemUI 无法启动模块</string>
     <string-array name="duo_footer_hidden_items">
         <item>圆环形状</item>
         <item>发光</item>

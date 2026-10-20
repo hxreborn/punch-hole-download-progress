@@ -441,6 +441,21 @@
     <string name="duo_about_body">Duo Status Bar — отдельный модуль Xposed от kvmy666. Он заменяет значки батареи, Wi-Fi и сигнала одним кольцом. В режиме Duo этот модуль показывает загрузки на этом кольце.</string>
     <string name="duo_about_open_github">Открыть на GitHub</string>
     <string name="duo_about_close">Закрыть</string>
+    <string name="status_checking">Проверка модуля</string>
+    <string name="status_inactive_title">Модуль выключен</string>
+    <string name="status_inactive_body">Включите его в LSPosed и добавьте SystemUI в область действия</string>
+    <string name="status_running_title">Работает в SystemUI</string>
+    <string name="status_active_title">Модуль включён</string>
+    <string name="status_scope_title">SystemUI нет в области действия</string>
+    <string name="status_scope_body">Модуль рисует кольцо через SystemUI</string>
+    <string name="status_scope_action">Добавить SystemUI</string>
+    <string name="status_scope_failed">Не удалось добавить SystemUI: %1$s</string>
+    <string name="status_not_loaded_title">SystemUI не загрузил модуль</string>
+    <string name="status_not_loaded_body">SystemUI загружает его при запуске</string>
+    <string name="status_outdated_title">SystemUI использует старую версию</string>
+    <string name="status_outdated_body">Модуль обновлён после запуска SystemUI</string>
+    <string name="status_failed_title">Модуль не загрузился</string>
+    <string name="status_failed_body">SystemUI не смог запустить модуль</string>
     <string-array name="duo_footer_hidden_items">
         <item>Форма кольца</item>
         <item>Свечение</item>

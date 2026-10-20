@@ -252,6 +252,8 @@ fun MainNavDisplay(
                             onNavigateToMaterialYou = {
                                 backStack.navigateTo(Screen.MaterialYou)
                             },
+                            onRestartSystemUI = { onMenuAction(MenuAction.RestartSystemUI) },
+                            onReloadModule = { onMenuAction(MenuAction.ReloadModule) },
                             contentPadding = contentPadding,
                         )
                     }

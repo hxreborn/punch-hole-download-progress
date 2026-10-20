@@ -2,6 +2,22 @@
 <resources>
     <string name="app_name">Punch-hole Download Progress</string>
     <string name="app_desc">Activity indicator ring around camera cutout</string>
+    <string name="status_checking">Checking the module</string>
+    <string name="status_inactive_title">Module is off</string>
+    <string name="status_inactive_body">Turn it on in LSPosed with SystemUI in its scope</string>
+    <string name="status_running_title">Running in SystemUI</string>
+    <string name="status_active_title">Module is on</string>
+    <string name="status_framework">%1$s %2$s (API %3$d)</string>
+    <string name="status_scope_title">SystemUI isn\'t in scope</string>
+    <string name="status_scope_body">The module draws the ring from SystemUI</string>
+    <string name="status_scope_action">Add SystemUI</string>
+    <string name="status_scope_failed">Couldn\'t add SystemUI: %1$s</string>
+    <string name="status_not_loaded_title">SystemUI hasn\'t loaded the module</string>
+    <string name="status_not_loaded_body">SystemUI loads it when it starts</string>
+    <string name="status_outdated_title">SystemUI runs an older version</string>
+    <string name="status_outdated_body">The module was updated after SystemUI started</string>
+    <string name="status_failed_title">The module failed to load</string>
+    <string name="status_failed_body">SystemUI couldn\'t start the module</string>
 
     <!-- Navigation -->
     <string name="back">Back</string>

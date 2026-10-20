@@ -13,7 +13,12 @@ import eu.hxreborn.phdp.backup.BackupMeta
 import eu.hxreborn.phdp.prefs.PrefSpec
 import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.prefs.PrefsRepository
+import eu.hxreborn.phdp.ui.state.ModuleStatus
+import eu.hxreborn.phdp.ui.state.SystemUiHook
 import eu.hxreborn.phdp.util.LauncherIconHelper
+import io.github.libxposed.service.HookedTarget
+import io.github.libxposed.service.XposedService
+import io.github.libxposed.service.XposedServiceHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,6 +55,61 @@ class SettingsViewModelImpl(
     override val backupEvent = MutableStateFlow<BackupEvent?>(null)
 
     private val simulating = AtomicBoolean(false)
+
+    private val app = PHDPApp.from(applicationContext)
+
+    override val moduleStatus = MutableStateFlow<ModuleStatus>(ModuleStatus.Checking)
+
+    private val scopeRequestPending = AtomicBoolean(false)
+
+    private val serviceListener =
+        object : XposedServiceHelper.OnServiceListener {
+            override fun onServiceBind(service: XposedService) = refreshModuleStatus()
+
+            override fun onServiceDied(service: XposedService) {
+                scopeRequestPending.set(false)
+                refreshModuleStatus()
+            }
+        }
+
+    init {
+        app.addServiceListener(serviceListener)
+    }
+
+    override fun onCleared() {
+        app.removeServiceListener(serviceListener)
+    }
+
+    override fun refreshModuleStatus() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val service =
+                app.service ?: run {
+                    if (moduleStatus.value == ModuleStatus.Checking) delay(SERVICE_BIND_GRACE)
+                    app.service
+                }
+            moduleStatus.value = service?.let(::readModuleStatus) ?: ModuleStatus.Inactive
+        }
+    }
+
+    override fun requestSystemUiScope(onResult: (failure: String?) -> Unit) {
+        val service = app.service ?: return
+        if (!scopeRequestPending.compareAndSet(false, true)) return
+        val listener =
+            object : XposedService.OnScopeEventListener {
+                override fun onScopeRequestApproved(approved: List<String>) {
+                    scopeRequestPending.set(false)
+                    refreshModuleStatus()
+                    viewModelScope.launch { onResult(null) }
+                }
+
+                override fun onScopeRequestFailed(message: String) {
+                    scopeRequestPending.set(false)
+                    viewModelScope.launch { onResult(message) }
+                }
+            }
+        runCatching { service.requestScope(listOf(SYSTEMUI), listener) }
+            .onFailure { listener.onScopeRequestFailed(it.message ?: it.toString()) }
+    }
 
     override val uiState: StateFlow<SettingsUiState> =
         combine(repository.state, launcherIconHidden) { prefs, hidden ->
@@ -173,6 +233,33 @@ class SettingsViewModelImpl(
     }
 
     companion object {
+        private const val SYSTEMUI = "com.android.systemui"
+        private val SERVICE_BIND_GRACE = 2.seconds
+
+        private fun readModuleStatus(service: XposedService): ModuleStatus =
+            runCatching {
+                val systemUi =
+                    when {
+                        SYSTEMUI !in service.scope -> {
+                            SystemUiHook.NOT_IN_SCOPE
+                        }
+
+                        service.apiVersion < XposedService.API_102 -> {
+                            SystemUiHook.IN_SCOPE
+                        }
+
+                        else -> {
+                            when (service.runningTargets.firstOrNull { it.processName == SYSTEMUI }?.state) {
+                                null -> SystemUiHook.NOT_LOADED
+                                HookedTarget.State.STALE -> SystemUiHook.OUTDATED
+                                HookedTarget.State.FAILED -> SystemUiHook.FAILED
+                                else -> SystemUiHook.RUNNING
+                            }
+                        }
+                    }
+                ModuleStatus.Active(service.frameworkName, service.frameworkVersion, service.apiVersion, systemUi)
+            }.getOrElse { ModuleStatus.Inactive }
+
         val Factory =
             viewModelFactory {
                 initializer {

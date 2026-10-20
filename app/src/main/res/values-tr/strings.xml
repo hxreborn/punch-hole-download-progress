@@ -439,6 +439,21 @@
     <string name="duo_about_body">Duo Status Bar, kvmy666 tarafından geliştirilen ayrı bir Xposed modülüdür. Pil, Wi-Fi ve sinyal simgelerini tek bir halkayla değiştirir. Duo modu açıkken bu modül indirmeleri o halkada gösterir.</string>
     <string name="duo_about_open_github">GitHub\'da aç</string>
     <string name="duo_about_close">Kapat</string>
+    <string name="status_checking">Modül denetleniyor</string>
+    <string name="status_inactive_title">Modül kapalı</string>
+    <string name="status_inactive_body">LSPosed\'da açın ve kapsamına SystemUI\'ı ekleyin</string>
+    <string name="status_running_title">SystemUI\'da çalışıyor</string>
+    <string name="status_active_title">Modül açık</string>
+    <string name="status_scope_title">SystemUI kapsamda değil</string>
+    <string name="status_scope_body">Modül halkayı SystemUI içinden çizer</string>
+    <string name="status_scope_action">SystemUI\'ı ekle</string>
+    <string name="status_scope_failed">SystemUI eklenemedi: %1$s</string>
+    <string name="status_not_loaded_title">SystemUI modülü yüklemedi</string>
+    <string name="status_not_loaded_body">SystemUI modülü başlarken yükler</string>
+    <string name="status_outdated_title">SystemUI eski bir sürümü çalıştırıyor</string>
+    <string name="status_outdated_body">Modül, SystemUI başladıktan sonra güncellendi</string>
+    <string name="status_failed_title">Modül yüklenemedi</string>
+    <string name="status_failed_body">SystemUI modülü başlatamadı</string>
     <string-array name="duo_footer_hidden_items">
         <item>Halka şekli</item>
         <item>Parlama</item>
