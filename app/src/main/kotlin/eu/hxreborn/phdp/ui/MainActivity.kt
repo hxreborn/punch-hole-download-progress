@@ -8,7 +8,15 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.RestartAlt
+import androidx.compose.material.icons.outlined.SettingsBackupRestore
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.DisposableEffect
@@ -41,6 +49,7 @@ private val DARK_NAV_SCRIM = Color.argb(0x80, 0x1b, 0x1b, 0x1b)
 class MainActivity : ComponentActivity() {
     private val viewModel: SettingsViewModel by viewModels<SettingsViewModelImpl> { SettingsViewModelImpl.Factory }
 
+    @OptIn(ExperimentalMaterial3ExpressiveApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         enableEdgeToEdge()
@@ -95,19 +104,21 @@ class MainActivity : ComponentActivity() {
                     AlertDialog(
                         onDismissRequest = { showRestartDialog = false },
                         title = { Text(stringResource(R.string.restart_systemui)) },
+                        icon = { Icon(Icons.Outlined.RestartAlt, contentDescription = null) },
                         text = { Text(stringResource(R.string.restart_systemui_confirm)) },
                         confirmButton = {
-                            TextButton(
+                            Button(
                                 onClick = {
                                     showRestartDialog = false
                                     performRestart()
                                 },
+                                shapes = ButtonDefaults.shapes(),
                             ) {
                                 Text(stringResource(R.string.restart))
                             }
                         },
                         dismissButton = {
-                            TextButton(onClick = { showRestartDialog = false }) {
+                            TextButton(onClick = { showRestartDialog = false }, shapes = ButtonDefaults.shapes()) {
                                 Text(stringResource(android.R.string.cancel))
                             }
                         },
@@ -118,9 +129,16 @@ class MainActivity : ComponentActivity() {
                     AlertDialog(
                         onDismissRequest = { showResetDialog = false },
                         title = { Text(stringResource(R.string.reset_defaults)) },
+                        icon = { Icon(Icons.Outlined.SettingsBackupRestore, contentDescription = null) },
                         text = { Text(stringResource(R.string.reset_confirm)) },
                         confirmButton = {
-                            TextButton(
+                            Button(
+                                shapes = ButtonDefaults.shapes(),
+                                colors =
+                                    ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.error,
+                                        contentColor = MaterialTheme.colorScheme.onError,
+                                    ),
                                 onClick = {
                                     showResetDialog = false
                                     viewModel.resetDefaults()
@@ -132,7 +150,7 @@ class MainActivity : ComponentActivity() {
                             }
                         },
                         dismissButton = {
-                            TextButton(onClick = { showResetDialog = false }) {
+                            TextButton(onClick = { showResetDialog = false }, shapes = ButtonDefaults.shapes()) {
                                 Text(stringResource(android.R.string.cancel))
                             }
                         },
