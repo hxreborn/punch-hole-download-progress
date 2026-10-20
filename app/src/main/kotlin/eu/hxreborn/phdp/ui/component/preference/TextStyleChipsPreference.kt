@@ -18,10 +18,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import eu.hxreborn.phdp.R
+import eu.hxreborn.phdp.ui.component.performToggle
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.Tokens
 
@@ -35,6 +37,7 @@ fun TextStyleChipsPreference(
     title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val haptics = LocalHapticFeedback.current
     Row(
         modifier = modifier.fillMaxWidth().padding(Tokens.PreferencePadding),
         verticalAlignment = Alignment.CenterVertically,
@@ -52,7 +55,10 @@ fun TextStyleChipsPreference(
         ) {
             FilterChip(
                 selected = bold,
-                onClick = { onBoldChange(!bold) },
+                onClick = {
+                    haptics.performToggle(!bold)
+                    onBoldChange(!bold)
+                },
                 label = { Text(stringResource(R.string.pref_bold_title)) },
                 leadingIcon =
                     if (bold) {
@@ -63,7 +69,10 @@ fun TextStyleChipsPreference(
             )
             FilterChip(
                 selected = italic,
-                onClick = { onItalicChange(!italic) },
+                onClick = {
+                    haptics.performToggle(!italic)
+                    onItalicChange(!italic)
+                },
                 label = { Text(stringResource(R.string.pref_italic_title)) },
                 leadingIcon =
                     if (italic) {

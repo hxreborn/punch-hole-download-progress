@@ -16,6 +16,7 @@ object Tokens {
     // M3 Spacing Scale
     val SpacingSm: Dp = 8.dp
     val SpacingLg: Dp = 16.dp
+    val SpacingXl: Dp = 24.dp
 
     // M3 shapes use ShapeDefaults where possible
     val CardShape: Shape = ShapeDefaults.Medium
@@ -47,7 +48,8 @@ object Tokens {
     val GroupSpacing: Dp = 6.dp
     val SectionItemSpacing: Dp = 2.dp
     val RowCornerRadius: Dp = 24.dp
-    val SectionHorizontalMargin: Dp = 12.dp
+    val SectionHorizontalMargin: Dp = 16.dp
+    val CategoryHorizontalPadding: Dp = 24.dp
     val SnackbarShape: Shape = RoundedCornerShape(RowCornerRadius)
 
     // App icon in list items

@@ -5,6 +5,7 @@ import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesomeMotion
 import androidx.compose.material.icons.filled.Palette
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.rounded.Apps
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingToolbarScrollBehavior
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
@@ -32,6 +34,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation3.runtime.NavBackStack
@@ -50,10 +53,12 @@ import eu.hxreborn.phdp.ui.MenuAction
 import eu.hxreborn.phdp.ui.SettingsUiState
 import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.MainTabScaffold
+import eu.hxreborn.phdp.ui.screen.AboutScreen
 import eu.hxreborn.phdp.ui.screen.AppearanceScreen
 import eu.hxreborn.phdp.ui.screen.BehaviorScreen
 import eu.hxreborn.phdp.ui.screen.CalibrationScreen
 import eu.hxreborn.phdp.ui.screen.CalibrationTarget
+import eu.hxreborn.phdp.ui.screen.ChangelogScreen
 import eu.hxreborn.phdp.ui.screen.DuoScreen
 import eu.hxreborn.phdp.ui.screen.GradientScreen
 import eu.hxreborn.phdp.ui.screen.LayoutConfig
@@ -127,6 +132,12 @@ sealed interface Screen : NavKey {
 
     @Serializable
     data object Licenses : Screen
+
+    @Serializable
+    data object About : Screen
+
+    @Serializable
+    data object Changelog : Screen
 }
 
 data class BottomNavItem(
@@ -252,6 +263,8 @@ fun MainNavDisplay(
                             onNavigateToMaterialYou = {
                                 backStack.navigateTo(Screen.MaterialYou)
                             },
+                            onRestartSystemUI = { onMenuAction(MenuAction.RestartSystemUI) },
+                            onReloadModule = { onMenuAction(MenuAction.ReloadModule) },
                             contentPadding = contentPadding,
                         )
                     }
@@ -568,11 +581,26 @@ fun MainNavDisplay(
                     ) { contentPadding ->
                         SystemScreen(
                             viewModel = viewModel,
-                            onNavigateToLicenses = { backStack.navigateTo(Screen.Licenses) },
+                            onNavigateToAbout = { backStack.navigateTo(Screen.About) },
                             onNavigateToDuo = { backStack.navigateTo(Screen.Duo) },
                             contentPadding = contentPadding,
                         )
                     }
+                }
+                entry<Screen.About> {
+                    AboutScreen(
+                        viewModel = viewModel,
+                        onNavigateBack = { backStack.removeLastOrNull() },
+                        onNavigateToChangelog = { backStack.navigateTo(Screen.Changelog) },
+                        onNavigateToLicenses = { backStack.navigateTo(Screen.Licenses) },
+                        bottomNavPadding = bottomNavPadding,
+                    )
+                }
+                entry<Screen.Changelog> {
+                    ChangelogScreen(
+                        onNavigateBack = { backStack.removeLastOrNull() },
+                        bottomNavPadding = bottomNavPadding,
+                    )
                 }
                 entry<Screen.Licenses> {
                     LicensesScreen(
@@ -615,7 +643,7 @@ fun BottomNav(
 
             Screen.BadgeCalibration -> Screen.Motion
 
-            Screen.Licenses -> Screen.System
+            Screen.Licenses, Screen.About, Screen.Changelog -> Screen.System
 
             else -> currentKey
         }
@@ -673,7 +701,13 @@ fun BottomNav(
                         )
                     }
                 },
-                label = { Text(stringResource(item.titleRes)) },
+                label = {
+                    Text(
+                        text = stringResource(item.titleRes),
+                        maxLines = 1,
+                        autoSize = TextAutoSize.StepBased(minFontSize = 6.sp, maxFontSize = LocalTextStyle.current.fontSize),
+                    )
+                },
                 alwaysShowLabel = false,
                 colors = transparentIndicatorColors,
             )

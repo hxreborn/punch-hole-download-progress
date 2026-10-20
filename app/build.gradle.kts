@@ -117,6 +117,32 @@ kotlin {
     jvmToolchain(21)
 }
 
+abstract class CopyChangelogs : DefaultTask() {
+    @get:InputDirectory
+    abstract val changelogs: DirectoryProperty
+
+    @get:OutputDirectory
+    abstract val assets: DirectoryProperty
+
+    @TaskAction
+    fun copy() {
+        val target = assets.get().dir("changelogs").asFile
+        target.deleteRecursively()
+        changelogs.get().asFile.copyRecursively(target)
+    }
+}
+
+val copyChangelogs =
+    tasks.register<CopyChangelogs>("copyChangelogs") {
+        changelogs.set(rootProject.layout.projectDirectory.dir("fastlane/metadata/android/en-US/changelogs"))
+    }
+
+androidComponents {
+    onVariants { variant ->
+        variant.sources.assets?.addGeneratedSourceDirectory(copyChangelogs, CopyChangelogs::assets)
+    }
+}
+
 val ktlintClasspath by configurations.creating
 
 dependencies {

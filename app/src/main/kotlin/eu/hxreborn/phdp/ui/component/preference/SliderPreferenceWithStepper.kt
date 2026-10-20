@@ -29,6 +29,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -68,6 +70,7 @@ fun SliderPreferenceWithStepper(
     suffix: String = "",
     summary: @Composable (() -> Unit)? = null,
 ) {
+    val haptics = LocalHapticFeedback.current
     var isDragging by remember { mutableStateOf(false) }
     var sliderValue by remember { mutableFloatStateOf(value) }
 
@@ -114,6 +117,7 @@ fun SliderPreferenceWithStepper(
                     onClick = {
                         val newValue = (sliderValue - stepSize).roundToStep(stepSize, valueRange)
                         sliderValue = newValue
+                        haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
                         onValueChange(newValue)
                     },
                     enabled = enabled && !isAtMin,
@@ -139,6 +143,7 @@ fun SliderPreferenceWithStepper(
                     onClick = {
                         val newValue = (sliderValue + stepSize).roundToStep(stepSize, valueRange)
                         sliderValue = newValue
+                        haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
                         onValueChange(newValue)
                     },
                     enabled = enabled && !isAtMax,
@@ -187,7 +192,10 @@ fun SliderPreferenceWithStepper(
 
             // Reset button
             IconButton(
-                onClick = onReset,
+                onClick = {
+                    haptics.performHapticFeedback(HapticFeedbackType.Confirm)
+                    onReset()
+                },
                 enabled = enabled && !isDefault,
             ) {
                 Icon(

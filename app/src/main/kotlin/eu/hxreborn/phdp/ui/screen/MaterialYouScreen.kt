@@ -32,9 +32,6 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -54,7 +51,9 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -69,6 +68,7 @@ import eu.hxreborn.phdp.prefs.Prefs
 import eu.hxreborn.phdp.prefs.StringPref
 import eu.hxreborn.phdp.ui.SettingsUiState
 import eu.hxreborn.phdp.ui.SettingsViewModel
+import eu.hxreborn.phdp.ui.component.ChoiceButtonGroup
 import eu.hxreborn.phdp.ui.component.SettingsScaffold
 import eu.hxreborn.phdp.ui.component.TestButtonsRow
 import eu.hxreborn.phdp.ui.component.VerticalScrollbar
@@ -219,6 +219,7 @@ fun MaterialYouScreen(
     modifier: Modifier = Modifier,
     bottomNavPadding: Dp = 0.dp,
 ) {
+    val haptics = LocalHapticFeedback.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val prefsState = (uiState as? SettingsUiState.Success)?.prefs ?: return
 
@@ -305,42 +306,26 @@ fun MaterialYouScreen(
                     presets.forEachIndexed { index, preset ->
                         FilterChip(
                             selected = activePreset == index,
-                            onClick = { viewModel.applyPreset(preset) },
+                            onClick = {
+                                if (activePreset != index) {
+                                    haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
+                                    viewModel.applyPreset(preset)
+                                }
+                            },
                             label = { Text(stringResource(preset.labelRes)) },
                         )
                     }
-                    FilterChip(
-                        selected = activePreset == -1,
-                        onClick = {},
-                        label = {
-                            Text(stringResource(R.string.material_you_preset_custom))
-                        },
-                    )
                 }
             }
 
             item(key = "section_selector") {
-                SingleChoiceSegmentedButtonRow(
-                    modifier =
-                        Modifier.fillMaxWidth().padding(
-                            horizontal = Tokens.SectionHorizontalMargin,
-                            vertical = Tokens.SpacingSm,
-                        ),
-                ) {
-                    colorSections.forEachIndexed { index, section ->
-                        SegmentedButton(
-                            selected = selectedSection == index,
-                            onClick = { selectedSection = index },
-                            shape =
-                                SegmentedButtonDefaults.itemShape(
-                                    index = index,
-                                    count = colorSections.size,
-                                ),
-                        ) {
-                            Text(stringResource(section.labelRes))
-                        }
-                    }
-                }
+                ChoiceButtonGroup(
+                    options = colorSections.indices.toList(),
+                    selected = selectedSection,
+                    onSelect = { selectedSection = it },
+                    label = { stringResource(colorSections[it].labelRes) },
+                    modifier = Modifier.padding(top = Tokens.SpacingSm),
+                )
             }
 
             item(key = "color_grid") {
@@ -357,8 +342,8 @@ fun MaterialYouScreen(
 
             item(key = "test_buttons") {
                 TestButtonsRow(
-                    onSimulateSuccess = { viewModel.simulateSuccess() },
-                    onSimulateFailure = { viewModel.simulateFailure() },
+                    onSimulateSuccess = viewModel::simulateSuccess,
+                    onSimulateFailure = viewModel::simulateFailure,
                 )
             }
         }
@@ -555,6 +540,7 @@ private fun SwatchRow(
     selectedShade: Int,
     onColorSelected: (palette: String, shade: Int) -> Unit,
 ) {
+    val haptics = LocalHapticFeedback.current
     Row(
         modifier = Modifier.horizontalScroll(scrollState).selectableGroup(),
         horizontalArrangement = Arrangement.spacedBy(SWATCH_SPACING_DP.dp),
@@ -567,7 +553,10 @@ private fun SwatchRow(
                 label = label,
                 shade = shade,
                 selected = isSelected,
-                onClick = { onColorSelected(palette, shade) },
+                onClick = {
+                    if (!isSelected) haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
+                    onColorSelected(palette, shade)
+                },
             )
         }
     }

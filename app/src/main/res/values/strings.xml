@@ -1,19 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Punch-hole Download Progress</string>
-    <string name="app_desc">Activity indicator ring around camera cutout</string>
+    <string name="app_desc">Download progress ring around the camera cutout</string>
+
+    <string name="status_checking">Checking the module</string>
+    <string name="status_inactive_title">Module is off</string>
+    <string name="status_inactive_body">Turn it on in LSPosed with SystemUI in its scope</string>
+    <string name="status_running_title">Running in SystemUI</string>
+    <string name="status_active_title">Module is on</string>
+    <string name="status_framework">%1$s %2$s (API %3$d)</string>
+    <string name="status_scope_title">SystemUI isn\'t in scope</string>
+    <string name="status_scope_body">The module draws the ring from SystemUI</string>
+    <string name="status_scope_action">Add SystemUI</string>
+    <string name="status_scope_failed">Couldn\'t add SystemUI: %1$s</string>
+    <string name="status_not_loaded_title">SystemUI hasn\'t loaded the module</string>
+    <string name="status_not_loaded_body">SystemUI loads it when it starts</string>
+    <string name="status_outdated_title">SystemUI runs an older version</string>
+    <string name="status_outdated_body">The module was updated after SystemUI started</string>
+    <string name="status_failed_title">The module failed to load</string>
+    <string name="status_failed_body">SystemUI couldn\'t start the module</string>
 
     <!-- Navigation -->
     <string name="back">Back</string>
 
     <!-- Restart SystemUI -->
-    <string name="reload_module">Reload module</string>
+    <string name="reload_module">Hot reload</string>
     <string name="reload_unsupported">Hot reload needs a framework with libxposed API 102</string>
     <string name="restart_systemui">Restart SystemUI</string>
-    <string name="restart_systemui_confirm">This will restart SystemUI to apply changes. Continue?</string>
+    <string name="restart_systemui_confirm">The status bar and notification shade reload. Your open apps keep running.</string>
     <string name="restart">Restart</string>
-    <string name="restart_failed_detail">Failed to restart SystemUI: %1$s</string>
-    <string name="root_not_granted">Root not granted. Please grant root to Punch-hole Download Progress.</string>
+    <string name="restart_failed_detail">Couldn\'t restart SystemUI: %1$s</string>
+    <string name="root_not_granted">Restarting SystemUI needs root access</string>
 
     <!-- Value Formats -->
     <string name="color_selected">Selected</string>
@@ -37,10 +54,10 @@
     <string name="selection_cleared">Selection cleared</string>
     <string name="apply_defaults">Select recommended</string>
     <string name="defaults_applied">Added %1$d apps</string>
-    <string name="defaults_none_added">All default applications are already selected</string>
+    <string name="defaults_none_added">All recommended apps are already selected</string>
     <string name="undo">Undo</string>
     <string name="help">Troubleshooting</string>
-    <string name="packages_help">This module detects downloads by reading the app\'s notifications.\n\nTo see the progress ring, the app must actively show a notification with a progress bar. If notifications are disabled or hidden, the ring will not appear.</string>
+    <string name="packages_help">The ring follows the progress bar in an app\'s download notification.\n\nIf the app shows no progress notification, or its notifications are off, the ring doesn\'t appear.</string>
 
     <!-- Group Headers -->
     <string name="group_duo_status_bar">Duo Status Bar</string>
@@ -97,11 +114,11 @@
     <string name="pref_progress_color_title">Progress color</string>
     <string name="pref_progress_color_summary">Ring fill color during active downloads</string>
     <string name="pref_success_color_title">Completion color</string>
-    <string name="pref_success_color_summary">Ring color applied when download finishes</string>
+    <string name="pref_success_color_summary">Ring color when a download finishes</string>
     <string name="pref_error_color_title">Error color</string>
-    <string name="pref_error_color_summary">Ring color applied when download fails</string>
+    <string name="pref_error_color_summary">Ring color when a download fails</string>
     <string name="pref_gradient_title">Gradient</string>
-    <string name="pref_gradient_summary">Blend two colors across active download progress</string>
+    <string name="pref_gradient_summary">Blend colors along the ring</string>
     <string name="pref_gradient_configure_title">Gradient settings</string>
     <string name="pref_gradient_configure_summary">Choose gradient colors and direction</string>
     <string name="gradient_colors_title">Gradient colors</string>
@@ -139,16 +156,16 @@
     <string name="pref_stroke_width_title">Thickness</string>
     <string name="pref_stroke_width_summary">Progress arc width</string>
     <string name="pref_cutout_padding_title">Cutout spacing</string>
-    <string name="pref_cutout_padding_summary">Distance multiplier from camera edge</string>
+    <string name="pref_cutout_padding_summary">Gap between the ring and the camera</string>
     <string name="pref_opacity_title">Opacity</string>
-    <string name="pref_opacity_summary">Transparency level of the progress indicator</string>
+    <string name="pref_opacity_summary">How opaque the ring is</string>
     <string name="pref_ring_scale_linked_title">Link scale</string>
     <string name="pref_ring_scale_linked_summary">Adjust width and height together</string>
     <string name="pref_ring_scale_x_title">Width scale</string>
     <string name="pref_ring_scale_y_title">Height scale</string>
     <string name="group_advanced">Advanced</string>
     <string name="pref_path_mode_title">Path mode</string>
-    <string name="pref_path_mode_summary">Use alternative ring drawing method. Enable if your camera cutout is pill-shaped</string>
+    <string name="pref_path_mode_summary">Draw a capsule instead of a circle, for pill-shaped cutouts</string>
 
     <!-- Design: Calibration -->
     <string name="pref_calibrate_ring_title">Calibrate ring</string>
@@ -165,11 +182,11 @@
 
     <!-- Design: Percentage Text -->
     <string name="pref_show_percentage_title">Percentage label</string>
-    <string name="pref_show_percentage_summary">Display current progress as numeric text</string>
+    <string name="pref_show_percentage_summary">Show progress as a number</string>
     <string name="pref_calibrate_percent_title">Calibrate percentage</string>
     <string name="pref_calibrate_percent_summary">Adjust percentage label placement</string>
     <string name="pref_show_speed_title">Speed label</string>
-    <string name="pref_show_speed_summary">Display the current network download rate as text</string>
+    <string name="pref_show_speed_summary">Show the current download speed</string>
     <string name="pref_calibrate_speed_title">Calibrate speed</string>
     <string name="pref_calibrate_speed_summary">Adjust speed label placement</string>
     <string name="pref_speed_unit_title">Speed units</string>
@@ -177,7 +194,7 @@
 
     <!-- Design: Filename Text -->
     <string name="pref_show_filename_title">Filename label</string>
-    <string name="pref_show_filename_summary">Display the name of the file being downloaded</string>
+    <string name="pref_show_filename_summary">Show the name of the downloading file</string>
     <string name="pref_calibrate_filename_title">Calibrate filename</string>
     <string name="pref_calibrate_filename_summary">Adjust filename label placement</string>
 
@@ -185,7 +202,7 @@
     <string name="pref_app_icon_enabled_title">Source app icon</string>
     <string name="pref_app_icon_enabled_summary">Show which app started the download</string>
     <string name="pref_app_icon_monochrome_title">Monochrome icon</string>
-    <string name="pref_app_icon_monochrome_summary">Tint to ring color using the themed icon silhouette</string>
+    <string name="pref_app_icon_monochrome_summary">Tint the themed icon with the ring color</string>
     <string name="pref_app_icon_size_title">Icon size</string>
     <string name="pref_app_icon_size_summary">Adjust the source app icon size</string>
     <string name="pref_calibrate_app_icon_title">Calibrate source icon</string>
@@ -193,7 +210,7 @@
 
     <!-- Calibration: Rotation lock -->
     <string name="pref_lock_rotation_title">Keep in portrait</string>
-    <string name="pref_lock_rotation_summary">Pins this overlay item to portrait orientation so it stays upright when the screen rotates</string>
+    <string name="pref_lock_rotation_summary">Keep this item upright when the screen rotates</string>
 
     <!-- Design: Text shadow and outline (per-element calibration screens) -->
     <string name="pref_text_shadow_nav_summary">Customize the shadow and the optional outline</string>
@@ -220,7 +237,7 @@
     <!-- Design: HDR (API 35+) -->
     <string name="group_hdr">HDR brightness</string>
     <string name="pref_hdr_enabled_title">Use HDR</string>
-    <string name="pref_hdr_enabled_summary">Renders the ring above standard SDR brightness on HDR displays. Requires Android 15 or later (default: off)</string>
+    <string name="pref_hdr_enabled_summary">Draw the ring brighter than SDR on HDR displays (Android 15 or later)</string>
     <string name="pref_hdr_headroom_title">HDR strength</string>
     <string name="pref_hdr_headroom_summary">Target HDR/SDR ratio. 1.0× is SDR, 3.0× the requested max. Display clamps the actual value</string>
     <string name="pref_hdr_ratio_title">Live HDR/SDR ratio</string>
@@ -269,13 +286,13 @@
 
     <!-- System: Visibility -->
     <string name="pref_show_queue_count_title">Queue counter</string>
-    <string name="pref_show_queue_count_summary">Display number of concurrent active downloads</string>
+    <string name="pref_show_queue_count_summary">Show how many downloads are running</string>
     <string name="pref_calibrate_badge_title">Calibrate counter</string>
     <string name="pref_calibrate_badge_summary">Adjust queue counter placement</string>
     <string name="pref_burn_in_hide_title">Hide after inactivity</string>
     <string name="pref_burn_in_hide_summary">Time before the ring hides without activity or progress</string>
     <string name="pref_progress_anim_title">Progress smoothness</string>
-    <string name="pref_progress_anim_summary">How long the arc takes when progress changes. Depends on how often the app reports progress to SystemUI.</string>
+    <string name="pref_progress_anim_summary">How long the arc takes to catch up when progress changes</string>
     <string name="pref_font_size_title">Font size</string>
     <string name="pref_bold_title">Bold</string>
     <string name="pref_italic_title">Italic</string>
@@ -286,7 +303,7 @@
     <string name="pref_filename_truncate_title">Character limit</string>
     <string name="pref_filename_max_chars_title">Max characters</string>
     <string name="pref_filename_vertical_title">Vertical text</string>
-    <string name="pref_filename_vertical_summary">Draw each character in a vertical line when in landscape orientation</string>
+    <string name="pref_filename_vertical_summary">Stack the characters vertically in landscape</string>
     <string name="pref_preview_text_title">Preview text</string>
     <string name="pref_invert_rotation_title">Ring fill direction</string>
     <string name="clockwise">Clockwise</string>
@@ -294,9 +311,9 @@
 
     <!-- Material You -->
     <string name="pref_material_you_title">Material You</string>
-    <string name="pref_material_you_summary">Map ring colors from your wallpaper palette</string>
+    <string name="pref_material_you_summary">Take ring colors from your wallpaper</string>
     <string name="pref_material_you_configure_title">Color mapping</string>
-    <string name="pref_material_you_configure_summary">Assign system palette colors to each indicator role</string>
+    <string name="pref_material_you_configure_summary">Pick wallpaper colors for progress, completion and error</string>
     <string name="group_material_you_progress">Progress</string>
     <string name="group_material_you_success">Completion</string>
     <string name="group_material_you_error">Error</string>
@@ -309,32 +326,31 @@
     <string name="material_you_preset_primary">Primary</string>
     <string name="material_you_preset_muted">Muted</string>
     <string name="material_you_preset_mono">Mono</string>
-    <string name="material_you_preset_custom">Custom</string>
 
     <!-- System: Power -->
     <string name="pref_theme_title">Theme</string>
     <string name="pref_theme_summary">Choose light, dark, or system default</string>
     <string name="pref_dynamic_color_title">Dynamic color</string>
-    <string name="pref_dynamic_color_summary">Use Material You colors from wallpaper</string>
+    <string name="pref_dynamic_color_summary">Use colors from your wallpaper</string>
     <string name="pref_floating_nav_bar_title">Floating navigation bar</string>
     <string name="pref_floating_nav_bar_summary">Use a compact floating bar instead of the full-width bar</string>
     <string name="pref_hide_nav_bar_on_scroll_title">Hide on scroll</string>
     <string name="pref_hide_nav_bar_on_scroll_summary">Slide the floating bar away while scrolling</string>
     <string name="pref_battery_saver_title">Battery saver mode</string>
-    <string name="pref_battery_saver_summary">Indicator behavior during battery saver</string>
+    <string name="pref_battery_saver_summary">What the ring does in Battery Saver</string>
 
     <!-- System: Diagnostics -->
     <string name="pref_debug_completion_title">Simulate completion</string>
-    <string name="pref_debug_completion_summary">Trigger a test completion animation</string>
+    <string name="pref_debug_completion_summary">Play the completion effect on the ring</string>
     <string name="pref_test_failure_title">Simulate failure</string>
-    <string name="pref_test_failure_summary">Trigger a test failure animation</string>
+    <string name="pref_test_failure_summary">Play the error effect on the ring</string>
     <string name="pref_clear_downloads_title">Clear downloads</string>
-    <string name="pref_clear_downloads_summary">Reset stuck download indicators</string>
+    <string name="pref_clear_downloads_summary">Remove rings left on screen after a download</string>
     <string name="clear_downloads_done">Downloads cleared</string>
     <string name="pref_hide_launcher_icon_title">Hide launcher icon</string>
-    <string name="pref_hide_launcher_icon_summary">Hides app from launcher</string>
+    <string name="pref_hide_launcher_icon_summary">Open the app from LSPosed instead</string>
     <string name="pref_verbose_logging_title">Debug logs</string>
-    <string name="pref_verbose_logging_summary">Detailed log for debugging</string>
+    <string name="pref_verbose_logging_summary">Write detailed logs for bug reports</string>
 
     <!-- System: Backup -->
     <string name="group_backup">Backup</string>
@@ -387,20 +403,35 @@
     <string name="result_hide_details">Hide details</string>
 
     <!-- System: About -->
-    <string name="pref_version_title">Version</string>
+    <string name="about_summary">Version %1$s</string>
     <string name="pref_git_repo">Source code</string>
-    <string name="pref_git_repo_summary">Browse the project on GitHub</string>
-    <string name="pref_licenses">Third-party licenses</string>
-    <string name="pref_licenses_summary">Libraries used by this app and their licenses</string>
-    <string name="pref_report_issue">Report an issue</string>
-    <string name="pref_report_issue_summary">Report a bug or suggest a feature on GitHub</string>
+    <string name="pref_git_repo_summary">View the code on GitHub</string>
+    <string name="pref_licenses">Open source licenses</string>
+    <string name="pref_licenses_summary">Libraries this app uses and their licenses</string>
+    <string name="pref_report_issue">Suggest a feature or report a bug</string>
+    <string name="pref_report_issue_summary">Opens the issue form on GitHub</string>
+    <string name="whats_new">What\'s new</string>
+    <string name="whats_new_summary">Changes in version %1$s</string>
+    <string name="whats_new_title">What\'s new in %1$s</string>
+    <string name="changelog">Changelog</string>
+    <string name="changelog_summary">Changes in every release</string>
+    <string name="changelog_installed">Installed</string>
+    <string name="changelog_jump_top">Jump to newest</string>
+    <string name="changelog_jump_bottom">Jump to oldest</string>
+    <string name="star_on_github">Star on GitHub</string>
+    <string name="buy_me_a_coffee">Buy me a coffee</string>
+    <string name="group_this_device">This device</string>
+    <string name="device_android">Android</string>
+    <string name="device_android_version">Android %1$s (API %2$d)</string>
+    <string name="device_framework">Xposed framework</string>
+    <string name="device_framework_none">Not detected</string>
 
     <!-- Color Picker -->
     <string name="pick_color">Pick color</string>
     <string name="presets">Presets</string>
 
     <!-- Reset -->
-    <string name="reset_defaults">Reset to Defaults</string>
+    <string name="reset_defaults">Reset to defaults</string>
     <string name="reset_confirm">Reset all settings to defaults?</string>
     <string name="reset_done">Settings reset</string>
     <string name="reset">Reset</string>

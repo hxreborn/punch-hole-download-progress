@@ -37,6 +37,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
@@ -61,6 +63,7 @@ fun <T> SelectPreference(
     valueToDescription: (T) -> String? = { null },
 ) {
     var showDialog by rememberSaveable { mutableStateOf(false) }
+    val haptics = LocalHapticFeedback.current
     val contentAlpha = if (enabled) 1f else Tokens.DISABLED_ALPHA
 
     if (showDialog) {
@@ -71,6 +74,7 @@ fun <T> SelectPreference(
             valueToText = valueToText,
             valueToDescription = valueToDescription,
             onValueChange = {
+                if (it != value) haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
                 onValueChange(it)
                 showDialog = false
             },
@@ -87,29 +91,40 @@ fun <T> SelectPreference(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         icon?.let { PreferenceIcon(it, enabled) }
-        Column(modifier = Modifier.weight(1f)) {
-            CompositionLocalProvider(
-                LocalContentColor provides MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
-            ) {
-                ProvideTextStyle(MaterialTheme.typography.bodyLarge) {
-                    title()
-                }
-            }
-            summary?.let {
-                CompositionLocalProvider(
-                    LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
-                ) {
-                    ProvideTextStyle(MaterialTheme.typography.bodyMedium) {
-                        it()
-                    }
-                }
-            }
-        }
+        PreferenceTexts(title = title, summary = summary, enabled = enabled, modifier = Modifier.weight(1f))
         CompositionLocalProvider(
             LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
         ) {
             ProvideTextStyle(MaterialTheme.typography.bodyMedium) {
                 Text(valueToText(value), modifier = Modifier.padding(start = Tokens.PreferenceHorizontalSpacing))
+            }
+        }
+    }
+}
+
+@Composable
+internal fun PreferenceTexts(
+    title: @Composable () -> Unit,
+    summary: @Composable (() -> Unit)?,
+    enabled: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    val contentAlpha = if (enabled) 1f else Tokens.DISABLED_ALPHA
+    Column(modifier = modifier) {
+        CompositionLocalProvider(
+            LocalContentColor provides MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
+        ) {
+            ProvideTextStyle(MaterialTheme.typography.bodyLarge) {
+                title()
+            }
+        }
+        summary?.let {
+            CompositionLocalProvider(
+                LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
+            ) {
+                ProvideTextStyle(MaterialTheme.typography.bodyMedium) {
+                    it()
+                }
             }
         }
     }

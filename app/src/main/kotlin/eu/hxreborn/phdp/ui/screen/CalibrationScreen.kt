@@ -28,6 +28,7 @@ import eu.hxreborn.phdp.ui.component.VerticalScrollbar
 import eu.hxreborn.phdp.ui.component.preference.NavigationPreference
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithStepper
 import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
+import eu.hxreborn.phdp.ui.component.sectionPreferenceTheme
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import eu.hxreborn.phdp.ui.theme.Tokens
@@ -64,7 +65,7 @@ fun CalibrationScreen(
         bottomPadding = bottomNavPadding,
         modifier = modifier,
     ) { innerPadding ->
-        ProvidePreferenceLocals {
+        ProvidePreferenceLocals(theme = sectionPreferenceTheme()) {
             val listState = rememberLazyListState()
             LazyColumn(
                 state = listState,

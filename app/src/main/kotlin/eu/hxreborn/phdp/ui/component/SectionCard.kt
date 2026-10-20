@@ -2,9 +2,11 @@ package eu.hxreborn.phdp.ui.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -15,6 +17,23 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.Tokens
+import me.zhanghai.compose.preference.PreferenceTheme
+import me.zhanghai.compose.preference.preferenceTheme
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun sectionPreferenceTheme(): PreferenceTheme =
+    preferenceTheme(
+        categoryPadding =
+            PaddingValues(
+                start = Tokens.CategoryHorizontalPadding,
+                top = Tokens.SpacingXl,
+                end = Tokens.CategoryHorizontalPadding,
+                bottom = Tokens.SpacingSm,
+            ),
+        categoryColor = MaterialTheme.colorScheme.primary,
+        categoryTextStyle = MaterialTheme.typography.labelLargeEmphasized,
+    )
 
 private enum class RowPosition { SINGLE, FIRST, MIDDLE, LAST }
 
