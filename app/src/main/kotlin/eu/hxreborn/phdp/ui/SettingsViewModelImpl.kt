@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.time.Instant
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.time.Duration.Companion.seconds
 
 internal const val MAX_BACKUP_BYTES = 512 * 1024
@@ -47,6 +48,8 @@ class SettingsViewModelImpl(
     private val launcherIconHidden = MutableStateFlow(!LauncherIconHelper.isLauncherIconVisible(applicationContext))
 
     override val backupEvent = MutableStateFlow<BackupEvent?>(null)
+
+    private val simulating = AtomicBoolean(false)
 
     override val uiState: StateFlow<SettingsUiState> =
         combine(repository.state, launcherIconHidden) { prefs, hidden ->
@@ -124,25 +127,35 @@ class SettingsViewModelImpl(
         )
 
     override fun simulateSuccess() {
-        viewModelScope.launch {
+        simulate {
             for (progress in 0..100 step 5) {
                 savePref(Prefs.testProgress, progress)
                 delay(100)
             }
-            savePref(Prefs.testProgress, -1)
         }
     }
 
     override fun simulateFailure() {
-        viewModelScope.launch {
+        simulate {
             for (progress in 0..60 step 10) {
                 savePref(Prefs.testProgress, progress)
                 delay(100)
             }
             savePref(Prefs.testError, true)
             delay(100)
-            savePref(Prefs.testProgress, -1)
-            savePref(Prefs.testError, false)
+        }
+    }
+
+    private fun simulate(steps: suspend () -> Unit) {
+        if (!simulating.compareAndSet(false, true)) return
+        viewModelScope.launch {
+            try {
+                steps()
+            } finally {
+                savePref(Prefs.testProgress, -1)
+                savePref(Prefs.testError, false)
+                simulating.set(false)
+            }
         }
     }
 
