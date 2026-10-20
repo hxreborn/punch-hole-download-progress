@@ -54,11 +54,12 @@ import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.SettingsScaffold
 import eu.hxreborn.phdp.ui.component.VerticalScrollbar
-import eu.hxreborn.phdp.ui.component.preference.SelectPreference
+import eu.hxreborn.phdp.ui.component.preference.ChoicePreference
 import eu.hxreborn.phdp.ui.component.preference.SliderPreferenceWithStepper
 import eu.hxreborn.phdp.ui.component.preference.TextInputPreference
 import eu.hxreborn.phdp.ui.component.preference.TextStyleChipsPreference
 import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
+import eu.hxreborn.phdp.ui.component.sectionPreferenceTheme
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.DarkThemeConfig
 import eu.hxreborn.phdp.ui.theme.Tokens
@@ -125,7 +126,7 @@ fun TextCalibrationScreen(
         bottomPadding = bottomNavPadding,
         modifier = modifier,
     ) { innerPadding ->
-        ProvidePreferenceLocals {
+        ProvidePreferenceLocals(theme = sectionPreferenceTheme()) {
             val listState = rememberLazyListState()
             LazyColumn(
                 state = listState,
@@ -464,7 +465,7 @@ private fun MutableList<@Composable () -> Unit>.layoutItems(
     val ellipsize = layout.ellipsize
     if (ellipsize != null && layout.ellipsizeValues != null) {
         add {
-            SelectPreference(
+            ChoicePreference(
                 value = ellipsize.value,
                 onValueChange = { viewModel.savePref(ellipsize.spec, it) },
                 values = layout.ellipsizeValues,

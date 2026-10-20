@@ -78,6 +78,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -97,6 +98,7 @@ import eu.hxreborn.phdp.ui.component.OverflowMenu
 import eu.hxreborn.phdp.ui.component.OverflowMenuItem
 import eu.hxreborn.phdp.ui.component.OverflowMenuToggle
 import eu.hxreborn.phdp.ui.component.VerticalScrollbar
+import eu.hxreborn.phdp.ui.component.performToggle
 import eu.hxreborn.phdp.ui.theme.Tokens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -288,6 +290,7 @@ private fun AppListItem(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    val haptics = LocalHapticFeedback.current
     val iconSizePx = with(LocalDensity.current) { Tokens.AppIconSize.roundToPx() * 2 }
     val icon by produceState<ImageBitmap?>(initialValue = iconCache.get(app.packageName), key1 = app.packageName) {
         if (value != null) return@produceState
@@ -314,7 +317,10 @@ private fun AppListItem(
                     .fillMaxWidth()
                     .toggleable(
                         value = isChecked,
-                        onValueChange = onCheckedChange,
+                        onValueChange = {
+                            haptics.performToggle(it)
+                            onCheckedChange(it)
+                        },
                         role = Role.Checkbox,
                     ).padding(Tokens.PreferencePadding),
             verticalAlignment = Alignment.CenterVertically,

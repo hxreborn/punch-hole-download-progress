@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalHapticFeedback
 import eu.hxreborn.phdp.ui.theme.Tokens
 
 @Composable
@@ -58,15 +59,20 @@ fun OverflowMenuToggle(
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val haptics = LocalHapticFeedback.current
+    val toggle = { value: Boolean ->
+        haptics.performToggle(value)
+        onCheckedChange(value)
+    }
     DropdownMenuItem(
         text = { Text(text) },
-        onClick = { onCheckedChange(!checked) },
+        onClick = { toggle(!checked) },
         modifier = modifier,
         leadingIcon = { Icon(icon, contentDescription = null) },
         trailingIcon = {
             Switch(
                 checked = checked,
-                onCheckedChange = onCheckedChange,
+                onCheckedChange = toggle,
                 modifier = Modifier.scale(Tokens.MENU_SWITCH_SCALE),
             )
         },

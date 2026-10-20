@@ -16,6 +16,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import eu.hxreborn.phdp.R
@@ -23,10 +25,11 @@ import eu.hxreborn.phdp.ui.theme.Tokens
 
 @Composable
 fun TestButtonsRow(
-    onSimulateSuccess: () -> Unit,
-    onSimulateFailure: () -> Unit,
+    onSimulateSuccess: (onFinished: () -> Unit) -> Unit,
+    onSimulateFailure: (onFinished: () -> Unit) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val haptics = LocalHapticFeedback.current
     Surface(
         shape = Tokens.CardShape,
         tonalElevation = 1.dp,
@@ -40,7 +43,7 @@ fun TestButtonsRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
-            TextButton(onClick = onSimulateSuccess) {
+            TextButton(onClick = { onSimulateSuccess { haptics.performHapticFeedback(HapticFeedbackType.Confirm) } }) {
                 Icon(
                     imageVector = Icons.Outlined.CheckCircle,
                     contentDescription = null,
@@ -49,7 +52,7 @@ fun TestButtonsRow(
                 Spacer(modifier = Modifier.width(Tokens.SpacingSm))
                 Text(stringResource(R.string.test_preview_completion))
             }
-            TextButton(onClick = onSimulateFailure) {
+            TextButton(onClick = { onSimulateFailure { haptics.performHapticFeedback(HapticFeedbackType.Reject) } }) {
                 Icon(
                     imageVector = Icons.Outlined.Cancel,
                     contentDescription = null,

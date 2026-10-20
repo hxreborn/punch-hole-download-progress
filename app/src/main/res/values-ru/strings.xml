@@ -5,15 +5,15 @@
 
     <!-- Navigation -->
     <string name="back">Назад</string>
-    <string name="reload_module">Перезагрузить модуль</string>
+    <string name="reload_module">Горячая перезагрузка</string>
     <string name="reload_unsupported">Для горячей перезагрузки нужен фреймворк с поддержкой libxposed API 102</string>
 
     <!-- Restart SystemUI -->
     <string name="restart_systemui">Перезапустить системный интерфейс</string>
-    <string name="restart_systemui_confirm">Это приведет к перезапуску SystemUI для применения изменений. Продолжить?</string>
+    <string name="restart_systemui_confirm">Строка состояния и шторка уведомлений перезагрузятся. Открытые приложения не закроются.</string>
     <string name="restart">Перезапуск</string>
     <string name="restart_failed_detail">Не удалось перезапустить SystemUI: %1$s</string>
-    <string name="root_not_granted">Root не предоставлен. Пожалуйста, предоставьте root для Punch-hole Download Progress.</string>
+    <string name="root_not_granted">Для перезапуска SystemUI нужен root</string>
 
     <!-- Value Formats -->
     <string name="color_selected">Выбрано</string>
@@ -37,10 +37,10 @@
     <string name="selection_cleared">Выбор очищен</string>
     <string name="apply_defaults">Выбрать рекомендуемые</string>
     <string name="defaults_applied">Добавлено %1$d приложений</string>
-    <string name="defaults_none_added">Все приложения по умолчанию уже выбраны</string>
+    <string name="defaults_none_added">Все рекомендуемые приложения уже выбраны</string>
     <string name="undo">Отменить</string>
     <string name="help">Устранение неполадок</string>
-    <string name="packages_help">Этот модуль обнаруживает загрузки путем считывания уведомлений приложения.\n\nДля отображения индикатора прогресса приложение должно активно показывать уведомление с индикатором прогресса. Если уведомления отключены или скрыты, индикатор не будет отображаться.</string>
+    <string name="packages_help">Кольцо повторяет индикатор прогресса в уведомлении о загрузке.\n\nЕсли приложение не показывает такое уведомление или его уведомления выключены, кольцо не появится.</string>
 
     <!-- Group Headers -->
     <string name="group_colors">Цвета</string>
@@ -56,17 +56,17 @@
     <string name="group_app_theme">Тема приложения</string>
     <string name="group_power">Мощность</string>
     <string name="group_diagnostics">Диагностика</string>
-    <string name="group_about">О нас</string>
+    <string name="group_about">О приложении</string>
 
     <!-- Design: Colors -->
     <string name="pref_progress_color_title">Цвет прогресса</string>
     <string name="pref_progress_color_summary">Цвет заполнения кольца во время активных загрузок</string>
     <string name="pref_success_color_title">Цвет завершения</string>
-    <string name="pref_success_color_summary">Цвет кольца, применяемый по окончании загрузки</string>
+    <string name="pref_success_color_summary">Цвет кольца после завершения загрузки</string>
     <string name="pref_error_color_title">Ошибка цвета</string>
-    <string name="pref_error_color_summary">Цвет кольца, применяемый при сбое загрузки</string>
+    <string name="pref_error_color_summary">Цвет кольца при ошибке загрузки</string>
     <string name="pref_gradient_title">Градиент</string>
-    <string name="pref_gradient_summary">Смешивать два цвета по ходу активной загрузки</string>
+    <string name="pref_gradient_summary">Смешивать цвета вдоль кольца</string>
     <string name="pref_gradient_configure_title">Настройки градиента</string>
     <string name="pref_gradient_configure_summary">Выберите цвета и направление градиента</string>
     <string name="gradient_colors_title">Цвета градиента</string>
@@ -104,16 +104,16 @@
     <string name="pref_stroke_width_title">Толщина</string>
     <string name="pref_stroke_width_summary">Ширина дуги прогресса</string>
     <string name="pref_cutout_padding_title">Расстояние между вырезами</string>
-    <string name="pref_cutout_padding_summary">Множитель расстояния от края камеры</string>
+    <string name="pref_cutout_padding_summary">Зазор между кольцом и камерой</string>
     <string name="pref_opacity_title">Непрозрачность</string>
-    <string name="pref_opacity_summary">Уровень прозрачности индикатора прогресса</string>
+    <string name="pref_opacity_summary">Непрозрачность кольца</string>
     <string name="pref_ring_scale_linked_title">Масштаб ссылки</string>
     <string name="pref_ring_scale_linked_summary">Отрегулируйте ширину и высоту одновременно</string>
     <string name="pref_ring_scale_x_title">Шкала ширины</string>
     <string name="pref_ring_scale_y_title">Шкала высоты</string>
     <string name="group_advanced">Расширенные</string>
     <string name="pref_path_mode_title">Альтернативный режим</string>
-    <string name="pref_path_mode_summary">Используйте альтернативный метод рисования кольца. Включите эту функцию, если вырез вашей камеры имеет форму таблетки.</string>
+    <string name="pref_path_mode_summary">Рисовать капсулу вместо круга, для вырезов в форме таблетки</string>
 
     <!-- Design: Calibration -->
     <string name="pref_calibrate_ring_title">Калибровка кольца</string>
@@ -130,11 +130,11 @@
 
     <!-- Design: Percentage Text -->
     <string name="pref_show_percentage_title">Метка процента</string>
-    <string name="pref_show_percentage_summary">Отображение текущего прогресса в виде числового текста</string>
+    <string name="pref_show_percentage_summary">Показывать прогресс числом</string>
     <string name="pref_calibrate_percent_title">Процент калибровки</string>
     <string name="pref_calibrate_percent_summary">Настройка размещения метки процента</string>
     <string name="pref_show_speed_title">Метка скорости</string>
-    <string name="pref_show_speed_summary">Отображение текущей скорости приёма данных по сети в виде текста</string>
+    <string name="pref_show_speed_summary">Показывать текущую скорость загрузки</string>
     <string name="pref_calibrate_speed_title">Калибровка скорости</string>
     <string name="pref_calibrate_speed_summary">Настройте расположение метки скорости</string>
     <string name="pref_speed_unit_title">Единицы скорости</string>
@@ -142,7 +142,7 @@
 
     <!-- Design: Filename Text -->
     <string name="pref_show_filename_title">Метка имени файла</string>
-    <string name="pref_show_filename_summary">Отображать название загружаемого файла</string>
+    <string name="pref_show_filename_summary">Показывать имя загружаемого файла</string>
     <string name="pref_calibrate_filename_title">Калибровка имени файла</string>
     <string name="pref_calibrate_filename_summary">Настройте расположение метки имени файла</string>
 
@@ -150,7 +150,7 @@
     <string name="pref_app_icon_enabled_title">Значок исходного приложения</string>
     <string name="pref_app_icon_enabled_summary">Показать, какое приложение инициировало загрузку</string>
     <string name="pref_app_icon_monochrome_title">Монохромная иконка</string>
-    <string name="pref_app_icon_monochrome_summary">Подберите оттенок в соответствии с цветом кольца, используя силуэт тематического значка</string>
+    <string name="pref_app_icon_monochrome_summary">Окрашивать тематический значок в цвет кольца</string>
     <string name="pref_app_icon_size_title">Размер значка</string>
     <string name="pref_app_icon_size_summary">Изменить размер исходной иконки приложения</string>
     <string name="pref_calibrate_app_icon_title">Настроить исходную иконку</string>
@@ -158,7 +158,7 @@
 
     <!-- Calibration: Rotation lock -->
     <string name="pref_lock_rotation_title">Только портрет</string>
-    <string name="pref_lock_rotation_summary">Закрепляет этот элемент в портретной ориентации, чтобы он оставался вертикальным при повороте экрана</string>
+    <string name="pref_lock_rotation_summary">Элемент остаётся вертикальным при повороте экрана</string>
 
     <!-- Design: Text shadow and outline (per-element calibration screens) -->
     <string name="pref_text_shadow_nav_summary">Настройте тень и дополнительный контур</string>
@@ -185,7 +185,7 @@
     <!-- Design: HDR (API 35+) -->
     <string name="group_hdr">Яркость HDR</string>
     <string name="pref_hdr_enabled_title">Использовать HDR</string>
-    <string name="pref_hdr_enabled_summary">Отображает кольцо ярче стандартного SDR на HDR-дисплеях. Требуется Android 15 или новее (по умолчанию: выкл.)</string>
+    <string name="pref_hdr_enabled_summary">Кольцо ярче SDR на HDR-дисплеях (Android 15 или новее)</string>
     <string name="pref_hdr_headroom_title">Сила HDR</string>
     <string name="pref_hdr_headroom_summary">Целевое соотношение HDR/SDR. 1.0× — SDR, 3.0× — запрошенный максимум. Дисплей ограничивает фактическое значение</string>
     <string name="pref_hdr_ratio_title">Текущее соотношение HDR/SDR</string>
@@ -234,13 +234,13 @@
 
     <!-- System: Visibility -->
     <string name="pref_show_queue_count_title">Счетчик очереди</string>
-    <string name="pref_show_queue_count_summary">Отображение количества одновременных активных загрузок</string>
+    <string name="pref_show_queue_count_summary">Показывать число активных загрузок</string>
     <string name="pref_calibrate_badge_title">Калибровка счетчика</string>
     <string name="pref_calibrate_badge_summary">Настройте расположение счетчика очереди</string>
     <string name="pref_burn_in_hide_title">Скрыть при бездействии</string>
     <string name="pref_burn_in_hide_summary">Время, пока кольцо остается незамеченным, без каких-либо действий или прогресса</string>
     <string name="pref_progress_anim_title">Плавность прогресса</string>
-    <string name="pref_progress_anim_summary">Продолжительность отображения индикатора выполнения зависит от того, как часто приложение передает данные о ходе выполнения в SystemUI.</string>
+    <string name="pref_progress_anim_summary">Сколько времени дуга догоняет новый прогресс</string>
     <string name="pref_font_size_title">Размер шрифта</string>
     <string name="pref_bold_title">Жирный</string>
     <string name="pref_italic_title">Курсив</string>
@@ -251,7 +251,7 @@
     <string name="pref_filename_truncate_title">Ограничение кол-ва символов</string>
     <string name="pref_filename_max_chars_title">Макс. кол-во символов</string>
     <string name="pref_filename_vertical_title">Вертикальный текст</string>
-    <string name="pref_filename_vertical_summary">Рисуйте каждый символ по вертикальной линии в альбомной ориентации.</string>
+    <string name="pref_filename_vertical_summary">Располагать символы вертикально в альбомной ориентации</string>
     <string name="pref_preview_text_title">Предпросмотр текста</string>
     <string name="pref_invert_rotation_title">Направление заполнения кольца</string>
     <string name="clockwise">По часовой стрелке</string>
@@ -259,9 +259,9 @@
 
     <!-- Material You -->
     <string name="pref_material_you_title">Material You</string>
-    <string name="pref_material_you_summary">Подберите цвета контуров карты в соответствии с палитрой ваших обоев</string>
+    <string name="pref_material_you_summary">Брать цвета кольца из обоев</string>
     <string name="pref_material_you_configure_title">Цветовая кодировка</string>
-    <string name="pref_material_you_configure_summary">Назначьте цвета системной палитры каждой роли индикатора</string>
+    <string name="pref_material_you_configure_summary">Цвета обоев для прогресса, завершения и ошибки</string>
     <string name="group_material_you_progress">Прогресс</string>
     <string name="group_material_you_success">Завершение</string>
     <string name="group_material_you_error">Ошибка</string>
@@ -274,32 +274,31 @@
     <string name="material_you_preset_primary">Начальный</string>
     <string name="material_you_preset_muted">Без звука</string>
     <string name="material_you_preset_mono">Mono</string>
-    <string name="material_you_preset_custom">Пользовательский</string>
 
     <!-- System: Power -->
     <string name="pref_theme_title">Тема</string>
     <string name="pref_theme_summary">Выберите светлую, темную или системную по умолчанию</string>
     <string name="pref_dynamic_color_title">Динамические цвета</string>
-    <string name="pref_dynamic_color_summary">Используйте цвета Material You из обоев</string>
+    <string name="pref_dynamic_color_summary">Цвета из ваших обоев</string>
     <string name="pref_floating_nav_bar_title">Плавающая панель навигации</string>
     <string name="pref_floating_nav_bar_summary">Использовать компактную плавающую панель вместо панели во всю ширину</string>
     <string name="pref_hide_nav_bar_on_scroll_title">Скрыть при прокрутке</string>
     <string name="pref_hide_nav_bar_on_scroll_summary">Сдвигать плавающую панель за пределы экрана во время прокрутки</string>
     <string name="pref_battery_saver_title">Режим экономии заряда батареи</string>
-    <string name="pref_battery_saver_summary">Поведение индикатора во время работы в режиме экономии заряда батареи</string>
+    <string name="pref_battery_saver_summary">Поведение кольца в режиме энергосбережения</string>
 
     <!-- System: Diagnostics -->
     <string name="pref_debug_completion_title">Имитировать завершение</string>
-    <string name="pref_debug_completion_summary">Запустить анимацию завершения теста</string>
+    <string name="pref_debug_completion_summary">Показать эффект завершения на кольце</string>
     <string name="pref_test_failure_title">Имитировать сбой</string>
-    <string name="pref_test_failure_summary">Запустить анимацию неудачного теста</string>
+    <string name="pref_test_failure_summary">Показать эффект ошибки на кольце</string>
     <string name="pref_clear_downloads_title">Очистить загрузки</string>
-    <string name="pref_clear_downloads_summary">Сброс зависших индикаторов загрузки</string>
+    <string name="pref_clear_downloads_summary">Убрать кольца, оставшиеся после загрузки</string>
     <string name="clear_downloads_done">Загрузки удалены</string>
     <string name="pref_hide_launcher_icon_title">Скрыть значок запуска</string>
-    <string name="pref_hide_launcher_icon_summary">Скрывает приложение в панели запуска</string>
+    <string name="pref_hide_launcher_icon_summary">Открывайте приложение из LSPosed</string>
     <string name="pref_verbose_logging_title">Журналы отладки</string>
-    <string name="pref_verbose_logging_summary">Подробный журнал для отладки</string>
+    <string name="pref_verbose_logging_summary">Подробные журналы для отчётов об ошибках</string>
     <string name="group_backup">Резервное копирование</string>
     <string name="pref_export_settings_title">Экспорт настроек</string>
     <string name="pref_export_settings_summary">Сохранить настройки в файл</string>
@@ -352,20 +351,19 @@
     <string name="result_hide_details">Скрыть подробности</string>
 
     <!-- System: About -->
-    <string name="pref_version_title">Версия</string>
     <string name="pref_git_repo">Исходный код</string>
-    <string name="pref_git_repo_summary">Просмотрите проект на GitHub</string>
-    <string name="pref_licenses">Сторонние лицензии</string>
-    <string name="pref_licenses_summary">Библиотеки, используемые этим приложением, и их лицензии</string>
-    <string name="pref_report_issue">Сообщите о проблеме</string>
-    <string name="pref_report_issue_summary">Сообщите об ошибке или предложите функцию на GitHub</string>
+    <string name="pref_git_repo_summary">Код проекта на GitHub</string>
+    <string name="pref_licenses">Лицензии открытого ПО</string>
+    <string name="pref_licenses_summary">Библиотеки приложения и их лицензии</string>
+    <string name="pref_report_issue">Предложить функцию или сообщить об ошибке</string>
+    <string name="pref_report_issue_summary">Открывает форму на GitHub</string>
 
     <!-- Color Picker -->
     <string name="pick_color">Выбрать цвет</string>
     <string name="presets">Предустановки</string>
 
     <!-- Reset -->
-    <string name="reset_defaults">Сброс к настройкам по умолчанию</string>
+    <string name="reset_defaults">Сбросить настройки</string>
     <string name="reset_confirm">Сбросить все настройки до значений по умолчанию?</string>
     <string name="reset_done">Сброс настроек</string>
     <string name="reset">Сброс</string>
@@ -460,4 +458,35 @@
         <item>Режим экономии заряда батареи (Система)</item>
         <item>Имя файла, скорость и исходное приложение (Интерфейс)</item>
     </string-array>
+    <string name="status_checking">Проверка модуля</string>
+    <string name="status_inactive_title">Модуль выключен</string>
+    <string name="status_inactive_body">Включите его в LSPosed и добавьте SystemUI в область действия</string>
+    <string name="status_running_title">Работает в SystemUI</string>
+    <string name="status_active_title">Модуль включён</string>
+    <string name="status_scope_title">SystemUI нет в области действия</string>
+    <string name="status_scope_body">Модуль рисует кольцо через SystemUI</string>
+    <string name="status_scope_action">Добавить SystemUI</string>
+    <string name="status_scope_failed">Не удалось добавить SystemUI: %1$s</string>
+    <string name="status_not_loaded_title">SystemUI не загрузил модуль</string>
+    <string name="status_not_loaded_body">SystemUI загружает его при запуске</string>
+    <string name="status_outdated_title">SystemUI использует старую версию</string>
+    <string name="status_outdated_body">Модуль обновлён после запуска SystemUI</string>
+    <string name="status_failed_title">Модуль не загрузился</string>
+    <string name="status_failed_body">SystemUI не смог запустить модуль</string>
+    <string name="about_summary">Версия %1$s</string>
+    <string name="whats_new">Что нового</string>
+    <string name="whats_new_summary">Изменения в версии %1$s</string>
+    <string name="whats_new_title">Что нового в %1$s</string>
+    <string name="changelog">Список изменений</string>
+    <string name="changelog_summary">Изменения во всех версиях</string>
+    <string name="changelog_installed">Установлена</string>
+    <string name="changelog_jump_top">К новым</string>
+    <string name="changelog_jump_bottom">К старым</string>
+    <string name="star_on_github">Звезда на GitHub</string>
+    <string name="buy_me_a_coffee">Угостить кофе</string>
+    <string name="group_this_device">Это устройство</string>
+    <string name="device_android">Android</string>
+    <string name="device_android_version">Android %1$s (API %2$d)</string>
+    <string name="device_framework">Фреймворк Xposed</string>
+    <string name="device_framework_none">Не обнаружен</string>
 </resources>

@@ -50,6 +50,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
@@ -79,6 +81,7 @@ fun ColorPreference(
 ) {
     var showDialog by rememberSaveable { mutableStateOf(false) }
     val contentAlpha = if (enabled) 1f else Tokens.DISABLED_ALPHA
+    val haptics = LocalHapticFeedback.current
 
     if (showDialog) {
         ColorPickerDialog(
@@ -86,6 +89,7 @@ fun ColorPreference(
             colors = colors,
             onDismiss = { showDialog = false },
             onColorSelected = { color ->
+                haptics.performHapticFeedback(HapticFeedbackType.Confirm)
                 onValueChange(color)
                 showDialog = false
             },

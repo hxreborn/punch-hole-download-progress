@@ -1,5 +1,6 @@
 package eu.hxreborn.phdp.util
 
+import io.github.libxposed.service.HotReloadResult
 import io.github.libxposed.service.XposedService
 
 object HotReload {
@@ -7,12 +8,12 @@ object HotReload {
 
     fun reload(
         service: XposedService,
-        onResult: (String) -> Unit,
+        onResult: (String, HotReloadResult.Status) -> Unit,
     ) {
         if (service.apiVersion < XposedService.API_102) return
         val targets = runCatching { service.runningTargets }.getOrNull().orEmpty()
         if (targets.isEmpty()) {
-            onResult("no hooked targets running")
+            onResult("no hooked targets running", HotReloadResult.Status.FAILED)
             return
         }
         targets.forEach { target ->
@@ -20,9 +21,14 @@ object HotReload {
             runCatching {
                 service.hotReloadModule(target, null) { _, result ->
                     val message = result.message()?.let { " - $it" }.orEmpty()
-                    onResult("$name: ${result.status().name.lowercase()}$message")
+                    onResult("$name: ${result.status().name.lowercase()}$message", result.status())
                 }
-            }.onFailure { onResult("$name: reload failed - ${it.message ?: it}") }
+            }.onFailure {
+                onResult(
+                    "$name: reload failed - ${it.message ?: it}",
+                    HotReloadResult.Status.FAILED,
+                )
+            }
         }
     }
 }

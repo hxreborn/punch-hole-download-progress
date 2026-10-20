@@ -5,15 +5,15 @@
 
     <!-- Navigation -->
     <string name="back">Geri</string>
-    <string name="reload_module">Modülü yeniden yükle</string>
+    <string name="reload_module">Sıcak yeniden yükleme</string>
     <string name="reload_unsupported">Sıcak yeniden yükleme için libxposed API 102 destekleyen bir framework gerekir</string>
 
     <!-- Restart SystemUI -->
     <string name="restart_systemui">SystemUI\'ı yeniden başlat</string>
-    <string name="restart_systemui_confirm">Bu işlem değişiklikleri uygulamak için SystemUI\'ı yeniden başlatacak. Devam edilsin mi?</string>
+    <string name="restart_systemui_confirm">Durum çubuğu ve bildirim paneli yeniden yüklenir. Açık uygulamalar kapanmaz.</string>
     <string name="restart">Yeniden başlat</string>
     <string name="restart_failed_detail">SystemUI yeniden başlatılamadı: %1$s</string>
-    <string name="root_not_granted">Kök (Root) izni verilmedi. Lütfen Punch-hole Download Progress uygulamasına kök erişimi verin.</string>
+    <string name="root_not_granted">SystemUI\'ı yeniden başlatmak için root gerekir</string>
 
     <!-- Value Formats -->
     <string name="color_selected">Seçilen</string>
@@ -37,10 +37,10 @@
     <string name="selection_cleared">Seçim temizlendi</string>
     <string name="apply_defaults">Önerilenleri seç</string>
     <string name="defaults_applied">%1$d uygulama eklendi</string>
-    <string name="defaults_none_added">Tüm varsayılan uygulamalar zaten seçili</string>
+    <string name="defaults_none_added">Önerilen tüm uygulamalar zaten seçili</string>
     <string name="undo">Geri al</string>
     <string name="help">Sorun giderme</string>
-    <string name="packages_help">Bu modül, indirmeleri uygulamanın bildirimlerini okuyarak algılar.\n\nİlerleme halkasını görmek için uygulamanın etkin bir şekilde ilerleme çubuğu içeren bir bildirim göstermesi gerekir. Bildirimler devre dışı bırakılır veya gizlenirse halka görünmez.</string>
+    <string name="packages_help">Halka, uygulamanın indirme bildirimindeki ilerleme çubuğunu izler.\n\nUygulama ilerleme bildirimi göstermiyorsa veya bildirimleri kapalıysa halka görünmez.</string>
 
     <!-- Group Headers -->
     <string name="group_colors">Renkler</string>
@@ -62,11 +62,11 @@
     <string name="pref_progress_color_title">İlerleme rengi</string>
     <string name="pref_progress_color_summary">Etkin indirmeler sırasında halkanın dolgu rengi</string>
     <string name="pref_success_color_title">Tamamlanma rengi</string>
-    <string name="pref_success_color_summary">İndirme bittiğinde uygulanan halka rengi</string>
+    <string name="pref_success_color_summary">İndirme bittiğinde halka rengi</string>
     <string name="pref_error_color_title">Hata rengi</string>
-    <string name="pref_error_color_summary">İndirme başarısız olduğunda uygulanan halka rengi</string>
+    <string name="pref_error_color_summary">İndirme başarısız olduğunda halka rengi</string>
     <string name="pref_gradient_title">Gradyan</string>
-    <string name="pref_gradient_summary">Etkin indirme ilerlemesinde iki rengi harmanlayın</string>
+    <string name="pref_gradient_summary">Renkleri halka boyunca harmanla</string>
     <string name="pref_gradient_configure_title">Gradyan ayarları</string>
     <string name="pref_gradient_configure_summary">Gradyan renklerini ve yönünü seçin</string>
     <string name="gradient_colors_title">Gradyan renkleri</string>
@@ -104,16 +104,16 @@
     <string name="pref_stroke_width_title">Kalınlık</string>
     <string name="pref_stroke_width_summary">İlerleme yayı genişliği</string>
     <string name="pref_cutout_padding_title">Kamera deliği boşluğu</string>
-    <string name="pref_cutout_padding_summary">Kamera kenarından mesafe çarpanı</string>
+    <string name="pref_cutout_padding_summary">Halka ile kamera arasındaki boşluk</string>
     <string name="pref_opacity_title">Opaklık</string>
-    <string name="pref_opacity_summary">İlerleme göstergesinin şeffaflık seviyesi</string>
+    <string name="pref_opacity_summary">Halkanın opaklığı</string>
     <string name="pref_ring_scale_linked_title">Ölçeği bağla</string>
     <string name="pref_ring_scale_linked_summary">Genişliği ve yüksekliği birlikte ayarla</string>
     <string name="pref_ring_scale_x_title">Genişlik ölçeği</string>
     <string name="pref_ring_scale_y_title">Yükseklik ölçeği</string>
     <string name="group_advanced">Gelişmiş</string>
     <string name="pref_path_mode_title">Yol modu</string>
-    <string name="pref_path_mode_summary">Alternatif halka çizim yöntemini kullanın. Kamera deliğiniz hap şeklindeyse etkinleştirin</string>
+    <string name="pref_path_mode_summary">Daire yerine kapsül çiz, hap şeklindeki kamera delikleri için</string>
 
     <!-- Design: Calibration -->
     <string name="pref_calibrate_ring_title">Halkayı kalibre et</string>
@@ -130,11 +130,11 @@
 
     <!-- Design: Percentage Text -->
     <string name="pref_show_percentage_title">Yüzde etiketi</string>
-    <string name="pref_show_percentage_summary">Mevcut ilerlemeyi sayısal metin olarak göster</string>
+    <string name="pref_show_percentage_summary">İlerlemeyi sayı olarak göster</string>
     <string name="pref_calibrate_percent_title">Yüzdeyi kalibre et</string>
     <string name="pref_calibrate_percent_summary">Yüzde etiketinin yerleşimini ayarla</string>
     <string name="pref_show_speed_title">Hız etiketi</string>
-    <string name="pref_show_speed_summary">Mevcut ağ indirme hızını metin olarak göster</string>
+    <string name="pref_show_speed_summary">Anlık indirme hızını göster</string>
     <string name="pref_calibrate_speed_title">Hızı kalibre et</string>
     <string name="pref_calibrate_speed_summary">Hız etiketinin yerleşimini ayarla</string>
     <string name="pref_speed_unit_title">Hız birimi</string>
@@ -150,7 +150,7 @@
     <string name="pref_app_icon_enabled_title">Kaynak uygulama simgesi</string>
     <string name="pref_app_icon_enabled_summary">İndirmeyi hangi uygulamanın başlattığını göster</string>
     <string name="pref_app_icon_monochrome_title">Tek renkli simge</string>
-    <string name="pref_app_icon_monochrome_summary">Temalı simge silüetini kullanarak halka rengine tonla</string>
+    <string name="pref_app_icon_monochrome_summary">Temalı simgeyi halka rengine boya</string>
     <string name="pref_app_icon_size_title">Simge boyutu</string>
     <string name="pref_app_icon_size_summary">Kaynak uygulama simgesinin boyutunu ayarla</string>
     <string name="pref_calibrate_app_icon_title">Kaynak simgeyi kalibre et</string>
@@ -158,7 +158,7 @@
 
     <!-- Calibration: Rotation lock -->
     <string name="pref_lock_rotation_title">Dikey kalsın</string>
-    <string name="pref_lock_rotation_summary">Bu kaplama öğesini dikey yönlendirmeye sabitler, ekran döndüğünde dik kalır</string>
+    <string name="pref_lock_rotation_summary">Ekran döndüğünde bu öğe dik kalır</string>
 
     <!-- Design: Text shadow and outline (per-element calibration screens) -->
     <string name="pref_text_shadow_nav_summary">Gölgeyi ve isteğe bağlı kenarlığı özelleştirin</string>
@@ -185,7 +185,7 @@
     <!-- Design: HDR (API 35+) -->
     <string name="group_hdr">HDR parlaklığı</string>
     <string name="pref_hdr_enabled_title">HDR kullan</string>
-    <string name="pref_hdr_enabled_summary">Halkayı HDR ekranlarda standart SDR parlaklığının üzerinde gösterir. Android 15 veya üstü gerekir (varsayılan: kapalı)</string>
+    <string name="pref_hdr_enabled_summary">Halkayı HDR ekranlarda SDR\'den parlak çiz (Android 15 veya üstü)</string>
     <string name="pref_hdr_headroom_title">HDR gücü</string>
     <string name="pref_hdr_headroom_summary">Hedef HDR/SDR oranı. 1.0× SDR, 3.0× istenen maksimum. Ekran gerçek değeri sınırlar</string>
     <string name="pref_hdr_ratio_title">Canlı HDR/SDR oranı</string>
@@ -234,13 +234,13 @@
 
     <!-- System: Visibility -->
     <string name="pref_show_queue_count_title">Kuyruk sayacı</string>
-    <string name="pref_show_queue_count_summary">Aynı anda devam eden etkin indirmelerin sayısını göster</string>
+    <string name="pref_show_queue_count_summary">Kaç indirmenin sürdüğünü göster</string>
     <string name="pref_calibrate_badge_title">Sayacı kalibre et</string>
     <string name="pref_calibrate_badge_summary">Kuyruk sayacının yerleşimini ayarla</string>
     <string name="pref_burn_in_hide_title">Hareketsizlikte gizle</string>
     <string name="pref_burn_in_hide_summary">Etkinlik veya ilerleme olmadan halkayı gizlemeden önceki süre</string>
     <string name="pref_progress_anim_title">İlerleme yumuşatma</string>
-    <string name="pref_progress_anim_summary">İlerleme değiştiğinde yayın geçiş süresi. Uygulamanın SystemUI\'ye ilerleme bildirme sıklığına bağlı.</string>
+    <string name="pref_progress_anim_summary">İlerleme değiştiğinde yayın yetişme süresi</string>
     <string name="pref_font_size_title">Yazı tipi boyutu</string>
     <string name="pref_bold_title">Kalın</string>
     <string name="pref_italic_title">İtalik</string>
@@ -251,7 +251,7 @@
     <string name="pref_filename_truncate_title">Karakter sınırı</string>
     <string name="pref_filename_max_chars_title">Maksimum karakter</string>
     <string name="pref_filename_vertical_title">Dikey metin</string>
-    <string name="pref_filename_vertical_summary">Yatay yöndeyken her karakteri dikey bir çizgi halinde çiz</string>
+    <string name="pref_filename_vertical_summary">Yatay modda karakterleri dikey diz</string>
     <string name="pref_preview_text_title">Önizleme metni</string>
     <string name="pref_invert_rotation_title">Halka dolum yönü</string>
     <string name="clockwise">Saat yönü</string>
@@ -259,9 +259,9 @@
 
     <!-- Material You -->
     <string name="pref_material_you_title">Material You</string>
-    <string name="pref_material_you_summary">Halka renklerini duvar kağıdı paletinizle eşleştirin</string>
+    <string name="pref_material_you_summary">Halka renklerini duvar kağıdından al</string>
     <string name="pref_material_you_configure_title">Renk eşleştirme</string>
-    <string name="pref_material_you_configure_summary">Her gösterge rolüne sistem paleti renkleri atayın</string>
+    <string name="pref_material_you_configure_summary">İlerleme, tamamlanma ve hata için duvar kağıdı renkleri seç</string>
     <string name="group_material_you_progress">İlerleme</string>
     <string name="group_material_you_success">Tamamlanma</string>
     <string name="group_material_you_error">Hata</string>
@@ -274,32 +274,31 @@
     <string name="material_you_preset_primary">Birincil</string>
     <string name="material_you_preset_muted">Soluk</string>
     <string name="material_you_preset_mono">Mono</string>
-    <string name="material_you_preset_custom">Özel</string>
 
     <!-- System: Power -->
     <string name="pref_theme_title">Tema</string>
     <string name="pref_theme_summary">Açık, koyu veya sistem varsayılanını seçin</string>
     <string name="pref_dynamic_color_title">Dinamik renk</string>
-    <string name="pref_dynamic_color_summary">Duvar kağıdından Material You renklerini kullanın</string>
+    <string name="pref_dynamic_color_summary">Duvar kağıdınızdaki renkleri kullan</string>
     <string name="pref_floating_nav_bar_title">Yüzen gezinme çubuğu</string>
     <string name="pref_floating_nav_bar_summary">Tam genişlikte çubuk yerine kompakt yüzen bir çubuk kullan</string>
     <string name="pref_hide_nav_bar_on_scroll_title">Kaydırmada gizle</string>
     <string name="pref_hide_nav_bar_on_scroll_summary">Kaydırma sırasında yüzen çubuğu kenara kaydır</string>
     <string name="pref_battery_saver_title">Pil tasarrufu modu</string>
-    <string name="pref_battery_saver_summary">Pil tasarrufu sırasında gösterge davranışı</string>
+    <string name="pref_battery_saver_summary">Pil Tasarrufu\'nda halkanın davranışı</string>
 
     <!-- System: Diagnostics -->
     <string name="pref_debug_completion_title">Tamamlanmayı simüle et</string>
-    <string name="pref_debug_completion_summary">Test için bir tamamlanma animasyonu tetikle</string>
+    <string name="pref_debug_completion_summary">Halkada tamamlanma efektini oynat</string>
     <string name="pref_test_failure_title">Hatayı simüle et</string>
-    <string name="pref_test_failure_summary">Test için bir hata animasyonu tetikle</string>
+    <string name="pref_test_failure_summary">Halkada hata efektini oynat</string>
     <string name="pref_clear_downloads_title">İndirmeleri temizle</string>
-    <string name="pref_clear_downloads_summary">Takılı kalan indirme göstergelerini sıfırla</string>
+    <string name="pref_clear_downloads_summary">İndirmeden sonra ekranda kalan halkaları kaldır</string>
     <string name="clear_downloads_done">İndirmeler temizlendi</string>
     <string name="pref_hide_launcher_icon_title">Başlatıcı simgesini gizle</string>
-    <string name="pref_hide_launcher_icon_summary">Uygulamayı başlatıcıdan gizler</string>
+    <string name="pref_hide_launcher_icon_summary">Uygulamayı LSPosed\'dan açın</string>
     <string name="pref_verbose_logging_title">Hata ayıklama günlükleri</string>
-    <string name="pref_verbose_logging_summary">Hata ayıklama için ayrıntılı günlük</string>
+    <string name="pref_verbose_logging_summary">Hata bildirimleri için ayrıntılı günlük yaz</string>
     <string name="group_backup">Yedekleme</string>
     <string name="pref_export_settings_title">Ayarları dışa aktar</string>
     <string name="pref_export_settings_summary">Ayarları bir dosyaya kaydet</string>
@@ -350,20 +349,19 @@
     <string name="result_hide_details">Ayrıntıları gizle</string>
 
     <!-- System: About -->
-    <string name="pref_version_title">Sürüm</string>
     <string name="pref_git_repo">Kaynak kodu</string>
-    <string name="pref_git_repo_summary">Projeyi GitHub\'da inceleyin</string>
-    <string name="pref_licenses">Üçüncü taraf lisansları</string>
-    <string name="pref_licenses_summary">Bu uygulama tarafından kullanılan kütüphaneler ve lisansları</string>
-    <string name="pref_report_issue">Sorun bildir</string>
-    <string name="pref_report_issue_summary">GitHub\'da bir hata bildirin veya özellik önerin</string>
+    <string name="pref_git_repo_summary">Kodu GitHub\'da görüntüleyin</string>
+    <string name="pref_licenses">Açık kaynak lisansları</string>
+    <string name="pref_licenses_summary">Uygulamanın kullandığı kütüphaneler ve lisansları</string>
+    <string name="pref_report_issue">Özellik öner veya hata bildir</string>
+    <string name="pref_report_issue_summary">GitHub\'daki formu açar</string>
 
     <!-- Color Picker -->
     <string name="pick_color">Renk seç</string>
     <string name="presets">Ön ayarlar</string>
 
     <!-- Reset -->
-    <string name="reset_defaults">Varsayılanlara Sıfırla</string>
+    <string name="reset_defaults">Varsayılanlara sıfırla</string>
     <string name="reset_confirm">Tüm ayarlar varsayılanlara sıfırlansın mı?</string>
     <string name="reset_done">Ayarlar sıfırlandı</string>
     <string name="reset">Sıfırla</string>
@@ -458,4 +456,35 @@
         <item>Pil tasarrufu modu (Sistem)</item>
         <item>Dosya adı, hız ve kaynak uygulama (Görünüm)</item>
     </string-array>
+    <string name="status_checking">Modül denetleniyor</string>
+    <string name="status_inactive_title">Modül kapalı</string>
+    <string name="status_inactive_body">LSPosed\'da açın ve kapsamına SystemUI\'ı ekleyin</string>
+    <string name="status_running_title">SystemUI\'da çalışıyor</string>
+    <string name="status_active_title">Modül açık</string>
+    <string name="status_scope_title">SystemUI kapsamda değil</string>
+    <string name="status_scope_body">Modül halkayı SystemUI içinden çizer</string>
+    <string name="status_scope_action">SystemUI\'ı ekle</string>
+    <string name="status_scope_failed">SystemUI eklenemedi: %1$s</string>
+    <string name="status_not_loaded_title">SystemUI modülü yüklemedi</string>
+    <string name="status_not_loaded_body">SystemUI modülü başlarken yükler</string>
+    <string name="status_outdated_title">SystemUI eski bir sürümü çalıştırıyor</string>
+    <string name="status_outdated_body">Modül, SystemUI başladıktan sonra güncellendi</string>
+    <string name="status_failed_title">Modül yüklenemedi</string>
+    <string name="status_failed_body">SystemUI modülü başlatamadı</string>
+    <string name="about_summary">Sürüm %1$s</string>
+    <string name="whats_new">Yenilikler</string>
+    <string name="whats_new_summary">%1$s sürümündeki değişiklikler</string>
+    <string name="whats_new_title">%1$s yenilikleri</string>
+    <string name="changelog">Değişiklik günlüğü</string>
+    <string name="changelog_summary">Tüm sürümlerdeki değişiklikler</string>
+    <string name="changelog_installed">Yüklü</string>
+    <string name="changelog_jump_top">En yeniye git</string>
+    <string name="changelog_jump_bottom">En eskiye git</string>
+    <string name="star_on_github">GitHub\'da yıldızla</string>
+    <string name="buy_me_a_coffee">Bana bir kahve ısmarla</string>
+    <string name="group_this_device">Bu cihaz</string>
+    <string name="device_android">Android</string>
+    <string name="device_android_version">Android %1$s (API %2$d)</string>
+    <string name="device_framework">Xposed çerçevesi</string>
+    <string name="device_framework_none">Algılanmadı</string>
 </resources>

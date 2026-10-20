@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Unified dark surface: splash, window, scaffold -->
-    <color name="surface_dark">#141218</color>
+    <color name="window_background">#F9F9FF</color>
+    <color name="splash_icon">#0B57D0</color>
 </resources>

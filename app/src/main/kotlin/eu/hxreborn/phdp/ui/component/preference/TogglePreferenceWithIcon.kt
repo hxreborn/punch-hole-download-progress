@@ -20,10 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import eu.hxreborn.phdp.R
+import eu.hxreborn.phdp.ui.component.performToggle
 import eu.hxreborn.phdp.ui.theme.AppTheme
 import eu.hxreborn.phdp.ui.theme.Tokens
 
@@ -38,13 +40,21 @@ fun TogglePreferenceWithIcon(
     enabled: Boolean = true,
 ) {
     val contentAlpha = if (enabled) 1f else Tokens.DISABLED_ALPHA
+    val haptics = LocalHapticFeedback.current
 
     Row(
         modifier =
             modifier
                 .fillMaxWidth()
-                .toggleable(value = value, onValueChange = onValueChange, enabled = enabled, role = Role.Switch)
-                .padding(Tokens.PreferencePadding),
+                .toggleable(
+                    value = value,
+                    onValueChange = {
+                        haptics.performToggle(it)
+                        onValueChange(it)
+                    },
+                    enabled = enabled,
+                    role = Role.Switch,
+                ).padding(Tokens.PreferencePadding),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         icon?.let { PreferenceIcon(it, enabled) }

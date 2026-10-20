@@ -56,6 +56,7 @@ import eu.hxreborn.phdp.ui.component.TestButtonsRow
 import eu.hxreborn.phdp.ui.component.VerticalScrollbar
 import eu.hxreborn.phdp.ui.component.preference.ColorPreference
 import eu.hxreborn.phdp.ui.component.preference.TogglePreferenceWithIcon
+import eu.hxreborn.phdp.ui.component.sectionPreferenceTheme
 import eu.hxreborn.phdp.ui.theme.Tokens
 import me.zhanghai.compose.preference.ProvidePreferenceLocals
 import me.zhanghai.compose.preference.preferenceCategory
@@ -94,7 +95,7 @@ fun DuoScreen(
         bottomPadding = bottomNavPadding,
         modifier = modifier,
     ) { innerPadding ->
-        ProvidePreferenceLocals {
+        ProvidePreferenceLocals(theme = sectionPreferenceTheme()) {
             val listState = rememberLazyListState()
             LazyColumn(
                 state = listState,
@@ -185,8 +186,8 @@ fun DuoScreen(
 
                     item(key = "duo_test_buttons") {
                         TestButtonsRow(
-                            onSimulateSuccess = { viewModel.simulateSuccess() },
-                            onSimulateFailure = { viewModel.simulateFailure() },
+                            onSimulateSuccess = viewModel::simulateSuccess,
+                            onSimulateFailure = viewModel::simulateFailure,
                         )
                     }
                 }
