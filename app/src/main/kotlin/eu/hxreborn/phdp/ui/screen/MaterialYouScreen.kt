@@ -315,13 +315,6 @@ fun MaterialYouScreen(
                             label = { Text(stringResource(preset.labelRes)) },
                         )
                     }
-                    FilterChip(
-                        selected = activePreset == -1,
-                        onClick = {},
-                        label = {
-                            Text(stringResource(R.string.material_you_preset_custom))
-                        },
-                    )
                 }
             }
 

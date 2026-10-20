@@ -309,7 +309,6 @@
     <string name="material_you_preset_primary">Primary</string>
     <string name="material_you_preset_muted">Muted</string>
     <string name="material_you_preset_mono">Mono</string>
-    <string name="material_you_preset_custom">Custom</string>
 
     <!-- System: Power -->
     <string name="pref_theme_title">Theme</string>

@@ -274,7 +274,6 @@
     <string name="material_you_preset_primary">Начальный</string>
     <string name="material_you_preset_muted">Без звука</string>
     <string name="material_you_preset_mono">Mono</string>
-    <string name="material_you_preset_custom">Пользовательский</string>
 
     <!-- System: Power -->
     <string name="pref_theme_title">Тема</string>

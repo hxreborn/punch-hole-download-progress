@@ -220,7 +220,6 @@
     <string name="material_you_preset_primary">主色</string>
     <string name="material_you_preset_muted">柔和</string>
     <string name="material_you_preset_mono">同色系</string>
-    <string name="material_you_preset_custom">自定义</string>
     <string name="pref_theme_title">主题</string>
     <string name="pref_theme_summary">可设置浅色、深色或系统默认主题</string>
     <string name="pref_dynamic_color_title">动态取色</string>

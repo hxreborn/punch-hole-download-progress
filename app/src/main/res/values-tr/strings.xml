@@ -274,7 +274,6 @@
     <string name="material_you_preset_primary">Birincil</string>
     <string name="material_you_preset_muted">Soluk</string>
     <string name="material_you_preset_mono">Mono</string>
-    <string name="material_you_preset_custom">Özel</string>
 
     <!-- System: Power -->
     <string name="pref_theme_title">Tema</string>
