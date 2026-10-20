@@ -1,8 +1,10 @@
-- About has its own screen, with the full changelog and a What's new sheet
-- A status card shows if the module runs in SystemUI, with a one-tap fix when it doesn't
-- Single-choice settings use connected button rows
-- Haptic feedback on toggles, choices and finished actions
-- Reload module is now Hot reload; confirm dialogs show icons
-- Bar icons and the splash screen follow the app theme
-- Tab labels fit on one line at large font sizes
-- Removed the custom preset chip, which did nothing
+- Added an About screen with the full changelog
+- Added a status card that shows if the module runs in SystemUI
+- Added haptic feedback to toggles, choices and finished actions
+- Added icons to confirm dialogs
+- Changed single-choice settings to connected button rows
+- Renamed Reload module to Hot reload
+- Fixed bar icons and splash screen ignoring the app theme
+- Fixed tab labels wrapping at large font sizes
+- Removed the custom preset chip
+- Updated core libraries
