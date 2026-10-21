@@ -1,10 +1,11 @@
 - Added an About screen with the full changelog
 - Added a status card that shows if the module runs in SystemUI
-- Added haptic feedback to toggles, choices and finished actions
+- Added haptic feedback to toggles and choices
 - Added icons to confirm dialogs
+- Added badges and release dates to the changelog
 - Changed single-choice settings to connected button rows
 - Renamed Reload module to Hot reload
-- Fixed bar icons and splash screen ignoring the app theme
+- Fixed bar icons and splash ignoring the app theme
 - Fixed tab labels wrapping at large font sizes
 - Removed the custom preset chip
 - Updated core libraries
