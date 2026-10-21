@@ -81,8 +81,10 @@ fi
 # Update version properties for F-Droid
 sed -i "s/^version\.code=.*/version.code=${VERSION_CODE}/" gradle.properties
 sed -i "s/^version\.name=.*/version.name=${VERSION}/" gradle.properties
+RELEASE_DATES="app/src/main/assets/release-dates.txt"
+sed -i "1i ${TAG} $(date -u +%F)" "$RELEASE_DATES"
 
-git add gradle.properties
+git add gradle.properties "$RELEASE_DATES"
 git commit -m "chore(release): bump version to ${VERSION}"
 
 git tag -a "$TAG" -m "Release $TAG"

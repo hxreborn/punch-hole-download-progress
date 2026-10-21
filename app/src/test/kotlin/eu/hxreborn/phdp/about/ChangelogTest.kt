@@ -1,6 +1,7 @@
 package eu.hxreborn.phdp.about
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 import java.time.LocalDate
 
@@ -35,10 +36,30 @@ class ChangelogTest {
     }
 
     @Test
-    fun `reads tag dates and skips malformed lines`() {
+    fun `reads release dates and skips malformed lines`() {
         assertEquals(
             mapOf("2.10.0" to LocalDate.of(2026, 10, 16), "2.9.0" to LocalDate.of(2026, 10, 1)),
             parseReleaseDates("v2.10.0 2026-10-16\nv2.9.0 2026-10-01\nbroken\nv2.8.0 notadate\n\n"),
         )
+    }
+
+    @Test
+    fun `leaves a version without a release line undated`() {
+        assertNull(parseReleaseDates("v2.10.0 2026-10-16\n")["2.11.0"])
+    }
+
+    @Test
+    fun `reads plain and bulleted notes for an undated version`() {
+        val dates = parseReleaseDates("v2.10.0 2026-10-16\n")
+        val name = versionNameOf(211000)
+        val release =
+            Release(
+                211000,
+                name,
+                parseEntries("- Added a status card\nFixed tab labels\n"),
+                dates[name],
+            )
+        assertEquals(listOf("Added a status card", "Fixed tab labels"), release.entries)
+        assertNull(release.releasedOn)
     }
 }

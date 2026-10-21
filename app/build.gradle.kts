@@ -121,36 +121,20 @@ abstract class CopyChangelogs : DefaultTask() {
     @get:InputDirectory
     abstract val changelogs: DirectoryProperty
 
-    @get:Input
-    abstract val releaseDates: Property<String>
-
     @get:OutputDirectory
     abstract val assets: DirectoryProperty
 
     @TaskAction
     fun copy() {
         val target = assets.get().dir("changelogs").asFile
-        target.deleteRecursively()
+        assets.get().asFile.deleteRecursively()
         changelogs.get().asFile.copyRecursively(target)
-        assets.get().file("release-dates.txt").asFile.writeText(releaseDates.get())
     }
 }
 
 val copyChangelogs =
     tasks.register<CopyChangelogs>("copyChangelogs") {
         changelogs.set(rootProject.layout.projectDirectory.dir("fastlane/metadata/android/en-US/changelogs"))
-        releaseDates.set(
-            providers.provider {
-                runCatching {
-                    providers
-                        .exec {
-                            commandLine("git", "for-each-ref", "--format=%(refname:short) %(creatordate:short)", "refs/tags/v*")
-                            isIgnoreExitValue = true
-                        }.standardOutput.asText
-                        .get()
-                }.getOrDefault("")
-            },
-        )
     }
 
 androidComponents {
