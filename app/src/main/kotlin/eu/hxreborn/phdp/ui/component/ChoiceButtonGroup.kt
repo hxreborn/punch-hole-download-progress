@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.sp
 import eu.hxreborn.phdp.ui.theme.Tokens
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -60,7 +61,7 @@ fun <T> ChoiceButtonGroup(
                 Text(
                     text = label(option),
                     maxLines = 1,
-                    autoSize = TextAutoSize.StepBased(maxFontSize = LocalTextStyle.current.fontSize),
+                    autoSize = TextAutoSize.StepBased(minFontSize = 4.sp, maxFontSize = LocalTextStyle.current.fontSize),
                 )
             }
         }
