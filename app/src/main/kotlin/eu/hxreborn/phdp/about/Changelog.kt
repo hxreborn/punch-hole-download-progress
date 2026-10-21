@@ -6,27 +6,14 @@ import java.time.LocalDate
 data class Release(
     val versionCode: Int,
     val versionName: String,
-    val notes: List<Note>,
+    val entries: List<String>,
     val releasedOn: LocalDate? = null,
 )
-
-data class Note(
-    val kind: Kind,
-    val text: String,
-) {
-    enum class Kind { NEW, FIXED, CHANGED, REMOVED, UPDATED }
-}
 
 private const val CHANGELOG_DIR = "changelogs"
 private const val RELEASE_DATES = "release-dates.txt"
 
-private val kindByVerb =
-    mapOf(
-        "Added" to Note.Kind.NEW,
-        "Fixed" to Note.Kind.FIXED,
-        "Removed" to Note.Kind.REMOVED,
-        "Updated" to Note.Kind.UPDATED,
-    )
+private val bulletPrefix = Regex("""^[-*•]\s+""")
 
 private val legacyVersionNames =
     mapOf(
@@ -59,16 +46,8 @@ fun versionNameOf(code: Int): String =
 fun parseEntries(text: String): List<String> =
     text
         .lines()
-        .map {
-            it
-                .trim()
-                .removePrefix("- ")
-                .removePrefix("• ")
-                .trim()
-        }.filter { it.isNotEmpty() }
-
-fun noteOf(entry: String): Note =
-    Note(kindByVerb[entry.substringBefore(' ')] ?: Note.Kind.CHANGED, entry)
+        .map { it.trim().replace(bulletPrefix, "").trim() }
+        .filter { it.isNotEmpty() }
 
 fun parseReleaseDates(text: String): Map<String, LocalDate> =
     text
@@ -97,6 +76,6 @@ fun loadReleases(assets: AssetManager): List<Release> {
             val code = file.removeSuffix(".txt").toIntOrNull() ?: return@mapNotNull null
             val text = assets.open("$CHANGELOG_DIR/$file").bufferedReader().use { it.readText() }
             val name = versionNameOf(code)
-            Release(code, name, parseEntries(text).map(::noteOf), dates[name])
+            Release(code, name, parseEntries(text), dates[name])
         }.sortedByDescending { it.versionCode }
 }

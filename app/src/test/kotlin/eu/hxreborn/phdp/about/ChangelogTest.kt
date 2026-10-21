@@ -24,14 +24,14 @@ class ChangelogTest {
     }
 
     @Test
-    fun `picks the badge kind from the leading verb and keeps the line`() {
-        assertEquals(Note(Note.Kind.NEW, "Added an About screen"), noteOf("Added an About screen"))
-        assertEquals(Note.Kind.FIXED, noteOf("Fixed tab labels wrapping").kind)
-        assertEquals(Note.Kind.REMOVED, noteOf("Removed the custom preset chip").kind)
-        assertEquals(Note.Kind.UPDATED, noteOf("Updated core libraries").kind)
-        assertEquals(Note.Kind.CHANGED, noteOf("Renamed Reload module to Hot reload").kind)
-        assertEquals(Note.Kind.CHANGED, noteOf("Smoother ring drawing").kind)
-        assertEquals(Note.Kind.CHANGED, noteOf("Addedness is not a verb").kind)
+    fun `strips a leading dash, star or dot bullet and keeps the line as written`() {
+        listOf("- ", "* ", "• ", "").forEach { bullet ->
+            assertEquals(
+                bullet,
+                listOf("Added a status card"),
+                parseEntries("${bullet}Added a status card\n"),
+            )
+        }
     }
 
     @Test

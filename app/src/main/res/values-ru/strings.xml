@@ -485,11 +485,6 @@
     <string name="whats_new_released">Выпущена %1$s</string>
     <string name="changelog_see_full">Весь список изменений</string>
     <string name="close">Закрыть</string>
-    <string name="notes_new">Новое</string>
-    <string name="notes_fixed">Исправлено</string>
-    <string name="notes_changed">Изменено</string>
-    <string name="notes_removed">Удалено</string>
-    <string name="notes_updated">Обновлено</string>
     <string name="star_on_github">Звезда на GitHub</string>
     <string name="buy_me_a_coffee">Угостить кофе</string>
     <string name="group_this_device">Это устройство</string>
