@@ -31,7 +31,7 @@
 ## 要求
 
 - Android 9+（API 28）
-- 支持 libxposed API 101 的 Xposed Manager（推荐官方 LSPosed）
+- 支持 libxposed API 101 的 Xposed 管理器，例如 Vector 2.1 或更新版本（Vector 2.2 起提供的 API 102 支持热重载）
 - Root 可选（仅「重启系统界面」功能需要）
 
 ## 安装
@@ -43,7 +43,7 @@
    <a href="../../releases"><img src=".github/assets/badge_github.png" height="60" alt="在 GitHub 获取" /></a>
    <a href="http://apps.obtainium.imranr.dev/redirect.html?r=obtainium://app/%7B%22id%22%3A%22eu.hxreborn.phdp%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhxreborn%2Fpunch-hole-download-progress%22%2C%22author%22%3A%22rafareborn%22%2C%22name%22%3A%22Punch-hole%20Download%20Progress%22%2C%22additionalSettings%22%3A%22%7B%5C%22includePrereleases%5C%22%3Afalse%7D%22%7D"><img src=".github/assets/badge_obtainium.png" height="60" alt="在 Obtainium 获取" /></a>
 
-2. 在 LSPosed 中安装并启用模块。
+2. 在你的 Xposed 管理器中安装并启用模块。
 3. 作用域选择 `com.android.systemui`。
 4. 重启 SystemUI 或重启设备。
 

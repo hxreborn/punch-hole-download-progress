@@ -2,4 +2,4 @@
 
 <p>Hooks system download notifications and renders them with configurable colors, animations, and haptic feedback. Supports an active download counter, an optional speed label showing how fast the device is receiving data, battery saver-aware rendering, per-rotation (0°/90°/180°/270°) calibration for text and badge offsets, and optional vertical filename text in landscape.</p>
 
-<p>Requires Android 9+, LSPosed, and a Pixel/AOSP-based ROM (other ROMs may not work as expected).</p>
+<p>Requires Android 9+, an Xposed manager with libxposed API 101 support such as Vector 2.1 or newer, and a Pixel/AOSP-based ROM (other ROMs may not work as expected).</p>
