@@ -25,7 +25,7 @@ Xposed module that renders download progress as an animated ring around the came
 - Download speed label reading the receive counters of the interface carrying the download (whole-device traffic, not per-download), in bits or bytes per second
 - Per-rotation calibration for text and badge offsets
 - Foldable support with separate ring calibration for each posture (folded/unfolded)
-- In-app module reload, applying a module update without restarting SystemUI on frameworks with libxposed API 102
+- Hot reload, applying a module update without restarting SystemUI on frameworks with libxposed API 102
 - Test mode, battery saver rendering, and pill-cutout path support
 
 ## Requirements
