@@ -418,6 +418,14 @@
     <string name="changelog_installed">Installed</string>
     <string name="changelog_jump_top">Jump to newest</string>
     <string name="changelog_jump_bottom">Jump to oldest</string>
+    <string name="whats_new_released">Released %1$s</string>
+    <string name="changelog_see_full">See full changelog</string>
+    <string name="close">Close</string>
+    <string name="notes_new">New</string>
+    <string name="notes_fixed">Fixed</string>
+    <string name="notes_changed">Changed</string>
+    <string name="notes_removed">Removed</string>
+    <string name="notes_updated">Updated</string>
     <string name="star_on_github">Star on GitHub</string>
     <string name="buy_me_a_coffee">Buy me a coffee</string>
     <string name="group_this_device">This device</string>

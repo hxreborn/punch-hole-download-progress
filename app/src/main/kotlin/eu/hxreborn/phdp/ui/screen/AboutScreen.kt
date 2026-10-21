@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -51,10 +50,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -77,7 +78,6 @@ import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.hxreborn.phdp.BuildConfig
 import eu.hxreborn.phdp.R
-import eu.hxreborn.phdp.about.Release
 import eu.hxreborn.phdp.about.loadReleases
 import eu.hxreborn.phdp.ui.SettingsViewModel
 import eu.hxreborn.phdp.ui.component.MorphingLogo
@@ -87,6 +87,7 @@ import eu.hxreborn.phdp.ui.component.VerticalScrollbar
 import eu.hxreborn.phdp.ui.component.sectionPreferenceTheme
 import eu.hxreborn.phdp.ui.state.ModuleStatus
 import eu.hxreborn.phdp.ui.theme.Tokens
+import kotlinx.coroutines.launch
 import me.zhanghai.compose.preference.Preference
 import me.zhanghai.compose.preference.ProvidePreferenceLocals
 import me.zhanghai.compose.preference.preferenceCategory
@@ -130,10 +131,22 @@ fun AboutScreen(
     val releases = remember(context) { loadReleases(context.assets) }
     val currentRelease = releases.firstOrNull { it.versionCode == BuildConfig.VERSION_CODE } ?: releases.firstOrNull()
     var showWhatsNew by rememberSaveable { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
 
     if (showWhatsNew && currentRelease != null) {
-        ModalBottomSheet(onDismissRequest = { showWhatsNew = false }) {
-            WhatsNewContent(currentRelease)
+        val closeSheet = { then: () -> Unit ->
+            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                showWhatsNew = false
+                then()
+            }
+        }
+        ModalBottomSheet(onDismissRequest = { showWhatsNew = false }, sheetState = sheetState) {
+            WhatsNewSheet(
+                release = currentRelease,
+                onFullChangelog = { closeSheet(onNavigateToChangelog) },
+                onClose = { closeSheet {} },
+            )
         }
     }
 
@@ -426,46 +439,4 @@ private fun AboutRow(
                 }
             },
     )
-}
-
-@Composable
-private fun WhatsNewContent(release: Release) {
-    Column(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp)
-                .padding(bottom = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        Text(
-            text = stringResource(R.string.whats_new_title, release.versionName),
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.semantics { heading() },
-        )
-        ReleaseEntries(release.entries)
-    }
-}
-
-@Composable
-internal fun ReleaseEntries(entries: List<String>) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        entries.forEach { entry ->
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Box(
-                    modifier =
-                        Modifier
-                            .padding(top = 8.dp)
-                            .size(6.dp)
-                            .background(MaterialTheme.colorScheme.primary, CircleShape),
-                )
-                Text(
-                    text = entry,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.weight(1f),
-                )
-            }
-        }
-    }
 }

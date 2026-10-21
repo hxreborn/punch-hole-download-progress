@@ -404,6 +404,14 @@
     <string name="changelog_installed">已安装</string>
     <string name="changelog_jump_top">跳到最新</string>
     <string name="changelog_jump_bottom">跳到最早</string>
+    <string name="whats_new_released">发布于 %1$s</string>
+    <string name="changelog_see_full">查看完整更新日志</string>
+    <string name="close">关闭</string>
+    <string name="notes_new">新增</string>
+    <string name="notes_fixed">修复</string>
+    <string name="notes_changed">变更</string>
+    <string name="notes_removed">移除</string>
+    <string name="notes_updated">更新</string>
     <string name="star_on_github">在 GitHub 上点星</string>
     <string name="buy_me_a_coffee">请我喝杯咖啡</string>
     <string name="group_this_device">本设备</string>

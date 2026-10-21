@@ -480,6 +480,14 @@
     <string name="changelog_installed">Yüklü</string>
     <string name="changelog_jump_top">En yeniye git</string>
     <string name="changelog_jump_bottom">En eskiye git</string>
+    <string name="whats_new_released">%1$s tarihinde yayınlandı</string>
+    <string name="changelog_see_full">Tüm değişiklik günlüğü</string>
+    <string name="close">Kapat</string>
+    <string name="notes_new">Yeni</string>
+    <string name="notes_fixed">Düzeltildi</string>
+    <string name="notes_changed">Değişti</string>
+    <string name="notes_removed">Kaldırıldı</string>
+    <string name="notes_updated">Güncellendi</string>
     <string name="star_on_github">GitHub\'da yıldızla</string>
     <string name="buy_me_a_coffee">Bana bir kahve ısmarla</string>
     <string name="group_this_device">Bu cihaz</string>

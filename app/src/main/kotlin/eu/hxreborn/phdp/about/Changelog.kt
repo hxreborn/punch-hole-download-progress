@@ -1,14 +1,32 @@
 package eu.hxreborn.phdp.about
 
 import android.content.res.AssetManager
+import java.time.LocalDate
 
 data class Release(
     val versionCode: Int,
     val versionName: String,
-    val entries: List<String>,
+    val notes: List<Note>,
+    val releasedOn: LocalDate? = null,
 )
 
+data class Note(
+    val kind: Kind,
+    val text: String,
+) {
+    enum class Kind { NEW, FIXED, CHANGED, REMOVED, UPDATED }
+}
+
 private const val CHANGELOG_DIR = "changelogs"
+private const val RELEASE_DATES = "release-dates.txt"
+
+private val kindByVerb =
+    mapOf(
+        "Added" to Note.Kind.NEW,
+        "Fixed" to Note.Kind.FIXED,
+        "Removed" to Note.Kind.REMOVED,
+        "Updated" to Note.Kind.UPDATED,
+    )
 
 private val legacyVersionNames =
     mapOf(
@@ -49,12 +67,36 @@ fun parseEntries(text: String): List<String> =
                 .trim()
         }.filter { it.isNotEmpty() }
 
-fun loadReleases(assets: AssetManager): List<Release> =
-    assets
+fun noteOf(entry: String): Note =
+    Note(kindByVerb[entry.substringBefore(' ')] ?: Note.Kind.CHANGED, entry)
+
+fun parseReleaseDates(text: String): Map<String, LocalDate> =
+    text
+        .lines()
+        .mapNotNull { line ->
+            val (tag, date) =
+                line.trim().split(' ').takeIf { it.size == 2 }
+                    ?: return@mapNotNull null
+            val parsed = runCatching { LocalDate.parse(date) }.getOrNull() ?: return@mapNotNull null
+            tag.removePrefix("v") to parsed
+        }.toMap()
+
+fun loadReleases(assets: AssetManager): List<Release> {
+    val dates =
+        runCatching {
+            assets
+                .open(
+                    RELEASE_DATES,
+                ).bufferedReader()
+                .use { parseReleaseDates(it.readText()) }
+        }.getOrDefault(emptyMap())
+    return assets
         .list(CHANGELOG_DIR)
         .orEmpty()
         .mapNotNull { file ->
             val code = file.removeSuffix(".txt").toIntOrNull() ?: return@mapNotNull null
             val text = assets.open("$CHANGELOG_DIR/$file").bufferedReader().use { it.readText() }
-            Release(code, versionNameOf(code), parseEntries(text))
+            val name = versionNameOf(code)
+            Release(code, name, parseEntries(text).map(::noteOf), dates[name])
         }.sortedByDescending { it.versionCode }
+}
