@@ -5,6 +5,7 @@ import android.os.Build
 import eu.hxreborn.phdp.BuildConfig
 import eu.hxreborn.phdp.util.Logger
 import eu.hxreborn.phdp.util.log
+import eu.hxreborn.phdp.util.runHookCatching
 import eu.hxreborn.phdp.xposed.hook.IndicatorState
 import eu.hxreborn.phdp.xposed.hook.SAVED_CONTEXT
 import eu.hxreborn.phdp.xposed.hook.SystemUIHook
@@ -29,7 +30,7 @@ class PHDPModule : XposedModule() {
 
         log("Device: ${Build.MANUFACTURER} ${Build.MODEL} (SDK ${Build.VERSION.SDK_INT})")
         IndicatorState.init(this)
-        runCatching {
+        runHookCatching {
             SystemUIHook.hook(param.classLoader)
         }.onSuccess { log("Hooks registered") }.onFailure { log("Hook failed", it) }
     }
@@ -50,8 +51,15 @@ class PHDPModule : XposedModule() {
     override fun onHotReloaded(param: HotReloadedParam) {
         module = this
         Logger.attach(this)
-        runCatching { super.onHotReloaded(param) }
-            .onFailure { log("hot reload unhook failed pkg=$SYSTEMUI_PACKAGE", it) }
+        try {
+            super.onHotReloaded(param)
+        } catch (e: Exception) {
+            log("hot reload unhook failed pkg=$SYSTEMUI_PACKAGE", e)
+            throw e
+        } catch (e: LinkageError) {
+            log("hot reload unhook failed pkg=$SYSTEMUI_PACKAGE", e)
+            throw e
+        }
         val saved = param.savedInstanceState as? Map<*, *>
         val context = saved?.get(SAVED_CONTEXT) as? Context
         if (context == null) {

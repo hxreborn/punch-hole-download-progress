@@ -17,6 +17,7 @@ import eu.hxreborn.phdp.util.accessibleField
 import eu.hxreborn.phdp.util.accessibleFieldFromHierarchy
 import eu.hxreborn.phdp.util.log
 import eu.hxreborn.phdp.util.logDebug
+import eu.hxreborn.phdp.util.runHookCatching
 import eu.hxreborn.phdp.xposed.indicator.IndicatorView
 import eu.hxreborn.phdp.xposed.module
 import io.github.libxposed.api.XposedInterface
@@ -72,10 +73,15 @@ object SystemUIHook {
                 }.getOrNull() ?: return
 
         targetClass.declaredMethods.filter { it.name == "onNotificationPosted" }.forEach { method ->
-            runCatching {
+            runHookCatching {
                 module.hook(method).intercept(notificationAddHooker)
             }.onSuccess {
                 log("hooked notif-post pkg=$SYSTEMUI_PKG class=NotificationListener")
+            }.onFailure {
+                log(
+                    "hook failed pkg=$SYSTEMUI_PKG class=NotificationListener method=${method.name}",
+                    it,
+                )
             }
         }
     }
@@ -99,7 +105,7 @@ object SystemUIHook {
             return
         }
 
-        runCatching {
+        runHookCatching {
             module.hook(startMethod).intercept { chain ->
                 val result = chain.proceed()
                 if (isAttached()) return@intercept result
@@ -146,10 +152,15 @@ object SystemUIHook {
 
         // postNotification entry point for new notifications on Android 12 and later
         targetClass.declaredMethods.filter { it.name == "postNotification" }.forEach { method ->
-            runCatching {
+            runHookCatching {
                 module.hook(method).intercept(notificationAddHooker)
             }.onSuccess {
                 log("hooked notif-post pkg=$SYSTEMUI_PKG class=NotifCollection")
+            }.onFailure {
+                log(
+                    "hook failed pkg=$SYSTEMUI_PKG class=NotifCollection method=${method.name}",
+                    it,
+                )
             }
         }
 
@@ -160,11 +171,16 @@ object SystemUIHook {
             .filter {
                 it.name == "tryRemoveNotification" || it.name == "onNotificationRemoved"
             }.forEach { method ->
-                runCatching {
+                runHookCatching {
                     module.hook(method).intercept(notificationRemoveHooker)
                 }.onSuccess {
                     log(
                         "hooked notif-remove pkg=$SYSTEMUI_PKG class=NotifCollection method=${method.name}",
+                    )
+                }.onFailure {
+                    log(
+                        "hook failed pkg=$SYSTEMUI_PKG class=NotifCollection method=${method.name}",
+                        it,
                     )
                 }
             }
