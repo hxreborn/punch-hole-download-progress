@@ -1430,8 +1430,11 @@ class IndicatorView(
         }
 
     companion object {
+        private const val TYPE_SECURE_SYSTEM_OVERLAY = 2015
         private const val TYPE_NAVIGATION_BAR_PANEL = 2024
+        private const val SYSTEM_FLAG_SHOW_FOR_ALL_USERS = 1 shl 4
         private const val PRIVATE_FLAG_EXCLUDE_FROM_SCREEN_MAGNIFICATION = 1 shl 21
+        private const val PRIVATE_FLAG_NOT_MAGNIFIABLE = 1 shl 22
 
         // Drawing constants
         private const val POWER_SAVER_DIM_FACTOR = 0.5f
@@ -1450,7 +1453,7 @@ class IndicatorView(
                     .LayoutParams(
                         WindowManager.LayoutParams.MATCH_PARENT,
                         WindowManager.LayoutParams.MATCH_PARENT,
-                        TYPE_NAVIGATION_BAR_PANEL,
+                        overlayWindowType(),
                         WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
                             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or
@@ -1464,13 +1467,28 @@ class IndicatorView(
             runCatching {
                 val privateFlagsField = params.javaClass.accessibleField("privateFlags")
                 val currentFlags = privateFlagsField.getInt(params)
-                val newFlags = currentFlags or PRIVATE_FLAG_EXCLUDE_FROM_SCREEN_MAGNIFICATION
-                privateFlagsField.setInt(params, newFlags)
-            }.onFailure { log("magnification exclusion failed", it) }
+                privateFlagsField.setInt(params, currentFlags or overlayPrivateFlags())
+            }.onFailure { log("overlay private flags failed", it) }
 
             wm.addView(view, params)
             view.windowParams = params
             return view
         }
+
+        private fun overlayWindowType(): Int =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2) {
+                TYPE_SECURE_SYSTEM_OVERLAY
+            } else {
+                TYPE_NAVIGATION_BAR_PANEL
+            }
+
+        private fun overlayPrivateFlags(): Int =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2) {
+                SYSTEM_FLAG_SHOW_FOR_ALL_USERS or
+                    PRIVATE_FLAG_NOT_MAGNIFIABLE or
+                    PRIVATE_FLAG_EXCLUDE_FROM_SCREEN_MAGNIFICATION
+            } else {
+                0
+            }
     }
 }
