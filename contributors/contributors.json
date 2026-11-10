@@ -1,0 +1,42 @@
+[
+  {
+    "login": "hxreborn",
+    "owner": true,
+    "added": 50122,
+    "removed": 24473,
+    "url": "https://github.com/hxreborn",
+    "avatar": "avatars/hxreborn.webp"
+  },
+  {
+    "login": "tthorntone",
+    "owner": false,
+    "added": 2957,
+    "removed": 633,
+    "url": "https://github.com/tthorntone",
+    "avatar": "avatars/tthorntone.webp"
+  },
+  {
+    "login": "tthornton3-chwy",
+    "owner": false,
+    "added": 770,
+    "removed": 112,
+    "url": "https://github.com/tthornton3-chwy",
+    "avatar": "avatars/tthornton3-chwy.webp"
+  },
+  {
+    "login": "mikropsoft",
+    "owner": false,
+    "added": 286,
+    "removed": 1,
+    "url": "https://github.com/mikropsoft",
+    "avatar": "avatars/mikropsoft.webp"
+  },
+  {
+    "login": "nymanyim",
+    "owner": false,
+    "added": 194,
+    "removed": 19,
+    "url": "https://github.com/nymanyim",
+    "avatar": "avatars/nymanyim.webp"
+  }
+]

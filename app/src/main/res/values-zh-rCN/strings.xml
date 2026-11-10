@@ -410,6 +410,14 @@
     <string name="star_on_github">在 GitHub 上点星</string>
     <string name="buy_me_a_coffee">请我喝杯咖啡</string>
     <string name="group_this_device">本设备</string>
+    <string name="group_contributors">贡献者</string>
+    <string name="contributor_owner">所有者</string>
+    <plurals name="contributor_lines_added">
+        <item quantity="other">新增 %1$d 行</item>
+    </plurals>
+    <plurals name="contributor_lines_removed">
+        <item quantity="other">删除 %1$d 行</item>
+    </plurals>
     <string name="device_android">Android</string>
     <string name="device_android_version">Android %1$s（API %2$d）</string>
     <string name="device_framework">Xposed 框架</string>

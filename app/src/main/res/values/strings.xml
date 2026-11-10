@@ -424,6 +424,16 @@
     <string name="star_on_github">Star on GitHub</string>
     <string name="buy_me_a_coffee">Buy me a coffee</string>
     <string name="group_this_device">This device</string>
+    <string name="group_contributors">Contributors</string>
+    <string name="contributor_owner">Owner</string>
+    <plurals name="contributor_lines_added">
+        <item quantity="one">%1$d line added</item>
+        <item quantity="other">%1$d lines added</item>
+    </plurals>
+    <plurals name="contributor_lines_removed">
+        <item quantity="one">%1$d line removed</item>
+        <item quantity="other">%1$d lines removed</item>
+    </plurals>
     <string name="device_android">Android</string>
     <string name="device_android_version">Android %1$s (API %2$d)</string>
     <string name="device_framework">Xposed framework</string>

@@ -486,6 +486,16 @@
     <string name="star_on_github">GitHub\'da yıldızla</string>
     <string name="buy_me_a_coffee">Bana bir kahve ısmarla</string>
     <string name="group_this_device">Bu cihaz</string>
+    <string name="group_contributors">Katkıda bulunanlar</string>
+    <string name="contributor_owner">Sahip</string>
+    <plurals name="contributor_lines_added">
+        <item quantity="one">%1$d satır eklendi</item>
+        <item quantity="other">%1$d satır eklendi</item>
+    </plurals>
+    <plurals name="contributor_lines_removed">
+        <item quantity="one">%1$d satır silindi</item>
+        <item quantity="other">%1$d satır silindi</item>
+    </plurals>
     <string name="device_android">Android</string>
     <string name="device_android_version">Android %1$s (API %2$d)</string>
     <string name="device_framework">Xposed çerçevesi</string>

@@ -76,10 +76,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import eu.hxreborn.phdp.BuildConfig
 import eu.hxreborn.phdp.R
 import eu.hxreborn.phdp.about.loadReleases
+import eu.hxreborn.phdp.ui.ContributorsViewModel
 import eu.hxreborn.phdp.ui.SettingsViewModel
+import eu.hxreborn.phdp.ui.component.ContributorRow
 import eu.hxreborn.phdp.ui.component.MorphingLogo
 import eu.hxreborn.phdp.ui.component.SectionCard
 import eu.hxreborn.phdp.ui.component.SettingsScaffold
@@ -125,8 +128,10 @@ fun AboutScreen(
     onNavigateToLicenses: () -> Unit,
     modifier: Modifier = Modifier,
     bottomNavPadding: Dp = 0.dp,
+    contributorsViewModel: ContributorsViewModel = viewModel(factory = ContributorsViewModel.Factory),
 ) {
     val context = LocalContext.current
+    val contributors by contributorsViewModel.contributors.collectAsStateWithLifecycle()
     val status by viewModel.moduleStatus.collectAsStateWithLifecycle()
     val releases = remember(context) { loadReleases(context.assets) }
     val currentRelease = releases.firstOrNull { it.versionCode == BuildConfig.VERSION_CODE } ?: releases.firstOrNull()
@@ -275,6 +280,28 @@ fun AboutScreen(
                                 },
                             ),
                     )
+                }
+
+                if (contributors.isNotEmpty()) {
+                    preferenceCategory(
+                        key = "about_contributors_header",
+                        title = { Text(stringResource(R.string.group_contributors)) },
+                    )
+
+                    item(key = "about_contributors") {
+                        SectionCard(
+                            items =
+                                contributors.mapIndexed { index, contributor ->
+                                    {
+                                        ContributorRow(
+                                            contributor = contributor,
+                                            shapeIndex = index,
+                                            onClick = { context.openUrl(contributor.url) },
+                                        )
+                                    }
+                                },
+                        )
+                    }
                 }
             }
             VerticalScrollbar(listState, innerPadding)

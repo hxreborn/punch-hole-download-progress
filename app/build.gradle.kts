@@ -140,6 +140,7 @@ val copyChangelogs =
 androidComponents {
     onVariants { variant ->
         variant.sources.assets?.addGeneratedSourceDirectory(copyChangelogs, CopyChangelogs::assets)
+        variant.sources.assets?.addStaticSourceDirectory(rootProject.layout.projectDirectory.dir("contributors").asFile.path)
     }
 }
 

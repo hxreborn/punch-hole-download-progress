@@ -488,6 +488,20 @@
     <string name="star_on_github">Звезда на GitHub</string>
     <string name="buy_me_a_coffee">Угостить кофе</string>
     <string name="group_this_device">Это устройство</string>
+    <string name="group_contributors">Участники</string>
+    <string name="contributor_owner">Владелец</string>
+    <plurals name="contributor_lines_added">
+        <item quantity="one">%1$d строка добавлена</item>
+        <item quantity="few">%1$d строки добавлены</item>
+        <item quantity="many">%1$d строк добавлено</item>
+        <item quantity="other">%1$d строки добавлено</item>
+    </plurals>
+    <plurals name="contributor_lines_removed">
+        <item quantity="one">%1$d строка удалена</item>
+        <item quantity="few">%1$d строки удалены</item>
+        <item quantity="many">%1$d строк удалено</item>
+        <item quantity="other">%1$d строки удалено</item>
+    </plurals>
     <string name="device_android">Android</string>
     <string name="device_android_version">Android %1$s (API %2$d)</string>
     <string name="device_framework">Фреймворк Xposed</string>
