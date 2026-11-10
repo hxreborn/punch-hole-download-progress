@@ -78,13 +78,15 @@ if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
 	exit 1
 fi
 
+GITHUB_TOKEN="${GITHUB_TOKEN:-$(gh auth token 2>/dev/null || true)}" python3 .github/update-contributors.py
+
 # Update version properties for F-Droid
 sed -i "s/^version\.code=.*/version.code=${VERSION_CODE}/" gradle.properties
 sed -i "s/^version\.name=.*/version.name=${VERSION}/" gradle.properties
 RELEASE_DATES="app/src/main/assets/release-dates.txt"
 sed -i "1i ${TAG} $(date -u +%F)" "$RELEASE_DATES"
 
-git add gradle.properties "$RELEASE_DATES"
+git add gradle.properties "$RELEASE_DATES" contributors
 git commit -m "chore(release): bump version to ${VERSION}"
 
 git tag -a "$TAG" -m "Release $TAG"
