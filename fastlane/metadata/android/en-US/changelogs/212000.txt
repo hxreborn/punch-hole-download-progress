@@ -1,3 +1,4 @@
+- Added contributors to the About screen with their added and removed lines
 - Fixed the ring drawing under accessibility overlays such as island apps (Android 12L and newer)
 - Hot reload now reports when it fails
 - Updated core libraries
